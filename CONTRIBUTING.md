@@ -217,12 +217,17 @@ runs the generic rules only.
   crediting them in the history is not.
 - One logical change per commit, with a message that says why.
 
-## Sign your commits (DCO)
+## Sign the CLA once, and sign off every commit
 
-Kept uses the [Developer Certificate of Origin](https://developercertificate.org/) (DCO) instead of
-a contributor licence agreement. By adding a `Signed-off-by:` line to a commit you certify that you
-wrote the change, or otherwise have the right to submit it, under the project's licence
-(AGPL-3.0). There is nothing to sign once and no bot to answer.
+**The CLA, once.** Kept takes contributions under its
+[Contributor License Agreement](CLA.md), adapted from the Apache individual CLA. You keep the
+copyright in your work; you grant the maintainer a licence to it, including the right to
+distribute it under other licences. On your first pull request a bot asks you to sign by replying
+with a comment. Once is enough.
+
+**The DCO, every commit.** By adding a `Signed-off-by:` line to a commit you certify, under the
+[Developer Certificate of Origin](https://developercertificate.org/), that you wrote the change or
+otherwise have the right to submit it.
 
 - Sign off every commit: `git commit -s` adds
   `Signed-off-by: Your Name <you@example.org>`, from your `user.name` and `user.email`.

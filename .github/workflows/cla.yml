@@ -1,0 +1,44 @@
+# The Contributor License Agreement (D221; D105, D187). CLA.md is adapted from the Apache
+# individual CLA V2.2. A contributor signs once by commenting on their first pull request; the
+# DCO sign-off (the ci workflow's dco job) still applies to every commit. Gated on a public
+# repository, like the other workflows.
+#
+# StepSecurity's fork of CLA Assistant Lite (the upstream action is archived), pinned by commit SHA
+# (spike W1). It runs under pull_request_target, so it must NEVER check out or run the pull
+# request's code: there is no checkout step here, and none may be added (D187). Triggers and
+# permissions are the action's own README's. Signatures are committed to the unprotected branch
+# `cla-signatures`, which exists apart from main and is never merged into it.
+name: cla
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_target:
+    types: [opened, closed, synchronize]
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+  statuses: write
+
+jobs:
+  cla:
+    if: >-
+      github.event.repository.private == false &&
+      (github.event_name == 'pull_request_target' ||
+       github.event.comment.body == 'recheck' ||
+       github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: step-security/contributor-assistant-github-action@b9bd60bf1b766fa48dae03427059187137236239 # v2.6.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path-to-signatures: signatures/version1/cla.json
+          path-to-document: ${{ github.server_url }}/${{ github.repository }}/blob/main/CLA.md
+          branch: cla-signatures
+          # The maintainer holds the copyright already. Add the Renovate and Weblate bot accounts
+          # by their exact logins when those apps are enabled (D187, a maintainer step).
+          allowlist: ibrahimroshdy

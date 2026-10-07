@@ -92,7 +92,7 @@ accessibility, error and empty states) is in
 
 | # | Question | Status / proposed default |
 |---|---|---|
-| 1.1 | Open source, license | ✅ D1 — AGPL-3.0 + DCO (the CLA superseded 2026-10-07, D105) |
+| 1.1 | Open source, license | ✅ D1, D221 — AGPL-3.0 + DCO + CLA (Apache-based, D221) |
 | 1.2 | SaaS-ready from day one | ✅ D2 |
 | 1.3 | Name | ✅ D109 — **Kept** (replaced the working title "Stowly", D7/D108) |
 | 1.4 | Primary audience | ✅ D8 — household (phone) + owner (desktop), equally |

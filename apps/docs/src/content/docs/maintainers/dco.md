@@ -18,9 +18,11 @@ decision D5 replaced it with the DCO:
 `ci` workflow, and CONTRIBUTING gained "Sign your commits (DCO)". D105 is marked superseded in the
 [product design's decision log](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md).
 
-The consequence the decision log records: contributions are AGPL-3.0 only, so relicensing a
-contributor's code (for a hosted edition, for example) now needs that contributor's consent. The
-dependency licence rule (D151) stays, so Kept's own code remains relicensable.
+On 2026-10-07 a CLA was added beside it (D221): [`CLA.md`](https://github.com/ibrahimroshdy/kept/blob/main/CLA.md),
+adapted from the Apache individual CLA, signed once by a comment on the contributor's first pull
+request (the `cla` workflow). Contributors keep their copyright and grant the maintainer a licence
+that includes distributing their work under other licences, so Kept stays relicensable. The
+sign-off still applies to every commit.
 
 The history from before Kept went public has no sign-offs. The DCO applies from the first public
 pull request on, and the check is never run over the whole history.

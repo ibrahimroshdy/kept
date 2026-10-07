@@ -22,7 +22,7 @@
   <a href="LICENSE"><img alt="Licence: AGPL-3.0" src="https://img.shields.io/badge/licence-AGPL--3.0-F0B03A?style=flat-square&labelColor=55524C"></a>
   <a href="https://ibrahimroshdy.com/kept/"><img alt="Documentation" src="https://img.shields.io/badge/docs-ibrahimroshdy.com%2Fkept-F0B03A?style=flat-square&labelColor=55524C"></a>
   <a href="https://github.com/users/ibrahimroshdy/packages/container/package/kept"><img alt="Container image: ghcr.io/ibrahimroshdy/kept" src="https://img.shields.io/badge/image-ghcr.io%2Fibrahimroshdy%2Fkept-F0B03A?style=flat-square&labelColor=55524C"></a>
-  <a href="CONTRIBUTING.md#sign-your-commits-dco"><img alt="DCO sign-off required" src="https://img.shields.io/badge/DCO-sign--off-F0B03A?style=flat-square&labelColor=55524C"></a>
+  <a href="CONTRIBUTING.md#sign-the-cla-once-and-sign-off-every-commit"><img alt="CLA and DCO sign-off" src="https://img.shields.io/badge/CLA%20%2B%20DCO-sign--off-F0B03A?style=flat-square&labelColor=55524C"></a>
 </p>
 
 <p align="center">
