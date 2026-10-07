@@ -51,7 +51,9 @@ describe('versions and tags', () => {
 
 // release.sh's preconditions, in a scratch repository holding a copy of the scripts. Each case
 // fails before anything needs Docker, cosign or Helm.
-describe('release.sh refuses', () => {
+// Each test runs release.sh in a scratch repository: a few seconds on a laptop, 7–8 s on a
+// hosted runner (2026-10-07), past vitest's 5 s default.
+describe('release.sh refuses', { timeout: 30_000 }, () => {
   let dir;
   const {
     KEPT_COSIGN_KEY: _key,
