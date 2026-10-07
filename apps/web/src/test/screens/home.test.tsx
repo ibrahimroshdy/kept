@@ -261,6 +261,22 @@ describe('Home: Get started (D138, D191, D193)', () => {
     expect(screen.getByText('3 of 6')).toBeInTheDocument();
   });
 
+  it('asks the instance admin to set up email while mail is off, with how', async () => {
+    https.plain = false;
+    const { user } = await renderApp('/', {
+      setup: (m) => {
+        m.state.admin.status.mail.configured = false;
+      },
+    });
+    expect(await screen.findByText('Set up email')).toBeInTheDocument();
+    expect(screen.getByText('3 of 7')).toBeInTheDocument();
+    const step = screen.getByText('Set up email').closest('li') as HTMLElement;
+    await user.click(within(step).getByRole('button', { name: 'How' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Set up email' });
+    expect(within(dialog).getByText('KEPT_SMTP_URL')).toBeInTheDocument();
+    expect(within(dialog).getByText('KEPT_SMTP_FROM')).toBeInTheDocument();
+  });
+
   it('the 3-things step stays open until three are captured; Add opens the create sheet', async () => {
     const { user } = await renderApp('/', {
       setup: homeIs({ checklist: checklist({ threeThings: false }) }),

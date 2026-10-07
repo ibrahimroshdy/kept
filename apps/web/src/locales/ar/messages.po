@@ -18,6 +18,10 @@ msgstr " و"
 msgid ", "
 msgstr "، "
 
+#: src/components/home/checklist.tsx
+msgid "Any provider that offers SMTP works, such as your email provider's app password or a sending service. Admin → Status shows Sending once it's on."
+msgstr "أي مزوّد يقدّم SMTP يصلح، مثل كلمة مرور تطبيق من مزوّد بريدك أو خدمة إرسال. تعرض الإدارة ← الحالة «يُرسل» عند تشغيله."
+
 #: src/routes/_app/settings.location.$id.general.tsx
 msgid "Location name"
 msgstr "اسم الموقع"
@@ -25,6 +29,26 @@ msgstr "اسم الموقع"
 #: src/routes/_app/settings.location.$id.general.tsx
 msgid "Renamed to {trimmed}"
 msgstr "تغيّر الاسم إلى {trimmed}"
+
+#: src/components/home/checklist.tsx
+msgid "Set these where Kept's other settings live (the .env file with Docker Compose, Kept's secret on Kubernetes), then restart Kept:"
+msgstr "اضبط هذين حيث توجد إعدادات Kept الأخرى (ملف ‎.env مع Docker Compose، أو سرّ Kept على Kubernetes)، ثم أعد تشغيل Kept:"
+
+#: src/components/home/checklist.tsx
+msgid "Set up email"
+msgstr "إعداد البريد الإلكتروني"
+
+#: src/components/home/checklist.tsx
+msgid "the sender, for example <0>Kept <kept@example.org></0>"
+msgstr "المُرسِل، مثلًا <0>Kept <kept@example.org></0>"
+
+#: src/components/home/checklist.tsx
+msgid "Without it, Kept sends no sign-in links, password resets, email invites or reminders."
+msgstr "من دونه لا يرسل Kept روابط تسجيل الدخول ولا إعادة تعيين كلمات المرور ولا الدعوات بالبريد ولا التذكيرات."
+
+#: src/components/home/checklist.tsx
+msgid "your mail server, for example <0>smtps://user:password@smtp.example.org:465</0>"
+msgstr "خادم بريدك، مثلًا <0>smtps://user:password@smtp.example.org:465</0>"
 
 #: src/components/things/links.tsx
 msgid "…this one"

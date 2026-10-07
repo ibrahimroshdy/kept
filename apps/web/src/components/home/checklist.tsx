@@ -17,12 +17,14 @@
  */
 import { can } from '@kept/shared';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { getAdminStatus } from '@/api/admin';
 import { api } from '@/api/client';
 import { inventoryPaths as p } from '@/api/inventory/paths';
 import { inventoryKeys } from '@/api/inventory/queries';
 import type { ChecklistKey, HomeResponse, UpdateHintBody } from '@/api/inventory/types';
+import { keys } from '@/api/queries';
 import type { LocationSummary, Me } from '@/api/types';
 import { CheckIcon, XIcon } from '@/components/icons';
 import { LinkButton, Notice } from '@/components/page';
@@ -92,7 +94,7 @@ export function useChecklistSync(home: HomeResponse | undefined) {
 // ----- the checklist ---------------------------------------------------------------------------
 
 type Step = {
-  key: ChecklistKey | 'https';
+  key: ChecklistKey | 'https' | 'mail';
   done: boolean;
   title: string;
   /** How a finished step reads inside the Done row. */
@@ -148,6 +150,13 @@ export function GetStarted({
     return (d.effectiveModules ?? d.modules ?? []).includes('labels') && can(l.role, 'labels.use');
   });
 
+  // Mail is the instance admin's to set up, like HTTPS: asked only of them, only while it's off.
+  const adminStatus = useQuery({
+    queryKey: keys.admin.status,
+    queryFn: getAdminStatus,
+    enabled: me.user.instanceAdmin,
+  });
+
   const steps: Step[] = [];
   if (me.user.instanceAdmin && servedOverHttp()) {
     steps.push({
@@ -157,6 +166,16 @@ export function GetStarted({
       doneLabel: '',
       body: t`Over plain HTTP, phones block the camera, installing Kept, push notifications and location.`,
       action: <HttpsHowButton />,
+    });
+  }
+  if (me.user.instanceAdmin && adminStatus.data && !adminStatus.data.mail.configured) {
+    steps.push({
+      key: 'mail',
+      done: false,
+      title: t`Set up email`,
+      doneLabel: '',
+      body: t`Without it, Kept sends no sign-in links, password resets, email invites or reminders.`,
+      action: <MailHowButton />,
     });
   }
   for (const item of home.checklist.items) {
@@ -382,6 +401,53 @@ export function HttpsNotice() {
         Over plain HTTP, phones block the camera, installing Kept, push notifications and location.
       </Trans>
     </Notice>
+  );
+}
+
+/** How to turn mail on: two settings and a restart, wherever Kept's other settings live. */
+export function MailHowButton() {
+  const [open, setOpen] = useState(false);
+  const { t } = useLingui();
+  return (
+    <>
+      <Button size="small" variant="secondary" onPress={() => setOpen(true)}>
+        <Trans>How</Trans>
+      </Button>
+      <Modal isOpen={open} onOpenChange={setOpen}>
+        <Dialog title={t`Set up email`}>
+          <div className="grid gap-3 text-ink-2">
+            <p className="m-0">
+              <Trans>
+                Set these where Kept's other settings live (the .env file with Docker Compose,
+                Kept's secret on Kubernetes), then restart Kept:
+              </Trans>
+            </p>
+            <ul className="m-0 grid gap-2 ps-5">
+              <li>
+                <code className="ltr whitespace-nowrap">KEPT_SMTP_URL</code>{' '}
+                <Trans>
+                  your mail server, for example{' '}
+                  <code className="ltr break-all">smtps://user:password@smtp.example.org:465</code>
+                </Trans>
+              </li>
+              <li>
+                <code className="ltr whitespace-nowrap">KEPT_SMTP_FROM</code>{' '}
+                <Trans>
+                  the sender, for example{' '}
+                  <code className="ltr break-all">Kept &lt;kept@example.org&gt;</code>
+                </Trans>
+              </li>
+            </ul>
+            <p className="m-0">
+              <Trans>
+                Any provider that offers SMTP works, such as your email provider's app password or a
+                sending service. Admin → Status shows Sending once it's on.
+              </Trans>
+            </p>
+          </div>
+        </Dialog>
+      </Modal>
+    </>
   );
 }
 

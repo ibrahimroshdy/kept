@@ -18,6 +18,10 @@ msgstr " et "
 msgid ", "
 msgstr ", "
 
+#: src/components/home/checklist.tsx
+msgid "Any provider that offers SMTP works, such as your email provider's app password or a sending service. Admin → Status shows Sending once it's on."
+msgstr "Tout fournisseur qui propose SMTP convient, par exemple un mot de passe d'application de votre messagerie ou un service d'envoi. Administration → Statut indique « Envoi actif » une fois activé."
+
 #: src/routes/_app/settings.location.$id.general.tsx
 msgid "Location name"
 msgstr "Nom de l'emplacement"
@@ -25,6 +29,26 @@ msgstr "Nom de l'emplacement"
 #: src/routes/_app/settings.location.$id.general.tsx
 msgid "Renamed to {trimmed}"
 msgstr "Renommé en {trimmed}"
+
+#: src/components/home/checklist.tsx
+msgid "Set these where Kept's other settings live (the .env file with Docker Compose, Kept's secret on Kubernetes), then restart Kept:"
+msgstr "Définissez-les là où se trouvent les autres réglages de Kept (le fichier .env avec Docker Compose, le secret de Kept sur Kubernetes), puis redémarrez Kept :"
+
+#: src/components/home/checklist.tsx
+msgid "Set up email"
+msgstr "Configurer l'e-mail"
+
+#: src/components/home/checklist.tsx
+msgid "the sender, for example <0>Kept <kept@example.org></0>"
+msgstr "l'expéditeur, par exemple <0>Kept <kept@example.org></0>"
+
+#: src/components/home/checklist.tsx
+msgid "Without it, Kept sends no sign-in links, password resets, email invites or reminders."
+msgstr "Sans lui, Kept n'envoie ni liens de connexion, ni réinitialisations de mot de passe, ni invitations par e-mail, ni rappels."
+
+#: src/components/home/checklist.tsx
+msgid "your mail server, for example <0>smtps://user:password@smtp.example.org:465</0>"
+msgstr "votre serveur de messagerie, par exemple <0>smtps://user:password@smtp.example.org:465</0>"
 
 #: src/components/things/links.tsx
 msgid "…this one"
