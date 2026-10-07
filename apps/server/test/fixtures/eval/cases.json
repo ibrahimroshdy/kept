@@ -1,0 +1,226 @@
+{
+  "set": "synthetic-2026-09-29",
+  "synthetic": true,
+  "about": "Synthetic photos rendered by generate.mjs. Expected values follow the engineering spec's §2.1 shapes without confidences. {\"anyOf\": [...]} lists acceptable answers; null means the field must be left out; a field not listed is not scored. Aliases pass when at least one expected alias per language is returned.",
+  "cases": [
+    {
+      "id": "receipt-en",
+      "file": "receipt-en.jpg",
+      "mode": "receipt",
+      "languages": ["en", "ar"],
+      "locationCurrency": "EGP",
+      "notes": "The spike's English receipt: the currency is printed only as the code beside TOTAL, and the date as day/month/year. Fills the photo, so the paper's outline is the whole frame.",
+      "regressions": [
+        "receipt-v1 missed the date and the currency on this receipt (Groq, T10, 2026-09-29)",
+        "the model invented warranty terms (spike 2026-09-26; T10 2026-09-29): none are printed"
+      ],
+      "expected": {
+        "vendor": { "name": "CAIRO HOME STORE" },
+        "date": "2026-09-14",
+        "currency": "EGP",
+        "total": 300,
+        "lines": [
+          { "description": "LED Bulb 9W", "quantity": 2, "unit_price": 45, "line_total": 90 },
+          {
+            "description": "Extension Cord 3m",
+            "quantity": 1,
+            "unit_price": 210,
+            "line_total": 210
+          }
+        ],
+        "warranty_terms_printed": null,
+        "document_bbox": [0, 0, 1, 1]
+      }
+    },
+    {
+      "id": "receipt-ar",
+      "file": "receipt-ar.jpg",
+      "mode": "receipt",
+      "languages": ["ar", "en"],
+      "locationCurrency": "EGP",
+      "notes": "Arabic, with Arabic-Indic digits for the date, the amounts and the total, the Arabic decimal separator, and ج.م. Fills the photo.",
+      "expected": {
+        "vendor": { "name": "سوبر ماركت النيل" },
+        "date": "2026-09-14",
+        "currency": "EGP",
+        "total": 160,
+        "lines": [
+          { "description": "أرز مصري ١ كجم", "quantity": 2, "unit_price": 32.5, "line_total": 65 },
+          { "description": "زيت عباد الشمس", "quantity": 1, "unit_price": 95, "line_total": 95 }
+        ],
+        "warranty_terms_printed": null,
+        "document_bbox": [0, 0, 1, 1]
+      }
+    },
+    {
+      "id": "receipt-table",
+      "file": "receipt-table.jpg",
+      "mode": "receipt",
+      "languages": ["en"],
+      "locationCurrency": "USD",
+      "notes": "A receipt lying on a table, occupying x 0.30-0.70 and y 0.10-0.90 of the photo, for the paper-crop outline (Q11). A bare $ must stay ambiguous (D189). Warranty terms are printed (D55).",
+      "expected": {
+        "vendor": { "name": "SUNRISE HARDWARE" },
+        "date": "2026-09-20",
+        "currency": { "ambiguous": ["USD", "CAD"] },
+        "total": 42.5,
+        "lines": [
+          { "description": "Hammer 16oz", "quantity": 1, "unit_price": 18, "line_total": 18 },
+          {
+            "description": "Tape Measure 25ft",
+            "quantity": 1,
+            "unit_price": 12.5,
+            "line_total": 12.5
+          },
+          { "description": "Wood Screws (100)", "quantity": 2, "unit_price": 6, "line_total": 12 }
+        ],
+        "warranty_terms_printed": {
+          "anyOf": ["Tools carry a 1-year limited warranty.", "1-year limited warranty"]
+        },
+        "document_bbox": [0.3, 0.1, 0.4, 0.8]
+      }
+    },
+    {
+      "id": "label-nameplate",
+      "file": "label-nameplate.jpg",
+      "mode": "label",
+      "languages": ["en", "ar"],
+      "locationCurrency": "EGP",
+      "notes": "The spike's TV nameplate: a model code and a labelled serial, no VIN.",
+      "regressions": [
+        "the model put the serial or the model code into vin (spike 2026-09-26; T10 2026-09-29)"
+      ],
+      "expected": {
+        "brand": "Samsung",
+        "model": "QN55QN90DAFXZA",
+        "serial": "0B7H3CAW500123K",
+        "vin": null,
+        "plate": null,
+        "document_kind": null
+      }
+    },
+    {
+      "id": "label-registration-ar",
+      "file": "label-registration-ar.jpg",
+      "mode": "label",
+      "languages": ["ar", "en"],
+      "locationCurrency": "EGP",
+      "notes": "A synthetic Egyptian-style vehicle licence card in Arabic with Arabic-Indic digits (V3). The plate is Arabic letters and digits; the VIN is invented, with no check digit.",
+      "expected": {
+        "brand": { "anyOf": ["Hyundai", "هيونداي"] },
+        "model": { "anyOf": ["Elantra", "إلنترا"] },
+        "vin": "KMHD741CBMU123456",
+        "plate": "ق ط ر ١٢٣٤",
+        "document_kind": "registration",
+        "expires_on": "2028-03-15"
+      }
+    },
+    {
+      "id": "reading-odometer",
+      "file": "reading-odometer.jpg",
+      "mode": "reading",
+      "languages": ["en", "ar"],
+      "locationCurrency": "EGP",
+      "meter": { "kind": "distance", "unit": "km" },
+      "notes": "The spike's seven-segment odometer (V1): 052340 km. The spike read it once as 0.04340057 and once as 52340, both at 0.98.",
+      "expected": { "value": 52340, "unit": "km", "display": "digital" }
+    },
+    {
+      "id": "thing-drill-box",
+      "file": "thing-drill-box.jpg",
+      "mode": "thing",
+      "languages": ["en", "ar"],
+      "locationCurrency": "EGP",
+      "notes": "A boxed cordless drill of an invented brand, with the model printed on the box. No serial is printed.",
+      "expected": {
+        "objects": [
+          {
+            "name": { "anyOf": ["Cordless drill", "Drill", "Power drill", "Cordless drill box"] },
+            "brand": "VOLTA",
+            "model": "VD-18X",
+            "serial": null,
+            "aliases": {
+              "en": [
+                "drill",
+                "power drill",
+                "cordless drill",
+                "power tool",
+                "drill driver",
+                "screwdriver",
+                "electric drill"
+              ],
+              "ar": [
+                "مثقاب",
+                "دريل",
+                "شنيور",
+                "مثقاب كهربائي",
+                "مثقاب لاسلكي",
+                "مفك كهربائي",
+                "عدة كهربائية",
+                "دريل لاسلكي"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "thing-mug",
+      "file": "thing-mug.jpg",
+      "mode": "thing",
+      "languages": ["en", "ar"],
+      "locationCurrency": "EGP",
+      "notes": "A plain red mug: nothing printed, so no brand, model or serial.",
+      "expected": {
+        "objects": [
+          {
+            "name": {
+              "anyOf": ["Mug", "Coffee mug", "Red mug", "Cup", "Coffee cup", "Red coffee mug"]
+            },
+            "colour": "red",
+            "brand": null,
+            "model": null,
+            "serial": null,
+            "aliases": {
+              "en": [
+                "mug",
+                "cup",
+                "coffee mug",
+                "coffee cup",
+                "tea cup",
+                "teacup",
+                "drinkware",
+                "tea mug"
+              ],
+              "ar": ["كوب", "مج", "ماج", "فنجان", "كوب قهوة", "كوباية", "كوب شاي", "مج قهوة"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "multi-shelf",
+      "file": "multi-shelf.jpg",
+      "mode": "multi",
+      "languages": ["en"],
+      "locationCurrency": "EGP",
+      "notes": "Three objects on a shelf (V2, multi-item photos, 1.x): measured only, through an evaluation-only prompt. Boxes measured from the rendered pixels.",
+      "expected": {
+        "objects": [
+          {
+            "name": { "anyOf": ["Mug", "Cup", "Coffee mug", "Red mug"] },
+            "bbox": [0.125, 0.5, 0.159, 0.2]
+          },
+          {
+            "name": { "anyOf": ["Book", "Blue book", "Atlas"] },
+            "bbox": [0.375, 0.3125, 0.075, 0.3875]
+          },
+          {
+            "name": { "anyOf": ["Plant", "Potted plant", "Houseplant", "Pot plant"] },
+            "bbox": [0.56, 0.3125, 0.181, 0.3875]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,391 @@
+<style>
+.a8 .phone[dir="rtl"] *:not(.mono):not(kbd){font-family:var(--arabic)}
+.a8 [dir="rtl"] .flip{transform:scaleX(-1)}
+.a8 .desktop .work{display:grid}
+.a8 .phone.tall{height:auto}
+.a8 .phone.tall .content{overflow:visible}
+</style>
+<section class="area a8" id="portability">
+<header>
+  <span class="eyebrow">Screens · Import, export &amp; consumables</span>
+  <h2>Your things leave with you, and arrive from where they were</h2>
+  <p>Step 7's screens, before they are built (plan T3): a Homebox or Kept export brought in, a location exported with or without its secrets, an old Homebox label opened, what's running low, a field made secret, and the templates the step-3 carry-over names. Owner Ibrahim, Wednesday 14 October 2026; the Arabic frame is Alfred's family house.</p>
+</header>
+  <h3 class="grp">Import · a Homebox or Kept export</h3>
+  <div class="frames">
+    <figure id="f-import-source">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: import step 1, choose where it comes from: a spreadsheet, a Homebox export or a Kept export">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Import</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span class="on" role="tab" aria-selected="true">Import</span><span role="tab">Export</span><span role="tab">Admin</span></div>
+          <div class="k-stephead"><div class="k-steps"><i class="d"></i><i></i><i></i><i></i><i></i><i></i></div><div class="k-wrap" style="justify-content:space-between"><h2 class="k-h2">Where is it coming from?</h2><span class="k-meta">Step 1 of 6</span></div></div>
+          <div class="k-choice"><i></i><span><b>A spreadsheet (CSV)</b><small>One thing per row, with a header row naming the columns.</small></span></div>
+          <div class="k-choice on"><i></i><span><b>A Homebox export</b><small>Homebox v0.26 or newer: Collection settings → Export. Older than v0.26: update Homebox first.</small></span></div>
+          <div class="k-choice"><i></i><span><b>A Kept export</b><small>A location exported from this Kept or another one. It comes in as a new location.</small></span></div>
+          <div class="k-notice info"><svg class="k-ic"><use href="#k-info"/></svg><span><b>Only owners and admins import</b>Members and viewers don't see Import.</span></div>
+          <div class="k-foot k-sticky"><b class="kb kb-p">Next</b></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Import, source step · phone · light (source-step.tsx, T19). CSV keeps step 3's flow; the two archives go through upload, inspect, target, choices and the report. Homebox's help names its own menu path and the v0.26 floor (plan Q1). Offline, Next is disabled with "Needs a connection" (screens §4).</figcaption>
+    </figure>
+    <figure id="f-import-archive">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: import step 2, the Homebox archive uploading at 64 percent">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Import</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span class="on" role="tab" aria-selected="true">Import</span><span role="tab">Export</span><span role="tab">Admin</span></div>
+          <div class="k-stephead"><div class="k-steps"><i class="d"></i><i class="d"></i><i></i><i></i><i></i><i></i></div><div class="k-wrap" style="justify-content:space-between"><h2 class="k-h2">The Homebox export</h2><span class="k-meta">Step 2 of 6</span></div></div>
+          <div class="k-card"><div class="k-row2"><span class="k-tile"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="k-rt"><b><bdi class="mono">homebox-export-3f2a.zip</bdi></b><small>138 KB · checked on this device</small></span></div>
+            <div class="k-meter"><i style="inline-size:64%"></i></div><span class="k-meta">Uploading · 64%</span></div>
+          <div class="k-notice warn"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>If Homebox says "Topic has been Shutdown"</b>Restart Homebox and export again: v0.26 exports once per start.</span></div>
+          <p class="k-p">Up to 5 GB. Nothing is imported until you've seen what's in it.</p>
+          <div class="k-foot k-sticky"><b class="kb kb-s">Back</b><b class="kb kb-p dis">Next</b></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Import, archive step · phone · light (archive-step.tsx). The SHA-256 is computed on the device first, then one upload with a progress bar. Leaving mid-upload asks with Kept's own confirm, never the browser's. A file over 5 GB is refused before anything is sent.</figcaption>
+    </figure>
+    <figure id="f-import-inspect">
+      <div class="phone t-dark k-frame tall" role="img" aria-label="Phone: import step 3, what the Homebox export holds, and the optional connection to Homebox">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Import</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span class="on" role="tab" aria-selected="true">Import</span><span role="tab">Export</span><span role="tab">Admin</span></div>
+          <div class="k-stephead"><div class="k-steps"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i></div><div class="k-wrap" style="justify-content:space-between"><h2 class="k-h2">What's in it</h2><span class="k-meta">Step 3 of 6</span></div></div>
+          <div class="k-stats"><div class="k-stat"><b>21</b><small>items and locations</small></div><div class="k-stat"><b>13</b><small>attachments</small></div><div class="k-stat"><b>10</b><small>tags</small></div><div class="k-stat"><b>2</b><small>maintenance entries</small></div></div>
+          <span class="k-meta">One Homebox collection · exported 29 Sep · version unknown</span>
+          <span class="eyebrow">Connect to Homebox (optional)</span>
+          <div class="k-card"><small class="k-desc">Reads the version, the collection's currency and its members. Used once, never stored.</small>
+            <div class="k-field"><span class="k-lab">Homebox address</span><span class="k-in"><bdi class="mono">http://192.168.1.20:7745</bdi></span></div>
+            <div class="k-seg" role="radiogroup" aria-label="Sign in with"><span class="on">API key</span><span>Email and password</span></div>
+            <div class="k-field"><span class="k-lab">API key</span><span class="k-in ph">hb_…</span></div>
+            <div class="k-wrap"><b class="kb kb-s sm">Connect</b><b class="kb kb-g sm">Skip</b></div></div>
+          <div class="k-foot k-sticky"><b class="kb kb-s">Back</b><b class="kb kb-p">Next</b></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Import, inspect and connect · phone · dark (T8, T11). Counts come from the manifest alone. The connection is skippable; a private address needs the instance admin's switch (step-3 Q9). A hostile archive stops here with its reason: "It holds a link to somewhere outside the archive" (D157).</figcaption>
+    </figure>
+    <figure id="f-import-target">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: import step 4, choose where it goes: a new location or Home">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Import</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span class="on" role="tab" aria-selected="true">Import</span><span role="tab">Export</span><span role="tab">Admin</span></div>
+          <div class="k-stephead"><div class="k-steps"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i></div><div class="k-wrap" style="justify-content:space-between"><h2 class="k-h2">Where it goes</h2><span class="k-meta">Step 4 of 6</span></div></div>
+          <div class="k-choice on"><i></i><span><b>A new location</b><small>Made in your account, with its own Unplaced area.</small></span></div>
+          <div class="k-field"><span class="k-lab">Name</span><span class="k-in">Home (from Homebox)</span></div>
+          <div class="k-field"><span class="k-lab">Kind</span><span class="k-in k-combo">Apartment<svg class="k-ic"><use href="#k-down"/></svg></span></div>
+          <div class="k-choice"><i></i><span><b>A location you run</b><small>Home, Garage. Things already there stay; a re-run adds only what's new.</small></span></div>
+          <p class="k-p">A Kept export always comes in as a new location.</p>
+          <div class="k-foot k-sticky"><b class="kb kb-s">Back</b><b class="kb kb-p">Next</b></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Import, target step · phone · light (target-step.tsx). The name is prefilled from the collection or the export; the list offers only locations you own or administer (plan Q8: a Kept export never merges into a live location).</figcaption>
+    </figure>
+    <figure id="f-import-hb-choices">
+  <div class="frame-scroll">
+    <div class="desktop t-light" role="img" aria-label="Desktop: Homebox import choices: currency, archived items, insured, starter places, type mapping and custom fields">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Consumables</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Import</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work k-frame-work" style="gap:14px;align-content:start;overflow:auto">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span class="on" role="tab" aria-selected="true">Import</span><span role="tab">Export</span><span role="tab">Admin</span></div>
+          <div class="k-stephead"><div class="k-steps"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i></i></div><div class="k-wrap" style="justify-content:space-between"><h2 class="k-h2">A few choices, before the check</h2><span class="k-meta">Step 5 of 6</span></div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+            <div style="display:grid;gap:12px">
+              <div class="k-field"><span class="k-lab">Prices are in</span><span class="k-in k-combo">USD · from the connection<svg class="k-ic"><use href="#k-down"/></svg></span><span class="k-desc">Homebox's export has no currency. Choosing another enabled currency relabels the amounts; it doesn't convert them.</span></div>
+              <span class="k-lab">Archived items</span>
+              <div class="k-seg" role="radiogroup" aria-label="Archived items"><span class="on">Leave out</span><span>Import, tagged "Archived in Homebox"</span></div>
+              <span class="k-sw-row" style="align-items:flex-start"><i class="k-tog on"></i><span class="k-rt"><b style="font-weight:400">Add an "Insured" yes/no field</b><small>3 items are marked insured.</small></span></span>
+              <span class="k-sw-row" style="align-items:flex-start"><i class="k-tog on"></i><span class="k-rt"><b style="font-weight:400">Leave out Homebox's starter places and tags</b><small>Only the empty ones: Attic, Basement, Office, IOT, Servers.</small></span></span>
+            </div>
+            <div style="display:grid;gap:10px">
+              <span class="eyebrow">Types</span>
+              <div class="k-strip"><span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>Search Homebox types</span></div>
+              <ul class="k-list">
+                <li><span class="k-rt"><b>Power Tools</b><small>6 items</small></span><span class="k-in k-combo" style="min-width:180px">Power tool<svg class="k-ic"><use href="#k-down"/></svg></span></li>
+                <li><span class="k-rt"><b>Electronics</b><small>4 items</small></span><span class="k-in k-combo" style="min-width:180px">Electronics<svg class="k-ic"><use href="#k-down"/></svg></span></li>
+                <li><span class="k-rt"><b>Kitchen gear</b><small>2 items · no match</small></span><span class="k-in k-combo" style="min-width:180px">Create "Kitchen gear"<svg class="k-ic"><use href="#k-down"/></svg></span></li>
+              </ul>
+              <span class="eyebrow">Custom fields</span>
+              <ul class="k-list">
+                <li><span class="k-rt"><b>Voltage</b><small>text · on 5 items</small></span><div class="k-seg" style="min-width:220px"><span class="on">Add to the type</span><span>Keep in notes</span></div></li>
+                <li><span class="k-rt"><b>Warranty card no.</b><small>text · on 1 item</small></span><div class="k-seg" style="min-width:220px"><span>Add to the type</span><span class="on">Keep in notes</span></div></li>
+              </ul>
+            </div>
+          </div>
+          <div class="k-foot"><b class="kb kb-s">Back</b><b class="kb kb-p">Check the import</b></div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Homebox choices · desktop · light (homebox-choices.tsx, D146). Currency from the connection, else the target's; archived items; the "Insured" field (Q25); the seeded places and tags (T0); each Homebox type mapped with a combobox or created; each custom field added to its type or kept in the notes (Q16). Saved with If-Match on the run.</figcaption>
+    </figure>
+    <figure id="f-import-report">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: import step 6, what the Homebox import will do, with its issues grouped by reason and members to invite">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Import</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span class="on" role="tab" aria-selected="true">Import</span><span role="tab">Export</span><span role="tab">Admin</span></div>
+          <div class="k-stephead"><div class="k-steps"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></div><div class="k-wrap" style="justify-content:space-between"><h2 class="k-h2">What the import will do</h2><span class="k-meta">Step 6 of 6</span></div></div>
+          <div class="k-stats"><div class="k-stat"><b>12</b><small>things</small></div><div class="k-stat"><b>9</b><small>places</small></div><div class="k-stat"><b>8</b><small>photos and files</small></div><div class="k-stat"><b>14</b><small>old labels kept</small></div></div>
+          <span class="eyebrow">Needs a look · 6</span>
+          <ul class="k-list">
+            <li><span class="k-rt"><b>Not imported: a file type Kept doesn't keep</b><small><bdi>drill-manual.docx</bdi> · application/zip</small></span><span class="k-pill danger"><svg class="k-ic s"><use href="#k-alert"/></svg>Skipped</span></li>
+            <li><span class="k-rt"><b>A location inside an item became a container</b><small><bdi>Toolbox drawer</bdi></small></span><span class="k-pill warn"><svg class="k-ic s"><use href="#k-alert"/></svg>Changed</span></li>
+            <li><span class="k-rt"><b>Quantity 0 became 1</b><small>3 items · Homebox gives 0 when none was set</small></span><span class="k-pill warn"><svg class="k-ic s"><use href="#k-alert"/></svg>Changed</span></li>
+            <li><span class="k-rt"><b>Archived in Homebox, left out</b><small><bdi>Old router</bdi></small></span><span class="k-pill ">Skipped</span></li>
+          </ul>
+          <span class="eyebrow">People to invite</span>
+          <ul class="k-list"><li><span class="k-rt"><b>Louis</b><small><bdi class="mono">louis@example.com</bdi> · as a member</small></span><b class="k-link">Invite</b></li></ul>
+          <div class="k-foot k-sticky"><b class="kb kb-s">Adjust</b><b class="kb kb-p">Import 21</b></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Import, the report · phone · light (entity-report.tsx). Only the rows with an issue are listed, grouped by reason, each sentence translated from its code (IMPORT_ISSUE_CODES); the summary counts come first. Members come from the connection with their emails, and a role is asked for when inviting (T11).</figcaption>
+    </figure>
+    <figure id="f-import-enrich">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: import done, See what was imported, and the offer of search words by AI with its cost">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Import</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span class="on" role="tab" aria-selected="true">Import</span><span role="tab">Export</span><span role="tab">Admin</span></div>
+          <div class="k-meter"><i style="inline-size:100%"></i></div>
+          <div class="k-card"><b>Imported into Home (from Homebox)</b><small>12 things, 9 places and 8 files. 14 old Homebox labels open them now.</small>
+            <div class="k-wrap"><b class="kb kb-p">See what was imported</b><b class="kb kb-g">Open the location</b></div></div>
+          <div class="k-card"><b>Add search words with AI?</b><small>Two words per language for each imported thing, so "drill" finds "Bosch GSB 18V". About 40,000 tokens · ≈ USD 0.03 · paid by Home.</small>
+            <span class="k-sw-row"><i class="k-tog"></i>Add search words</span></div>
+          <div class="k-foot k-sticky"><b class="kb kb-p">Done</b></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Import done, with the enrichment offer · phone · light (enrich-offer.tsx, T15). "See what was imported" opens the things list filtered by this run (importRunId, T16). The token cost is shown before anything runs and the switch is off by default (D69); "cost unknown" when the model has no price.</figcaption>
+    </figure>
+    <figure id="f-import-kept-ar">
+      <div class="phone t-light k-frame tall" dir="rtl" lang="ar" role="img" aria-label="Phone, Arabic, right to left: a Kept export of the family house, with its secrets and the passphrase">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="رجوع"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>الاستيراد</h1><button class="icon-btn" aria-label="الإشعارات"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="الإعدادات"><span role="tab">أنا</span><span role="tab">المواقع</span><span role="tab">الحساب</span><span role="tab">الذكاء الاصطناعي</span><span class="on" role="tab" aria-selected="true">الاستيراد</span><span role="tab">التصدير</span></div>
+          <div class="k-stephead"><div class="k-steps"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i></div><div class="k-wrap" style="justify-content:space-between"><h2 class="k-h2">ما في الملف</h2><span class="k-meta">الخطوة ٣ من ٦</span></div></div>
+          <div class="k-card"><b><bdi>بيت العائلة</bdi></b><small>تصدير من <bdi class="mono">Kept 0.1.0</bdi> · ٢٨ سبتمبر</small></div>
+          <div class="k-stats"><div class="k-stat"><b>٥</b><small>أشياء</small></div><div class="k-stat"><b>٤</b><small>أماكن</small></div><div class="k-stat"><b>٣</b><small>ملفات</small></div><div class="k-stat"><b>٤٢</b><small>حدثًا في السجل</small></div></div>
+          <div class="k-notice info"><svg class="k-ic"><use href="#k-key"/></svg><span><b>فيه أسرار مشفّرة</b>أدخل عبارة المرور التي اختارها ألفريد عند التصدير لتُستورد معه. بدونها يُستورد كل شيء آخر.</span></div>
+          <div class="k-field"><span class="k-lab">عبارة المرور</span><span class="k-in">••••••••••••••••</span></div>
+          <span class="eyebrow">أشخاص لدعوتهم</span>
+          <ul class="k-list"><li><span class="k-rt"><b><bdi>بروس</bdi></b><small>مدير</small></span></li><li><span class="k-rt"><b><bdi>بيتر</bdi></b><small>مشاهد</small></span></li></ul>
+          <div class="k-foot k-sticky"><b class="kb kb-s">رجوع</b><b class="kb kb-p">التالي</b></div>
+        </div>
+        <nav class="tabbar" aria-label="الرئيسي"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>الرئيسية</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>البحث</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>التقاط</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>الوارد</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>المزيد</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">A Kept export in Arabic · phone · light · RTL (kept-choices.tsx, T14). The export's own location name, date, counts and members (names and roles only, Q23). With secrets, the passphrase is checked by decrypting: a wrong one says so, 10 tries an hour. Eastern digits follow the person's setting.</figcaption>
+    </figure>
+  </div>
+  <h3 class="grp">Export · a location, your data, before deleting</h3>
+  <div class="frames">
+    <figure id="f-export-sheet">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: export Home, with Include secrets ticked and the passphrase twice">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Export</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span role="tab">Import</span><span class="on" role="tab" aria-selected="true">Export</span><span role="tab">Admin</span></div>
+          <div class="k-field"><span class="k-lab">Location</span><span class="k-in k-combo">Home<svg class="k-ic"><use href="#k-down"/></svg></span></div>
+          <span class="k-lab">What goes in</span>
+          <span class="k-sw-row"><i class="k-tog on"></i>Ended things</span>
+          <span class="k-sw-row"><i class="k-tog on"></i>History</span>
+          <span class="k-sw-row"><i class="k-tog on"></i>AI calls</span>
+          <span class="k-sw-row"><i class="k-tog on"></i>A copy you can read without Kept, with the inventory PDF</span>
+          <span class="k-sw-row" style="align-items:flex-start"><i class="k-tog on"></i><span class="k-rt"><b style="font-weight:400">Include secrets</b><small>Encrypted with a passphrase you choose. The readable copy never holds them.</small></span></span>
+          <div class="k-field"><span class="k-lab">Passphrase</span><span class="k-in">••••••••••••••</span><span class="k-desc">At least 12 characters.</span></div>
+          <div class="k-field"><span class="k-lab">The passphrase again</span><span class="k-in err">•••••••••••••</span><span class="k-desc" style="color:var(--danger)">The two passphrases are different.</span></div>
+          <div class="k-notice warn"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>Anyone with this file and the passphrase can read every secret in it.</b>Kept can't recover a forgotten passphrase.</span></div>
+          <div class="k-foot k-sticky"><b class="kb kb-p dis">Export Home</b></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Export sheet · phone · light (export-sheet.tsx, T21; D68). Only the owner sees Include secrets; an admin exports without it. The mismatch message sits beside the field and the button waits (WCAG 4.1.3). The passphrase is never kept in the page or the browser's storage.</figcaption>
+    </figure>
+    <figure id="f-export-list">
+  <div class="frame-scroll">
+    <div class="desktop t-dark" role="img" aria-label="Desktop: your exports: one running, one ready to download, one expired, one failed">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Consumables</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Export</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work k-frame-work" style="gap:14px;align-content:start;overflow:auto">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span role="tab">Import</span><span class="on" role="tab" aria-selected="true">Export</span><span role="tab">Admin</span></div>
+          <div class="k-wrap" style="justify-content:flex-end"><b class="kb kb-s">Export my data</b><b class="kb kb-p">Export a location</b></div>
+          <div class="k-strip"><span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>Search exports</span><span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>Filters</span></div>
+          <ul class="k-list">
+            <li><span class="k-rt"><b>Garage</b><small>Started 10:02 · 7 of 23</small></span><div class="k-meter" style="min-width:160px"><i style="inline-size:30%"></i></div><b class="kb kb-g sm">Cancel</b></li>
+            <li><span class="k-rt"><b>Home · with secrets</b><small>Ready 12 Oct · 48.2 MB · until 19 Oct</small></span><span class="k-pill ok"><svg class="k-ic s"><use href="#k-checkc"/></svg>Ready</span><b class="kb kb-s sm">Download</b></li>
+            <li><span class="k-rt"><b>My data</b><small>Made 5 Oct · 1.2 MB</small></span><span class="k-pill ">Expired</span><b class="kb kb-g sm">Export again</b></li>
+            <li><span class="k-rt"><b>Garage</b><small>11 Oct · the server ran out of space</small></span><span class="k-pill danger"><svg class="k-ic s"><use href="#k-alert"/></svg>Failed</span><b class="kb kb-g sm">Try again</b></li>
+          </ul>
+          <p class="k-p">Each download link is made when you click Download and lasts 5 minutes; Kept checks you're still an owner or admin every time. Exports are kept 7 days.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Exports · desktop · dark (export-list.tsx, T21). The list standard: search, filters, pages. A running export shows its progress and Cancel; a ready one Download (a fresh link per click, D180); past 7 days "Expired · Export again" (§3.3). Email says when it's ready (step 3's mailer).</figcaption>
+    </figure>
+    <figure id="f-export-first">
+      <div class="phone t-dark k-frame" role="img" aria-label="Phone: delete the Garage location, with Export first, then type its name">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Garage</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <p class="k-p">Location settings</p>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+        <div class="k-scrim"></div><div class="k-sheet float">
+          <div class="k-dh"><b>Delete Garage?</b><span class="k-x"><svg class="k-ic"><use href="#k-x"/></svg></span></div>
+          <div class="k-card"><b>Export first</b><small>A copy of everything in Garage, its files and a readable copy, before it goes.</small><div class="k-meter"><i style="inline-size:100%"></i></div><div class="k-wrap"><span class="k-pill ok"><svg class="k-ic s"><use href="#k-checkc"/></svg>Exported · 31.4 MB</span><b class="k-link">Download</b></div></div>
+          <div class="k-field"><span class="k-lab">Type Garage to confirm</span><span class="k-in">Garag</span></div>
+          <p class="k-p">Garage stays restorable for 30 days, then it's gone with its files.</p>
+          <div class="k-foot"><b class="kb kb-s">Cancel</b><b class="kb kb-d dis">Delete Garage</b></div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Delete a location · phone · dark (delete-location-sheet.tsx, D149). The owner's sheet: Export first (starts one and waits, or Skip), then the name typed exactly, then the 30-day grace. The same Export first is offered where an account is deleted (D49).</figcaption>
+    </figure>
+  </div>
+  <h3 class="grp">Old labels, consumables, fields and templates</h3>
+  <div class="frames">
+    <figure id="f-legacy-picker">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: an old Homebox label, asset 000-001, found in Home and in Garage: pick one">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Old Homebox label</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-card"><b>Asset <bdi class="mono">000-001</bdi> is on two things you brought from Homebox</b><small>Pick the one in your hands.</small></div>
+          <ul class="k-list">
+            <li><span class="k-tile"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="k-rt"><b>Bosch drill</b><small>Home › Garage shelf</small></span><svg class="k-ic"><use href="#k-chev"/></svg></li>
+            <li><span class="k-tile"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="k-rt"><b>Camping lantern</b><small>Garage › Tool wall</small></span><svg class="k-ic"><use href="#k-chev"/></svg></li>
+          </ul>
+          <p class="k-p">Homebox counts asset IDs per collection, so two collections can share one.</p>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">An old Homebox label · phone · light (legacy-resolve.tsx and collection-picker.tsx, T20). /a/000-001, /item/&lt;uuid&gt; and /location/&lt;uuid&gt; open like /l/&lt;code&gt;: one match opens it; two ask which, naming the location and the thing; none says "Not in your Kept". Offline it answers from the phone's copy.</figcaption>
+    </figure>
+    <figure id="f-consumables">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: consumables, low first: AA batteries 12 of at least 16, with Adjust">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Consumables</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-strip"><span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>Search</span><span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>Home</span><span class="k-chip">Low</span></div>
+          <span class="eyebrow">Low · 2</span>
+          <ul class="k-list">
+            <li><span class="k-rt"><b>AA batteries</b><small>12 left · keep at least 16 · Kitchen</small></span><b class="kb kb-s sm">Adjust</b></li>
+            <li><span class="k-rt"><b>Water filter cartridge</b><small>0 left · keep at least 1 · Kitchen</small></span><b class="kb kb-s sm">Adjust</b></li>
+          </ul>
+          <span class="eyebrow">Enough</span>
+          <ul class="k-list"><li><span class="k-rt"><b>Dishwasher tablets</b><small>40 left · keep at least 10 · Kitchen</small></span><b class="kb kb-s sm">Adjust</b></li></ul>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Consumables · phone · light (stock-list.tsx, T23; D14). Low means fewer than the minimum (Q19). Viewers see the list without Adjust. Where the module is off: "Things you run out of is off in this location". Home's attention panel shows "2 running low", last in its order.</figcaption>
+    </figure>
+    <figure id="f-consumables-adjust">
+      <div class="phone t-dark k-frame" role="img" aria-label="Phone: adjust the AA batteries: minus, plus and the count, and keep at least 16">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Consumables</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <ul class="k-list"><li><span class="k-rt"><b>AA batteries</b><small>12 left · keep at least 16</small></span></li></ul>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+        <div class="k-scrim"></div><div class="k-sheet float">
+          <div class="k-dh"><b>Adjust AA batteries</b><span class="k-x"><svg class="k-ic"><use href="#k-x"/></svg></span></div>
+          <div class="k-wrap" style="justify-content:center;gap:14px"><b class="kb kb-s">−</b><span class="k-in" style="min-width:90px;justify-content:center"><bdi class="mono">16</bdi></span><b class="kb kb-s">+</b></div>
+          <div class="k-field"><span class="k-lab">Keep at least</span><span class="k-in"><bdi class="mono">16</bdi></span><span class="k-desc">Below this it's listed as low.</span></div>
+          <div class="k-foot"><b class="kb kb-s">Cancel</b><b class="kb kb-p">Save</b></div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Adjust · phone · dark (adjust-sheet.tsx and keep-at-least.tsx, T23). The number field takes ٠–٩ and ٫ as well (D172); the count may reach 0 (D183). Save shows the Undo toast (D150). "Keep at least" is on the thing page too, for members and above.</figcaption>
+    </figure>
+    <figure id="f-convert-field">
+      <div class="phone t-light k-frame" role="img" aria-label="Phone: make the Door code field secret: the preview per location, the warning, and the name typed to confirm">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Types</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <p class="k-p">Settings › Account › Types › Door</p>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+        <div class="k-scrim"></div><div class="k-sheet float">
+          <div class="k-dh"><b>Make "Door code" secret?</b><span class="k-x"><svg class="k-ic"><use href="#k-x"/></svg></span></div>
+          <ul class="k-list">
+            <li><span class="k-rt"><b>Home</b><small>12 values move to secrets</small></span></li>
+            <li><span class="k-rt"><b>Garage</b><small>3 values move to secrets</small></span></li>
+          </ul>
+          <div class="k-notice warn"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>Past history keeps that the value changed, but no longer the value.</b>Exports made before now still hold it.</span></div>
+          <div class="k-field"><span class="k-lab">Type Door code to confirm</span><span class="k-in ph">Door code</span></div>
+          <div class="k-foot"><b class="kb kb-s">Cancel</b><b class="kb kb-p dis">Make secret</b></div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Convert a field · phone · light (convert-field-sheet.tsx, T24; D172, D177). The account owner only; admins don't see Make secret or Change kind. The preview counts, never values, per location; a change of kind says how many go to the notes. Not undoable; the recovery kit is asked for first when it isn't saved (D193).</figcaption>
+    </figure>
+    <figure id="f-templates">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: Account, Templates: three templates on the list, with search and New template">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Account</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Account"><span role="tab">Types</span><span role="tab">Brands</span><span role="tab">Vendors</span><span role="tab">People</span><span role="tab">Tags</span><span class="on" role="tab" aria-selected="true">Templates</span></div>
+          <div class="k-wrap" style="justify-content:space-between"><div class="k-strip"><span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>Search templates</span></div><b class="kb kb-p sm"><svg class="k-ic s"><use href="#k-plus"/></svg>New template</b></div>
+          <ul class="k-list">
+            <li><span class="k-tile"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="k-rt"><b>Storage box</b><small>Box / bin · Home, Garage</small></span><b class="k-link">Edit</b></li>
+            <li><span class="k-tile"><svg class="k-ic"><use href="#k-tag"/></svg></span><span class="k-rt"><b>Kitchen appliance</b><small>Small appliance · Home</small></span><b class="k-link">Edit</b></li>
+            <li><span class="k-tile"><svg class="k-ic"><use href="#k-key"/></svg></span><span class="k-rt"><b>Spare key</b><small>No type · Home</small></span><b class="k-link">Edit</b></li>
+          </ul>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Templates · phone · light (template-list.tsx, step 3 T19; carry-over to step 7). The list standard, each with its type and the locations it's shared with; Delete asks first ("Things already started from it keep their details.").</figcaption>
+    </figure>
+    <figure id="f-template-sheet">
+      <div class="phone t-dark k-frame" role="img" aria-label="Phone: new template sheet: name, type, brand, quantity, shared with Home and Garage">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Account</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <p class="k-p">Templates</p>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+        <div class="k-scrim"></div><div class="k-sheet float">
+          <div class="k-dh"><b>New template</b><span class="k-x"><svg class="k-ic"><use href="#k-x"/></svg></span></div>
+          <div class="k-field"><span class="k-lab">Template name</span><span class="k-in">Storage box</span><span class="k-desc">Also the new thing's name, until you type one.</span></div>
+          <div class="k-field"><span class="k-lab">Type</span><span class="k-in k-combo">Box / bin<svg class="k-ic"><use href="#k-down"/></svg></span></div>
+          <div class="k-field"><span class="k-lab">Quantity</span><span class="k-in"><bdi class="mono">1</bdi></span></div>
+          <p class="k-p">Prices and secret fields are never part of a template.</p>
+          <div class="k-field"><span class="k-lab">Share with</span><span class="k-in k-combo">Home, Garage<svg class="k-ic"><use href="#k-down"/></svg></span><span class="k-desc">Members of these locations can start new things from it.</span></div>
+          <div class="k-foot"><b class="kb kb-s">Cancel</b><b class="kb kb-p">Save</b></div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Template sheet · phone · dark (template-sheet.tsx). The name is also the new thing's name until one is typed; the type's fields follow the type; prices and secrets are never part of a template (D177); shared with at least one location.</figcaption>
+    </figure>
+  </div>
+</section>

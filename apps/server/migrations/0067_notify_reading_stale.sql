@@ -1,0 +1,2 @@
+ALTER TABLE "notification_preferences" DROP CONSTRAINT "notification_preferences_kind_chk";--> statement-breakpoint
+ALTER TABLE "notification_preferences" ADD CONSTRAINT "notification_preferences_kind_chk" CHECK ("kind" IN ('schedule', 'warranty', 'registration', 'document', 'loan', 'thing_expiry', 'reading_stale', 'membership', 'ai_cap', 'ai_summary'));

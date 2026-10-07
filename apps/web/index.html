@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Kept</title>
+    <!-- D135: the tape square with its punched hole and a heavy K (scripts/render-icons.mjs draws all of these). -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- The installed app (D139, D140; engineering spec §2.7). The browser chrome takes the page's
+      paper colour (L85): the media queries follow the OS, and the pre-paint script below points
+      both at the stored theme when there is one. Keep the colours in step with tokens.css
+      (--paper) and src/lib/prefs.ts (THEME_COLOR). -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#F2F1EC" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#151412" media="(prefers-color-scheme: dark)" />
+    <!--
+      Zod without its JIT, before any module runs. The CSP allows no eval, so the JIT can't run
+      here anyway, and without `jitless` zod probes with `new Function('')` when the first object
+      schema is built; the throw is caught, but the browser still reports a CSP violation. The
+      bundle builds schemas when its shared chunk loads, before main.tsx's own code, so
+      `z.config()` there is too late. zod reads its config from this global (zod/v4/core/core.js;
+      src/zod-jitless.test.ts pins it). Found by the e2e's CSP check (T32).
+    -->
+    <script>
+      globalThis.__zod_globalConfig = Object.assign(globalThis.__zod_globalConfig ?? {}, {
+        jitless: true,
+      });
+    </script>
+    <!--
+      Before first paint: theme, language, direction, content width (D203) and the sidebar's
+      width (D198). Must stay inline and synchronous so the first frame is already right (no
+      light flash in dark mode, no LTR flash in Arabic, no sidebar jumping to the rail, no page
+      widening after load).
+      Keep the storage keys in step with src/lib/prefs.ts. localStorage can throw (private mode,
+      blocked storage), so every read is inside try/catch and the fallback is the OS setting.
+    -->
+    <script>
+      (() => {
+        const d = document.documentElement;
+        let theme = null;
+        let locale = null;
+        let sidebar = null;
+        let width = null;
+        try {
+          theme = localStorage.getItem('kept.theme');
+          locale = localStorage.getItem('kept.locale');
+          sidebar = localStorage.getItem('kept.sidebar');
+          width = localStorage.getItem('kept.width');
+        } catch {}
+        if (theme !== 'light' && theme !== 'dark') {
+          let dark = false;
+          try {
+            dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          } catch {}
+          theme = dark ? 'dark' : 'light';
+        }
+        // The five launch languages (D204); the browser's language when it is one of them.
+        const locales = ['en', 'ar', 'fr', 'de', 'it'];
+        if (!locales.includes(locale)) {
+          const nav = (navigator.language || 'en').toLowerCase().split(/[-_]/)[0];
+          locale = locales.includes(nav) ? nav : 'en';
+        }
+        if (sidebar !== 'collapsed' && sidebar !== 'expanded') {
+          // No stored choice: the rail below 1024 px (tablets), the full sidebar above.
+          let wide = true;
+          try {
+            wide = window.matchMedia('(min-width: 1024px)').matches;
+          } catch {}
+          sidebar = wide ? 'expanded' : 'collapsed';
+        }
+        d.setAttribute('data-theme', theme);
+        for (const m of document.querySelectorAll('meta[name="theme-color"]')) {
+          m.setAttribute('content', theme === 'dark' ? '#151412' : '#F2F1EC');
+        }
+        d.setAttribute('data-sidebar', sidebar);
+        d.setAttribute('data-width', width === 'full' ? 'full' : 'centered');
+        d.setAttribute('lang', locale);
+        d.setAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr');
+      })();
+    </script>
+  </head>
+  <body>
+    <!--
+      iOS 26+ (Liquid Glass): in the installed app, the top ~40 pt of the web view is blurred as a
+      "scroll edge" unless a position: fixed box with an opaque background touches the top edge;
+      then Safari tints that edge with the box's colour instead. The strips are that box, in the
+      page header's colour (--paper, the theme-color above), and a matching one under the phone's
+      tab bar (--surface) for the bottom edge. Standalone only (styles/index.css); the browser
+      never shows them. The same fix as in the maintainer's other installed web apps.
+    -->
+    <div class="status-strip" aria-hidden="true"></div>
+    <div class="status-strip status-strip-bottom" aria-hidden="true"></div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

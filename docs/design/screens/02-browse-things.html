@@ -1,0 +1,599 @@
+<style>
+.a2 .desktop>.main{padding:0;gap:0;border:0}
+.a2 .chip{height:auto}
+.a2 .phone .chip,.a2 .phone .btn{min-height:44px}
+.a2 .phone .icon-btn{width:44px;height:44px}
+.a2 .i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.a2 .icon-btn .i,.a2 .tabbar .i{width:22px;height:22px}
+.a2 .fab .i{width:26px;height:26px;stroke-width:2}
+.a2 .i.s{width:14px;height:14px}
+.a2 .i.l{width:44px;height:44px;stroke-width:1.3}
+.a2 .pill .i{width:12px;height:12px;stroke-width:2.2}
+.a2 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
+.a2 .btn.w{width:100%}
+.a2 [dir="rtl"],.a2 [dir="rtl"] .nm,.a2 [dir="rtl"] .sub,.a2 [dir="rtl"] .crumb,.a2 [dir="rtl"] .title,.a2 [dir="rtl"] .h,.a2 [dir="rtl"] .btn,.a2 [dir="rtl"] .chip,.a2 [dir="rtl"] .pill,.a2 [dir="rtl"] .eyebrow,.a2 [dir="rtl"] .sugg .lbl,.a2 [dir="rtl"] .sugg .val,.a2 [dir="rtl"] .tabbar a,.a2 [dir="rtl"] .appbar h1{font-family:var(--arabic)}
+.a2 [dir="rtl"] .eyebrow{letter-spacing:0}
+.a2 [dir="rtl"] .fl{transform:scaleX(-1)}
+.a2 .crumb{display:flex;flex-wrap:wrap;align-items:center;gap:2px 4px;font:500 13px/1.4 var(--sans);color:var(--ink-2)}
+.a2 .crumb a{color:var(--ink-2)}
+.a2 .crumb b{color:var(--ink);font-weight:600}
+.a2 .sub{font:400 13px/1.4 var(--sans);color:var(--ink-2);overflow-wrap:anywhere}
+.a2 .nm{font:600 15px/1.3 var(--sans);color:var(--ink);overflow-wrap:anywhere}
+.a2 .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px;align-items:center}
+.a2 .fx{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.a2 .sb{justify-content:space-between}
+.a2 .g{display:grid;gap:4px}
+.a2 .li{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;padding:8px 12px;min-height:60px;color:inherit;text-decoration:none}
+.a2 .ph{background:var(--sunken);color:var(--ink-3);display:grid;place-items:center;border-radius:8px}
+.a2 .li .ph{width:44px;height:44px}
+.a2 .lh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:-4px}
+.a2 .srch{display:flex;align-items:center;gap:8px;color:var(--ink-3)}
+.a2 .chips{display:flex;flex-wrap:wrap;gap:8px}
+.a2 .add3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.a2 .add3 .btn{flex-direction:column;gap:4px;padding:8px 4px;min-height:58px;font-size:12.5px;line-height:1.2;text-align:center;background:var(--surface)}
+.a2 .n{font:600 20px/1 var(--sans);font-variant-numeric:tabular-nums}
+.a2 .ck{width:44px;height:44px;display:grid;place-items:center;flex:none}
+.a2 .ck>i{width:24px;height:24px;border:1.5px solid var(--ink-3);border-radius:6px;display:grid;place-items:center;color:var(--paper);background:var(--surface)}
+.a2 .ck.on>i{background:var(--ink);border-color:var(--ink)}
+.a2 .ck>i .i{width:16px;height:16px;stroke-width:2.6}
+.a2 .ck.sm{width:28px;height:28px}.a2 .ck.sm>i{width:18px;height:18px;border-radius:4px}.a2 .ck.sm>i .i{width:12px;height:12px}
+.a2 .stp{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.a2 .stp b{width:44px;height:44px;display:grid;place-items:center;font:500 20px/1 var(--sans);color:var(--ink)}
+.a2 .stp output{min-width:28px;text-align:center;font:600 16px/1 var(--mono)}
+.a2 .prog{height:6px;border-radius:3px;background:var(--sunken);overflow:hidden}
+.a2 .prog i{display:block;height:100%;background:var(--ink);border-radius:3px}
+.a2 .hero{height:150px;margin:-14px -14px 0;border-radius:0;position:relative}
+.a2 .cnt{position:absolute;inset-inline-end:12px;bottom:12px;background:rgba(20,19,17,.72);color:#fff;font:600 12px/1 var(--sans);padding:6px 9px;border-radius:999px}
+.a2 .title{font:600 22px/1.25 var(--sans);letter-spacing:-.01em;overflow-wrap:anywhere}
+.a2 .h{font:600 16px/1.3 var(--sans)}
+.a2 .tabs{display:flex;flex-wrap:wrap;gap:2px;border-bottom:1px solid var(--line)}
+.a2 .tabs a{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;font:500 14px/1 var(--sans);color:var(--ink-2);text-decoration:none;border-bottom:2px solid transparent;margin-bottom:-1px}
+.a2 .tabs a.on{color:var(--ink);border-color:var(--ink);font-weight:600}
+.a2 .lt{width:100%;margin:0;font-size:13.5px;background:var(--surface);border:1px solid var(--line);border-radius:10px;border-collapse:separate;border-spacing:0}
+.a2 .lt th,.a2 .lt td{text-align:start;padding:6px 8px;vertical-align:middle;border-bottom:1px solid var(--line)}
+.a2 .lt tr:last-child td{border-bottom:0}
+.a2 .lt th{font:600 11px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding-block:10px}
+.a2 .lt .r{text-align:end;font-variant-numeric:tabular-nums}
+.a2 .lt tr.sel td{background:var(--sunken)}
+.a2 .lt .ph{width:36px;height:36px}
+.a2 .bulk{display:flex;align-items:center;gap:8px;background:var(--ink);color:var(--paper);border-radius:10px;padding:6px 8px 6px 14px;font:600 14px/1 var(--sans)}
+.a2 .bulk .btn{background:transparent;color:var(--paper);border-color:rgba(242,241,236,.32)}
+.a2 .mi{display:flex;align-items:center;gap:14px;min-height:44px;font:500 15px/1.3 var(--sans);color:var(--ink)}
+.a2 .mi .sub{font-size:12.5px}
+.a2 .mi.dis{color:var(--ink-3)}
+.a2 .mi.dng{color:var(--danger)}
+.a2 .hr{height:1px;background:var(--line)}
+.a2 .ev{display:grid;grid-template-columns:1fr auto;gap:10px;padding:8px 12px;align-items:center}
+.a2 .when{font:500 12px/1.3 var(--sans);color:var(--ink-3)}
+.a2 .lnk{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 6px;background:transparent;border:0;color:var(--info);font:600 14px/1 var(--sans);text-decoration:none}
+.a2 .secret{font:500 18px/1.35 var(--mono);overflow-wrap:anywhere;color:var(--ink);letter-spacing:.02em}
+.a2 .rev{border:1.5px solid var(--ink)}
+.a2 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.a2 .steps span{display:grid;gap:5px;font:500 12px/1.2 var(--sans);color:var(--ink-3)}
+.a2 .steps span::before{content:"";height:4px;border-radius:2px;background:var(--line)}
+.a2 .steps span.d{color:var(--ink)}
+.a2 .steps span.d::before{background:var(--ink)}
+.a2 .phone .cam{padding:0;display:block;position:relative;overflow:hidden;background:#141311}
+.a2 .vf{position:absolute;inset:40px 50px auto;height:250px;border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
+.a2 .vf i{position:absolute;width:28px;height:28px;border:3px solid #fff}
+.a2 .plab{position:absolute;inset:54px 30px auto;height:118px;background:#fff;color:#111;border-radius:5px;transform:rotate(-4deg);display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;padding:10px;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.a2 .opt{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.a2 .opt.on{border:1.5px solid var(--ink)}
+.a2 .rad{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--ink-3);margin-top:2px}
+.a2 .opt.on .rad{border:5px solid var(--ink)}
+.a2 .a4{width:380px;height:537px;background:#fff;border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.1);padding:16px 10px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(8,1fr);gap:4px}
+.a2 .a4 .c{border:1px dashed #CFCBC2;border-radius:3px;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:6px;padding:4px 6px;color:#111;position:relative;min-width:0}
+.a2 .a4 .u{background:repeating-linear-gradient(135deg,#EEECE6 0 5px,#F8F7F3 5px 10px);border:1px solid #E2DFD7;color:#8A857C;font:500 10px/1 "IBM Plex Sans",sans-serif;place-items:center;grid-template-columns:1fr}
+.a2 .a4 .st{outline:2px solid #1C1B19;outline-offset:1px;border-style:solid}
+.a2 .a4 .c b{display:block;font:600 11px/1.1 "IBM Plex Mono",monospace;letter-spacing:.03em}
+.a2 .a4 .c em{display:block;font:500 9.5px/1.2 "IBM Plex Sans",sans-serif;font-style:normal;margin-top:2px}
+.a2 .stt{position:absolute;top:-9px;inset-inline-start:6px;font:600 9px/1 var(--mono);letter-spacing:.1em;background:var(--amber);color:var(--amber-ink);padding:3px 5px 2px;border-radius:2px}
+.a2 .tree .on{background:var(--sunken);color:var(--ink);font-weight:600}
+.a2 .tree .in{padding-inline-start:26px}
+.a2 .tree .in2{padding-inline-start:40px}
+.a2 .ring{width:44px;height:44px;flex:none}
+.a2 a.chip,.a2 a.mi,.a2 a.li,.a2 a.card{text-decoration:none}
+.a2 .sidebar .tree{align-content:start}
+.a2 .lt th,.a2 .lt .r,.a2 .lt .pill,.a2 .lt .sid{white-space:nowrap}
+.a2 .taskbar{display:flex;gap:10px;padding:10px 14px 22px;background:var(--surface);border-top:1px solid var(--line)}
+.a2 .taskbar .btn{flex:1}
+/* D211: the list's Display button, last in the filter strip's row, and its menu */
+.a2 .dmenu{position:absolute;inset-inline-end:0;top:calc(100% + 6px);z-index:5;width:260px;padding:6px;gap:2px;box-shadow:0 10px 30px rgba(0,0,0,.14)}
+.a2 .dmenu .eyebrow{padding:8px 10px 4px}
+.a2 .dmenu .mo{display:flex;align-items:center;gap:10px;min-height:36px;padding:6px 10px;border-radius:8px;font:500 14px/1.3 var(--sans);color:var(--ink)}
+.a2 .dmenu .mo.f{background:var(--sunken)}
+.a2 .dmenu .mo .i{margin-inline-start:auto}
+.a2 .dmenu .hr{margin:4px 0}
+.a2 .dir{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--sunken);border-radius:8px;padding:4px;margin:4px 8px}
+.a2 .dir span{display:grid;place-items:center;min-height:32px;border-radius:6px;font:500 13px/1.2 var(--sans);color:var(--ink-2);text-align:center}
+.a2 .dir span.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+</style>
+<section class="area a2" id="browse-things">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<symbol id="a2-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+<symbol id="a2-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="a2-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+<symbol id="a2-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+<symbol id="a2-ai" viewBox="0 0 24 24"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-6.5L8 20v-3.5H5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 14.9v.01"/></symbol>
+<symbol id="a2-scan" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></symbol>
+<symbol id="a2-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></symbol>
+<symbol id="a2-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></symbol>
+<symbol id="a2-cam" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+<symbol id="a2-inbox" viewBox="0 0 24 24"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></symbol>
+<symbol id="a2-menu" viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></symbol>
+<symbol id="a2-dots" viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3.2"/></symbol>
+<symbol id="a2-box" viewBox="0 0 24 24"><path d="M4 8l8-4 8 4v8l-8 4-8-4Z"/><path d="M4 8l8 4 8-4M12 12v8"/></symbol>
+<symbol id="a2-area" viewBox="0 0 24 24"><path d="M4 4v16M20 4v16M4 9h16M4 15h16"/></symbol>
+<symbol id="a2-thing" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></symbol>
+<symbol id="a2-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="a2-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="a2-filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+<symbol id="a2-bookmark" viewBox="0 0 24 24"><path d="M6.5 3.5h11v17L12 16.5l-5.5 4z"/></symbol>
+<symbol id="a2-sort" viewBox="0 0 24 24"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></symbol>
+<symbol id="a2-drill" viewBox="0 0 24 24"><path d="M4 12h9l3-3h4v6h-4l-3-3"/><path d="M7 12v5"/></symbol>
+<symbol id="a2-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="1.5"/><path d="M8 20h8"/></symbol>
+<symbol id="a2-router" viewBox="0 0 24 24"><rect x="3" y="13" width="18" height="6" rx="1.5"/><path d="M7 16h.01M10.5 16h.01M8.5 9.5a5 5 0 0 1 7 0M6 7a8.5 8.5 0 0 1 12 0"/></symbol>
+<symbol id="a2-cable" viewBox="0 0 24 24"><path d="M9 3v4M15 3v4M6 7h12v4a6 6 0 0 1-12 0Z"/><path d="M12 17v4"/></symbol>
+<symbol id="a2-car" viewBox="0 0 24 24"><path d="M4 16v-4l2-5h12l2 5v4Z"/><path d="M4 12h16M7 16v2M17 16v2"/></symbol>
+<symbol id="a2-check" viewBox="0 0 24 24"><path d="M5 12.5 9.5 17 19 7"/></symbol>
+<symbol id="a2-warn" viewBox="0 0 24 24"><path d="M12 4 21 20H3Z"/><path d="M12 10v4M12 17v.01"/></symbol>
+<symbol id="a2-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9l-3.8 3.8Z"/></symbol>
+<symbol id="a2-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></symbol>
+<symbol id="a2-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="a2-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="a2-move" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="a2-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+<symbol id="a2-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
+<symbol id="a2-print" viewBox="0 0 24 24"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><path d="M7 14h10v7H7Z"/></symbol>
+<symbol id="a2-export" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></symbol>
+<symbol id="a2-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></symbol>
+<symbol id="a2-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
+<symbol id="a2-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+<symbol id="a2-q" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5M12 16.5v.01"/></symbol>
+<symbol id="a2-tpl" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 9v11"/></symbol>
+<symbol id="a2-cycle" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v4h-4"/></symbol>
+<symbol id="a2-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6Z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></symbol>
+<symbol id="a2-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 5-3 8.5-7 10-4-1.5-7-5-7-10V6Z"/></symbol>
+<symbol id="a2-tray" viewBox="0 0 24 24"><path d="M3 10h18l-2 10H5Z"/><path d="M8 10l4-6 4 6"/></symbol>
+<symbol id="a2-sugg" viewBox="0 0 12 12"><path d="M6 1v3M6 8v3M1 6h3M8 6h3" stroke-width="1.5"/></symbol>
+<symbol id="a2-qr" viewBox="0 0 21 21"><rect width="21" height="21" fill="#fff"/><g fill="#111"><rect width="7" height="7"/><rect x="14" width="7" height="7"/><rect y="14" width="7" height="7"/></g><g fill="#fff"><rect x="1" y="1" width="5" height="5"/><rect x="15" y="1" width="5" height="5"/><rect x="1" y="15" width="5" height="5"/></g><g fill="#111"><rect x="2" y="2" width="3" height="3"/><rect x="16" y="2" width="3" height="3"/><rect x="2" y="16" width="3" height="3"/><rect x="9" y="1" width="1" height="2"/><rect x="11" y="2" width="2" height="1"/><rect x="8" y="4" width="2" height="2"/><rect x="12" y="5" width="1" height="3"/><rect x="9" y="8" width="3" height="1"/><rect x="1" y="9" width="2" height="1"/><rect x="4" y="8" width="1" height="3"/><rect x="6" y="10" width="2" height="1"/><rect x="14" y="9" width="2" height="2"/><rect x="17" y="8" width="1" height="3"/><rect x="9" y="11" width="1" height="3"/><rect x="11" y="12" width="3" height="1"/><rect x="15" y="13" width="2" height="1"/><rect x="18" y="14" width="2" height="2"/><rect x="9" y="16" width="2" height="1"/><rect x="12" y="15" width="1" height="3"/><rect x="14" y="17" width="3" height="1"/><rect x="10" y="19" width="2" height="1"/><rect x="16" y="19" width="3" height="1"/></g></symbol>
+</svg>
+<header>
+  <span class="eyebrow">Screens · Browse &amp; things</span>
+  <h2>Browse &amp; things</h2>
+  <p>Where things are and what they are: a location under the filter strip and its Display button, then the thing page on both devices, its action menu and a secret revealed. One Cairo household, Tuesday 6 October 2026: Ibrahim (owner), Alfred (member), Murdock (Ibrahim's brother, a contact without an account).</p>
+</header>
+
+  <h3 class="grp">Location, filter strip and Display</h3>
+  <div class="frames">
+
+<!-- 1 · Location view · phone · Garage -->
+<figure id="f-loc" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: Garage location view, light theme">
+    <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="i fl" viewBox="0 0 24 24"><use href="#a2-back"/></svg></button>
+      <h1>Garage</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="i" viewBox="0 0 24 24"><use href="#a2-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="i" viewBox="0 0 24 24"><use href="#a2-ai"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="g">
+        <nav class="crumb" aria-label="Path"><a href="#">Locations</a><svg class="i s fl" viewBox="0 0 24 24"><use href="#a2-chev"/></svg><b>Garage</b></nav>
+        <div class="sub">Rented garage, Nasr City · Ibrahim, Alfred · 63 things</div>
+      </div>
+      <div class="g" style="gap:6px">
+        <span class="eyebrow">Add here</span>
+        <div class="add3">
+          <button class="btn secondary" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-thing"/></svg>Thing</button>
+          <button class="btn secondary" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-box"/></svg>Box / container</button>
+          <button class="btn secondary" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-area"/></svg>Room or spot</button>
+        </div>
+      </div>
+      <div class="card" style="grid-template-columns:auto 1fr auto;align-items:center;padding:10px 12px">
+        <span class="n">3</span>
+        <div><div class="nm">Unplaced</div><div class="sub">Captured into Garage, no place yet</div></div>
+        <button class="btn secondary small" type="button">Sort them</button>
+      </div>
+      <div class="input srch"><svg class="i" viewBox="0 0 24 24"><use href="#a2-search"/></svg>Search Garage</div>
+      <div class="chips">
+        <span class="chip"><svg class="i s" viewBox="0 0 24 24"><use href="#a2-filter"/></svg>Filters<b class="k-n">1</b></span>
+        <span class="chip"><svg class="i s" viewBox="0 0 24 24"><use href="#a2-bookmark"/></svg>Views<svg class="i s" viewBox="0 0 24 24"><use href="#a2-down"/></svg></span>
+        <span class="chip" aria-label="Display options: sorted by Name, A to Z"><svg class="i s" viewBox="0 0 24 24"><use href="#a2-sort"/></svg>Name</span>
+        <span class="k-achip"><span>State: Lent out</span><span class="x" aria-label="Remove the State filter"><svg class="k-ic s"><use href="#k-x"/></svg></span></span>
+      </div>
+      <div class="lh"><span class="eyebrow">Places · 4</span></div>
+      <div class="row-list">
+        <a class="li" href="#"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-area"/></svg></span><div><div class="nm">Tool wall</div><div class="sub">9 things · 1 lent out</div></div><svg class="i fl" viewBox="0 0 24 24"><use href="#a2-chev"/></svg></a>
+        <a class="li" href="#"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-area"/></svg></span><div><div class="nm">Shelf A</div><div class="sub">11 things · 3 boxes</div></div><svg class="i fl" viewBox="0 0 24 24"><use href="#a2-chev"/></svg></a>
+        <a class="li" href="#"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-area"/></svg></span><div><div class="nm">Shelf B</div><div class="sub">24 things · 2 boxes</div></div><svg class="i fl" viewBox="0 0 24 24"><use href="#a2-chev"/></svg></a>
+        <a class="li" href="#"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-car"/></svg></span><div><div class="nm">Bay 2</div><div class="sub">13 things · Corolla <span class="sid">4VC‑7HD</span></div></div><svg class="i fl" viewBox="0 0 24 24"><use href="#a2-chev"/></svg></a>
+      </div>
+      <div class="lh"><span class="eyebrow">Things here · 3</span></div>
+      <div class="row-list">
+        <a class="li" href="#"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-thing"/></svg></span><div><div class="nm">Step ladder, 3 steps</div><div class="meta"><span class="sid">3LD‑8QE</span></div></div><span></span></a>
+        <a class="li" href="#"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-box"/></svg></span><div><div class="nm">Jerry can, 20 L</div><div class="meta"><span class="sid">8GN‑5TE</span><span class="pill warn"><svg class="i" viewBox="0 0 24 24"><use href="#a2-warn"/></svg>Not seen in 7 months</span></div></div><span></span></a>
+        <a class="li" href="#"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-car"/></svg></span><div><div class="nm">Car cover</div><div class="meta"><span class="sid">6PA‑3JX</span></div></div><span></span></a>
+      </div>
+      <div class="sub" style="text-align:center">All 3 shown</div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-home"/></svg>Home</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i" viewBox="0 0 24 24"><use href="#a2-cam"/></svg></span>Capture</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-menu"/></svg>More</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Location view · phone · light · Garage: Add here first, Unplaced (3) triage, then places before things under the list standard; the strip's row ends in the Display button (D211), here just the sort's name on a phone. One filter in use shows as a dark chip with ×, and "Filters" carries its count (D205)</figcaption>
+</figure>
+    <figure id="f-views">
+      <div class="phone t-light k-frame" role="img" aria-label="Phone: Garage location with the Saved views sheet open">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic"><use href="#k-back"/></svg></button><h1>Garage</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+
+          <div class="k-tabs sm" role="tablist" aria-label="Saved views"><span class="on" role="tab">All</span><span role="tab">Lent out</span></div>
+          <div class="k-strip"><span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>Search Garage</span><span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>Filters<b class="k-n">1</b></span><span class="k-chip on-open"><svg class="k-ic s"><use href="#k-bookmark"/></svg>Views<svg class="k-ic s"><use href="#k-down"/></svg></span><span class="k-chip"><svg class="k-ic s"><use href="#k-sort"/></svg>Name</span></div>
+          <div class="k-wrap"><span class="k-achip"><span>Kind: Tools</span><span class="x"><svg class="k-ic s"><use href="#k-x"/></svg></span></span></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+        <div class="k-scrim"></div><div class="k-sheet float">
+          <div class="k-dh"><b>Saved views</b><span class="k-x"><svg class="k-ic"><use href="#k-x"/></svg></span></div>
+          <ul class="k-list">
+            <li><span class="k-rt"><b>Lent out <span class="k-pill">Default</span></b><small>Only you</small></span><span class="k-x" aria-label="Unpin"><svg class="k-ic s"><use href="#k-bookmark"/></svg></span><span class="k-x" aria-label="Delete"><svg class="k-ic s"><use href="#k-trash"/></svg></span></li>
+            <li><span class="k-rt"><b>No photo</b><small>Shared with Garage · by Alfred</small></span><span class="k-x" aria-label="Pin"><svg class="k-ic s"><use href="#k-bookmark"/></svg></span></li>
+          </ul>
+          <b class="kb kb-s full">Save view</b>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Saved views · phone · light (D205). Pinned views are tabs above the strip; the Views sheet lists yours and the location's shared ones, with pin, default and delete (delete only for your own, or a location admin). "Save view" keeps the filters, the search and the Display choice.</figcaption>
+    </figure>
+
+<!-- 2 · Location view · desktop · Home -->
+<figure id="f-loc-desk" style="margin:0">
+  <div class="frame-scroll">
+    <div class="desktop t-light" role="img" aria-label="Desktop: Home location view with bulk selection and the Display menu open, light theme">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div class="on">Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Home</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work" style="gap:12px">
+          <div class="fx sb" style="align-items:flex-end">
+            <div class="g">
+              <nav class="crumb" aria-label="Path"><a href="#">Locations</a><svg class="i s" viewBox="0 0 24 24"><use href="#a2-chev"/></svg><b>Home</b></nav>
+              <div class="sub">Apartment, Heliopolis · Ibrahim (owner), Alfred · 4 places · 214 things</div>
+            </div>
+            <div class="fx">
+              <button class="btn primary" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-plus"/></svg>Add here<svg class="i s" viewBox="0 0 24 24"><use href="#a2-down"/></svg></button>
+              <button class="btn secondary" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-print"/></svg>Print labels</button>
+              <button class="btn secondary" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-print"/></svg>Print inventory</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr) auto;gap:10px">
+            <a class="card li" href="#" style="padding:8px 10px;grid-template-columns:36px 1fr"><span class="ph" style="width:36px;height:36px"><svg class="i" viewBox="0 0 24 24"><use href="#a2-area"/></svg></span><div><div class="nm">Living room</div><div class="sub">62 things</div></div></a>
+            <a class="card li" href="#" style="padding:8px 10px;grid-template-columns:36px 1fr"><span class="ph" style="width:36px;height:36px"><svg class="i" viewBox="0 0 24 24"><use href="#a2-area"/></svg></span><div><div class="nm">Kitchen</div><div class="sub">71 things</div></div></a>
+            <a class="card li" href="#" style="padding:8px 10px;grid-template-columns:36px 1fr"><span class="ph" style="width:36px;height:36px"><svg class="i" viewBox="0 0 24 24"><use href="#a2-area"/></svg></span><div><div class="nm">Bedroom</div><div class="sub">45 things</div></div></a>
+            <a class="card li" href="#" style="padding:8px 10px;grid-template-columns:36px 1fr"><span class="ph" style="width:36px;height:36px"><svg class="i" viewBox="0 0 24 24"><use href="#a2-area"/></svg></span><div><div class="nm">Office</div><div class="sub">34 things · 1 box</div></div></a>
+            <div class="card" style="padding:8px 12px;grid-template-columns:auto auto auto;align-items:center;gap:10px"><span class="n">2</span><div class="nm">Unplaced</div><button class="btn secondary small" type="button">Sort them</button></div>
+          </div>
+          <div class="fx" style="position:relative">
+            <div class="input srch" style="width:300px;font-size:14px;min-height:38px;padding:8px 12px"><svg class="i" viewBox="0 0 24 24"><use href="#a2-search"/></svg>Search in Home</div>
+            <span class="k-achip"><span>State: In repair</span><span class="x" aria-label="Remove the State filter"><svg class="k-ic s"><use href="#k-x"/></svg></span></span>
+            <span class="chip" style="margin-inline-start:auto"><svg class="i s" viewBox="0 0 24 24"><use href="#a2-plus"/></svg>Filter</span>
+            <span class="chip"><svg class="i s" viewBox="0 0 24 24"><use href="#a2-bookmark"/></svg>Views<svg class="i s" viewBox="0 0 24 24"><use href="#a2-down"/></svg></span>
+            <span class="chip" aria-expanded="true" aria-label="Display options: sorted by Last seen, Newest first" style="border-color:var(--ink);color:var(--ink)"><svg class="i s" viewBox="0 0 24 24"><use href="#a2-sort"/></svg>Last seen</span>
+            <div class="card dmenu" role="menu" aria-label="Display options">
+              <span class="eyebrow">Sort</span>
+              <span class="mo" role="menuitemradio" aria-checked="false">Name</span>
+              <span class="mo" role="menuitemradio" aria-checked="false">Changed</span>
+              <span class="mo f" role="menuitemradio" aria-checked="true">Last seen<svg class="i s" viewBox="0 0 24 24"><use href="#a2-check"/></svg></span>
+              <div class="dir" role="group" aria-label="Order"><span class="on" role="menuitemradio" aria-checked="true">Newest first</span><span role="menuitemradio" aria-checked="false">Oldest first</span></div>
+              <div class="hr"></div>
+              <span class="eyebrow">Group</span>
+              <span class="mo" role="menuitemradio" aria-checked="true">None<svg class="i s" viewBox="0 0 24 24"><use href="#a2-check"/></svg></span>
+              <span class="mo" role="menuitemradio" aria-checked="false">Type</span>
+            </div>
+          </div>
+          <div class="bulk" role="toolbar" aria-label="Selection">
+            <span class="ck sm on"><i><svg class="i" viewBox="0 0 24 24"><use href="#a2-check"/></svg></i></span>
+            <span style="flex:1">3 selected</span>
+            <button class="btn small" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-move"/></svg>Move</button>
+            <button class="btn small" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-tray"/></svg>Pick up</button>
+            <button class="btn small" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-tag"/></svg>Print labels <span style="font-weight:500;opacity:.8">(1 has ID pending)</span></button>
+            <button class="btn small" type="button" style="border-color:transparent">Done</button>
+          </div>
+          <table class="lt">
+            <thead><tr><th style="width:44px"></th><th>Thing</th><th>ID</th><th>Where in Home</th><th>State</th><th>Last seen</th><th class="r">Value</th></tr></thead>
+            <tbody>
+              <tr><td><span class="ck sm"><i></i></span></td><td><div class="fx" style="flex-wrap:nowrap;gap:10px"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-tv"/></svg></span><span class="nm">Samsung TV, 55″</span></div></td><td><span class="sid">5MT‑0QD</span></td><td class="sub">At Samsung Service Centre<br>usually Living room › TV wall</td><td><span class="pill info"><svg class="i" viewBox="0 0 24 24"><use href="#a2-wrench"/></svg>In repair · claim open</span></td><td class="sub">22 Sep</td><td class="r">24,000 EGP</td></tr>
+              <tr><td><span class="ck sm"><i></i></span></td><td><div class="fx" style="flex-wrap:nowrap;gap:10px"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-router"/></svg></span><span class="nm">Wi‑Fi router</span></div></td><td><span class="sid">9RT‑2FK</span></td><td class="sub">Living room › TV unit</td><td><span class="pill"><svg class="i" viewBox="0 0 24 24"><use href="#a2-lock"/></svg>2 secret fields</span></td><td class="sub">30 Sep</td><td class="r">2,100 EGP</td></tr>
+              <tr class="sel"><td><span class="ck sm on"><i><svg class="i" viewBox="0 0 24 24"><use href="#a2-check"/></svg></i></span></td><td><div class="fx" style="flex-wrap:nowrap;gap:10px"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-cable"/></svg></span><span class="nm">HDMI cable, 2 m <span class="pill">× 3</span></span></div></td><td><span class="sid">7KQ‑4MZ</span></td><td class="sub">Office › Desk drawer › Cable box</td><td></td><td class="sub">24 Sep</td><td class="r">450 EGP</td></tr>
+              <tr class="sel"><td><span class="ck sm on"><i><svg class="i" viewBox="0 0 24 24"><use href="#a2-check"/></svg></i></span></td><td><div class="fx" style="flex-wrap:nowrap;gap:10px"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-box"/></svg></span><span class="nm">Cable box</span></div></td><td><span class="sid">3CB‑8WN</span></td><td class="sub">Office › Desk drawer</td><td><span class="pill"><svg class="i" viewBox="0 0 24 24"><use href="#a2-box"/></svg>Container · 5 things</span></td><td class="sub">24 Sep</td><td class="r">—</td></tr>
+              <tr class="sel"><td><span class="ck sm on"><i><svg class="i" viewBox="0 0 24 24"><use href="#a2-check"/></svg></i></span></td><td><div class="fx" style="flex-wrap:nowrap;gap:10px"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-thing"/></svg></span><span class="nm">Desk lamp</span></div></td><td><span class="pill"><svg class="i" viewBox="0 0 24 24"><use href="#a2-clock"/></svg>ID pending</span></td><td class="sub">Office</td><td><span class="pill"><svg class="i" viewBox="0 0 24 24"><use href="#a2-inbox"/></svg>Draft · to review</span></td><td class="sub">Today</td><td class="r">—</td></tr>
+              <tr><td><span class="ck sm"><i></i></span></td><td><div class="fx" style="flex-wrap:nowrap;gap:10px"><span class="ph"><svg class="i" viewBox="0 0 24 24"><use href="#a2-thing"/></svg></span><span class="nm">Steam iron</span></div></td><td><span class="sid">6SV‑2RQ</span></td><td class="sub">Bedroom › Wardrobe</td><td><span class="pill warn"><svg class="i" viewBox="0 0 24 24"><use href="#a2-q"/></svg>Not here · uncertain</span></td><td class="sub">14 Aug</td><td class="r">1,100 EGP</td></tr>
+            </tbody>
+          </table>
+          <div class="fx sb sub"><span>1–6 of 214 things</span><button class="btn secondary small" type="button">Load more</button></div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Location view · desktop · light · Home: the sidebar lists locations, the page shows places then all things as columns; Select shows checkboxes and the bar Move · Pick up · Print labels · Done; one filter in use (State: In repair), Load more instead of pages; the Display menu open at the end of the strip's row (D211): Sort with a check, Newest first / Oldest first, Group</figcaption>
+</figure>
+
+  </div>
+
+  <h3 class="grp">Thing page</h3>
+  <div class="frames">
+
+<!-- 4a · Thing detail · TV top -->
+<figure id="f-thing" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: Samsung TV thing detail, top of page, light theme">
+    <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="i fl" viewBox="0 0 24 24"><use href="#a2-back"/></svg></button>
+      <h1>Samsung TV, 55″</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="i" viewBox="0 0 24 24"><use href="#a2-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="i" viewBox="0 0 24 24"><use href="#a2-ai"/></svg></button>
+      <button class="icon-btn" aria-label="Actions"><svg class="i" viewBox="0 0 24 24"><use href="#a2-dots"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="ph hero"><svg class="i l" viewBox="0 0 24 24"><use href="#a2-tv"/></svg><span class="cnt">1 / 4</span></div>
+      <div class="g" style="gap:6px">
+        <div class="fx sb" style="align-items:flex-start;flex-wrap:nowrap"><span class="title">Samsung TV, 55″</span><span class="sid" style="margin-top:5px">5MT‑0QD</span></div>
+        <div class="sub">Usually in Home › Living room › TV wall</div>
+        <div><span class="pill info"><svg class="i" viewBox="0 0 24 24"><use href="#a2-wrench"/></svg>At Samsung Service Centre · claim open</span></div>
+      </div>
+      <div class="chips" aria-label="Sections">
+        <a class="chip" href="#">Overview</a><a class="chip on" href="#">Paperwork &amp; warranties</a><a class="chip" href="#">Claims · 1</a><a class="chip" href="#">Value</a><a class="chip" href="#">History</a>
+      </div>
+      <div class="fx sb"><span class="h">Warranties · 2</span><button class="lnk" type="button"><svg class="i s" viewBox="0 0 24 24"><use href="#a2-plus"/></svg>Add</button></div>
+      <div class="card" style="gap:6px;padding:12px">
+        <div class="fx"><span class="pill ok"><svg class="i" viewBox="0 0 24 24"><use href="#a2-check"/></svg>Covered to 14 Jan 2029</span><span class="eyebrow">Longest cover</span></div>
+        <div class="nm">Store extended warranty</div>
+        <div class="sub">Nile Electronics · 4 years from 14 Jan 2025 · paid 2,900 EGP · certificate attached</div>
+      </div>
+      <div class="card" style="gap:6px;padding:12px">
+        <div class="fx"><span class="pill ok"><svg class="i" viewBox="0 0 24 24"><use href="#a2-check"/></svg>Covered to 14 Jan 2027</span></div>
+        <div class="nm">Manufacturer warranty</div>
+        <div class="sub">Samsung · 2 years · the open claim uses this one</div>
+      </div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-home"/></svg>Home</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i" viewBox="0 0 24 24"><use href="#a2-cam"/></svg></span>Capture</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-menu"/></svg>More</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Thing detail · phone · light · Samsung TV, top: photo, ID chip, path, derived repair state; warranties with the longest cover first</figcaption>
+</figure>
+
+<!-- 4b · Thing detail · TV scrolled -->
+<figure id="f-thing-scroll" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: Samsung TV thing detail scrolled to claim, value and history, light theme">
+    <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="i fl" viewBox="0 0 24 24"><use href="#a2-back"/></svg></button>
+      <h1>Samsung TV, 55″</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="i" viewBox="0 0 24 24"><use href="#a2-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="i" viewBox="0 0 24 24"><use href="#a2-ai"/></svg></button>
+      <button class="icon-btn" aria-label="Actions"><svg class="i" viewBox="0 0 24 24"><use href="#a2-dots"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="fx sb"><span class="title" style="font-size:18px">Samsung TV, 55″</span><span class="sid">5MT‑0QD</span></div>
+      <div class="card" style="padding:12px;gap:8px">
+        <div class="fx sb"><span class="eyebrow">Claim · open</span><span class="pill info"><svg class="i" viewBox="0 0 24 24"><use href="#a2-wrench"/></svg>In repair</span></div>
+        <div class="nm">Lines down the left side of the picture</div>
+        <div class="steps"><span class="d">Opened 22 Sep</span><span class="d">In repair 29 Sep</span><span>Resolved</span></div>
+        <dl class="kv" style="font-size:13.5px;margin:0"><dt>At</dt><dd>Samsung Service Centre, Nasr City</dd><dt>Warranty</dt><dd>Manufacturer, to Jan 2027</dd><dt>Reference</dt><dd class="mono">SR‑2609‑4471</dd></dl>
+      </div>
+      <div class="h">Value</div>
+      <div class="card" style="padding:12px;gap:4px">
+        <div class="fx sb" style="align-items:baseline"><span class="n">24,000 EGP</span><span class="sub">current</span></div>
+        <div class="sub">Estimate by Ibrahim · 1 Aug 2026 · latest of 3 valuations</div>
+        <div class="sub">Bought 14 Jan 2025 for 32,500 EGP, Nile Electronics</div>
+      </div>
+      <div class="h">History</div>
+      <div class="row-list">
+        <div class="ev"><div><div class="when">Today 09:40 · Alfred</div><div class="sub" style="color:var(--ink)">Added the job card photo</div></div><button class="btn secondary small" type="button"><svg class="i s" viewBox="0 0 24 24"><use href="#a2-undo"/></svg>Undo</button></div>
+        <div class="ev"><div><div class="when">3 Oct · Ibrahim</div><div class="sub" style="color:var(--ink)">Claim note: "collect after 10 Oct"</div></div><button class="btn secondary small" type="button"><svg class="i s" viewBox="0 0 24 24"><use href="#a2-undo"/></svg>Undo</button></div>
+        <div class="ev"><div><div class="when">29 Sep · Ibrahim</div><div class="sub" style="color:var(--ink)">Claim: open → in repair · left at the service centre</div></div><span></span></div>
+      </div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-home"/></svg>Home</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i" viewBox="0 0 24 24"><use href="#a2-cam"/></svg></span>Capture</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-menu"/></svg>More</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Thing detail · phone · light · Samsung TV, scrolled: claim card, value from the latest valuation, history with Undo (7 days)</figcaption>
+</figure>
+
+<!-- 4c · Thing detail · action sheet -->
+<figure id="f-thing-menu" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: Samsung TV action menu as a bottom sheet, light theme">
+    <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="i fl" viewBox="0 0 24 24"><use href="#a2-back"/></svg></button>
+      <h1>Samsung TV, 55″</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="i" viewBox="0 0 24 24"><use href="#a2-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="i" viewBox="0 0 24 24"><use href="#a2-ai"/></svg></button>
+      <button class="icon-btn" aria-label="Actions"><svg class="i" viewBox="0 0 24 24"><use href="#a2-dots"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="ph hero"><svg class="i l" viewBox="0 0 24 24"><use href="#a2-tv"/></svg><span class="cnt">1 / 4</span></div>
+      <span class="title">Samsung TV, 55″</span>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-home"/></svg>Home</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i" viewBox="0 0 24 24"><use href="#a2-cam"/></svg></span>Capture</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-menu"/></svg>More</a>
+    </nav>
+    <div class="scrim"></div>
+    <div class="sheet" role="dialog" aria-label="Actions for Samsung TV" style="gap:0;max-height:84%">
+      <div class="fx sb" style="padding:8px 0 6px"><span class="nm">Samsung TV, 55″</span><span class="sid">5MT‑0QD</span></div>
+      <a class="mi" href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-move"/></svg>Move</a>
+            <a class="mi" href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-tag"/></svg><div>Reprint label<div class="sub">Same code, 5MT‑0QD</div></div></a>
+      <a class="mi" href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-copy"/></svg>Duplicate</a>
+      <a class="mi" href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-tpl"/></svg>Save as template</a>
+      <a class="mi" href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-eye"/></svg>Mark seen</a>
+      <a class="mi" href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-q"/></svg>Not here</a>
+      <div class="hr" style="margin:4px 0"></div>
+      <a class="mi" href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-cycle"/></svg>Change lifecycle…</a>
+      <a class="mi" href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-tag"/></svg>Re‑type</a>
+      <a class="mi dng" href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-trash"/></svg>Move to Trash</a>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Thing detail · phone · light · action menu open as a bottom sheet; Lend is hidden while the TV is in repair, and Split is hidden (warranted things are always quantity 1): actions that don't apply are hidden (screens §8)</figcaption>
+</figure>
+
+<!-- 6 · Secret reveal -->
+<figure id="f-secret" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: Wi-Fi password revealed for 30 seconds, light theme">
+    <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="i fl" viewBox="0 0 24 24"><use href="#a2-back"/></svg></button>
+      <h1>Wi‑Fi router</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="i" viewBox="0 0 24 24"><use href="#a2-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="i" viewBox="0 0 24 24"><use href="#a2-ai"/></svg></button>
+    </div>
+    <div class="content">
+      <div style="display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:center">
+        <span class="ph" style="width:56px;height:56px"><svg class="i" viewBox="0 0 24 24" style="width:26px;height:26px"><use href="#a2-router"/></svg></span>
+        <div><div class="fx" style="gap:8px"><span class="nm">Wi‑Fi router</span><span class="sid">9RT‑2FK</span></div><div class="sub">Home › Living room › TV unit</div></div>
+      </div>
+      <div class="h">Overview</div>
+      <div class="row-list">
+        <div style="padding:10px 12px"><div class="when">Network name</div><div class="mono" style="font-size:15px">Ibrahim-Home-5G</div></div>
+        <div style="padding:10px 12px"><div class="when">Admin page</div><div class="mono" style="font-size:15px">192.168.1.1</div></div>
+      </div>
+      <div class="card rev" style="gap:10px;padding:14px" aria-live="polite">
+        <div class="fx sb"><span class="fx" style="gap:6px"><svg class="i s" viewBox="0 0 24 24"><use href="#a2-lock"/></svg><span class="when" style="font-size:13px">Wi‑Fi password</span></span><span class="pill info"><svg class="i" viewBox="0 0 24 24"><use href="#a2-eye"/></svg>Revealed · logged</span></div>
+        <div class="secret">sycamore-Nile-4417</div>
+        <div class="fx" style="flex-wrap:nowrap;gap:12px">
+          <svg class="ring" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="18" fill="none" stroke="var(--sunken)" stroke-width="4"/><circle cx="22" cy="22" r="18" fill="none" stroke="var(--ink)" stroke-width="4" stroke-linecap="round" stroke-dasharray="113" stroke-dashoffset="23" transform="rotate(-90 22 22)"/><text x="22" y="26.5" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="var(--ink)">24</text></svg>
+          <div class="sub" style="flex:1">Hides in 0:24, and at once if you leave this page.</div>
+        </div>
+        <div class="fx"><button class="btn secondary" type="button" style="flex:1">Hide now</button><button class="btn secondary" type="button" style="flex:1"><svg class="i" viewBox="0 0 24 24"><use href="#a2-copy"/></svg>Copy</button></div>
+        <div class="sub">In the history as "Ibrahim revealed Wi‑Fi password, 6 Oct 10:31".</div>
+      </div>
+      <div class="card" style="grid-template-columns:1fr auto;align-items:center;padding:10px 12px">
+        <div><div class="when" style="font-size:13px">Admin password</div><div class="mono" style="font-size:16px;letter-spacing:.2em">••••••••••</div></div>
+        <button class="btn secondary" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-eye"/></svg>Reveal</button>
+      </div>
+      <div class="sub">Who can reveal: owner, admins and Alfred. AI tools can't read these. Never kept on this phone offline.</div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-home"/></svg>Home</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i" viewBox="0 0 24 24"><use href="#a2-cam"/></svg></span>Capture</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-menu"/></svg>More</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Secret reveal · phone · light · Wi‑Fi password shown for 30 s: "Revealed · logged", countdown at 0:24, the second secret still hidden</figcaption>
+</figure>
+
+<!-- 5 · Thing detail · desktop dark · drill -->
+<figure id="f-thing-desk" style="margin:0">
+  <div class="frame-scroll">
+    <div class="desktop t-dark" role="img" aria-label="Desktop: Bosch drill thing detail on the Loans tab, dark theme">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Bosch drill, 18 V</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work">
+          <div style="display:grid;grid-template-columns:200px 1fr auto;gap:20px;align-items:start">
+            <div class="ph" style="height:150px;position:relative"><svg class="i l" viewBox="0 0 24 24"><use href="#a2-drill"/></svg><span class="cnt">1 / 3</span></div>
+            <div class="g" style="gap:8px">
+              <div class="fx"><span class="title">Bosch drill, 18 V</span><span class="sid">2HX‑9RB</span></div>
+              <nav class="crumb" aria-label="Usual place">Usually in <a href="#">Garage</a><svg class="i s" viewBox="0 0 24 24"><use href="#a2-chev"/></svg><a href="#">Tool wall</a></nav>
+              <div><span class="pill info"><svg class="i" viewBox="0 0 24 24"><use href="#a2-person"/></svg>With Murdock since 3 Oct · due 17 Oct</span></div>
+              <div class="sub">Last seen 3 Oct, when it was lent · Power tool</div>
+            </div>
+            <div class="fx"><button class="btn secondary" type="button">Edit</button><button class="btn secondary" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-move"/></svg>Move</button><button class="btn secondary" type="button" aria-label="More actions"><svg class="i" viewBox="0 0 24 24"><use href="#a2-dots"/></svg></button></div>
+          </div>
+          <nav class="tabs" aria-label="Sections"><a href="#">Overview</a><a href="#">Paperwork &amp; warranties</a><a href="#">Value</a><a class="on" href="#">Loans · 1 open</a><a href="#">History</a></nav>
+          <div style="display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start">
+            <div class="card" style="padding:18px;gap:14px">
+              <div class="fx sb"><span class="eyebrow">On loan</span><span class="pill info"><svg class="i" viewBox="0 0 24 24"><use href="#a2-clock"/></svg>Due in 11 days</span></div>
+              <div class="title" style="font-size:20px">With Murdock since 3 Oct · due 17 Oct</div>
+              <dl class="kv"><dt>Lent to</dt><dd>Murdock · Ibrahim's brother · contact, no account</dd><dt>Lent by</dt><dd>Ibrahim, Sat 3 Oct 2026, 18:40</dd><dt>Note</dt><dd>Both batteries and the charger went with it</dd><dt>Returns to</dt><dd>Garage › Tool wall, where it was <a class="lnk" href="#" style="min-height:0">Change</a></dd></dl>
+              <div class="g" style="gap:6px"><span class="eyebrow">Condition at lending</span><div class="fx"><span class="ph" style="width:84px;height:64px"><svg class="i" viewBox="0 0 24 24"><use href="#a2-cam"/></svg></span><span class="ph" style="width:84px;height:64px"><svg class="i" viewBox="0 0 24 24"><use href="#a2-cam"/></svg></span></div></div>
+              <div class="fx"><button class="btn primary" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-check"/></svg>Mark returned</button><button class="btn secondary" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-clock"/></svg>Change due date</button><button class="btn secondary" type="button"><svg class="i" viewBox="0 0 24 24"><use href="#a2-copy"/></svg>Copy a polite reminder</button></div>
+              <div class="sub">Kept reminds you on 17 Oct. It never messages Murdock; the reminder text is yours to send.</div>
+            </div>
+            <div class="g" style="gap:12px">
+              <div class="card" style="gap:6px"><span class="eyebrow">Earlier loans</span><div class="nm">Murdock · 2–9 Jun 2026</div><div class="sub">Returned on time, same condition</div><div class="hr"></div><div class="nm">Alfred · 14–15 May 2026</div><div class="sub">Returned</div></div>
+              <div class="card" style="gap:6px"><span class="eyebrow">Warranty</span><span class="pill ok" style="justify-self:start"><svg class="i" viewBox="0 0 24 24"><use href="#a2-check"/></svg>Covered to 3 Mar 2028</span><div class="sub">Manufacturer · bought at Ace Hardware, 3 Mar 2026, 4,500 EGP</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Thing detail · desktop · dark · Bosch drill on the Loans tab: derived lent state, loan panel, Mark returned</figcaption>
+</figure>
+
+<!-- 9 · Thing detail · Arabic RTL · HDMI -->
+<figure id="f-thing-ar" style="margin:0">
+  <div class="phone t-light" dir="rtl" lang="ar" role="img" aria-label="هاتف: تفاصيل كابل HDMI، الوضع الفاتح">
+    <div class="status"><span class="ltr">9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="رجوع"><svg class="i fl" viewBox="0 0 24 24"><use href="#a2-back"/></svg></button>
+      <h1>كابل HDMI، <span class="ltr">٢</span> متر</h1>
+      <button class="icon-btn" aria-label="الإشعارات"><svg class="i" viewBox="0 0 24 24"><use href="#a2-bell"/></svg></button>
+      <button class="icon-btn" aria-label="المساعد"><svg class="i" viewBox="0 0 24 24"><use href="#a2-ai"/></svg></button>
+      <button class="icon-btn" aria-label="الإجراءات"><svg class="i" viewBox="0 0 24 24"><use href="#a2-dots"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="ph hero"><svg class="i l" viewBox="0 0 24 24"><use href="#a2-cable"/></svg><span class="cnt"><span class="ltr">١ / ٢</span></span></div>
+      <div class="g" style="gap:6px">
+        <div class="fx sb" style="align-items:flex-start;flex-wrap:nowrap"><span class="title">كابل HDMI، <span class="ltr">٢</span> متر</span><span class="sid ltr" style="margin-top:5px">7KQ‑4MZ</span></div>
+        <div class="sub">المنزل › المكتب › درج المكتب › صندوق الكابلات</div>
+        <div class="fx" style="gap:6px"><span class="pill">× <span class="ltr">٣</span></span><span class="pill"><svg class="i" viewBox="0 0 24 24"><use href="#a2-eye"/></svg>آخر مشاهدة قبل <span class="ltr">١٢</span> يومًا</span></div>
+      </div>
+      <div class="chips" aria-label="الأقسام">
+        <a class="chip on" href="#">نظرة عامة</a><a class="chip" href="#">المستندات والضمانات</a><a class="chip" href="#">القيمة</a><a class="chip" href="#">السجل</a>
+      </div>
+      <div class="sugg">
+        <span class="lbl"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true"><use href="#a2-sugg"/></svg>مقترح · إصدار HDMI</span>
+        <span class="val"><span class="ltr">HDMI 2.1</span> (مقروء من صورة العبوة)</span>
+        <div class="act"><button class="btn primary small" type="button">تأكيد</button><button class="btn secondary small" type="button">تعديل</button></div>
+      </div>
+      <div class="card" style="padding:12px">
+        <dl class="kv" style="margin:0"><dt>النوع</dt><dd>كابل</dd><dt>الطول</dt><dd><span class="ltr">٢</span> م</dd><dt>الكمية</dt><dd><span class="ltr">٣</span> · <a class="lnk" href="#" style="min-height:0;padding:0">تقسيم</a></dd><dt>الشراء</dt><dd><span class="ltr">٣ × ١٥٠</span> ج.م · <span class="ltr">١٢</span> مارس <span class="ltr">٢٠٢٦</span></dd></dl>
+      </div>
+    </div>
+    <nav class="tabbar" aria-label="الرئيسية">
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-home"/></svg>الرئيسية</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-search"/></svg>بحث</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i" viewBox="0 0 24 24"><use href="#a2-cam"/></svg></span>التقاط</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-inbox"/></svg>الوارد</a>
+      <a href="#"><svg class="i" viewBox="0 0 24 24"><use href="#a2-menu"/></svg>المزيد</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Thing detail · phone · light · Arabic RTL, Eastern Arabic digits (D143): HDMI cable ×3, mirrored layout, ID stays left-to-right, one Suggested value</figcaption>
+</figure>
+
+  </div>
+</section>

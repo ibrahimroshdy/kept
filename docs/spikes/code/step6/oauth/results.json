@@ -1,0 +1,805 @@
+{
+  "startedAt": "2026-09-29T23:01:51.214Z",
+  "db": {
+    "database": "kept_spike6_oauth",
+    "migrateMs": 11011,
+    "newTables": [
+      {
+        "table": "jwks",
+        "owner": "kept_owner",
+        "auth_dml": true,
+        "app_select": false,
+        "system_select": false
+      },
+      {
+        "table": "oauth_access_token",
+        "owner": "kept_owner",
+        "auth_dml": true,
+        "app_select": false,
+        "system_select": false
+      },
+      {
+        "table": "oauth_client",
+        "owner": "kept_owner",
+        "auth_dml": true,
+        "app_select": false,
+        "system_select": false
+      },
+      {
+        "table": "oauth_client_assertion",
+        "owner": "kept_owner",
+        "auth_dml": true,
+        "app_select": false,
+        "system_select": false
+      },
+      {
+        "table": "oauth_client_resource",
+        "owner": "kept_owner",
+        "auth_dml": true,
+        "app_select": false,
+        "system_select": false
+      },
+      {
+        "table": "oauth_consent",
+        "owner": "kept_owner",
+        "auth_dml": true,
+        "app_select": false,
+        "system_select": false
+      },
+      {
+        "table": "oauth_refresh_token",
+        "owner": "kept_owner",
+        "auth_dml": true,
+        "app_select": false,
+        "system_select": false
+      },
+      {
+        "table": "oauth_resource",
+        "owner": "kept_owner",
+        "auth_dml": true,
+        "app_select": false,
+        "system_select": false
+      }
+    ]
+  },
+  "env": {
+    "node": "v24.21.0",
+    "authPoolUser": "kept_auth",
+    "kept": "http://127.0.0.1:60260",
+    "fixture": "https://127.0.0.1.nip.io:60259",
+    "fixtureResolves": "127.0.0.1.nip.io -> 127.0.0.1 (public DNS)"
+  },
+  "signIn": {
+    "status": 200,
+    "cookieNames": [
+      "better-auth.session_token"
+    ]
+  },
+  "discovery: only /api/v1/auth/* routed to auth.handler": {
+    "GET /.well-known/oauth-authorization-server": {
+      "status": 404,
+      "body": "not mounted"
+    },
+    "GET /.well-known/oauth-authorization-server/api/v1/auth": {
+      "status": 404,
+      "body": "not mounted"
+    },
+    "GET /.well-known/openid-configuration": {
+      "status": 404,
+      "body": "not mounted"
+    },
+    "GET /.well-known/openid-configuration/api/v1/auth": {
+      "status": 404,
+      "body": "not mounted"
+    },
+    "GET /.well-known/oauth-protected-resource": {
+      "status": 404,
+      "body": "not mounted"
+    },
+    "GET /.well-known/oauth-protected-resource/mcp": {
+      "status": 404,
+      "body": "not mounted"
+    },
+    "GET /api/v1/auth/.well-known/oauth-authorization-server": {
+      "status": 200,
+      "body": {
+        "issuer": "http://127.0.0.1:60260/api/v1/auth",
+        "authorization_endpoint": "http://127.0.0.1:60260/api/v1/auth/oauth2/authorize",
+        "token_endpoint": "http://127.0.0.1:60260/api/v1/auth/oauth2/token",
+        "jwks_uri": "http://127.0.0.1:60260/api/v1/auth/jwks",
+        "client_id_metadata_document_supported": true,
+        "code_challenge_methods_supported": [
+          "S256"
+        ],
+        "scopes_supported": [
+          "kept:read",
+          "kept:write"
+        ]
+      }
+    },
+    "GET /api/v1/auth/.well-known/openid-configuration": {
+      "status": 404,
+      "body": ""
+    },
+    "GET /api/v1/auth/.well-known/oauth-protected-resource": {
+      "status": 404,
+      "body": ""
+    },
+    "GET /api/v1/auth/.well-known/oauth-protected-resource/mcp": {
+      "status": 404,
+      "body": ""
+    },
+    "GET /api/v1/auth/jwks": {
+      "status": 200,
+      "body": {
+        "keys": 1
+      }
+    }
+  },
+  "discovery: root /.well-known/oauth-authorization-server* -> oauthProviderAuthServerMetadata, other root /.well-known/* -> auth.handler unchanged": {
+    "GET /.well-known/oauth-authorization-server": {
+      "status": 200,
+      "body": {
+        "issuer": "http://127.0.0.1:60260/api/v1/auth",
+        "authorization_endpoint": "http://127.0.0.1:60260/api/v1/auth/oauth2/authorize",
+        "token_endpoint": "http://127.0.0.1:60260/api/v1/auth/oauth2/token",
+        "jwks_uri": "http://127.0.0.1:60260/api/v1/auth/jwks",
+        "client_id_metadata_document_supported": true,
+        "code_challenge_methods_supported": [
+          "S256"
+        ],
+        "scopes_supported": [
+          "kept:read",
+          "kept:write"
+        ]
+      }
+    },
+    "GET /.well-known/oauth-authorization-server/api/v1/auth": {
+      "status": 200,
+      "body": {
+        "issuer": "http://127.0.0.1:60260/api/v1/auth",
+        "authorization_endpoint": "http://127.0.0.1:60260/api/v1/auth/oauth2/authorize",
+        "token_endpoint": "http://127.0.0.1:60260/api/v1/auth/oauth2/token",
+        "jwks_uri": "http://127.0.0.1:60260/api/v1/auth/jwks",
+        "client_id_metadata_document_supported": true,
+        "code_challenge_methods_supported": [
+          "S256"
+        ],
+        "scopes_supported": [
+          "kept:read",
+          "kept:write"
+        ]
+      }
+    },
+    "GET /.well-known/openid-configuration": {
+      "status": 404,
+      "body": ""
+    },
+    "GET /.well-known/openid-configuration/api/v1/auth": {
+      "status": 404,
+      "body": ""
+    },
+    "GET /.well-known/oauth-protected-resource": {
+      "status": 200,
+      "body": {
+        "resource": "http://127.0.0.1:60260/mcp",
+        "authorization_servers": [
+          "http://127.0.0.1:60260/api/v1/auth"
+        ],
+        "scopes_supported": [
+          "kept:read",
+          "kept:write"
+        ]
+      }
+    },
+    "GET /.well-known/oauth-protected-resource/mcp": {
+      "status": 200,
+      "body": {
+        "resource": "http://127.0.0.1:60260/mcp",
+        "authorization_servers": [
+          "http://127.0.0.1:60260/api/v1/auth"
+        ],
+        "scopes_supported": [
+          "kept:read",
+          "kept:write"
+        ]
+      }
+    },
+    "GET /api/v1/auth/.well-known/oauth-authorization-server": {
+      "status": 200,
+      "body": {
+        "issuer": "http://127.0.0.1:60260/api/v1/auth",
+        "authorization_endpoint": "http://127.0.0.1:60260/api/v1/auth/oauth2/authorize",
+        "token_endpoint": "http://127.0.0.1:60260/api/v1/auth/oauth2/token",
+        "jwks_uri": "http://127.0.0.1:60260/api/v1/auth/jwks",
+        "client_id_metadata_document_supported": true,
+        "code_challenge_methods_supported": [
+          "S256"
+        ],
+        "scopes_supported": [
+          "kept:read",
+          "kept:write"
+        ]
+      }
+    },
+    "GET /api/v1/auth/.well-known/openid-configuration": {
+      "status": 404,
+      "body": ""
+    },
+    "GET /api/v1/auth/.well-known/oauth-protected-resource": {
+      "status": 404,
+      "body": ""
+    },
+    "GET /api/v1/auth/.well-known/oauth-protected-resource/mcp": {
+      "status": 404,
+      "body": ""
+    },
+    "GET /api/v1/auth/jwks": {
+      "status": 200,
+      "body": {
+        "keys": 1
+      }
+    }
+  },
+  "MCP client 2.2.0: AS metadata discovery for issuer <base>/api/v1/auth": {
+    "candidateOrder": [
+      "oauth /.well-known/oauth-authorization-server/api/v1/auth",
+      "oidc /.well-known/openid-configuration/api/v1/auth",
+      "oidc /api/v1/auth/.well-known/openid-configuration"
+    ],
+    "withAsMetadataNotAtRoot": {
+      "tried": [
+        "/.well-known/oauth-authorization-server/api/v1/auth -> 404",
+        "/.well-known/openid-configuration/api/v1/auth -> 404",
+        "/api/v1/auth/.well-known/openid-configuration -> 404"
+      ],
+      "result": "undefined (not found)"
+    }
+  },
+  "jwt plugin endpoints": {
+    "GET /api/v1/auth/token": {
+      "status": 200,
+      "body": {
+        "token": "eyJhbGciOiJF…"
+      }
+    }
+  },
+  "POST /mcp without a token (requireMcpAuth)": {
+    "status": 401,
+    "wwwAuthenticate": "Bearer resource_metadata=\"http://127.0.0.1:60260/.well-known/oauth-protected-resource/mcp\"",
+    "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"missing authorization header\"},\"id\":null}"
+  },
+  "client: first connect": {
+    "connectError": "UnauthorizedError (expected)",
+    "requestsMadeByTheSdk": [
+      "POST /mcp -> 401",
+      "GET /.well-known/oauth-protected-resource/mcp -> 200",
+      "GET /.well-known/oauth-authorization-server/api/v1/auth -> 200"
+    ],
+    "authorizationUrl": {
+      "origin": "http://127.0.0.1:60260",
+      "path": "/api/v1/auth/oauth2/authorize",
+      "params": {
+        "response_type": "code",
+        "client_id": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+        "code_challenge": "Khlxcn…",
+        "code_challenge_method": "S256",
+        "redirect_uri": "http://127.0.0.1:53682/callback",
+        "scope": "kept:read kept:write",
+        "resource": "http://127.0.0.1:60260/mcp"
+      }
+    },
+    "savedClientInformation": [
+      {
+        "client_id": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+        "issuer": "http://127.0.0.1:60260/api/v1/auth"
+      }
+    ]
+  },
+  "browser: GET authorize": {
+    "status": 200,
+    "contentType": "application/json",
+    "answer": {
+      "redirect": true,
+      "urlPath": "/oauth/consent"
+    },
+    "consentPageParams": [
+      "response_type",
+      "redirect_uri",
+      "scope",
+      "client_id",
+      "code_challenge",
+      "code_challenge_method",
+      "resource",
+      "exp",
+      "ba_iat",
+      "ba_param",
+      "ba_param",
+      "ba_param",
+      "ba_param",
+      "ba_param",
+      "ba_param",
+      "ba_param",
+      "ba_param",
+      "ba_param",
+      "ba_param",
+      "sig"
+    ],
+    "metadataFetches": [
+      {
+        "transport": "guardedFetch{allowPrivate:true}",
+        "url": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+        "ms": 58.61525000000256,
+        "status": 200
+      }
+    ],
+    "fixtureHits": [
+      "GET /oauth/client.json host=127.0.0.1.nip.io:60259"
+    ]
+  },
+  "consent page: GET /oauth2/public-client": {
+    "status": 200,
+    "body": {
+      "client_id": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+      "client_name": "Murdock’s notebook (spike client)",
+      "client_uri": "https://127.0.0.1.nip.io:60259/",
+      "redirect_uris": []
+    }
+  },
+  "consent: POST /oauth2/consent": {
+    "status": 200,
+    "bodyKeys": [
+      "redirect",
+      "url"
+    ],
+    "callbackOrigin": "http://127.0.0.1:53682/callback",
+    "callbackParams": [
+      "code",
+      "iss"
+    ]
+  },
+  "token response": {
+    "requests": [
+      "GET /.well-known/oauth-protected-resource/mcp -> 200",
+      "GET /.well-known/oauth-authorization-server/api/v1/auth -> 200",
+      "POST /api/v1/auth/oauth2/token -> 200"
+    ],
+    "token_type": "Bearer",
+    "expires_in": 3600,
+    "scope": "kept:read kept:write",
+    "hasRefreshToken": false,
+    "accessTokenLength": 715,
+    "accessTokenIsJwt": true,
+    "jwt": {
+      "header": {
+        "typ": "at+jwt",
+        "alg": "EdDSA",
+        "kid": "01a0ef67-7a42-76a6-b42b-02e8a8ce1c70"
+      },
+      "claims": {
+        "sub": "01a0ef67-77bf-70aa-9335-2fabcc4dc19b",
+        "aud": "http://127.0.0.1:60260/mcp",
+        "client_id": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+        "azp": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+        "scope": "kept:read kept:write",
+        "sid": "01a0ef67-78ce-7004-97f4-291cd34f5584",
+        "iss": "http://127.0.0.1:60260/api/v1/auth",
+        "iat": 1790722932,
+        "exp": 1790726532,
+        "jti": "reKYXic6SQTkPiF6Kiw1y4lgcypLPOs5"
+      }
+    }
+  },
+  "tool call via requireMcpAuth, versionNegotiation legacy": {
+    "protocolVersion": "2025-11-25",
+    "tools": [
+      "whoami"
+    ],
+    "result": [
+      {
+        "type": "text",
+        "text": "{\"era\":\"legacy\",\"clientId\":\"https://127.0.0.1.nip.io:60259/oauth/client.json\",\"scopes\":[\"kept:read\",\"kept:write\"],\"resource\":\"http://127.0.0.1:60260/mcp\",\"sub\":\"01a0ef67-77bf-70aa-9335-2fabcc4dc19b\"}"
+      }
+    ],
+    "requests": [
+      "POST /mcp -> 200",
+      "POST /mcp -> 202",
+      "GET /mcp -> 405",
+      "POST /mcp -> 200",
+      "POST /mcp -> 200"
+    ]
+  },
+  "tool call via verifyBearerToken, versionNegotiation legacy": {
+    "protocolVersion": "2025-11-25",
+    "tools": [
+      "whoami"
+    ],
+    "result": [
+      {
+        "type": "text",
+        "text": "{\"era\":\"legacy\",\"clientId\":\"https://127.0.0.1.nip.io:60259/oauth/client.json\",\"scopes\":[\"kept:read\",\"kept:write\"],\"resource\":\"http://127.0.0.1:60260/mcp\",\"sub\":\"01a0ef67-77bf-70aa-9335-2fabcc4dc19b\"}"
+      }
+    ],
+    "requests": [
+      "POST /mcp -> 200",
+      "POST /mcp -> 202",
+      "GET /mcp -> 405",
+      "POST /mcp -> 200",
+      "POST /mcp -> 200"
+    ]
+  },
+  "tool call via requireMcpAuth, versionNegotiation auto": {
+    "protocolVersion": "2026-07-28",
+    "tools": [
+      "whoami"
+    ],
+    "result": [
+      {
+        "type": "text",
+        "text": "{\"era\":\"modern\",\"clientId\":\"https://127.0.0.1.nip.io:60259/oauth/client.json\",\"scopes\":[\"kept:read\",\"kept:write\"],\"resource\":\"http://127.0.0.1:60260/mcp\",\"sub\":\"01a0ef67-77bf-70aa-9335-2fabcc4dc19b\"}"
+      }
+    ],
+    "requests": [
+      "POST /mcp -> 200",
+      "POST /mcp -> 200",
+      "POST /mcp -> 200"
+    ]
+  },
+  "tool call via verifyBearerToken, versionNegotiation auto": {
+    "protocolVersion": "2026-07-28",
+    "tools": [
+      "whoami"
+    ],
+    "result": [
+      {
+        "type": "text",
+        "text": "{\"era\":\"modern\",\"clientId\":\"https://127.0.0.1.nip.io:60259/oauth/client.json\",\"scopes\":[\"kept:read\",\"kept:write\"],\"resource\":\"http://127.0.0.1:60260/mcp\",\"sub\":\"01a0ef67-77bf-70aa-9335-2fabcc4dc19b\"}"
+      }
+    ],
+    "requests": [
+      "POST /mcp -> 200",
+      "POST /mcp -> 200",
+      "POST /mcp -> 200"
+    ]
+  },
+  "JWT claims seen by each verifier": [
+    {
+      "path": "verifyBearerToken",
+      "claims": {
+        "sub": "01a0ef67-77bf-70aa-9335-2fabcc4dc19b",
+        "aud": "http://127.0.0.1:60260/mcp",
+        "client_id": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+        "azp": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+        "scope": "kept:read kept:write",
+        "sid": "01a0ef67-78ce-7004-97f4-291cd34f5584",
+        "iss": "http://127.0.0.1:60260/api/v1/auth",
+        "iat": 1790722932,
+        "exp": 1790726532,
+        "jti": "reKYXic6SQTkPiF6Kiw1y4lgcypLPOs5"
+      }
+    },
+    {
+      "path": "verifyBearerToken",
+      "claims": {
+        "sub": "01a0ef67-77bf-70aa-9335-2fabcc4dc19b",
+        "aud": "http://127.0.0.1:60260/mcp",
+        "client_id": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+        "azp": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+        "scope": "kept:read kept:write",
+        "sid": "01a0ef67-78ce-7004-97f4-291cd34f5584",
+        "iss": "http://127.0.0.1:60260/api/v1/auth",
+        "iat": 1790722932,
+        "exp": 1790726532,
+        "jti": "reKYXic6SQTkPiF6Kiw1y4lgcypLPOs5"
+      }
+    }
+  ],
+  "timings (ms)": {
+    "discoveryToAuthorizeUrlMs": 63,
+    "authorizeMs": 199,
+    "consentMs": 103,
+    "tokenExchangeMs": 309,
+    "connect+list+call via requireMcpAuth, negotiation legacy": 313,
+    "connect+list+call via verifyBearerToken, negotiation legacy": 54,
+    "connect+list+call via requireMcpAuth, negotiation auto": 134,
+    "connect+list+call via verifyBearerToken, negotiation auto": 19
+  },
+  "oauth_client row (as kept_auth)": [
+    {
+      "client_id": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+      "client_discovery_id": "cimd",
+      "name": "Murdock’s notebook (spike client)",
+      "token_endpoint_auth_method": "none",
+      "require_pkce": null,
+      "redirect_uris": [
+        "http://127.0.0.1:53682/callback"
+      ],
+      "scopes": [
+        "kept:read",
+        "kept:write"
+      ],
+      "no_owner": true
+    }
+  ],
+  "rows per new table": [
+    {
+      "t": "jwks",
+      "count": "1"
+    },
+    {
+      "t": "oauth_client",
+      "count": "1"
+    },
+    {
+      "t": "oauth_resource",
+      "count": "1"
+    },
+    {
+      "t": "oauth_client_resource",
+      "count": "1"
+    },
+    {
+      "t": "oauth_consent",
+      "count": "1"
+    },
+    {
+      "t": "oauth_access_token",
+      "count": "0"
+    },
+    {
+      "t": "oauth_refresh_token",
+      "count": "0"
+    }
+  ],
+  "negative checks": {
+    "N1 loopback-resolving public name, guard on": {
+      "status": 400,
+      "body": "{\"error\":\"invalid_client\",\"error_description\":\"Failed to fetch metadata document (network error or redirect blocked)\"}",
+      "transportLog": [
+        {
+          "transport": "guardedFetch{allowPrivate:false}, system DNS",
+          "url": "https://127.0.0.1.nip.io:60259/oauth/client-n1.json",
+          "ms": 8.445375000002969,
+          "error": "PrivateAddressError(127.0.0.1)"
+        }
+      ]
+    },
+    "N2 name resolving to 10.0.0.5 (injected resolver), guard on": {
+      "status": 400,
+      "body": "{\"error\":\"invalid_client\",\"error_description\":\"Failed to fetch metadata document (network error or redirect blocked)\"}",
+      "transportLog": [
+        {
+          "transport": "guardedFetch{allowPrivate:false, resolve: *->10.0.0.5}",
+          "url": "https://client.kept-spike.test/oauth/client.json",
+          "ms": 3.114332999997714,
+          "error": "PrivateAddressError(10.0.0.5)"
+        }
+      ]
+    },
+    "N3 metadata URL answers 302, guard with allowPrivate:true": {
+      "status": 400,
+      "body": "{\"error\":\"invalid_client\",\"error_description\":\"Failed to fetch metadata document (network error or redirect blocked)\"}",
+      "transportLog": [
+        {
+          "transport": "guardedFetch{allowPrivate:true}",
+          "url": "https://127.0.0.1.nip.io:60259/oauth/redirect.json",
+          "ms": 6.241458999997121,
+          "error": "TypeError: fetch failed <- Error: unexpected redirect"
+        }
+      ]
+    },
+    "N4 @better-auth/cimd/node on the loopback-resolving name": {
+      "status": 400,
+      "body": "{\"error\":\"invalid_client\",\"error_description\":\"Failed to fetch metadata document (network error or redirect blocked)\"}",
+      "transportLog": [
+        {
+          "transport": "@better-auth/cimd/node",
+          "url": "https://127.0.0.1.nip.io:60259/oauth/client-n4.json",
+          "ms": 2.6005409999997937,
+          "error": "TypeError: metadata hostname must resolve only to public-routable addresses"
+        }
+      ]
+    },
+    "N8 flow without `resource`": {
+      "tokenStatus": 200,
+      "token_type": "Bearer",
+      "accessTokenIsJwt": false,
+      "accessTokenLength": 32,
+      "mcpStatusByGuard": {
+        "requireMcpAuth": 401,
+        "verifyBearerToken": 401
+      },
+      "storedOpaqueRows": {
+        "n": 1
+      }
+    },
+    "L1 sign-in continues the authorization": {
+      "authorize": {
+        "status": 200,
+        "to": "/signin",
+        "params": [
+          "response_type",
+          "redirect_uri",
+          "scope",
+          "state",
+          "client_id",
+          "code_challenge",
+          "code_challenge_method",
+          "resource",
+          "exp",
+          "ba_iat",
+          "ba_param",
+          "sig"
+        ]
+      },
+      "signIn": {
+        "status": 200,
+        "keys": [
+          "redirect",
+          "url"
+        ],
+        "redirect": true,
+        "next": "/oauth/consent"
+      }
+    },
+    "N5 DCR while off: POST /oauth2/register": {
+      "status": 403,
+      "body": "{\"error\":\"access_denied\",\"error_description\":\"Client registration is disabled\"}"
+    },
+    "N7a get-session answers with a set-auth-jwt header": {
+      "status": 200,
+      "setAuthJwt": "present (a JWT)",
+      "sessionJwtClaims": {
+        "iat": 1790722954,
+        "name": "…",
+        "email": "…",
+        "emailVerified": false,
+        "image": null,
+        "createdAt": "2026-09-29T23:02:10.623Z",
+        "updatedAt": "2026-09-29T23:02:10.623Z",
+        "twoFactorEnabled": false,
+        "username": null,
+        "displayUsername": null,
+        "role": "user",
+        "banned": false,
+        "banReason": null,
+        "banExpires": null,
+        "id": "01a0ef67-77bf-70aa-9335-2fabcc4dc19b",
+        "sub": "01a0ef67-77bf-70aa-9335-2fabcc4dc19b",
+        "exp": 1790723854,
+        "iss": "http://127.0.0.1:60260",
+        "aud": "http://127.0.0.1:60260"
+      }
+    },
+    "N7b session JWT from /token presented to /mcp via requireMcpAuth": {
+      "status": 401,
+      "wwwAuthenticate": "Bearer resource_metadata=\"http://127.0.0.1:60260/.well-known/oauth-protected-resource/mcp\""
+    },
+    "N7b session JWT from /token presented to /mcp via verifyBearerToken": {
+      "status": 401,
+      "wwwAuthenticate": "Bearer error=\"invalid_token\", error_description=\"JWTClaimValidationFailed[ERR_JWT_CLAIM_VALIDATION_FAILED]: unexpected \\\"iss\\\" claim value <- Error: [object Object]\", resource_metadata=\"http://127.0.0.1:60260/.well-known/oauth-protected-resource/mcp\""
+    },
+    "N6 bad token via verifyBearerToken": {
+      "status": 401,
+      "wwwAuthenticate": "Bearer error=\"invalid_token\", error_description=\"TypeError: Invalid Token or Protected Header formatting\", resource_metadata=\"http://127.0.0.1:60260/.well-known/oauth-protected-resource/mcp\""
+    }
+  },
+  "all CIMD transport calls": [
+    {
+      "transport": "guardedFetch{allowPrivate:true}",
+      "url": "https://127.0.0.1.nip.io:60259/oauth/client.json",
+      "ms": 59,
+      "status": 200
+    },
+    {
+      "transport": "guardedFetch{allowPrivate:false}, system DNS",
+      "url": "https://127.0.0.1.nip.io:60259/oauth/client-n1.json",
+      "ms": 8,
+      "error": "PrivateAddressError(127.0.0.1)"
+    },
+    {
+      "transport": "guardedFetch{allowPrivate:false, resolve: *->10.0.0.5}",
+      "url": "https://client.kept-spike.test/oauth/client.json",
+      "ms": 3,
+      "error": "PrivateAddressError(10.0.0.5)"
+    },
+    {
+      "transport": "guardedFetch{allowPrivate:true}",
+      "url": "https://127.0.0.1.nip.io:60259/oauth/redirect.json",
+      "ms": 6,
+      "error": "TypeError: fetch failed <- Error: unexpected redirect"
+    },
+    {
+      "transport": "@better-auth/cimd/node",
+      "url": "https://127.0.0.1.nip.io:60259/oauth/client-n4.json",
+      "ms": 3,
+      "error": "TypeError: metadata hostname must resolve only to public-routable addresses"
+    },
+    {
+      "transport": "guardedFetch{allowPrivate:true}",
+      "url": "https://127.0.0.1.nip.io:60259/oauth/client-n8.json",
+      "ms": 5,
+      "status": 200
+    },
+    {
+      "transport": "guardedFetch{allowPrivate:true}",
+      "url": "https://127.0.0.1.nip.io:60259/oauth/client-l1.json",
+      "ms": 28,
+      "status": 200
+    }
+  ],
+  "server request log": [
+    "POST /api/v1/auth/sign-in/email -> 200",
+    "GET /.well-known/oauth-authorization-server -> 404",
+    "GET /.well-known/oauth-authorization-server/api/v1/auth -> 404",
+    "GET /.well-known/openid-configuration -> 404",
+    "GET /.well-known/openid-configuration/api/v1/auth -> 404",
+    "GET /.well-known/oauth-protected-resource -> 404",
+    "GET /.well-known/oauth-protected-resource/mcp -> 404",
+    "GET /api/v1/auth/.well-known/oauth-authorization-server -> 200",
+    "GET /api/v1/auth/.well-known/openid-configuration -> 404",
+    "GET /api/v1/auth/.well-known/oauth-protected-resource -> 404",
+    "GET /api/v1/auth/.well-known/oauth-protected-resource/mcp -> 404",
+    "GET /api/v1/auth/jwks -> 200",
+    "GET /.well-known/oauth-authorization-server -> 200",
+    "GET /.well-known/oauth-authorization-server/api/v1/auth -> 200",
+    "GET /.well-known/openid-configuration -> 404",
+    "GET /.well-known/openid-configuration/api/v1/auth -> 404",
+    "GET /.well-known/oauth-protected-resource -> 200",
+    "GET /.well-known/oauth-protected-resource/mcp -> 200",
+    "GET /api/v1/auth/.well-known/oauth-authorization-server -> 200",
+    "GET /api/v1/auth/.well-known/openid-configuration -> 404",
+    "GET /api/v1/auth/.well-known/oauth-protected-resource -> 404",
+    "GET /api/v1/auth/.well-known/oauth-protected-resource/mcp -> 404",
+    "GET /api/v1/auth/jwks -> 200",
+    "GET /.well-known/oauth-authorization-server/api/v1/auth -> 404",
+    "GET /.well-known/openid-configuration/api/v1/auth -> 404",
+    "GET /api/v1/auth/.well-known/openid-configuration -> 404",
+    "GET /api/v1/auth/token -> 200",
+    "POST /mcp -> 401",
+    "POST /mcp -> 401",
+    "GET /.well-known/oauth-protected-resource/mcp -> 200",
+    "GET /.well-known/oauth-authorization-server/api/v1/auth -> 200",
+    "GET /api/v1/auth/oauth2/authorize?… -> 200",
+    "GET /api/v1/auth/oauth2/public-client?… -> 200",
+    "POST /api/v1/auth/oauth2/consent -> 200",
+    "GET /.well-known/oauth-protected-resource/mcp -> 200",
+    "GET /.well-known/oauth-authorization-server/api/v1/auth -> 200",
+    "POST /api/v1/auth/oauth2/token -> 200",
+    "GET /api/v1/auth/jwks -> 200",
+    "POST /mcp -> 200",
+    "POST /mcp -> 202",
+    "GET /mcp -> 405",
+    "POST /mcp -> 200",
+    "POST /mcp -> 200",
+    "POST /mcp -> 200",
+    "POST /mcp -> 202",
+    "GET /mcp -> 405",
+    "POST /mcp -> 200",
+    "POST /mcp -> 200",
+    "POST /mcp -> 200",
+    "POST /mcp -> 200",
+    "POST /mcp -> 200",
+    "POST /mcp -> 200",
+    "POST /mcp -> 200",
+    "POST /mcp -> 200",
+    "GET /api/v1/auth/oauth2/authorize?… -> 400",
+    "GET /api/v1/auth/oauth2/authorize?… -> 400",
+    "GET /api/v1/auth/oauth2/authorize?… -> 400",
+    "GET /api/v1/auth/oauth2/authorize?… -> 400",
+    "GET /api/v1/auth/oauth2/authorize?… -> 200",
+    "POST /api/v1/auth/oauth2/consent -> 200",
+    "POST /api/v1/auth/oauth2/token -> 200",
+    "POST /mcp -> 401",
+    "POST /mcp -> 401",
+    "GET /api/v1/auth/oauth2/authorize?… -> 200",
+    "POST /api/v1/auth/sign-in/email -> 200",
+    "POST /api/v1/auth/oauth2/register -> 403",
+    "GET /api/v1/auth/token -> 200",
+    "GET /api/v1/auth/get-session -> 200",
+    "POST /mcp -> 401",
+    "POST /mcp -> 401",
+    "POST /mcp -> 401"
+  ],
+  "databaseDropped": true
+}

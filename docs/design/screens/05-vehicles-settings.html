@@ -1,0 +1,699 @@
+<style>
+.a5 .t-dark{--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s-other:#6E695F}
+.a5 .ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.a5 .icon-btn .ic,.a5 .tabbar .ic{width:22px;height:22px}
+.a5 .fab .ic{width:26px;height:26px;stroke-width:2}
+.a5 .pill .ic{width:13px;height:13px}
+.a5 .btn .ic{width:16px;height:16px}
+.a5 .phone .icon-btn{width:44px;height:44px}
+.a5 .chip{height:auto;text-decoration:none}
+.a5 .phone .chip{min-height:44px;padding-inline:12px}
+.a5 .phone .btn{min-height:44px}
+.a5 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.a5 .btn.full{width:100%}
+.a5 .btn[disabled]{background:var(--sunken);color:var(--ink-3);cursor:not-allowed}
+.a5 .btn.danger{color:var(--danger);border-color:var(--line);background:transparent}
+.a5 .hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.a5 .sp{justify-content:space-between}
+.a5 .st{display:grid;gap:4px}
+.a5 .big{font:600 28px/1.1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.a5 .sm{font-size:13.5px;line-height:1.4;color:var(--ink-2);max-width:none}
+.a5 .xs{font-size:12px;line-height:1.4;color:var(--ink-3)}
+.a5 .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.a5 .mono{font-family:var(--mono)}
+.a5 .vin{font:500 14px/1.3 var(--mono);color:var(--ink);letter-spacing:.02em}
+.a5 .plate{display:inline-flex;align-items:center;font:600 14px/1 var(--mono);border:1.5px solid var(--ink-2);border-radius:4px;padding:5px 8px;background:var(--surface);color:var(--ink)}
+.a5 .photo{height:150px;border-radius:10px;background:var(--sunken);display:grid;place-items:center;color:var(--ink-3);position:relative}
+.a5 .photo .pc{position:absolute;inset-inline-end:10px;bottom:10px;font:500 12px/1 var(--sans);background:var(--surface);color:var(--ink-2);padding:5px 8px;border-radius:999px}
+.a5 .vn{font:600 20px/1.25 var(--sans);color:var(--ink)}
+.a5 .chips{display:flex;flex-wrap:wrap;gap:6px}
+.a5 .li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:12px 14px;min-height:44px}
+.a5 .li.c{align-items:center}
+.a5 .li.two{grid-template-columns:1fr auto}
+.a5 .desktop .card .li.two{padding:8px 0}
+.a5 .li .t{font:600 14.5px/1.3 var(--sans);color:var(--ink)}
+.a5 .li .s{font-size:13px;line-height:1.4;color:var(--ink-2)}
+.a5 .ib{width:36px;height:36px;border-radius:8px;background:var(--sunken);display:grid;place-items:center;color:var(--ink-2)}
+.a5 .amt{font:600 14px/1.3 var(--sans);font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink)}
+.a5 .card h3{font-size:15px}
+.a5 .lnk{font:600 13px/1 var(--sans);color:var(--info);text-decoration:none;padding:12px 0}
+.a5 .quad{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.a5 .quad > div{background:var(--paper);border-radius:8px;padding:10px;display:grid;gap:2px}
+.a5 .quad b{font:600 17px/1.2 var(--sans);font-variant-numeric:tabular-nums;color:var(--ink)}
+.a5 .chk{display:flex;gap:8px;align-items:flex-start;font:500 13px/1.4 var(--sans)}
+.a5 .chk.ok{color:var(--ok)} .a5 .chk.warn{color:var(--warn)} .a5 .chk.danger{color:var(--danger)} .a5 .chk.info{color:var(--info)}
+.a5 .chk .ic{margin-top:1px}
+.a5 .banner .btn{margin-inline-start:auto}
+.a5 .banner .ic{flex:none}
+.a5 .duo{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.a5 .aside{width:320px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:14px;color:var(--ink)}
+.a5 .odo{width:112px;height:78px;border-radius:8px;flex:none;overflow:hidden}
+.a5 .tabs{display:flex;flex-wrap:wrap;gap:2px;border-bottom:1px solid var(--line)}
+.a5 .tabs a{position:relative;padding:12px 12px;min-height:44px;color:var(--ink-2);text-decoration:none;font:500 14px/1.2 var(--sans)}
+.a5 .tabs a.on{color:var(--ink);font-weight:600}
+.a5 .tabs a.on::after{content:"";position:absolute;inset-inline:8px;bottom:-1px;height:3px;border-radius:2px;background:var(--amber)}
+.a5 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.a5 .kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:3px}
+.a5 .kpi b{font:600 20px/1.2 var(--sans);font-variant-numeric:tabular-nums;color:var(--ink)}
+.a5 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.a5 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:start}
+.a5 .gc{display:grid;grid-template-columns:1.45fr 1fr;gap:16px;align-items:start}
+.a5 .col{display:grid;gap:14px;align-content:start}
+.a5 .desktop svg.chart{min-width:0}
+.a5 .sidebar .tree{align-content:start}
+.a5 .desktop .tabs a{min-height:40px;padding:10px 12px}
+.a5 .tabs.tight{gap:0;flex-wrap:nowrap}
+.a5 .desktop .tabs.tight a{padding:10px 7px;font-size:13px;white-space:nowrap}
+.a5 .tabs.tight a.on::after{inset-inline:4px}
+.a5 .desktop .kpi{padding:9px 12px}
+.a5 svg.chart .dl{fill:var(--ink-2);font-weight:600}
+.a5 svg.chart .lab{fill:var(--ink)}
+.a5 .strip{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.a5 .strip .th{width:64px;height:64px;border-radius:8px;background:var(--sunken);display:grid;place-items:center;color:var(--ink-3);flex:none}
+.a5 .tog{width:44px;height:26px;border-radius:13px;background:var(--line);position:relative;flex:none;display:inline-block}
+.a5 .tog::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:20px;height:20px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.a5 .tog.on{background:var(--ink)}
+.a5 .tog.on::after{inset-inline-start:21px}
+.a5 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.a5 .seg span{padding:0 12px;min-height:44px;display:grid;place-items:center;font:500 13.5px/1 var(--sans);color:var(--ink-2)}
+.a5 .seg span + span{border-inline-start:1px solid var(--line)}
+.a5 .seg span.on{background:var(--ink);color:var(--paper)}
+.a5 .grp{display:grid;gap:6px}
+.a5 .grp > .eyebrow{padding-inline:4px}
+.a5 .av{width:48px;height:48px;border-radius:50%;background:var(--amber);color:var(--amber-ink);display:grid;place-items:center;font:600 19px/1 var(--sans);flex:none}
+.a5 pre.code{font:500 11px/1.45 var(--mono);background:var(--sunken);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
+.a5 .tok{display:flex;gap:10px;align-items:center;background:var(--sunken);border:1px dashed var(--ink-3);border-radius:8px;padding:10px 12px}
+.a5 .tok code{background:none;padding:0;font-size:13.5px;overflow-wrap:anywhere;flex:1;color:var(--ink)}
+.a5 table.tbl{width:100%;margin:0;font-size:13px;color:var(--ink)}
+.a5 .tbl th,.a5 .tbl td{text-align:start;padding:8px 12px 8px 0;vertical-align:top}
+.a5 .tbl th{font:600 11px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.a5 .tbl td.r,.a5 .tbl th.r{text-align:end}
+.a5 .tbl tr:last-child td{border-bottom:0}
+.a5 .tbl.tight td{padding-block:5px}
+.a5 .meter{height:8px;border-radius:4px;background:var(--sunken);overflow:hidden}
+.a5 .meter i{display:block;height:100%;background:var(--ink-2);border-radius:4px}
+.a5 .bar{display:flex;height:22px;border-radius:5px;overflow:hidden;gap:2px}
+.a5 .h2{font:600 20px/1.25 var(--sans);color:var(--ink)}
+.a5 .crumb{font-size:13px;color:var(--ink-3)}
+.a5 .desktop .card .li{padding:10px 0}
+.a5 .desktop .row-list .li{padding:10px 14px}
+.a5 .legend i.dash{height:0;width:16px;border-top:2px dashed var(--s1);background:none;border-radius:0;vertical-align:3px}
+.a5 .legend i.ln{height:0;width:16px;border-top:2px solid var(--s1);background:none;border-radius:0;vertical-align:3px}
+.a5 [lang="ar"] *:not(.mono):not(.sid):not(.vin):not(.plate):not(.big){font-family:var(--arabic)}
+.a5 [lang="ar"] .big span.ltr{font-family:var(--mono)}
+.a5 .sheet{gap:10px}
+.a5 [lang="ar"] .eyebrow{letter-spacing:0;text-transform:none;font-size:12.5px}
+.a5 [dir="rtl"] .flip{transform:scaleX(-1)}
+</style>
+<section class="area a5" id="vehicles-settings">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="a5-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+<symbol id="a5-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+<symbol id="a5-more" viewBox="0 0 24 24"><path d="M5 12h0M12 12h0M19 12h0" stroke-width="3.2"/></symbol>
+<symbol id="a5-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+<symbol id="a5-spark" viewBox="0 0 24 24"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-6.5L8 20v-3.5H5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 14.9v.01"/></symbol>
+<symbol id="a5-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></symbol>
+<symbol id="a5-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></symbol>
+<symbol id="a5-cam" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+<symbol id="a5-inbox" viewBox="0 0 24 24"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></symbol>
+<symbol id="a5-menu" viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></symbol>
+<symbol id="a5-gauge" viewBox="0 0 24 24"><path d="M4.5 17.5a8.5 8.5 0 1 1 15 0"/><path d="M12 14l4-5"/><circle cx="12" cy="14.5" r="1.3"/></symbol>
+<symbol id="a5-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9Z"/></symbol>
+<symbol id="a5-fuel" viewBox="0 0 24 24"><path d="M4 20V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v15M3 20h12M4 10h10M14 9h2a2 2 0 0 1 2 2v5a1.5 1.5 0 0 0 3 0V8l-3-3"/></symbol>
+<symbol id="a5-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+<symbol id="a5-doc" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7Z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></symbol>
+<symbol id="a5-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></symbol>
+<symbol id="a5-warn" viewBox="0 0 24 24"><path d="M12 4 2.8 20h18.4Z"/><path d="M12 10v4M12 17h.01"/></symbol>
+<symbol id="a5-ok" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
+<symbol id="a5-xc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m9 9 6 6M15 9l-6 6"/></symbol>
+<symbol id="a5-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="a5-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></symbol>
+<symbol id="a5-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="a5-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
+<symbol id="a5-retry" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7L20 8"/><path d="M20 3v5h-5"/></symbol>
+<symbol id="a5-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/></symbol>
+<symbol id="a5-dl" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></symbol>
+<symbol id="a5-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l2 2M14 9l2 2"/></symbol>
+<symbol id="a5-plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0ZM12 17v4"/></symbol>
+<symbol id="a5-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></symbol>
+<symbol id="a5-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+<symbol id="a5-mob" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></symbol>
+<symbol id="a5-pin" viewBox="0 0 24 24"><path d="M12 21s-6-5.5-6-11a6 6 0 0 1 12 0c0 5.5-6 11-6 11Z"/><circle cx="12" cy="10" r="2"/></symbol>
+<symbol id="a5-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6Z"/></symbol>
+<symbol id="a5-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="a5-car" viewBox="0 0 180 80"><path d="M10 58h10a12 12 0 0 1 24 0h86a12 12 0 0 1 24 0h14V45l-16-6-26-17H70L46 38l-28 4-8 7Z"/><path d="M58 38l16-12h28v12ZM108 26h20l18 12h-38Z"/><circle cx="32" cy="59" r="9"/><circle cx="142" cy="59" r="9"/></symbol>
+</svg>
+
+<header><span class="eyebrow">Screens · Vehicles, settings &amp; admin</span><h2>The Corolla, and the settings behind it</h2><p>One Cairo household on Wednesday 14 October 2026: Ibrahim owns the locations, Alfred is a member. The Corolla's meter, schedules, documents and running costs first, then the pages that decide how Kept behaves: Me, AI, Connections and the instance status page. Phone content scrolls inside the device; nothing is cut short.</p></header>
+
+  <h3 class="grp">Vehicle</h3>
+  <div class="frames">
+
+<!-- 1 · Vehicle detail · phone · light -->
+<figure id="f-vehicle" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: Toyota Corolla vehicle detail, light theme">
+    <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-back"/></svg></button>
+      <h1>Corolla</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-spark"/></svg></button>
+      <button class="icon-btn" aria-label="Actions"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-more"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="photo"><svg width="190" height="84" viewBox="0 0 180 80" class="ic" style="width:190px;height:84px;stroke-width:2.4" aria-label="Photo of the Corolla"><use href="#a5-car"/></svg><span class="pc">1 / 4</span></div>
+      <div class="st">
+        <h2 class="vn">Toyota Corolla 2019</h2>
+        <div class="t-path">Garage › Bay 2</div>
+        <div class="hd" style="margin-top:4px"><span class="sid">4VC‑7HD</span><span class="plate" dir="rtl" lang="ar" title="Plate">ق ط ر ١٢٣</span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>In use</span></div>
+        <div class="hd"><span class="xs">VIN</span><span class="vin">JTDBR32E720123456</span><button class="icon-btn" aria-label="Copy VIN"><svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px"><use href="#a5-copy"/></svg></button></div>
+      </div>
+      <div class="chips" aria-label="Sections"><a class="chip on" href="#">Overview</a><a class="chip" href="#">Readings</a><a class="chip" href="#">Services</a><a class="chip" href="#">Fuel</a><a class="chip" href="#">Schedules</a><a class="chip" href="#">Documents</a><a class="chip" href="#">Costs</a></div>
+      <div class="banner warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-warn"/></svg><span>Licence renewal due in 23 days, on 6 Nov</span><button class="btn secondary small" type="button">Open</button></div>
+      <div class="card">
+        <div class="hd sp"><span class="eyebrow">Odometer</span><span class="xs">1 meter · km</span></div>
+        <div class="big">52,340 km</div>
+        <div class="sm">Last reading 12 days ago, 2 Oct, from a photo by Alfred</div>
+        <div class="sm">About 62 km a day over the last 90 days</div>
+        <button class="btn primary full" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-gauge"/></svg>Log a reading</button>
+      </div>
+      <div class="card">
+        <div class="hd sp"><h3>Schedules</h3><a class="lnk" href="#">All 4</a></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-wrench"/></svg></div><div class="st"><span class="t">Oil &amp; filter</span><span class="s">Every 10,000 km or 12 months · last at <span class="mono">45,000 km</span>, 6 Jun</span><span class="s">Due at <span class="mono">55,000 km</span> · 2,660 km to go</span><span><span class="pill info"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-clock"/></svg>estimated ~14 Nov</span></span></div><span></span></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-wrench"/></svg></div><div class="st"><span class="t">Tyre rotation</span><span class="s">Every 10,000 km · due at <span class="mono">60,000 km</span></span><span><span class="pill info"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-clock"/></svg>estimated ~2 Feb 2027</span></span></div><span></span></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-cal"/></svg></div><div class="st"><span class="t">Brake fluid</span><span class="s">Every 24 months · due 18 Dec, a fixed date</span><span><span class="pill"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-cal"/></svg>In 65 days</span></span></div><span></span></div>
+        <div class="banner info"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-info"/></svg><span>Estimates use the reading from 12 days ago. A fresh one keeps ~14 Nov honest; Kept nudges you at 30 days.</span></div>
+      </div>
+      <div class="card">
+        <div class="hd sp"><h3>Recent services</h3><a class="lnk" href="#">All 9</a></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-wrench"/></svg></div><div class="st"><span class="t">Front brake pads, tyre rotation</span><span class="s">25 Aug · <span class="mono">50,000 km</span> · Nile Auto Service</span></div><span class="amt">5,400 EGP</span></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-wrench"/></svg></div><div class="st"><span class="t">Oil &amp; filter, cabin air filter</span><span class="s">6 Jun · <span class="mono">45,000 km</span> · Nile Auto Service</span></div><span class="amt">2,800 EGP</span></div>
+      </div>
+      <div class="card">
+        <div class="hd sp"><h3>Fuel</h3><a class="lnk" href="#">Log fuel</a></div>
+        <div class="quad"><div><b>7.3 L/100 km</b><span class="xs">last 5 full fills</span></div><div><b>1.75 EGP/km</b><span class="xs">fuel only</span></div><div><b>≈ 3,300 EGP</b><span class="xs">a month, Apr–Sep</span></div><div><b>40.0 L</b><span class="xs">27 Sep · 960 EGP</span></div></div>
+      </div>
+      <div class="card">
+        <div class="hd sp"><h3>Documents</h3><a class="lnk" href="#">All 3</a></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-doc"/></svg></div><div class="st"><span class="t">Vehicle licence</span><span class="s">Renewal due 6 Nov 2026 · reminder 30 days ahead</span><span><span class="pill warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-warn"/></svg>Due in 23 days</span></span></div><span></span></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-shield"/></svg></div><div class="st"><span class="t">Comprehensive insurance</span><span class="s">Valid to 31 Mar 2027</span><span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>Valid</span></span></div><span></span></div>
+      </div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-home"/></svg>Home</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-cam"/></svg></span>Capture</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-menu"/></svg>More</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Vehicle detail · phone · light. Top of the page; scroll for services, fuel and documents. Distance due points are always "estimated ~date" (D52); fixed dates are not. D26 D52 D188</figcaption>
+</figure>
+
+<!-- 4 · Vehicle detail · phone · dark (scrolled) -->
+<figure id="f-vehicle-dark" style="margin:0">
+  <div class="phone t-dark" role="img" aria-label="Phone: Toyota Corolla vehicle detail scrolled to services, dark theme">
+    <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-back"/></svg></button>
+      <h1>Corolla</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-spark"/></svg></button>
+      <button class="icon-btn" aria-label="Actions"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-more"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="chips" aria-label="Sections"><a class="chip" href="#">Overview</a><a class="chip" href="#">Readings</a><a class="chip on" href="#">Services</a><a class="chip" href="#">Fuel</a><a class="chip" href="#">Schedules</a><a class="chip" href="#">Documents</a><a class="chip" href="#">Costs</a></div>
+      <div class="card">
+        <div class="hd sp"><h3>Recent services</h3><a class="lnk" href="#">All 9</a></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-wrench"/></svg></div><div class="st"><span class="t">Front brake pads, tyre rotation</span><span class="s">25 Aug · <span class="mono">50,000 km</span> · Nile Auto Service</span><span class="s">Completed: Tyre rotation</span></div><span class="amt">5,400 EGP</span></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-wrench"/></svg></div><div class="st"><span class="t">Oil &amp; filter, cabin air filter</span><span class="s">6 Jun · <span class="mono">45,000 km</span> · Nile Auto Service</span><span class="s">Completed: Oil &amp; filter</span></div><span class="amt">2,800 EGP</span></div>
+        <button class="btn secondary full" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-plus"/></svg>Log a service</button>
+      </div>
+      <div class="card">
+        <div class="hd sp"><h3>Fuel</h3><a class="lnk" href="#">All fills</a></div>
+        <div class="quad"><div><b>7.3 L/100 km</b><span class="xs">last 5 full fills</span></div><div><b>1.75 EGP/km</b><span class="xs">fuel only</span></div><div><b>≈ 3,300 EGP</b><span class="xs">a month, Apr–Sep</span></div><div><b>40.0 L</b><span class="xs">27 Sep · 960 EGP · <span class="mono">52,020 km</span></span></div></div>
+        <button class="btn secondary full" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-fuel"/></svg>Log fuel</button>
+      </div>
+      <div class="card">
+        <div class="hd sp"><h3>Documents</h3><a class="lnk" href="#">All 3</a></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-doc"/></svg></div><div class="st"><span class="t">Vehicle licence</span><span class="s">Renewal due 6 Nov 2026 · reminder 30 days ahead</span><span><span class="pill warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-warn"/></svg>Due in 23 days</span></span></div><span></span></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-shield"/></svg></div><div class="st"><span class="t">Comprehensive insurance</span><span class="s">Valid to 31 Mar 2027</span><span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>Valid</span></span></div><span></span></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-doc"/></svg></div><div class="st"><span class="t">Registration card</span><span class="s">Read in LABEL mode: VIN, plate and licence expiry</span></div><span></span></div>
+      </div>
+      <div class="card">
+        <div class="hd sp"><h3>Costs</h3><a class="lnk" href="#">Report</a></div>
+        <div class="quad"><div><b>29,800 EGP</b><span class="xs">Apr–Sep</span></div><div><b>2.63 EGP/km</b><span class="xs">all costs</span></div></div>
+      </div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-home"/></svg>Home</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-cam"/></svg></span>Capture</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-menu"/></svg>More</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Vehicle detail · phone · dark. The same page scrolled to Services; the section chips stay pinned. A service line ticks off the schedule it completes (§6 Quick log). D26 D28</figcaption>
+</figure>
+
+<!-- 2 · Vehicle detail · desktop · light · Costs tab -->
+<figure id="f-vehicle-desk" style="margin:0">
+  <div class="frame-scroll">
+    <div class="desktop t-light" role="img" aria-label="Desktop: Toyota Corolla, Costs tab, light theme">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a class="on" href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Toyota Corolla 2019</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work" style="gap:14px">
+          <div class="strip">
+            <div class="th"><svg class="ic" viewBox="0 0 180 80" style="width:54px;height:26px;stroke-width:4"><use href="#a5-car"/></svg></div>
+            <div class="st" style="flex:1;min-width:0">
+              <div class="crumb">Vehicles › Garage › Bay 2</div>
+              <div class="hd"><span class="sid">4VC‑7HD</span><span class="plate" dir="rtl" lang="ar">ق ط ر ١٢٣</span><span class="xs">VIN</span><span class="vin">JTDBR32E720123456</span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>In use</span><span class="xs"><span class="mono">52,340 km</span> · read 2 Oct</span></div>
+            </div>
+            <button class="btn primary" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-gauge"/></svg>Log a reading</button>
+            <button class="btn secondary" type="button">Log fuel</button>
+            <button class="btn secondary" type="button">Log service</button>
+          </div>
+          <nav class="tabs" aria-label="Vehicle sections"><a href="#">Overview</a><a href="#">Readings</a><a href="#">Services</a><a href="#">Fuel</a><a href="#">Schedules</a><a href="#">Documents</a><a class="on" href="#" aria-current="page">Costs</a></nav>
+          <div class="kpis">
+            <div class="kpi"><span class="xs">Total, Apr–Sep 2026</span><b>29,800 EGP</b><span class="xs">6 full months</span></div>
+            <div class="kpi"><span class="xs">Per km</span><b>2.63 EGP</b><span class="xs">over 11,346 km driven</span></div>
+            <div class="kpi"><span class="xs">Fuel, monthly average</span><b>3,300 EGP</b><span class="xs">7.3 L/100 km</span></div>
+            <div class="kpi"><span class="xs">October so far</span><b>300 EGP</b><span class="xs">not compared with full months</span></div>
+          </div>
+          <div class="gc">
+            <div class="chart-card">
+              <div class="hd sp"><h3>Running cost per month, EGP</h3><span class="xs">Apr–Sep 2026</span></div>
+              <div class="legend" aria-hidden="true"><span><i style="background:var(--s1)"></i>Fuel</span><span><i style="background:var(--s2)"></i>Service &amp; parts</span><span><i style="background:var(--s3)"></i>Fees &amp; insurance</span></div>
+              <svg class="chart" viewBox="0 0 560 214" role="group" aria-label="Stacked bars of monthly running cost, April to September 2026"><line x1="44" x2="550" y1="188" y2="188" class="axis"/><text x="38" y="192" text-anchor="end">0</text><line x1="44" x2="550" y1="146" y2="146" class="grid"/><text x="38" y="150" text-anchor="end">2.5k</text><line x1="44" x2="550" y1="104" y2="104" class="grid"/><text x="38" y="108" text-anchor="end">5k</text><line x1="44" x2="550" y1="62" y2="62" class="grid"/><text x="38" y="66" text-anchor="end">7.5k</text><line x1="44" x2="550" y1="20" y2="20" class="grid"/><text x="38" y="24" text-anchor="end">10k</text><g role="img" aria-label="Apr 2026: fuel 3,150, service and parts 0, fees and insurance 300, total 3,450 EGP"><rect x="68.2" y="135.1" width="36" height="52.9" fill="var(--s1)"/><path d="M68.2 134.1V133q0 -3 3 -3H101.2q3 0 3 3V134.1Z" fill="var(--s3)"/></g><text x="86.2" y="205" text-anchor="middle">Apr</text><g role="img" aria-label="May 2026: fuel 3,400, service and parts 0, fees and insurance 300, total 3,700 EGP"><rect x="152.5" y="130.9" width="36" height="57.1" fill="var(--s1)"/><path d="M152.5 129.9V128.8q0 -3 3 -3H185.5q3 0 3 3V129.9Z" fill="var(--s3)"/></g><text x="170.5" y="205" text-anchor="middle">May</text><g role="img" aria-label="Jun 2026: fuel 3,250, service and parts 2,800, fees and insurance 300, total 6,350 EGP"><rect x="236.8" y="133.4" width="36" height="54.6" fill="var(--s1)"/><rect x="236.8" y="86.4" width="36" height="46" fill="var(--s2)"/><path d="M236.8 85.4V84.3q0 -3 3 -3H269.8q3 0 3 3V85.4Z" fill="var(--s3)"/></g><text x="254.8" y="205" text-anchor="middle">Jun</text><text x="254.8" y="75.3" text-anchor="middle" class="dl">6,350</text><g role="img" aria-label="Jul 2026: fuel 3,500, service and parts 0, fees and insurance 300, total 3,800 EGP"><rect x="321.2" y="129.2" width="36" height="58.8" fill="var(--s1)"/><path d="M321.2 128.2V127.2q0 -3 3 -3H354.2q3 0 3 3V128.2Z" fill="var(--s3)"/></g><text x="339.2" y="205" text-anchor="middle">Jul</text><g role="img" aria-label="Aug 2026: fuel 3,350, service and parts 5,400, fees and insurance 300, total 9,050 EGP"><rect x="405.5" y="131.7" width="36" height="56.3" fill="var(--s1)"/><rect x="405.5" y="41" width="36" height="89.7" fill="var(--s2)"/><path d="M405.5 40V39q0 -3 3 -3H438.5q3 0 3 3V40Z" fill="var(--s3)"/></g><text x="423.5" y="205" text-anchor="middle">Aug</text><text x="423.5" y="30" text-anchor="middle" class="dl">9,050</text><g role="img" aria-label="Sep 2026: fuel 3,150, service and parts 0, fees and insurance 300, total 3,450 EGP"><rect x="489.8" y="135.1" width="36" height="52.9" fill="var(--s1)"/><path d="M489.8 134.1V133q0 -3 3 -3H522.8q3 0 3 3V134.1Z" fill="var(--s3)"/></g><text x="507.8" y="205" text-anchor="middle">Sep</text></svg>
+                            <details><summary>Show as table</summary><table><thead><tr><th>Month</th><th>Fuel</th><th>Service &amp; parts</th><th>Fees &amp; insurance</th><th>Total</th></tr></thead><tbody><tr><td>Apr 2026</td><td>3,150</td><td>0</td><td>300</td><td>3,450</td></tr><tr><td>May 2026</td><td>3,400</td><td>0</td><td>300</td><td>3,700</td></tr><tr><td>Jun 2026 · oil &amp; filter</td><td>3,250</td><td>2,800</td><td>300</td><td>6,350</td></tr><tr><td>Jul 2026</td><td>3,500</td><td>0</td><td>300</td><td>3,800</td></tr><tr><td>Aug 2026 · brake pads, rotation</td><td>3,350</td><td>5,400</td><td>300</td><td>9,050</td></tr><tr><td>Sep 2026</td><td>3,150</td><td>0</td><td>300</td><td>3,450</td></tr></tbody></table></details>
+            </div>
+            <div class="chart-card">
+              <div class="hd sp"><h3>Odometer, km</h3><span class="xs">estimate at ~62 km/day</span></div>
+              <div class="legend" aria-hidden="true"><span><i class="ln"></i>Readings</span><span><i class="dash"></i>Estimate</span></div>
+              <svg class="chart" viewBox="0 0 360 214" role="group" aria-label="Odometer readings from May to October 2026, with the estimate to the oil change at 55,000 km"><line x1="44" x2="348" y1="188" y2="188" class="axis"/><text x="38" y="192" text-anchor="end">42k</text><line x1="44" x2="348" y1="139.4" y2="139.4" class="grid"/><text x="38" y="143.4" text-anchor="end">46k</text><line x1="44" x2="348" y1="90.9" y2="90.9" class="grid"/><text x="38" y="94.9" text-anchor="end">50k</text><line x1="44" x2="348" y1="42.3" y2="42.3" class="grid"/><text x="38" y="46.3" text-anchor="end">54k</text><text x="44" y="205" text-anchor="middle">May</text><text x="90.4" y="205" text-anchor="middle">Jun</text><text x="135.3" y="205" text-anchor="middle">Jul</text><text x="181.8" y="205" text-anchor="middle">Aug</text><text x="228.2" y="205" text-anchor="middle">Sep</text><text x="273.1" y="205" text-anchor="middle">Oct</text><text x="319.5" y="205" text-anchor="middle">Nov</text><line x1="44" x2="348" y1="30.1" y2="30.1" stroke="var(--ink-3)" stroke-dasharray="2 3"/><text x="48" y="24.1">Oil change due · 55,000</text><line x1="292.6" x2="292.6" y1="38.1" y2="188" stroke="var(--line)" stroke-width="1.5"/><text x="296.6" y="180">Today</text><polyline points="47,176.9 97.9,151.6 147.3,126.4 181.8,109.1 217.7,90.9 247.7,76 267.1,66.3 274.6,62.4" fill="none" stroke="var(--s1)" stroke-width="2.2" stroke-linejoin="round"/><line x1="274.6" y1="62.4" x2="339" y2="30.1" stroke="var(--s1)" stroke-width="2" stroke-dasharray="5 4"/><g fill="var(--surface)" stroke="var(--s1)" stroke-width="2"><circle cx="47" cy="176.9" r="3.5"/><circle cx="97.9" cy="151.6" r="3.5"/><circle cx="147.3" cy="126.4" r="3.5"/><circle cx="181.8" cy="109.1" r="3.5"/><circle cx="217.7" cy="90.9" r="3.5"/><circle cx="247.7" cy="76" r="3.5"/><circle cx="267.1" cy="66.3" r="3.5"/><circle cx="274.6" cy="62.4" r="4.5" fill="var(--s1)"/><circle cx="339" cy="30.1" r="3.5" stroke-dasharray="2 2"/></g><text x="268.6" y="54.4" text-anchor="end" class="lab">52,340 · 2 Oct</text><text x="348" y="24.1" text-anchor="end" class="dl">estimated ~14 Nov</text></svg>
+                            <details><summary>Show as table</summary><table><thead><tr><th>Date</th><th>Reading, km</th><th>Source</th></tr></thead><tbody><tr><td>3 May</td><td>42,916</td><td>Fuel</td></tr><tr><td>6 Jun</td><td>45,000</td><td>Service</td></tr><tr><td>9 Jul</td><td>47,070</td><td>Fuel</td></tr><tr><td>1 Aug</td><td>48,500</td><td>Fuel</td></tr><tr><td>25 Aug</td><td>50,000</td><td>Service</td></tr><tr><td>14 Sep</td><td>51,220</td><td>Photo</td></tr><tr><td>27 Sep</td><td>52,020</td><td>Fuel</td></tr><tr><td>2 Oct</td><td>52,340</td><td>Photo</td></tr><tr><td>~14 Nov</td><td>55,000</td><td>Estimate</td></tr></tbody></table></details>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Vehicle detail · desktop · light · Costs tab. Three series, legend, direct labels on the two service months, table view; October is "so far" and kept out of the bars (D188). Hover and focus tooltips as on the design board. D26 D133</figcaption>
+</figure>
+
+<!-- 3 · Log a reading · phone · light -->
+<figure id="f-reading" style="margin:0">
+  <div class="duo">
+  <div class="phone t-light" role="img" aria-label="Phone: Log a reading sheet with a suggested odometer value, light theme">
+    <div class="status"><span>10:12</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-back"/></svg></button>
+      <h1>Corolla</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-spark"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="photo" style="height:120px"></div>
+      <div class="card"><span class="eyebrow">Odometer</span><div class="big">51,220 km</div><div class="sm">Last reading 18 days ago</div></div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-home"/></svg>Home</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-cam"/></svg></span>Capture</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-menu"/></svg>More</a>
+    </nav>
+    <div class="scrim"></div>
+    <div class="sheet" role="dialog" aria-label="Log a reading">
+      <div class="hd sp" style="flex-wrap:nowrap"><div class="st" style="gap:2px"><h3 style="font-size:18px">Log a reading</h3><span class="sm">Toyota Corolla 2019 · Odometer, km</span></div><button class="icon-btn" aria-label="Close"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-x"/></svg></button></div>
+      <div class="hd" style="flex-wrap:nowrap;align-items:flex-start">
+        <svg class="odo" viewBox="0 0 112 78" role="img" aria-label="READING photo of the dashboard odometer"><rect width="112" height="78" fill="#1E1C19"/><rect x="10" y="26" width="92" height="26" rx="3" fill="#0B0B0A" stroke="#55524C"/><text x="56" y="45" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="16" font-weight="600" fill="#E8F3F0" letter-spacing="1">052340</text><text x="96" y="64" text-anchor="end" font-family="IBM Plex Sans, sans-serif" font-size="9" fill="#9A948A">km</text><text x="10" y="18" font-family="IBM Plex Sans, sans-serif" font-size="8" fill="#9A948A">ODO</text></svg>
+        <div class="st"><span class="pill"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-cam"/></svg>READING photo</span><span class="xs">Taken 2 Oct 2026, 10:12, from the photo's time. Kept as proof; proof is optional.</span></div>
+      </div>
+      <div class="sugg">
+        <span class="lbl"><svg class="ic" viewBox="0 0 24 24" style="width:14px;height:14px"><use href="#a5-spark"/></svg>Suggested · read from the photo</span>
+        <span class="val big">52,340 km</span>
+        <div class="act"><button class="btn primary" type="button">Confirm</button><button class="btn secondary" type="button">Edit</button></div>
+      </div>
+      <div class="chk ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg><span>Fits: 1,120 km since <span class="mono">51,220 km</span> on 14 Sep, about 62 km a day.</span></div>
+      <button class="btn primary full" type="button" disabled>Save reading</button>
+      <span class="xs" style="text-align:center">Confirm or edit the reading first.</span>
+    </div>
+  </div>
+  <div class="aside t-light" aria-label="Other plausibility messages at the same field">
+    <span class="eyebrow">Same field, other answers</span>
+    <div class="field"><label>Reading, km</label><div class="input mono" style="border-color:var(--danger)">25,340</div>
+      <div class="chk danger"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-xc"/></svg><span>25,340 km is lower than 51,220 km on 14 Sep. Readings can't go down: check the digits, or record that the meter was replaced.</span></div>
+      <div class="hd"><button class="btn secondary small" type="button">Edit</button><button class="btn secondary small" type="button">Meter replaced</button></div></div>
+    <div class="field"><label>Reading, km</label><div class="input mono" style="border-color:var(--warn)">85,340</div>
+      <div class="chk warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-warn"/></svg><span>That's 34,120 km in 18 days, about 1,900 km a day, over this car's limit of 1,500. Is it right?</span></div>
+      <div class="hd"><button class="btn secondary small" type="button">It's right</button><button class="btn secondary small" type="button">Edit</button></div></div>
+    <div class="field"><label>Offline</label>
+      <div class="chk info"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-info"/></svg><span>Saved on this phone. Kept checks it against your other readings when it syncs; if it doesn't fit, it waits in your Inbox.</span></div></div>
+  </div>
+  </div>
+  <figcaption class="frame-cap">Log a reading · phone · light · 2 Oct. The AI reading is violet and dashed until confirmed (D19, D131). Beside it: refused (lower), confirm (over 1,500 km/day) and offline (D26, D112, §7 Reading).</figcaption>
+</figure>
+
+<!-- 9 · Vehicle detail · phone · Arabic RTL -->
+<figure id="f-vehicle-ar" style="margin:0">
+  <div class="phone t-light" dir="rtl" lang="ar" role="img" aria-label="الهاتف: تفاصيل سيارة تويوتا كورولا، من اليمين إلى اليسار">
+    <div class="status"><span class="ltr">9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="رجوع"><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-back"/></svg></button>
+      <h1>كورولا</h1>
+      <button class="icon-btn" aria-label="الإشعارات"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-bell"/></svg></button>
+      <button class="icon-btn" aria-label="المساعد"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-spark"/></svg></button>
+      <button class="icon-btn" aria-label="إجراءات"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-more"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="photo"><svg viewBox="0 0 180 80" class="ic" style="width:190px;height:84px;stroke-width:2.4" aria-label="صورة السيارة"><use href="#a5-car"/></svg><span class="pc">١ / ٤</span></div>
+      <div class="st">
+        <h2 class="vn">تويوتا كورولا ٢٠١٩</h2>
+        <div class="t-path">الجراج › الموقف ٢</div>
+        <div class="hd" style="margin-top:4px"><span class="sid ltr">4VC‑7HD</span><span class="plate">ق ط ر ١٢٣</span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>قيد الاستخدام</span></div>
+        <div class="hd"><span class="xs">رقم الهيكل</span><span class="vin ltr">JTDBR32E720123456</span><button class="icon-btn" aria-label="نسخ رقم الهيكل"><svg class="ic" viewBox="0 0 24 24" style="width:18px;height:18px"><use href="#a5-copy"/></svg></button></div>
+      </div>
+      <div class="chips"><a class="chip on" href="#">نظرة عامة</a><a class="chip" href="#">القراءات</a><a class="chip" href="#">الصيانة</a><a class="chip" href="#">الوقود</a><a class="chip" href="#">المواعيد</a><a class="chip" href="#">المستندات</a><a class="chip" href="#">التكاليف</a></div>
+      <div class="banner warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-warn"/></svg><span>تجديد رخصة السيارة بعد ٢٣ يومًا، في ٦ نوفمبر</span><button class="btn secondary small" type="button">فتح</button></div>
+      <div class="card">
+        <div class="hd sp"><span class="eyebrow">عداد المسافة</span><span class="xs">عداد واحد · كم</span></div>
+        <div class="big">٥٢٬٣٤٠ كم</div>
+        <div class="sm">آخر قراءة منذ ١٢ يومًا، ٢ أكتوبر، من صورة التقطها ألفريد</div>
+        <div class="sm">نحو ٦٢ كم يوميًا خلال آخر ٩٠ يومًا</div>
+        <button class="btn primary full" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-gauge"/></svg>سجّل قراءة</button>
+      </div>
+      <div class="card">
+        <div class="hd sp"><h3>المواعيد</h3><a class="lnk" href="#">الكل (٤)</a></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-wrench"/></svg></div><div class="st"><span class="t">الزيت والفلتر</span><span class="s">كل ١٠٬٠٠٠ كم أو ١٢ شهرًا · آخر مرة عند ٤٥٬٠٠٠ كم في ٦ يونيو</span><span class="s">مستحق عند ٥٥٬٠٠٠ كم · متبقٍّ ٢٬٦٦٠ كم</span><span><span class="pill info"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-clock"/></svg>تقديري ~١٤ نوفمبر</span></span></div><span></span></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-wrench"/></svg></div><div class="st"><span class="t">تدوير الإطارات</span><span class="s">كل ١٠٬٠٠٠ كم · مستحق عند ٦٠٬٠٠٠ كم</span><span><span class="pill info"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-clock"/></svg>تقديري ~٢ فبراير ٢٠٢٧</span></span></div><span></span></div>
+        <div class="banner info"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-info"/></svg><span>التقديرات مبنية على قراءة عمرها ١٢ يومًا. قراءة جديدة تُبقي ~١٤ نوفمبر دقيقًا؛ ويذكّرك Kept بعد ٣٠ يومًا.</span></div>
+      </div>
+      <div class="card">
+        <div class="hd sp"><h3>آخر أعمال الصيانة</h3><a class="lnk" href="#">الكل (٩)</a></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-wrench"/></svg></div><div class="st"><span class="t">تيل الفرامل الأمامي، تدوير الإطارات</span><span class="s">٢٥ أغسطس · ٥٠٬٠٠٠ كم · تويوتا أبو غالي موتورز</span></div><span class="amt">٥٬٤٠٠ ج.م.</span></div>
+        <div class="li" style="padding:0"><div class="ib"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-fuel"/></svg></div><div class="st"><span class="t">الوقود</span><span class="s">٧٫٣ لتر/١٠٠ كم · نحو ٣٬٣٠٠ ج.م. شهريًا</span></div><span></span></div>
+      </div>
+    </div>
+    <nav class="tabbar" aria-label="القائمة الرئيسية">
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-home"/></svg>الرئيسية</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-search"/></svg>بحث</a>
+      <a class="capture" href="#"><span class="fab"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-cam"/></svg></span>التقاط</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-inbox"/></svg>الوارد</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-menu"/></svg>المزيد</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Vehicle detail · phone · Arabic RTL. Layout mirrors. Eastern digits for readings, amounts, dates and counts (§8); ID and VIN stay Western and left-to-right; the plate stays as printed; EGP is ج.م. D78 D136 D143</figcaption>
+</figure>
+
+  </div>
+
+  <h3 class="grp">Settings and admin</h3>
+  <div class="frames">
+
+<!-- 5 · Settings · Me · phone · light -->
+<figure id="f-settings-me" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: Settings, Me, light theme">
+    <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <h1>Settings</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-spark"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="chips"><a class="chip on" href="#">Me</a><a class="chip" href="#">Locations</a><a class="chip" href="#">Account</a><a class="chip" href="#">AI</a><a class="chip" href="#">Import</a><a class="chip" href="#">Admin</a></div>
+      <div class="card" style="grid-template-columns:auto 1fr auto;align-items:center"><span class="av">I</span><div class="st"><span class="t" style="font-weight:600">Ibrahim</span><span class="xs">ibrahim@example.com · owner of Home, Garage and Storage unit</span></div><button class="btn secondary small" type="button">Edit</button></div>
+      <div class="grp"><span class="eyebrow">Region and display</span>
+        <div class="row-list">
+          <div class="li c"><span class="t">Timezone</span><span class="s" style="text-align:end">Africa/Cairo<br><span class="xs">from this browser</span></span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="li c"><span class="t">Language</span><span class="s" style="text-align:end">English</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="st" style="padding:12px 14px;gap:8px"><span class="t" style="font-weight:600">Digits in Arabic</span><span class="seg"><span class="on">0123 Western</span><span>٠١٢٣ Eastern</span></span><span class="xs">Used when Kept is in Arabic, for readings, amounts, dates and counts. Short IDs, serials and VINs stay 0–9; plates show as printed.</span></div>
+          <div class="li c"><span class="t">Units</span><span class="s" style="text-align:end">km · litres · L/100 km</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="st" style="padding:12px 14px;gap:8px"><span class="t" style="font-weight:600">Theme</span><span class="seg"><span class="on">System</span><span>Light</span><span>Dark</span></span></div>
+        </div>
+      </div>
+      <div class="grp"><span class="eyebrow">Capture</span>
+        <div class="row-list">
+          <div class="st" style="padding:12px 14px;gap:6px"><div class="hd sp" style="flex-wrap:nowrap"><span style="font-weight:600">Suggest where I am</span><span class="hd"><span class="xs">On</span><span class="tog on" role="switch" aria-checked="true" aria-label="Suggest where I am"></span></span></div><span class="xs">When you open Capture, this phone compares its position with your locations' saved coordinates. Your position is never sent, stored or logged.</span></div>
+          <div class="li c"><span class="t">Hidden modules</span><span class="s">None</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+        </div>
+      </div>
+      <div class="grp"><span class="eyebrow">Notifications</span>
+        <div class="row-list">
+          <div class="li c"><span class="t">Notifications</span><span class="s" style="text-align:end">Push on this phone, digest 08:00, quiet 23:00–07:00</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="st" style="padding:12px 14px;gap:8px"><span style="font-weight:600">Calendar feed</span><span class="xs">Private iCal link with due dates and expiries: titles and dates only, never money. Last fetched 2 hours ago.</span><div class="hd"><button class="btn secondary" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-copy"/></svg>Copy link</button><button class="btn danger" type="button">Revoke</button></div></div>
+        </div>
+      </div>
+      <div class="grp"><span class="eyebrow">Security</span>
+        <div class="row-list">
+          <div class="li c"><span class="t">Sessions and devices</span><span class="s">3 active</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="li c"><span class="t">Passkeys</span><span class="s">2 · iPhone, MacBook</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="li c"><span class="t">Two-factor</span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>On · app</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="li c"><span class="t">Backup codes</span><span class="s">8 of 10 left</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+        </div>
+      </div>
+      <div class="grp"><span class="eyebrow">Your data</span>
+        <div class="row-list">
+          <div class="li c"><span class="t">Personal AI key</span><span class="s">Set</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="li c"><span class="t">My tokens</span><span class="s">3, in Connections</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="li c"><span class="t">Export my data</span><span></span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="li c"><span class="t" style="color:var(--danger)">Delete my account</span><span></span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+        </div>
+      </div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-home"/></svg>Home</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-cam"/></svg></span>Capture</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-menu"/></svg>More</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Settings · Me · phone · light. Scrolls through region, capture, notifications, security and your data. D122 D142 D143 D153 D165</figcaption>
+</figure>
+
+<!-- 6 · AI settings · desktop · light -->
+<figure id="f-ai-settings" style="margin:0">
+  <div class="frame-scroll">
+    <div class="desktop t-light" role="img" aria-label="Desktop: AI settings, light theme">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Settings</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work" style="gap:14px">
+          <nav class="tabs"><a href="#">Me</a><a href="#">Locations</a><a href="#">Account</a><a class="on" href="#">AI</a><a href="#">Import</a><a href="#">Admin</a></nav>
+          <div class="card" style="padding:10px 14px 4px;gap:4px">
+            <div class="hd sp"><span class="sm">Ibrahim's account pays for AI in Home, Garage and Storage unit; a task with nothing set uses the instance default.</span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>On</span></div>
+            <table class="tbl tight"><thead><tr><th>Task</th><th>Using</th><th>Last test</th><th class="r"></th></tr></thead><tbody>
+              <tr><td><b>Vision</b><div class="xs">capture, receipts, readings</div></td><td><span class="mono">Anthropic / claude-sonnet-5</span><div class="xs">from account</div></td><td><div class="hd"><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>Vision</span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>Structured output</span></div><div class="xs">14 Oct, 09:12</div></td><td class="r"><button class="btn secondary small" type="button">Test</button></td></tr>
+              <tr><td><b>Chat</b><div class="xs">the assistant</div></td><td><span class="mono">Anthropic / claude-sonnet-5</span><div class="xs">from account</div></td><td><div class="hd"><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>Vision</span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>Structured output</span></div><div class="xs">14 Oct, 09:12</div></td><td class="r"><button class="btn secondary small" type="button">Test</button></td></tr>
+              <tr><td><b>Embeddings</b><div class="xs">search</div></td><td><span class="mono">Ollama / nomic-embed-text</span><div class="xs">from instance</div></td><td><div class="hd"><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>Responds</span><span class="pill"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-x"/></svg>No vision, not needed</span></div><div class="xs">12 Oct, 18:40</div></td><td class="r"><button class="btn secondary small" type="button">Test</button></td></tr>
+              <tr><td><b>Personal</b><div class="xs">your Personal location and private threads</div></td><td><span class="mono">OpenAI / gpt-4.1-mini</span><div class="xs">from you</div></td><td><div class="hd"><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>Vision</span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>Structured output</span></div><div class="xs">20 Sep, 21:05</div></td><td class="r"><button class="btn secondary small" type="button">Test</button></td></tr>
+            </tbody></table>
+          </div>
+          <div class="g3">
+            <div class="card">
+              <div class="st"><h3>Keys</h3><span class="xs">Write-only: never shown again after saving</span></div>
+              <div class="st" style="gap:6px;padding-top:6px;border-top:1px solid var(--line)"><span class="hd sp"><span class="hd"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-key"/></svg><b>Anthropic · account</b></span><button class="btn secondary small" type="button">Replace key</button></span><span class="xs">Set 3 Sep by Ibrahim · used 12 min ago</span><span class="sm"><b>Data use:</b> not used for training by default; retention per the provider's API terms.</span></div>
+              <div class="st" style="gap:6px;padding-top:10px;border-top:1px solid var(--line)"><span class="hd sp"><span class="hd"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-key"/></svg><b>OpenAI · your key</b></span><button class="btn secondary small" type="button">Replace key</button></span><span class="xs">Used for Personal, your private threads, and questions that span owners</span></div>
+              <span class="xs">Kept sends only what a task needs, never secret fields. Ollama runs on your network.</span>
+            </div>
+            <div class="card">
+              <div class="st"><h3>Budgets</h3><span class="xs">Tokens reset 00:00 UTC (03:00 Cairo)</span></div>
+              <div class="st"><div class="hd sp"><span class="sm">Vision, today</span><span class="sm num">64k of 300k</span></div><div class="meter"><i style="width:21%"></i></div></div>
+              <div class="st"><div class="hd sp"><span class="sm">Chat, today</span><span class="sm num">12k of 150k</span></div><div class="meter"><i style="width:8%"></i></div></div>
+              <div class="st"><div class="hd sp"><span class="sm">Monthly cap, Oct so far</span><span class="sm num">212 of 600 EGP</span></div><div class="meter"><i style="width:35%"></i></div></div>
+              <span class="xs">Priced from the instance price table. At the cap, AI pauses until 1 Nov; capture still works by hand.</span>
+              <span class="xs">Alfred sees one line: "AI is on, paid by Ibrahim's account."</span>
+            </div>
+            <div class="card" style="gap:4px">
+              <div class="st"><h3>Usage, October so far</h3><span class="xs">per user, location and task; search embeddings run on the instance's Ollama, free</span></div>
+              <table class="tbl tight" style="font-size:12.5px"><thead><tr><th>Who · where</th><th>Task</th><th class="r">Tokens</th><th class="r">EGP</th></tr></thead><tbody>
+                <tr><td>Ibrahim · Home</td><td>Vision</td><td class="r">920k</td><td class="r">118</td></tr>
+                <tr><td>Ibrahim · Home</td><td>Chat</td><td class="r">310k</td><td class="r">38</td></tr>
+                <tr><td>Alfred · Home</td><td>Vision</td><td class="r">240k</td><td class="r">31</td></tr>
+                <tr><td>Ibrahim · Garage</td><td>Vision</td><td class="r">140k</td><td class="r">18</td></tr>
+                <tr><td>Alfred · Home</td><td>Chat</td><td class="r">60k</td><td class="r">7</td></tr>
+                <tr><td><b>Account</b></td><td></td><td class="r">1.67M</td><td class="r"><b>212</b></td></tr>
+              </tbody></table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">AI settings · desktop · light. Advanced open: a new account first sees one "Paste your key → Test" box, and per-task models, budgets and prices sit under Advanced (D191). Each task names its model and where the setting comes from; Test sends a real vision and structured-output request and records the result (D188). Keys are write-only; caps in EGP (D167). D19 D83 D121</figcaption>
+</figure>
+
+<!-- 7 · Connections · desktop · light -->
+<figure id="f-connections" style="margin:0">
+  <div class="frame-scroll">
+    <div class="desktop t-light" role="img" aria-label="Desktop: Connections settings with a new token, light theme">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Settings</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work" style="gap:14px">
+          <nav class="tabs"><a href="#">Me</a><a href="#">Locations</a><a href="#">Account</a><a href="#">AI</a><a href="#">Import</a><a class="on" href="#">Connections</a><a href="#">Admin</a></nav>
+          <div class="g2" style="grid-template-columns:1.35fr 1fr">
+            <div class="card">
+              <h3>Token created: Claude Desktop, Ibrahim's MacBook</h3>
+              <div class="tok"><code>kpt_7hK2mQ9vX4cN8rT1wZ5bL3pF6dS0yJa</code><button class="btn secondary small" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-copy"/></svg>Copy</button></div>
+              <div class="chk warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-warn"/></svg><span>Copy it now. Kept keeps only a hash and won't show it again.</span></div>
+              <p class="sm">Read and write · <b>Home</b> only (tokens start with one location) · expires 12 Jan 2027, in 90 days</p>
+              <div class="hd sp"><span class="xs">Claude Desktop · <code>claude_desktop_config.json</code></span><button class="btn secondary small" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-copy"/></svg>Copy</button></div>
+<pre class="code">{
+  "mcpServers": {
+    "kept": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://kept.example.net/mcp",
+        "--header", "Authorization:${AUTH_HEADER}"],
+      "env": {
+        "AUTH_HEADER": "Bearer kpt_7hK2mQ9vX4cN8rT1wZ5bL3pF6dS0yJa"
+      }
+    }
+  }
+}</pre>
+              <div class="hd sp"><span class="xs">Claude Code · terminal</span><button class="btn secondary small" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-copy"/></svg>Copy</button></div>
+<pre class="code">claude mcp add --transport http kept \
+  https://kept.example.net/mcp \
+  --header "Authorization: Bearer kpt_7hK2mQ9vX4cN8rT1wZ5bL3pF6dS0yJa"</pre>
+            </div>
+            <div class="col">
+              <div class="card" style="gap:0">
+                <div class="hd sp"><h3>Tokens</h3><span class="hd"><span class="chip">All locations</span><button class="btn primary small" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-plus"/></svg>New token</button></span></div>
+                <div class="li c two"><div class="st"><span class="t">Shortcuts, Ibrahim's iPhone</span><span class="s">Read and write · Home · used 3 min ago</span></div><button class="btn secondary small" type="button">Revoke</button></div>
+                <div class="li c two"><div class="st"><span class="t">Home Assistant</span><span class="s">Read only · Home, Garage · used 1 min ago</span></div><button class="btn secondary small" type="button">Revoke</button></div>
+                <h3 style="padding-top:10px;border-top:1px solid var(--line)">Connected apps (OAuth)</h3>
+                <div class="li c two"><div class="st"><span class="t">Claude · <span class="mono" style="font-size:12.5px">claude.ai</span></span><span class="s">Read and write · Home · granted 20 Sep</span></div><button class="btn secondary small" type="button">Revoke</button></div>
+                <div class="li c two"><div class="st"><span class="t">ChatGPT · <span class="mono" style="font-size:12.5px">chatgpt.com</span></span><span class="s">Read only · Home · granted 1 Oct</span></div><button class="btn secondary small" type="button">Revoke</button></div>
+              </div>
+              <div class="card" style="gap:0">
+                <div class="hd sp"><h3>Recent changes by connections</h3><span class="xs">7 days</span></div>
+                <div class="li c two"><div class="st"><span class="t">Moved "Jump starter" to Home</span><span class="s">Claude · 13 Oct, 21:05 · was in Garage</span></div><button class="btn secondary small" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-undo"/></svg>Undo</button></div>
+                <div class="li c two"><div class="st"><span class="t">Added "AA batteries" × 12</span><span class="s">Shortcuts · 12 Oct, 18:22 · Home</span></div><button class="btn secondary small" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-undo"/></svg>Undo</button></div>
+                <div class="li c two"><div class="st"><span class="t">Renamed to "Bosch drill, 18 V"</span><span class="chk warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-warn"/></svg>Can't undo: Alfred changed the name since.</span></div><button class="btn secondary small" type="button">Open</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Connections · desktop · light. The token appears once with copy and ready-made client configs; tokens and grants default to one location (D179). The host and /mcp path in the snippets are placeholders. D58 D63 D124 D125. Not built yet: the Connections tab joins Settings with MCP in step 6.</figcaption>
+</figure>
+
+<!-- 8 · Admin status · desktop · dark -->
+<figure id="f-admin" style="margin:0">
+  <div class="frame-scroll">
+    <div class="desktop t-dark" role="img" aria-label="Desktop: Admin status page, dark theme">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Instance admin</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work" style="gap:14px">
+          <nav class="tabs tight"><a href="#">Users</a><a href="#">Admins</a><a class="on" href="#">Status</a><a href="#">Failed jobs</a><a href="#">Alerts</a><a href="#">Sign-up</a><a href="#">Currencies</a><a href="#">AI</a></nav>
+          <div class="kpis">
+            <div class="kpi"><span class="xs">Reminders</span><span class="chk ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg><b style="font-size:15px">Scanned 4 min ago</b></span></div>
+            <div class="kpi"><span class="xs">Last backup</span><span class="chk ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg><b style="font-size:15px">Today 03:00 · verified</b></span></div>
+            <div class="kpi"><span class="xs">Failed jobs</span><span class="chk warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-warn"/></svg><b style="font-size:15px">2 need a decision</b></span></div>
+            <div class="kpi"><span class="xs">Update check</span><span class="chk"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-info"/></svg><b style="font-size:15px">Off</b></span></div>
+          </div>
+          <div class="g3">
+            <div class="col">
+            <div class="card">
+              <div class="hd sp"><h3>Backups</h3><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>Verified</span></div>
+              <dl class="kv" style="font-size:13px"><dt>Target</dt><dd>restic · <span class="mono" style="font-size:12px;overflow-wrap:anywhere">b2:kept-cairo:kept</span></dd><dt>Last run</dt><dd>Today 03:00–03:06 · added 148 MB</dd><dt>Repository</dt><dd>18.4 GB · 17 snapshots (7 daily, 4 weekly, 6 monthly)</dd><dt>Check</dt><dd>Checksum manifest matched, 03:07</dd><dt>Test restore</dt><dd>21 Sep · next nudge 21 Oct</dd><dt>Includes</dt><dd>the readable export</dd></dl>
+              <div class="hd"><button class="btn secondary small" type="button">Run now</button><button class="btn secondary small" type="button">Test restore</button></div>
+            </div>
+            <div class="card">
+              <div class="hd sp"><h3>Update check</h3><span class="hd"><span class="xs">Off</span><span class="tog" role="switch" aria-checked="false" aria-label="Update check"></span></span></div>
+              <p class="sm">When on, Kept asks GitHub releases once a day and sends nothing but the request.</p>
+            </div>
+            </div>
+            <div class="col">
+            <div class="card">
+              <div class="hd sp"><h3>Failed jobs</h3><span class="pill warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-warn"/></svg>2</span></div>
+              <div class="st" style="gap:5px;padding-bottom:10px;border-bottom:1px solid var(--line)"><span style="font-weight:600">Extraction · receipt photo</span><span class="xs">Alfred · Home · 13 Oct, 22:41 · provider error after 3 attempts</span><div class="hd"><button class="btn secondary small" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-retry"/></svg>Retry</button><button class="btn secondary small" type="button">Discard</button></div></div>
+              <div class="st" style="gap:5px"><span style="font-weight:600">Webhook · Home Assistant</span><span class="xs">thing moved · Garage · 14 Oct, 08:15 · connection refused, 10 attempts over 24 h</span><div class="hd"><button class="btn secondary small" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-retry"/></svg>Retry</button><button class="btn secondary small" type="button">Discard</button></div></div>
+            </div>
+            <div class="card">
+              <div class="hd sp"><h3>Storage</h3><span class="xs">disk 104 of 256 GB · alert at 85%</span></div>
+              <div class="bar" role="img" aria-label="Kept data 15.1 GB: photos 11.8, receipts and documents 2.1, database 0.31, other 0.9 GB"><i style="width:78.1%;background:var(--s1)"></i><i style="width:13.9%;background:var(--s2)"></i><i style="width:2%;background:var(--s3)"></i><i style="width:6%;background:var(--s-other)"></i></div>
+              <div class="legend" style="display:grid;gap:7px"><span><i style="background:var(--s1)"></i>Photos · 11.8 GB</span><span><i style="background:var(--s2)"></i>Receipts and documents · 2.1 GB</span><span><i style="background:var(--s3)"></i>Database · 310 MB</span><span><i style="background:var(--s-other)"></i>Other: thumbnails, exports · 0.9 GB</span></div>
+            </div>
+            </div>
+            <div class="col">
+            <div class="card">
+              <div class="hd sp"><h3>Recovery kit</h3><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>Downloaded 2 Sep</span></div>
+              <p class="sm">Holds KEPT_SECRET_KEY and its older versions, the restic repository URL and password, and the storage credentials. Without it, a restored backup can't open secrets or AI keys.</p>
+              <button class="btn primary" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-lock"/></svg>Download recovery kit</button>
+              <span class="xs">Asks for your passkey or password first, then shows the kit once. Also available from the server CLI.</span>
+            </div>
+            <div class="card">
+              <div class="hd sp"><h3>Admin alerts</h3><button class="btn secondary small" type="button">Send test</button></div>
+              <div class="li c"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-mail"/></svg><div class="st"><span class="t">Email</span><span class="s">ibrahim@example.com</span></div><span class="hd"><span class="xs">On</span><span class="tog on" role="switch" aria-checked="true" aria-label="Email alerts"></span></span></div>
+              <div class="li c"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-mob"/></svg><div class="st"><span class="t">Push</span><span class="s">Ibrahim's iPhone</span></div><span class="hd"><span class="xs">On</span><span class="tog on" role="switch" aria-checked="true" aria-label="Push alerts"></span></span></div>
+              <span class="xs">For: backup failed or stale, disk over 85%, reminders not scanned, failed jobs rising.</span>
+            </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Admin status · desktop · dark. The page is titled Instance admin, with the built tabs Users · Admins · Status · Failed jobs · Alerts · Sign-up · Currencies · AI. Backups, the reminder scan, failed jobs with retry and discard, storage, the recovery kit behind re-authentication, and alert channels. Network safety holds the SSRF allowances and former hostnames. The restic target is an example. D65 D66 D144 D159 D166 D182</figcaption>
+</figure>
+    <figure id="f-setup-kit">
+      <div class="frame-scroll">
+        <div class="desktop t-dark k-frame" role="img" aria-label="Desktop: instance admin status, keep the secret key somewhere else, and the confirm, dark theme" style="position:relative">
+          <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+          <section class="main">
+            <div class="topbar"><h1>Instance admin</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+            <div class="work">
+              <div class="k-tabs sm" role="tablist" aria-label="Instance admin"><span role="tab">Users</span><span role="tab">Admins</span><span class="on" role="tab">Status</span><span role="tab">Failed jobs</span><span role="tab">Alerts</span><span role="tab">Sign-up</span><span role="tab">Currencies</span><span role="tab">AI</span></div>
+              <div class="k-notice warn"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>Keep the secret key somewhere else</b><span>Kept encrypts secret fields, AI keys and the backup password with <bdi class="mono">KEPT_SECRET_KEY</bdi>. If this server and its key are lost together, a backup still restores your things, but not those. Print the recovery kit with <bdi class="mono">kept admin recovery-kit</bdi> and keep it away from this server. Kept asks for this before the first secret, AI key or backup.</span><b class="kb kb-s sm">I've kept it somewhere else</b></span></div>
+              <div class="k-stats three"><div class="k-stat"><small>Version</small><b style="font-size:15px"><bdi class="mono">1.0.0</bdi></b></div><div class="k-stat"><small>Database</small><b style="font-size:15px">Answering</b></div><div class="k-stat"><small>Alerts</small><b style="font-size:15px">None open</b></div><div class="k-stat"><small>Mail</small><b style="font-size:15px">Sending</b></div><div class="k-stat"><small>Recovery kit</small><b style="font-size:15px"><span style="color:var(--warn)">Not yet</span></b></div><div class="k-stat"><small>Backups</small><b style="font-size:15px">Last 03:00, verified</b></div></div>
+            </div>
+          </section>
+          <div class="k-scrim"></div><div class="k-dialog float" role="alertdialog" style="inset-inline:auto;left:50%;transform:translateX(-50%);width:420px"><b>Have you kept the recovery kit?</b><small>Only say yes once the two keys from <bdi class="mono">kept admin recovery-kit</bdi> are stored away from this server. Kept can't check.</small><div class="k-foot"><b class="kb kb-s foc">Cancel</b><b class="kb kb-p">I've kept it</b></div></div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Recovery kit · desktop · dark · as built on the admin status page, not a setup step: a warning until the admin confirms, through useConfirm with focus on Cancel. Kept asks before the first secret, AI key or backup (D66, D182, D193).</figcaption>
+    </figure>
+
+  </div>
+</section>

@@ -1,0 +1,761 @@
+<style>
+.a4 figure{min-width:0;max-width:100%}
+.a4 .desktop{position:relative}
+.a4 .desktop>.main{padding:0;border:0;gap:0}
+.a4 svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.a4 .pill svg.i{width:12px;height:12px;stroke-width:2.4}
+.a4 .thumb svg.i{width:22px;height:22px}
+.a4 .fab svg.i{width:26px;height:26px;stroke-width:2}
+.a4 .chip svg.i{width:15px;height:15px}
+.a4 .phone .icon-btn{width:44px;height:44px}
+.a4 .phone .btn{min-height:44px}
+.a4 .icon-btn[aria-disabled="true"]{opacity:.4}
+.a4 h4{margin:0}
+.a4 .sbox{display:flex;align-items:center;gap:8px;min-height:48px;padding-inline:12px 2px;border:1.5px solid var(--ink);border-radius:10px;background:var(--surface);color:var(--ink-3)}
+.a4 .sbox .q{flex:1;min-width:0;font:400 16px/1.3 var(--sans);color:var(--ink)}
+.a4 .caret{display:inline-block;width:1.5px;height:19px;background:var(--info);vertical-align:-4px;margin-inline-start:1px}
+.a4 .chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.a4 .phone .chip{padding-inline:9px;gap:4px}
+.a4 .chip[aria-disabled="true"]{color:var(--ink-3);border-style:dashed}
+.a4 .lead{font:600 12px/1.2 var(--sans);color:var(--ink-3)}
+.a4 .ghead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-inline:2px}
+.a4 .ghead h3{font:600 15px/1.3 var(--sans)}
+.a4 .ghead .muted{font:400 12.5px/1.3 var(--sans)}
+.a4 .sub{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--paper);font:600 12px/1.3 var(--sans);color:var(--ink-3);border-top:1px solid var(--line)}
+.a4 .sub:first-child{border-top:0;border-radius:10px 10px 0 0}
+.a4 .sub svg.i{width:14px;height:14px}
+.a4 .why{display:flex;align-items:flex-start;gap:5px;font:400 12.5px/1.4 var(--sans);color:var(--ink-3);margin-top:4px}
+.a4 .why svg.i{width:14px;height:14px;margin-top:2px}
+.a4 mark{background:var(--sunken);color:var(--ink);font-weight:600;border-radius:3px;padding:0 2px;box-shadow:inset 0 -1.5px 0 var(--ink-3)}
+.a4 .snip{font:400 13px/1.45 var(--mono);color:var(--ink-2);margin-top:6px;padding:6px 8px;background:var(--paper);border-radius:6px;overflow-wrap:anywhere}
+.a4 [dir="rtl"] :not(.sid):not(.mono):not(.snip){font-family:var(--arabic)}
+.a4 .note-line{font:400 12.5px/1.4 var(--sans);color:var(--ink-3)}
+/* assistant */
+.a4 .sheet.tall{height:90%;max-height:none;grid-template-rows:auto auto 1fr auto;gap:10px;padding-bottom:18px}
+.a4 .shead{display:flex;align-items:center;gap:2px}
+.a4 .shead h3,.a4 .dhead h3{flex:1;display:flex;align-items:center;gap:8px;font:600 17px/1.2 var(--sans)}
+.a4 .ctx{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.a4 .shead .chip{flex:none;white-space:nowrap;padding-inline-end:0;color:var(--ink)}
+.a4 .shead h3{min-width:0}
+.a4 .ctx .chip{padding-inline-end:0;color:var(--ink)}
+.a4 .x{width:44px;height:44px;margin-block:-2px;display:grid;place-items:center;color:var(--ink-3)}
+.a4 .x svg.i{width:16px;height:16px}
+.a4 .thread{grid-auto-rows:max-content;display:grid;gap:14px;align-content:start;min-height:0;overflow:auto}
+.a4 .thread.end{align-content:end;overflow:hidden}
+.a4 .me{justify-self:end;max-width:86%;background:var(--sunken);color:var(--ink);border-radius:16px 16px 4px 16px;padding:9px 13px;font:400 15px/1.4 var(--sans)}
+.a4 .ai{display:grid;gap:8px;font:400 15px/1.5 var(--sans);color:var(--ink)}
+.a4 .who{display:flex;align-items:center;gap:6px;font:600 12px/1 var(--sans);color:var(--ink-3)}
+.a4 .who svg.i{width:14px;height:14px}
+.a4 .refs{display:grid;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.a4 .ref{display:grid;gap:2px;padding:10px 12px;border-top:1px solid var(--line);min-height:44px}
+.a4 .ref:first-child{border-top:0}
+.a4 .ref a{font:600 14.5px/1.3 var(--sans);color:var(--ink);text-decoration:underline;text-decoration-color:var(--ink-3);text-underline-offset:3px;text-decoration-thickness:1px}
+.a4 .ref .t-meta{margin-top:4px}
+.a4 .composer{display:flex;align-items:center;gap:4px;padding:4px 4px 4px 14px;border:1px solid var(--line);border-radius:14px;background:var(--paper);min-height:54px}
+.a4 .composer .ph{flex:1;color:var(--ink-3);font:400 15px/1.3 var(--sans)}
+.a4 .send{width:44px;height:44px;border-radius:11px;background:var(--amber);color:var(--amber-ink);display:grid;place-items:center;border:0;flex:none}
+.a4 .send[aria-disabled="true"]{background:var(--sunken);color:var(--ink-3)}
+/* confirmation card (app UI, never model text) */
+.a4 .confirm{display:grid;background:var(--surface);border:1.5px solid var(--ink);border-radius:12px;overflow:hidden;color:var(--ink)}
+.a4 .confirm .hd{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--sunken);font:600 14px/1.25 var(--sans)}
+.a4 .confirm .hd small{display:block;font:500 11.5px/1.2 var(--sans);color:var(--ink-3)}
+.a4 .timer{margin-inline-start:auto;display:inline-flex;align-items:center;gap:5px;font:500 12.5px/1 var(--mono);color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.a4 .timer svg.i{width:15px;height:15px}
+.a4 .crow{display:grid;grid-template-columns:44px 1fr;column-gap:2px;padding:6px 12px 12px 2px;border-top:1px solid var(--line)}
+.a4 .cb{width:44px;height:44px;display:grid;place-items:center}
+.a4 .cb i{width:22px;height:22px;border-radius:5px;border:2px solid var(--ink);display:grid;place-items:center;background:var(--ink);color:var(--paper)}
+.a4 .cb i svg.i{width:15px;height:15px;stroke-width:2.6}
+.a4 .ctitle{font:600 14.5px/1.35 var(--sans);padding-top:11px;display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+.a4 .ctitle a{color:var(--ink);text-underline-offset:3px}
+.a4 .verb{font:600 11.5px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.a4 .ba{display:grid;grid-template-columns:auto 1fr;gap:5px 10px;margin:8px 0 0;font:400 13.5px/1.4 var(--sans)}
+.a4 .ba dt{color:var(--ink-3);font-size:12.5px;padding-top:1px}
+.a4 .ba dd{margin:0;color:var(--ink);overflow-wrap:anywhere}
+.a4 .ba .was{color:var(--ink-2)}
+.a4 .num{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:13px}
+.a4 .ba svg.i{width:14px;height:14px;vertical-align:-2px;color:var(--ink-3)}
+.a4 .confirm .ft{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px;border-top:1px solid var(--line)}
+.a4 .confirm .ft .btn{min-height:44px}
+.a4 .confirm .fine{padding:0 12px 12px;font:400 12.5px/1.4 var(--sans);color:var(--ink-3)}
+.a4 .confirm.expired{border-color:var(--line)}
+.a4 .confirm.expired .crow{grid-template-columns:1fr;padding:10px 12px 12px;color:var(--ink-3)}
+.a4 .confirm.expired .ctitle{padding-top:0;color:var(--ink-2)}
+.a4 .confirm.expired .ba dd{color:var(--ink-2)}
+.a4 .confirm.clash{border-color:var(--warn)}
+.a4 .confirm.clash .hd{color:var(--warn)}
+.a4 .mini{width:375px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:14px;flex:none}
+/* palette */
+.a4 .cmdk{position:absolute;top:58px;left:50%;transform:translateX(-50%);width:660px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.28);display:grid;overflow:hidden}
+.a4 .cmdk .in{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);font:400 17px/1.3 var(--sans);color:var(--ink-3)}
+.a4 .cmdk .in .q{flex:1;color:var(--ink)}
+.a4 kbd.k{font:500 11px/1 var(--mono);border:1px solid var(--line);border-radius:4px;padding:3px 5px;color:var(--ink-3);background:var(--paper);white-space:nowrap}
+.a4 .lst{display:grid;padding:4px 8px 8px}
+.a4 .cg{padding:12px 10px 4px;font:600 11px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.a4 .co{display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;padding:7px 10px;border-radius:8px;min-height:44px}
+.a4 .co.cur{background:var(--sunken);box-shadow:inset 3px 0 0 var(--ink)}
+.a4 .co .ic{width:32px;height:32px;border-radius:8px;background:var(--sunken);display:grid;place-items:center;color:var(--ink-2)}
+.a4 .co.cur .ic{background:var(--surface)}
+.a4 .co .nm{font:600 14px/1.3 var(--sans)}
+.a4 .co .pa{font:400 12.5px/1.35 var(--sans);color:var(--ink-2)}
+.a4 .co .tail{display:flex;gap:6px;align-items:center}
+.a4 .cmdk .foot{display:flex;flex-wrap:wrap;gap:18px;padding:10px 16px;border-top:1px solid var(--line);font:400 12px/1 var(--sans);color:var(--ink-3);background:var(--paper)}
+.a4 .cmdk .foot span{display:inline-flex;gap:6px;align-items:center}
+/* desktop pieces */
+.a4 .split{display:grid;grid-template-columns:1fr 380px;min-height:0}
+.a4 .split>.work{min-height:0}
+.a4 .dhead{display:flex;align-items:center;gap:6px;padding:10px 12px 10px 16px;border-bottom:1px solid var(--line)}
+.a4 .sidebar .tree{align-content:start}
+.a4 .tree .on{background:var(--sunken);color:var(--ink)}
+.a4 .tbtn{display:inline-flex;align-items:center;gap:8px}
+.a4 .btn[aria-pressed="true"]{background:var(--sunken);border-color:var(--ink)}
+.a4 .dd{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 10px 0 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font:500 13.5px/1 var(--sans);color:var(--ink)}
+.a4 .dd .muted{font-weight:400}
+.a4 .dd svg.i{width:16px;height:16px;color:var(--ink-3)}
+.a4 .places{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.a4 .plc{display:grid;gap:4px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.a4 .plc b{font:600 14px/1.3 var(--sans);display:flex;gap:8px;align-items:center}
+.a4 .plc span{font:400 12.5px/1.3 var(--sans);color:var(--ink-3)}
+.a4 .lsearch{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink-3);font:400 13.5px/1 var(--sans);flex:1;max-width:320px}
+.a4 .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+/* notifications */
+.a4 .nt{display:grid;grid-template-columns:40px 1fr;gap:4px 12px;padding:12px 14px}
+.a4 .ico{width:40px;height:40px;border-radius:10px;background:var(--sunken);display:grid;place-items:center;color:var(--ink-2);position:relative}
+.a4 .ico.unread::after{content:"";position:absolute;top:-2px;inset-inline-end:-2px;width:10px;height:10px;border-radius:50%;background:var(--info);border:2px solid var(--surface)}
+.a4 .nt h4{font:600 15px/1.3 var(--sans);color:var(--ink)}
+.a4 .nt .d{font:400 13px/1.45 var(--sans);color:var(--ink-2);margin-top:2px}
+.a4 .nt .t-meta{margin-top:6px}
+.a4 .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.a4 .acts .btn{display:inline-flex;align-items:center;gap:6px}
+.a4 .acts .btn svg.i{width:16px;height:16px}
+.a4 .snz{margin-top:10px;display:grid;gap:10px;padding:12px;border-radius:10px;background:var(--paper);border:1px solid var(--line)}
+.a4 .opt{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:center;min-height:44px}
+.a4 .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--ink-3)}
+.a4 .radio.on{border-color:var(--ink);box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 10px var(--ink)}
+.a4 .opt .input{min-height:44px;padding:9px 12px;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+/* activity */
+.a4 .day{padding:10px 16px;background:var(--paper);font:600 11.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.a4 .ev{display:grid;grid-template-columns:50px 32px 1fr auto;gap:12px;align-items:start;padding:12px 16px}
+.a4 .ev time{font:500 12.5px/1 var(--mono);color:var(--ink-3);padding-top:10px;font-variant-numeric:tabular-nums}
+.a4 .av{width:32px;height:32px;border-radius:50%;background:var(--sunken);display:grid;place-items:center;font:600 13px/1 var(--sans);color:var(--ink-2)}
+.a4 .av svg.i{width:16px;height:16px}
+.a4 .ev .s{font:400 14.5px/1.45 var(--sans);color:var(--ink)}
+.a4 .ev .s a{color:var(--ink);font-weight:600;text-underline-offset:3px;text-decoration-color:var(--ink-3)}
+.a4 .ev .d{font:400 13px/1.45 var(--sans);color:var(--ink-2);margin-top:3px}
+.a4 .ev .red{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font:500 12.5px/1.3 var(--sans);color:var(--ink-3);padding:4px 8px;border-radius:6px;background:var(--paper);border:1px dashed var(--line)}
+.a4 .ev .red svg.i{width:14px;height:14px}
+.a4 .ev .btn{display:inline-flex;align-items:center;gap:6px}
+.a4 .ev .btn svg.i{width:15px;height:15px}
+.a4 .refuse{font:400 12px/1.35 var(--sans);color:var(--ink-3);max-width:170px;text-align:end}
+/* conflict */
+.a4 .mf{display:grid;gap:8px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+.a4 .mf h4{font:600 15px/1.3 var(--sans);color:var(--ink)}
+.a4 .tri{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font:400 14px/1.4 var(--sans);margin:0}
+.a4 .tri dt{color:var(--ink-3);font-size:12.5px;padding-top:1px}
+.a4 .tri dd{margin:0;color:var(--ink);overflow-wrap:anywhere}
+.a4 .tri dd.base{color:var(--ink-2)}
+.a4 .seg{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface)}
+.a4 .seg span{min-height:44px;display:grid;place-items:center;font:600 13.5px/1.2 var(--sans);color:var(--ink-2);border-inline-start:1px solid var(--line);text-align:center;padding:0 4px}
+.a4 .seg span:first-child{border-inline-start:0}
+.a4 .seg span.on{background:var(--ink);color:var(--paper)}
+.a4 .merged{display:flex;gap:8px;align-items:flex-start;font:400 13px/1.45 var(--sans);color:var(--ink-2)}
+.a4 .merged svg.i{width:16px;height:16px;color:var(--ok);margin-top:2px}
+.a4 .stack{display:grid;gap:8px}
+.a4 .stack .btn{min-height:48px;font-size:15px}
+</style>
+<section class="area a4" id="search-assistant">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<symbol id="a4-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></symbol>
+<symbol id="a4-scan" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></symbol>
+<symbol id="a4-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+<symbol id="a4-spark" viewBox="0 0 24 24"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-6.5L8 20v-3.5H5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 14.9v.01"/></symbol>
+<symbol id="a4-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></symbol>
+<symbol id="a4-capture" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+<symbol id="a4-inbox" viewBox="0 0 24 24"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></symbol>
+<symbol id="a4-menu" viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></symbol>
+<symbol id="a4-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+<symbol id="a4-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="a4-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></symbol>
+<symbol id="a4-cable" viewBox="0 0 24 24"><path d="M8 3v4M13 3v4M6 7h9v4a4.5 4.5 0 0 1-9 0Z"/><path d="M10.5 15.5V18a3 3 0 0 0 6 0v-1a3 3 0 0 1 3-3"/></symbol>
+<symbol id="a4-box" viewBox="0 0 24 24"><path d="M3 5h18v4H3zM5 9v10h14V9M10 13h4"/></symbol>
+<symbol id="a4-pin" viewBox="0 0 24 24"><path d="M12 21s-6-5.5-6-10a6 6 0 0 1 12 0c0 4.5-6 10-6 10Z"/><circle cx="12" cy="11" r="2.2"/></symbol>
+<symbol id="a4-car" viewBox="0 0 24 24"><path d="M4 16v-4l2-5h12l2 5v4M4 12h16M10 16h4"/><circle cx="7.5" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/></symbol>
+<symbol id="a4-doc" viewBox="0 0 24 24"><path d="M7 3h7l4 4v14H7ZM14 3v4h4M10 12h5M10 16h5"/></symbol>
+<symbol id="a4-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+<symbol id="a4-warn" viewBox="0 0 24 24"><path d="M12 4 21 20H3Z"/><path d="M12 10v4M12 17v.01"/></symbol>
+<symbol id="a4-q" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.8 9.6a2.3 2.3 0 1 1 3 2.2c-.6.3-.8.7-.8 1.3v.4M12 16.5v.01"/></symbol>
+<symbol id="a4-lend" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8"/><path d="M17 14v5H5V7h5"/></symbol>
+<symbol id="a4-wifioff" viewBox="0 0 24 24"><path d="M3 3l18 18M8.6 15.6a5 5 0 0 1 6.2-.6M5.2 12.2a10 10 0 0 1 4.3-2.4M19 12.2a10 10 0 0 0-3.3-2M12 19.5v.01"/></symbol>
+<symbol id="a4-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="1.5"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+<symbol id="a4-gauge" viewBox="0 0 24 24"><path d="M4.5 17a8 8 0 1 1 15 0"/><path d="m12 15 3.5-4.5"/></symbol>
+<symbol id="a4-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></symbol>
+<symbol id="a4-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="a4-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="a4-threads" viewBox="0 0 24 24"><path d="M4 5h12v8H9l-3 3v-3H4Z"/><path d="M16 9h4v8h-2v3l-3-3h-4v-2"/></symbol>
+<symbol id="a4-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="a4-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></symbol>
+<symbol id="a4-send" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+<symbol id="a4-sliders" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+<symbol id="a4-chevd" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="a4-tag" viewBox="0 0 24 24"><path d="M3.5 12.5V4h8.5l8.5 8.5-8 8Z"/><circle cx="8" cy="8.5" r="1.5"/></symbol>
+<symbol id="a4-wrench" viewBox="0 0 24 24"><path d="M15 4a5 5 0 0 0-4.6 6.9L4 17.3 6.7 20l6.4-6.4A5 5 0 0 0 20 9l-3 3-3-1-1-3Z"/></symbol>
+<symbol id="a4-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5.5c0 4.2 3 7.8 7 9.5 4-1.7 7-5.3 7-9.5V6Z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+<symbol id="a4-drill" viewBox="0 0 24 24"><path d="M3 7h12v6H3zM15 9h4M19 8v2M7 13v6h4l-1-6"/></symbol>
+<symbol id="a4-tv" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="1.5"/><path d="M8 20h8"/></symbol>
+<symbol id="a4-drop" viewBox="0 0 24 24"><path d="M12 3.5s-6 6.5-6 11a6 6 0 0 0 12 0c0-4.5-6-11-6-11Z"/></symbol>
+<symbol id="a4-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16Z"/></symbol>
+<symbol id="a4-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+</svg>
+
+<header>
+  <span class="eyebrow">Screens · Search, assistant &amp; notifications</span>
+  <h2>Search, assistant and notifications</h2>
+  <p>Finding things, asking about them, and hearing when something needs you. Search is plain Postgres with visible aliases and never waits on a model (D41, D42). The assistant is a calm sheet that knows the page; it changes nothing until you confirm a card that Kept draws from the tool's arguments, which model text cannot imitate (D22–D24, D179). Every change lands in the activity feed with undo, secrets appear there without their values, and a clash between two people is settled field by field (D110, D150, D156).</p>
+</header>
+
+  <h3 class="grp">Search</h3>
+  <div class="frames">
+
+<!-- ===== 1. Search · phone · light ===== -->
+<figure id="f-search" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: search results for hdmi, grouped by kind then location, light theme">
+    <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <h1>Search</h1>
+      <button class="icon-btn" aria-label="Scan"><svg class="i"><use href="#a4-scan"/></svg></button>
+      <button class="icon-btn" aria-label="Notifications"><svg class="i"><use href="#a4-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="i"><use href="#a4-spark"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="sbox"><svg class="i"><use href="#a4-search"/></svg><span class="q">hdmi<span class="caret"></span></span><button class="icon-btn" aria-label="Clear search"><svg class="i"><use href="#a4-close"/></svg></button></div>
+      <div class="k-strip"><span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>Filters</span><span class="k-chip"><svg class="k-ic s"><use href="#k-bookmark"/></svg>Views<svg class="k-ic s"><use href="#k-down"/></svg></span></div>
+      <div class="ghead"><h3>Things <span class="muted">· 5</span></h3><span class="muted">Best match first</span></div>
+      <div class="ui">
+        <div class="sub"><svg class="i"><use href="#a4-pin"/></svg>Home · 4</div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-cable"/></svg></div><div><div class="t-name"><mark>HDMI</mark> cable, 2 m</div><div class="t-path">Home › Office › Desk drawer › Cable box</div><div class="t-meta"><span class="sid">7KQ‑4MZ</span><span class="pill">× 3</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-cable"/></svg></div><div><div class="t-name">Display cable, 1.8 m</div><div class="t-path">Home › Living room › TV unit › Left drawer</div><div class="why"><svg class="i"><use href="#a4-tag"/></svg><span>Found by its alias <mark>hdmi</mark> · also “display cable”, “video cable”</span></div><div class="t-meta"><span class="sid">6DC‑3VN</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-cable"/></svg></div><div><div class="t-name"><mark>HDMI</mark> to USB‑C adapter</div><div class="t-path">With Murdock since 12 Oct · kept in Home › Office › Desk drawer › Cable box</div><div class="t-meta"><span class="sid">4AD‑8UC</span><span class="pill info"><svg class="i"><use href="#a4-lend"/></svg>Lent</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-box"/></svg></div><div><div class="t-name"><mark>HDMI</mark> switch, 4‑port</div><div class="t-path">Home › Living room › TV unit</div><div class="t-meta"><span class="sid">6SW‑1KD</span></div></div></div>
+        <div class="sub"><svg class="i"><use href="#a4-pin"/></svg>Storage unit · 1</div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-cable"/></svg></div><div><div class="t-name"><mark>HDMI</mark> cable, 5 m</div><div class="t-path">Storage unit › Shelf B › Box 7 · marked not here on 9 Aug</div><div class="t-meta"><span class="sid">4HN‑7WE</span><span class="pill"><svg class="i"><use href="#a4-q"/></svg>Uncertain</span></div></div></div>
+      </div>
+      <div class="ghead"><h3>Documents <span class="muted">· 1</span></h3></div>
+      <div class="ui">
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-doc"/></svg></div><div><div class="t-name">Receipt · B.TECH Nasr City</div><div class="t-path">3 Mar 2026 · linked to HDMI cable, 2 m</div><div class="snip"><mark>HDMI</mark> CABLE 2M × 3    285.00 EGP</div></div></div>
+      </div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="i"><use href="#a4-home"/></svg>Home</a>
+      <a class="on" href="#"><svg class="i"><use href="#a4-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i"><use href="#a4-capture"/></svg></span>Capture</a>
+      <a href="#"><svg class="i"><use href="#a4-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="i"><use href="#a4-menu"/></svg>More</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Search · phone · light — “hdmi”: things then documents, each split by location; full paths wrap; the alias that matched is shown, not hidden; lent and uncertain ride in the path. The filter strip shows only "Filters" and "Views" until a filter is in use; recent searches show only while the box is empty (D41, D42, D205)</figcaption>
+</figure>
+
+<!-- ===== 2. Search · desktop · light: ⌘K palette ===== -->
+<figure id="f-search-desk" style="margin:0">
+  <div class="frame-scroll">
+    <div class="desktop t-light" role="img" aria-label="Desktop: command palette open with hdmi results, actions and ask the assistant">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a class="on" href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Home</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work">
+          <div class="ui attn">
+            <span class="eyebrow">Needs you</span>
+            <div class="item"><span class="n">4</span><span class="k">things to review from Saturday's capture</span><button class="btn secondary small" type="button">Review</button></div>
+            <div class="item"><span class="n">1</span><span class="k">Corolla oil change, estimated ~14 Nov</span><button class="btn secondary small" type="button">Open</button></div>
+            <div class="item"><span class="n">1</span><span class="k">lent out and overdue</span><button class="btn secondary small" type="button">Open</button></div>
+          </div>
+        </div>
+      </section>
+      <div class="scrim"></div>
+      <div class="cmdk" role="dialog" aria-label="Command palette">
+        <div class="in"><svg class="i"><use href="#a4-search"/></svg><span class="q">hdmi<span class="caret"></span></span><kbd class="k">esc</kbd></div>
+        <div class="lst">
+          <div class="cg">Things</div>
+          <div class="co cur"><span class="ic"><svg class="i"><use href="#a4-cable"/></svg></span><span><span class="nm"><mark>HDMI</mark> cable, 2 m <span class="muted" style="font-weight:400">× 3</span></span><br><span class="pa">Home › Office › Desk drawer › Cable box</span></span><span class="tail"><span class="sid">7KQ‑4MZ</span><kbd class="k">↵</kbd></span></div>
+          <div class="co"><span class="ic"><svg class="i"><use href="#a4-cable"/></svg></span><span><span class="nm">Display cable, 1.8 m</span><br><span class="pa">Home › Living room › TV unit › Left drawer · alias <mark>hdmi</mark></span></span><span class="tail"><span class="sid">6DC‑3VN</span></span></div>
+          <div class="co"><span class="ic"><svg class="i"><use href="#a4-cable"/></svg></span><span><span class="nm"><mark>HDMI</mark> cable, 5 m</span><br><span class="pa">Storage unit › Shelf B › Box 7</span></span><span class="tail"><span class="pill"><svg class="i"><use href="#a4-q"/></svg>Uncertain</span><span class="sid">4HN‑7WE</span></span></div>
+          <div class="cg">Documents</div>
+          <div class="co"><span class="ic"><svg class="i"><use href="#a4-doc"/></svg></span><span><span class="nm">Receipt · B.TECH Nasr City, 3 Mar 2026</span><br><span class="pa mono"><mark>HDMI</mark> CABLE 2M × 3    285.00 EGP</span></span><span class="tail"></span></div>
+          <div class="cg">Actions on HDMI cable, 2 m</div>
+          <div class="co"><span class="ic"><svg class="i"><use href="#a4-arr"/></svg></span><span class="nm">Move…</span><span class="tail"><kbd class="k">M</kbd></span></div>
+          <div class="co"><span class="ic"><svg class="i"><use href="#a4-lend"/></svg></span><span class="nm">Lend…</span><span class="tail"><kbd class="k">L</kbd></span></div>
+          <div class="co"><span class="ic"><svg class="i"><use href="#a4-tag"/></svg></span><span class="nm">Print a label</span><span class="tail"><kbd class="k">P</kbd></span></div>
+          <div class="cg">Assistant</div>
+          <div class="co"><span class="ic"><svg class="i"><use href="#a4-spark"/></svg></span><span><span class="nm">Ask the assistant about “hdmi”</span><br><span class="pa">Opens the side panel with this question</span></span><span class="tail"><kbd class="k">⌘↵</kbd></span></div>
+        </div>
+        <div class="foot"><span><kbd class="k">↑↓</kbd>move</span><span><kbd class="k">↵</kbd>open</span><span><kbd class="k">⌘↵</kbd>ask the assistant</span><span style="margin-inline-start:auto">7 results · <u>see all in Search</u></span></div>
+      </div>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Search · desktop · light — ⌘K over any page: results with full paths, actions on the highlighted thing, and a hand-off to the assistant; everything reachable by keyboard (D24, D42)</figcaption>
+</figure>
+
+<!-- ===== 3. Search · phone · offline ===== -->
+<figure id="f-search-offline" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: offline search for drill, results from this phone as of last sync 14:02">
+    <div class="status"><span>14:37</span><span>○○○ ▮</span></div>
+    <div class="appbar">
+      <h1>Search</h1>
+      <button class="icon-btn" aria-label="Scan"><svg class="i"><use href="#a4-scan"/></svg></button>
+      <button class="icon-btn" aria-label="Notifications"><svg class="i"><use href="#a4-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant, needs a connection" aria-disabled="true"><svg class="i"><use href="#a4-spark"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="banner info"><svg class="i"><use href="#a4-wifioff"/></svg><span>Offline. Capture, moves and box checks still work and sync later.</span></div>
+      <div class="sbox"><svg class="i"><use href="#a4-search"/></svg><span class="q">drill</span><button class="icon-btn" aria-label="Clear search"><svg class="i"><use href="#a4-close"/></svg></button></div>
+      <div class="k-strip"><span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>Filters</span><span class="k-chip"><svg class="k-ic s"><use href="#k-bookmark"/></svg>Views<svg class="k-ic s"><use href="#k-down"/></svg></span><span class="k-achip"><span>State: Lent out</span><span class="x" aria-label="Remove the State filter"><svg class="k-ic s"><use href="#k-x"/></svg></span></span></div>
+      <div class="ghead"><h3>From this phone <span class="muted">· details need a connection</span></h3><span class="muted">as of last sync, 14:02</span></div>
+      <div class="ui">
+        <div class="sub"><svg class="i"><use href="#a4-pin"/></svg>Garage · 3</div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-drill"/></svg></div><div><div class="t-name">Bosch <mark>drill</mark>, 18 V</div><div class="t-path">With Murdock since 3 Oct · due 17 Oct · kept in Garage › Tool wall</div><div class="t-meta"><span class="sid">2HX‑9RB</span><span class="pill warn"><svg class="i"><use href="#a4-warn"/></svg>Overdue 2 days</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-box"/></svg></div><div><div class="t-name"><mark>Drill</mark> bits, 13‑piece</div><div class="t-path">Garage › Tool wall › Drawer 2</div><div class="t-meta"><span class="sid">1DB‑5PR</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-box"/></svg></div><div><div class="t-name">Wall plugs and screws</div><div class="t-path">Garage › Shelf A › Box 2</div><div class="why"><svg class="i"><use href="#a4-tag"/></svg><span>Found by its alias <mark>drill</mark> fixings</span></div><div class="t-meta"><span class="sid">5WP‑2SX</span></div></div></div>
+      </div>
+      <div class="ui">
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-doc"/></svg></div><div><div class="t-name" style="color:var(--ink-2)">Documents and receipt text</div><div class="t-path">Not kept on this phone. They search again when you're back online.</div><div class="t-meta"><span class="pill"><svg class="i"><use href="#a4-wifioff"/></svg>Needs a connection</span></div></div></div>
+      </div>
+      <p class="note-line">Opening a result shows the saved copy. Money, documents and secrets are not on this phone.</p>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="i"><use href="#a4-home"/></svg>Home</a>
+      <a class="on" href="#"><svg class="i"><use href="#a4-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i"><use href="#a4-capture"/></svg></span>Capture</a>
+      <a href="#"><svg class="i"><use href="#a4-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="i"><use href="#a4-menu"/></svg>More</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Search · phone · offline — results come from the phone's snapshot, labelled as such, with “as of last sync, 14:02”; a filter in use is a dark chip with ×; the Price filter inside Filters is disabled with the reason ("Needs a connection"); documents too; the assistant button is disabled too (§3, §4, D36, D188)</figcaption>
+</figure>
+
+<!-- ===== 10. Search · phone · Arabic RTL ===== -->
+<figure id="f-search-ar" style="margin:0">
+  <div class="phone t-light" dir="rtl" lang="ar" role="img" aria-label="هاتف: نتائج البحث عن كابل، من اليمين إلى اليسار">
+    <div class="status"><span class="ltr">9:41</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <h1>البحث</h1>
+      <button class="icon-btn" aria-label="مسح رمز"><svg class="i"><use href="#a4-scan"/></svg></button>
+      <button class="icon-btn" aria-label="الإشعارات"><svg class="i"><use href="#a4-bell"/></svg></button>
+      <button class="icon-btn" aria-label="المساعد"><svg class="i"><use href="#a4-spark"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="sbox"><svg class="i"><use href="#a4-search"/></svg><span class="q">كابل<span class="caret"></span></span><button class="icon-btn" aria-label="مسح"><svg class="i"><use href="#a4-close"/></svg></button></div>
+      <div class="k-strip"><span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>الفلاتر</span><span class="k-chip"><svg class="k-ic s"><use href="#k-bookmark"/></svg>العروض<svg class="k-ic s"><use href="#k-down"/></svg></span></div>
+      <div class="chips"><span class="lead">الأخيرة</span>
+        <span class="chip"><svg class="i"><use href="#a4-clock"/></svg>مثقاب</span>
+        <span class="chip"><svg class="i"><use href="#a4-clock"/></svg><span class="ltr">hdmi</span></span>
+        <span class="chip"><svg class="i"><use href="#a4-clock"/></svg>جواز السفر</span>
+      </div>
+      <div class="ghead"><h3>الأشياء <span class="muted">· ٤</span></h3><span class="muted">الأقرب أولًا</span></div>
+      <div class="ui">
+        <div class="sub"><svg class="i"><use href="#a4-pin"/></svg>المنزل · ٣</div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-cable"/></svg></div><div><div class="t-name"><mark>كابل</mark> HDMI، ٢ متر</div><div class="t-path">المنزل › المكتب › درج المكتب › صندوق الكابلات</div><div class="t-meta"><span class="sid ltr">7KQ‑4MZ</span><span class="pill">× ٣</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-cable"/></svg></div><div><div class="t-name"><span class="ltr">Ethernet cable, Cat6</span></div><div class="t-path">المنزل › المكتب › درج المكتب › صندوق الكابلات</div><div class="why"><svg class="i"><use href="#a4-tag"/></svg><span>وُجد عبر اسمه البديل «<mark>كابل</mark> شبكة»</span></div><div class="t-meta"><span class="sid ltr">2EC‑6NT</span><span class="pill">× ٢</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-cable"/></svg></div><div><div class="t-name"><mark>كابل</mark> شاحن <span class="ltr">USB‑C</span></div><div class="t-path">مع موردوك منذ ١٢ أكتوبر · مكانه المنزل › المكتب › درج المكتب</div><div class="t-meta"><span class="sid ltr">8CH‑4UB</span><span class="pill info"><svg class="i"><use href="#a4-lend"/></svg>مُعار</span></div></div></div>
+        <div class="sub"><svg class="i"><use href="#a4-pin"/></svg>وحدة التخزين · ١</div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-cable"/></svg></div><div><div class="t-name"><mark>كابل</mark> HDMI، ٥ أمتار</div><div class="t-path">وحدة التخزين › الرف ب › الصندوق ٧ · عُلّم «ليس هنا» في ٩ أغسطس</div><div class="t-meta"><span class="sid ltr">4HN‑7WE</span><span class="pill"><svg class="i"><use href="#a4-q"/></svg>غير مؤكد</span></div></div></div>
+      </div>
+      <div class="ghead"><h3>الأماكن <span class="muted">· ١</span></h3></div>
+      <div class="ui">
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-box"/></svg></div><div><div class="t-name">صندوق <mark>الكابلات</mark></div><div class="t-path">المنزل › المكتب › درج المكتب · ٩ أشياء</div><div class="t-meta"><span class="sid ltr">3PV‑8LC</span></div></div></div>
+      </div>
+    </div>
+    <nav class="tabbar" aria-label="القائمة الرئيسية">
+      <a href="#"><svg class="i"><use href="#a4-home"/></svg>الرئيسية</a>
+      <a class="on" href="#"><svg class="i"><use href="#a4-search"/></svg>البحث</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i"><use href="#a4-capture"/></svg></span>التقاط</a>
+      <a href="#"><svg class="i"><use href="#a4-inbox"/></svg>الوارد</a>
+      <a href="#"><svg class="i"><use href="#a4-menu"/></svg>المزيد</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Search · phone · Arabic RTL — “كابل” matches Arabic names, the plural in “الكابلات” after normalisation, and an English-named thing through its Arabic alias; counts use Eastern Arabic digits, short IDs stay Western and left-to-right (D41, D42, D78, D143)</figcaption>
+</figure>
+
+  </div>
+
+  <h3 class="grp">Assistant</h3>
+  <div class="frames">
+
+<!-- ===== 4. Assistant · phone · light: answer ===== -->
+<figure id="f-asst" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: assistant sheet over the Cable box page, answering where the spare HDMI cables are">
+    <div class="status"><span>9:44</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="i"><use href="#a4-back"/></svg></button>
+      <h1>Cable box</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="i"><use href="#a4-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="i"><use href="#a4-spark"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="t-path">Home › Office › Desk drawer</div>
+      <div class="t-meta" style="margin:0"><span class="sid">3PV‑8LC</span><span class="pill">9 things</span></div>
+      <div class="ui">
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-cable"/></svg></div><div><div class="t-name">HDMI cable, 2 m</div><div class="t-meta"><span class="sid">7KQ‑4MZ</span><span class="pill">× 3</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-cable"/></svg></div><div><div class="t-name">USB‑C charging cable</div><div class="t-meta"><span class="sid">9UC‑1LK</span><span class="pill">× 4</span></div></div></div>
+      </div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="i"><use href="#a4-home"/></svg>Home</a>
+      <a href="#"><svg class="i"><use href="#a4-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i"><use href="#a4-capture"/></svg></span>Capture</a>
+      <a href="#"><svg class="i"><use href="#a4-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="i"><use href="#a4-menu"/></svg>More</a>
+    </nav>
+    <div class="scrim"></div>
+    <div class="sheet tall" role="dialog" aria-label="Assistant">
+      <div class="shead">
+        <h3>Assistant</h3>
+        <span class="chip" title="Page context"><svg class="i"><use href="#a4-box"/></svg>Cable box<button class="x icon-btn" aria-label="Remove page context"><svg class="i"><use href="#a4-close"/></svg></button></span>
+        <button class="icon-btn" aria-label="Threads"><svg class="i"><use href="#a4-threads"/></svg></button>
+        <button class="icon-btn" aria-label="Close"><svg class="i"><use href="#a4-close"/></svg></button>
+      </div>
+      <div class="thread">
+        <div class="me">where are the spare HDMI cables?</div>
+        <div class="ai">
+          <span class="who"><svg class="i"><use href="#a4-spark"/></svg>Assistant</span>
+          <div>You have 4. Three are in this box. The fourth, a 5 m one, is in the storage unit, but Alfred marked it not here on 9 Aug, so it may not be there.</div>
+          <div class="refs">
+            <div class="ref"><a href="#">HDMI cable, 2 m</a><span class="t-path">Home › Office › Desk drawer › Cable box</span><span class="t-meta"><span class="sid">7KQ‑4MZ</span><span class="pill">× 3</span></span></div>
+            <div class="ref"><a href="#">HDMI cable, 5 m</a><span class="t-path">Storage unit › Shelf B › Box 7</span><span class="t-meta"><span class="sid">4HN‑7WE</span><span class="pill"><svg class="i"><use href="#a4-q"/></svg>Uncertain</span></span></div>
+          </div>
+          <div class="note-line">The adapter lent to Murdock isn't a cable, so it isn't counted.</div>
+        </div>
+      </div>
+      <div class="composer"><span class="ph">Ask about your things</span><button class="icon-btn" aria-label="Dictate"><svg class="i"><use href="#a4-mic"/></svg></button><button class="send" aria-label="Send" aria-disabled="true"><svg class="i"><use href="#a4-send"/></svg></button></div>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Assistant · phone · light — a sheet over the page it came from, with a removable “Cable box” context chip; a blunt answer whose every thing is an internal link with its path; no images, no figure without a source (D22–D24, D179)</figcaption>
+</figure>
+
+<!-- ===== 5. Assistant · phone · light: confirmation card ===== -->
+<figure id="f-asst-card" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: assistant confirmation card for two changes, a move and a reading">
+    <div class="status"><span>14:03</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="i"><use href="#a4-back"/></svg></button>
+      <h1>Cable box</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="i"><use href="#a4-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="i"><use href="#a4-spark"/></svg></button>
+    </div>
+    <div class="content"></div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="i"><use href="#a4-home"/></svg>Home</a>
+      <a href="#"><svg class="i"><use href="#a4-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i"><use href="#a4-capture"/></svg></span>Capture</a>
+      <a href="#"><svg class="i"><use href="#a4-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="i"><use href="#a4-menu"/></svg>More</a>
+    </nav>
+    <div class="scrim"></div>
+    <div class="sheet tall" role="dialog" aria-label="Assistant" style="height:94%">
+      <div class="shead">
+        <h3>Assistant</h3>
+        <span class="chip" title="Page context"><svg class="i"><use href="#a4-box"/></svg>Cable box<button class="x icon-btn" aria-label="Remove page context"><svg class="i"><use href="#a4-close"/></svg></button></span>
+        <button class="icon-btn" aria-label="Threads"><svg class="i"><use href="#a4-threads"/></svg></button>
+        <button class="icon-btn" aria-label="Close"><svg class="i"><use href="#a4-close"/></svg></button>
+      </div>
+      <div class="thread end">
+        <div class="me">move 2 of them to garage box 3, and log 53,400 km on the corolla</div>
+        <div class="ai"><span class="who"><svg class="i"><use href="#a4-spark"/></svg>Assistant</span><div>Two changes, not saved until you confirm.</div></div>
+        <div class="confirm" role="group" aria-label="Confirm 2 changes, drawn by Kept">
+          <div class="hd"><svg class="i"><use href="#a4-shield"/></svg><span>Confirm 2 changes<small>Only ticked rows are saved</small></span><span class="timer"><svg class="i"><use href="#a4-clock"/></svg>9:48</span></div>
+          <div class="crow">
+            <span class="cb" role="checkbox" aria-checked="true" aria-label="Include move"><i><svg class="i"><use href="#a4-check"/></svg></i></span>
+            <div>
+              <div class="ctitle"><span class="verb">Move</span><span>2 of 3 ×</span><a href="#">HDMI cable, 2 m</a><span class="sid">7KQ‑4MZ</span></div>
+              <dl class="ba">
+                <dt>From</dt><dd class="was">Home › Office › Desk drawer › Cable box</dd>
+                <dt>To</dt><dd><b>Garage › Box 3</b></dd>
+                <dt>Location</dt><dd>Home <svg class="i"><use href="#a4-arr"/></svg> Garage</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="crow">
+            <span class="cb" role="checkbox" aria-checked="true" aria-label="Include reading"><i><svg class="i"><use href="#a4-check"/></svg></i></span>
+            <div>
+              <div class="ctitle"><span class="verb">Log reading</span><a href="#">Toyota Corolla</a><span class="sid">4VC‑7HD</span></div>
+              <dl class="ba">
+                <dt>Odometer</dt><dd><span class="num was">53,330 km</span> <svg class="i"><use href="#a4-arr"/></svg> <b class="num">53,400 km</b></dd>
+                <dt>Location</dt><dd>Garage › Bay 2</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="ft"><button class="btn primary" type="button">Confirm 2</button><button class="btn secondary" type="button">Cancel</button></div>
+        </div>
+      </div>
+      <div class="composer"><span class="ph">Ask about your things</span><button class="icon-btn" aria-label="Dictate"><svg class="i"><use href="#a4-mic"/></svg></button><button class="send" aria-label="Send" aria-disabled="true"><svg class="i"><use href="#a4-send"/></svg></button></div>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Assistant · phone · light — one card per batch: a checkbox per row, the linked target, before → after, the location, and a 10-minute countdown. It has a border, header and controls that chat text never gets; Confirm counts only ticked rows (D22, D150, D179)</figcaption>
+</figure>
+
+<!-- ===== 5b. Expired and changed-since cards ===== -->
+<figure id="f-asst-states" style="margin:0">
+  <div class="mini t-light" role="img" aria-label="Two confirmation card states: expired, and changed since you asked">
+    <span class="who"><svg class="i"><use href="#a4-spark"/></svg>Assistant</span>
+    <div class="confirm expired" role="group" aria-label="Expired card">
+      <div class="hd"><svg class="i"><use href="#a4-clock"/></svg><span>Expired · ask again<small>Nothing was changed</small></span></div>
+      <div class="crow">
+        <div class="ctitle"><span class="verb">Move</span><span>2 of 3 × HDMI cable, 2 m</span></div>
+        <dl class="ba"><dt>To</dt><dd>Garage › Box 3</dd></dl>
+      </div>
+      <div class="crow">
+        <div class="ctitle"><span class="verb">Log reading</span><span>Toyota Corolla</span></div>
+        <dl class="ba"><dt>Odometer</dt><dd class="num">53,400 km</dd></dl>
+      </div>
+      <div class="ft" style="grid-template-columns:1fr"><button class="btn secondary" type="button">Ask again</button></div>
+    </div>
+    <div class="confirm clash" role="group" aria-label="Changed since you asked">
+      <div class="hd"><svg class="i"><use href="#a4-warn"/></svg><span>Changed since you asked<small style="color:var(--ink-3)">Alfred moved some at 14:04</small></span></div>
+      <div class="crow" style="grid-template-columns:1fr;padding:10px 12px 12px">
+        <div class="ctitle" style="padding-top:0"><span class="verb">Move</span><span>2 of 3 × HDMI cable, 2 m</span></div>
+        <dl class="ba"><dt>In Cable box when you asked</dt><dd class="num">3</dd><dt>In Cable box now</dt><dd class="num"><b>1</b></dd></dl>
+      </div>
+      <div class="ft"><button class="btn secondary" type="button">Ask again</button><button class="btn secondary" type="button">Cancel</button></div>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Card states — after 10 minutes the card locks as “Expired · ask again” and nothing is saved; if the row changed in between, the card shows both values and cannot be confirmed (D22, §5 Assistant)</figcaption>
+</figure>
+
+<!-- ===== 6. Assistant · desktop · dark: docked panel on Garage ===== -->
+<figure id="f-asst-desk" style="margin:0">
+  <div class="frame-scroll">
+    <div class="desktop t-dark" role="img" aria-label="Desktop, dark: Garage location page with the assistant docked as a side panel">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div class="on">Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Garage</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button><button class="btn secondary tbtn" type="button" aria-pressed="true"><svg class="i"><use href="#a4-spark"/></svg>Assistant</button></div>
+        <div class="split">
+          <div class="work">
+            <div style="display:grid;gap:4px"><span class="muted" style="font-size:13px">Location · Ibrahim, Alfred · 63 things</span></div>
+            <div class="toolbar"><button class="btn primary" type="button">Add here</button><button class="btn secondary" type="button">Box check</button><button class="btn secondary" type="button">Print labels</button></div>
+            <div class="ghead"><h3>Places <span class="muted">· 4</span></h3></div>
+            <div class="places">
+              <div class="plc"><b><svg class="i"><use href="#a4-pin"/></svg>Shelf A</b><span>11 things</span></div>
+              <div class="plc"><b><svg class="i"><use href="#a4-pin"/></svg>Shelf B</b><span>24 things</span></div>
+              <div class="plc"><b><svg class="i"><use href="#a4-pin"/></svg>Bay 2</b><span>13 things</span></div>
+              <div class="plc"><b><svg class="i"><use href="#a4-pin"/></svg>Tool wall</b><span>9 things</span></div>
+            </div>
+            <div class="k-strip"><span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>Search Garage</span><span class="k-chip"><svg class="k-ic s"><use href="#k-plus"/></svg>Filter</span><span class="k-chip"><svg class="k-ic s"><use href="#k-bookmark"/></svg>Views<svg class="k-ic s"><use href="#k-down"/></svg></span><span class="k-chip"><svg class="k-ic s"><use href="#k-sort"/></svg>Name · by place</span></div>
+            <div class="ui">
+              <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-car"/></svg></div><div><div class="t-name">Toyota Corolla</div><div class="t-path">Garage › Bay 2 · <span class="num">53,400 km</span> today</div><div class="t-meta"><span class="sid">4VC‑7HD</span><span class="pill info"><svg class="i"><use href="#a4-wrench"/></svg>Oil change ~14 Nov</span></div></div></div>
+              <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-drill"/></svg></div><div><div class="t-name">Bosch drill, 18 V</div><div class="t-path">With Murdock since 3 Oct · due 17 Oct · kept in Garage › Tool wall</div><div class="t-meta"><span class="sid">2HX‑9RB</span><span class="pill warn"><svg class="i"><use href="#a4-warn"/></svg>Overdue 2 days</span></div></div></div>
+              <div class="thing"><div class="thumb"><svg class="i"><use href="#a4-cable"/></svg></div><div><div class="t-name">HDMI cable, 2 m</div><div class="t-path">Garage › Box 3 · moved today</div><div class="t-meta"><span class="sid">7KQ‑4MZ</span><span class="pill">× 2</span></div></div></div>
+            </div>
+          </div>
+          <aside class="panel-dock" aria-label="Assistant">
+            <div class="dhead">
+              <h3><svg class="i"><use href="#a4-spark"/></svg>Assistant</h3>
+              <button class="btn secondary small tbtn" type="button"><svg class="i"><use href="#a4-threads"/></svg>Threads</button>
+              <button class="icon-btn" aria-label="New thread"><svg class="i"><use href="#a4-plus"/></svg></button>
+              <button class="icon-btn" aria-label="Close panel"><svg class="i"><use href="#a4-close"/></svg></button>
+            </div>
+            <div class="thread" style="padding:10px 16px 4px;gap:10px">
+              <div class="ctx"><span class="lead">About</span><span class="chip"><svg class="i"><use href="#a4-pin"/></svg>Garage<button class="x icon-btn" aria-label="Remove page context"><svg class="i"><use href="#a4-close"/></svg></button></span></div>
+              <div class="me">what's due on the car?</div>
+              <div class="ai">
+                <span class="who"><svg class="i"><use href="#a4-spark"/></svg>Assistant</span>
+                <div>The oil change, estimated ~14 Nov: due at 55,000 km or 6 Jun 2027, whichever comes first. Today's reading is 53,400 km, and you average about 62 km a day.</div>
+                <div class="refs"><div class="ref"><a href="#">Toyota Corolla · Oil change</a><span class="t-path">Every 10,000 km or 12 months · last 6 Jun, 45,000 km</span></div></div>
+              </div>
+              <div class="me">who has the drill?</div>
+              <div class="ai">
+                <span class="who"><svg class="i"><use href="#a4-spark"/></svg>Assistant</span>
+                <div>Murdock, since 3 Oct. It was due back 17 Oct, so it's 2 days overdue.</div>
+                <div class="refs"><div class="ref"><a href="#">Bosch drill, 18 V</a><span class="t-path">With Murdock · kept in Garage › Tool wall</span><span class="t-meta"><span class="sid">2HX‑9RB</span><span class="pill warn"><svg class="i"><use href="#a4-warn"/></svg>Overdue 2 days</span></span></div></div>
+              </div>
+            </div>
+            <div style="padding:10px 16px 14px;display:grid;gap:6px;border-top:1px solid var(--line)">
+              <div class="composer"><span class="ph">Ask about your things</span><button class="icon-btn" aria-label="Dictate"><svg class="i"><use href="#a4-mic"/></svg></button><button class="send" aria-label="Send" aria-disabled="true"><svg class="i"><use href="#a4-send"/></svg></button></div>
+              <span class="note-line">Enter to send · this thread is private to you</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Assistant · desktop · dark — docked beside the Garage page it knows about; Threads opens your private, searchable history; answers cite the reading and the schedule they come from (D23, D24)</figcaption>
+</figure>
+
+  </div>
+
+  <h3 class="grp">Around the app</h3>
+  <div class="frames">
+
+<!-- ===== 7. Notification centre · phone · light ===== -->
+<figure id="f-notifs" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: notification centre grouped by kind with inline actions">
+    <div class="status"><span>16:20</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="i"><use href="#a4-back"/></svg></button>
+      <h1>Notifications</h1>
+      <button class="icon-btn" aria-label="Notification settings"><svg class="i"><use href="#a4-sliders"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="i"><use href="#a4-spark"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="chips">
+        <span class="chip on">All · 4</span><span class="chip">Due · 2</span><span class="chip">Lending · 1</span><span class="chip">Expiring · 1</span>
+      </div>
+      <div class="ghead"><h3>Due and coming up</h3><span class="muted">2</span></div>
+      <div class="ui">
+        <div class="nt">
+          <span class="ico unread"><svg class="i"><use href="#a4-car"/></svg></span>
+          <div>
+            <h4>Oil change · Toyota Corolla</h4>
+            <div class="d">Garage › Bay 2 · estimated ~14 Nov. Due at <span class="num">55,000 km</span> or 6 Jun 2027, whichever comes first. Last reading <span class="num">53,400 km</span> today.</div>
+            <div class="acts"><button class="btn secondary small" type="button"><svg class="i"><use href="#a4-check"/></svg>Complete</button><button class="btn secondary small" type="button" aria-expanded="true" style="border-color:var(--ink)"><svg class="i"><use href="#a4-clock"/></svg>Snooze</button></div>
+            <div class="snz">
+              <span class="lead">Snooze until</span>
+              <div class="opt"><span class="radio"></span><span class="input"><span>A date</span><span class="muted">1 Nov 2026</span></span></div>
+              <div class="opt"><span class="radio on"></span><span class="input"><span>A reading</span><span class="num">56,000 km</span></span></div>
+              <button class="btn primary" type="button">Snooze to 56,000 km</button>
+            </div>
+          </div>
+        </div>
+        <div class="nt">
+          <span class="ico unread"><svg class="i"><use href="#a4-drop"/></svg></span>
+          <div>
+            <h4>Replace water filter cartridge</h4>
+            <div class="d">Home › Kitchen › Under sink · due Wed 21 Oct</div>
+            <div class="acts"><button class="btn secondary small" type="button"><svg class="i"><use href="#a4-check"/></svg>Complete</button><button class="btn secondary small" type="button"><svg class="i"><use href="#a4-clock"/></svg>Snooze</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="ghead"><h3>Lending</h3><span class="muted">1</span></div>
+      <div class="ui">
+        <div class="nt">
+          <span class="ico"><svg class="i"><use href="#a4-drill"/></svg></span>
+          <div>
+            <h4>Bosch drill, 18 V</h4>
+            <div class="d">With Murdock since 3 Oct · was due back 17 Oct · Garage › Tool wall</div>
+            <div class="t-meta"><span class="pill warn"><svg class="i"><use href="#a4-warn"/></svg>Overdue 2 days</span></div>
+            <div class="acts"><button class="btn secondary small" type="button"><svg class="i"><use href="#a4-undo"/></svg>Mark returned</button><button class="btn secondary small" type="button">Copy a reminder</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="ghead"><h3>Expiring</h3><span class="muted">1</span></div>
+      <div class="ui">
+        <div class="nt">
+          <span class="ico"><svg class="i"><use href="#a4-shield"/></svg></span>
+          <div>
+            <h4>Warranty · Samsung TV, 55″</h4>
+            <div class="d">Home › Living room · ends 14 Jan 2027</div>
+            <div class="acts"><button class="btn secondary small" type="button">Open</button><button class="btn secondary small" type="button"><svg class="i"><use href="#a4-clock"/></svg>Snooze</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="i"><use href="#a4-home"/></svg>Home</a>
+      <a href="#"><svg class="i"><use href="#a4-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i"><use href="#a4-capture"/></svg></span>Capture</a>
+      <a href="#"><svg class="i"><use href="#a4-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="i"><use href="#a4-menu"/></svg>More</a>
+    </nav>
+  </div>
+  <figcaption class="frame-cap">Notification centre · phone · light — grouped by kind; each names the thing, place, location and local date; Complete, Snooze to a date or to a reading, Mark returned, all inline. Kept never messages Murdock, it copies a reminder for you (D29, D57, D188)</figcaption>
+</figure>
+
+<!-- ===== 8. Activity feed · desktop · light ===== -->
+<figure id="f-activity" style="margin:0">
+  <div class="frame-scroll">
+    <div class="desktop t-light" role="img" aria-label="Desktop: activity feed with person, kind and date filters, undo on entries, and a secret change without its value">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a class="on" href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Activity</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work">
+          <div class="k-strip">
+            <span class="k-search" style="flex:0 1 280px"><svg class="k-ic s"><use href="#k-search"/></svg>Search activity</span>
+            <span class="k-achip"><span>Date: Last 7 days</span><span class="x" aria-label="Remove the Date filter"><svg class="k-ic s"><use href="#k-x"/></svg></span></span>
+            <span class="k-chip"><svg class="k-ic s"><use href="#k-plus"/></svg>Filter</span><span class="k-chip"><svg class="k-ic s"><use href="#k-bookmark"/></svg>Views<svg class="k-ic s"><use href="#k-down"/></svg></span>
+            <span class="muted" style="margin-inline-start:auto;font-size:13px">Undo is available for 7 days</span>
+          </div>
+          <div class="row-list">
+            <div class="day">Today · Mon 19 Oct</div>
+            <div class="ev"><time>17:02</time><span class="av">A</span><div><div class="s">Alfred moved <a href="#">Bosch drill, 18 V</a> to Garage › Tool wall</div><div class="d">From Home › Hall · back from Murdock</div></div><button class="btn secondary small" type="button"><svg class="i"><use href="#a4-undo"/></svg>Undo</button></div>
+            <div class="ev"><time>17:01</time><span class="av">A</span><div><div class="s">Alfred marked <a href="#">Bosch drill, 18 V</a> returned by Murdock</div><div class="d">Condition: good · 1 photo</div></div><button class="btn secondary small" type="button"><svg class="i"><use href="#a4-undo"/></svg>Undo</button></div>
+            <div class="ev"><time>14:05</time><span class="av">A</span><div><div class="s">Alfred edited <a href="#">Samsung TV, 55″</a>: Name, Warranty end, Notes</div><div class="d">Name → Samsung QLED TV, 55″ · Warranty end → 20 Jan 2027</div></div><span class="refuse">Can't undo: Ibrahim changed Name and Warranty end at 14:06</span></div>
+            <div class="ev"><time>14:03</time><span class="av">I</span><div><div class="s">Ibrahim, through the assistant, moved 2 × <a href="#">HDMI cable, 2 m</a> to Garage › Box 3</div><div class="d">From Home › Office › Desk drawer › Cable box</div></div><button class="btn secondary small" type="button"><svg class="i"><use href="#a4-undo"/></svg>Undo</button></div>
+            <div class="ev"><time>14:03</time><span class="av">I</span><div><div class="s">Ibrahim, through the assistant, logged <span class="num">53,400 km</span> on <a href="#">Toyota Corolla</a></div><div class="d">Previous reading <span class="num">53,330 km</span> on 18 Oct</div></div><button class="btn secondary small" type="button"><svg class="i"><use href="#a4-undo"/></svg>Undo</button></div>
+            <div class="ev"><time>11:20</time><span class="av">I</span><div><div class="s">Ibrahim changed Safe code on <a href="#">Home safe</a></div><span class="red"><svg class="i"><use href="#a4-lock"/></svg>Secret · value not recorded in activity</span></div><span></span></div>
+            <div class="day">Yesterday · Sun 18 Oct</div>
+            <div class="ev"><time>19:40</time><span class="av">A</span><div><div class="s">Alfred captured 12 things into Storage unit › Shelf B</div><div class="d">9 accepted, 3 waiting in the inbox</div></div><span></span></div>
+            <div class="ev"><time>08:15</time><span class="av"><svg class="i"><use href="#a4-link"/></svg></span><div><div class="s">Home Assistant (Ibrahim's token) logged a fill-up on <a href="#">Toyota Corolla</a></div><div class="d">38 L at <span class="num">53,330 km</span></div></div><button class="btn secondary small" type="button"><svg class="i"><use href="#a4-undo"/></svg>Undo</button></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Activity feed · desktop · light — one filter strip: person (connections included), kind, date and location are filters behind + Filter, and only the ones in use show as chips (D205); Undo on each entry for 7 days, refused with the reason when the field changed since; a secret change shows no value, and money follows your role (D110, D124, D150)</figcaption>
+</figure>
+
+<!-- ===== 9. Conflict dialog · phone · light ===== -->
+<figure id="f-conflict" style="margin:0">
+  <div class="phone t-light" role="img" aria-label="Phone: conflict dialog, Alfred changed this since you opened it, two clashing fields">
+    <div class="status"><span>14:06</span><span>●●● ▮</span></div>
+    <div class="appbar">
+      <button class="icon-btn" aria-label="Back"><svg class="i"><use href="#a4-back"/></svg></button>
+      <h1>Samsung TV, 55″</h1>
+      <button class="icon-btn" aria-label="Notifications"><svg class="i"><use href="#a4-bell"/></svg></button>
+      <button class="icon-btn" aria-label="Assistant"><svg class="i"><use href="#a4-spark"/></svg></button>
+    </div>
+    <div class="content">
+      <div class="field"><label>Name</label><div class="input">Samsung TV, 55″ (living room)</div></div>
+      <div class="field"><label>Warranty end</label><div class="input">14 Jan 2028</div></div>
+      <div class="field"><label>Condition</label><div class="input">Good</div></div>
+    </div>
+    <nav class="tabbar" aria-label="Main">
+      <a href="#"><svg class="i"><use href="#a4-home"/></svg>Home</a>
+      <a href="#"><svg class="i"><use href="#a4-search"/></svg>Search</a>
+      <a class="capture" href="#"><span class="fab"><svg class="i"><use href="#a4-capture"/></svg></span>Capture</a>
+      <a href="#"><svg class="i"><use href="#a4-inbox"/></svg>Inbox</a>
+      <a href="#"><svg class="i"><use href="#a4-menu"/></svg>More</a>
+    </nav>
+    <div class="scrim"></div>
+    <div class="sheet" role="alertdialog" aria-label="Alfred changed this since you opened it" style="max-height:93%;gap:10px">
+      <div style="display:grid;gap:4px">
+        <h3 style="font-size:18px">Alfred changed this since you opened it</h3>
+        <p style="font-size:13.5px">He saved at 14:05, after you opened it at 13:58. You both changed two fields; pick a value for each.</p>
+      </div>
+      <div class="mf">
+        <h4>Warranty end</h4>
+        <dl class="tri"><dt>Before</dt><dd class="base">14 Jan 2027</dd><dt>Yours</dt><dd>14 Jan 2028</dd><dt>Alfred's</dt><dd>20 Jan 2027</dd></dl>
+        <div class="seg" role="radiogroup" aria-label="Warranty end"><span class="on" role="radio" aria-checked="true">Keep mine</span><span role="radio" aria-checked="false">Keep theirs</span><span role="radio" aria-checked="false">Edit</span></div>
+      </div>
+      <div class="mf">
+        <h4>Name</h4>
+        <dl class="tri"><dt>Before</dt><dd class="base">Samsung TV, 55″</dd><dt>Yours</dt><dd>Samsung TV, 55″ (living room)</dd><dt>Alfred's</dt><dd>Samsung QLED TV, 55″</dd></dl>
+        <div class="seg" role="radiogroup" aria-label="Name"><span role="radio" aria-checked="false">Keep mine</span><span role="radio" aria-checked="false">Keep theirs</span><span class="on" role="radio" aria-checked="true">Edit</span></div>
+        <div class="input" style="border-color:var(--info);box-shadow:0 0 0 1px var(--info)">Samsung QLED TV, 55″ (living room)</div>
+      </div>
+      <div class="merged"><svg class="i"><use href="#a4-check"/></svg><span>Merged without asking: Alfred's Notes and your Condition.</span></div>
+      <div class="stack"><button class="btn primary" type="button">Save</button><button class="btn secondary" type="button">Discard my changes</button></div>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Conflict · phone · light — a three-way merge: fields only one person changed merge silently; only the two clashing fields are listed, each with before, yours and his, and Keep mine / Keep theirs / Edit (D156, §6)</figcaption>
+</figure>
+
+  </div>
+</section>

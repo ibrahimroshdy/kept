@@ -1,0 +1,2 @@
+# The demo build (pnpm build:demo): fixture API compiled in, for screenshots only.
+dist-demo/

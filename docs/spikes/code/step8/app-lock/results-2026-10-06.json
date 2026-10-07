@@ -1,0 +1,513 @@
+{
+  "date": "2026-10-06T06:24:38.981Z",
+  "loadavgStart": [
+    46.3,
+    33.6,
+    22.1
+  ],
+  "playwright": "1.63.0",
+  "chromium": "153.0.8010.12",
+  "webauthn": {
+    "prf": {
+      "options": {
+        "protocol": "ctap2",
+        "ctap2Version": "ctap2_1",
+        "transport": "internal",
+        "hasResidentKey": true,
+        "hasUserVerification": true,
+        "isUserVerified": true,
+        "automaticPresenceSimulation": true,
+        "hasPrf": true
+      },
+      "capabilities": {
+        "uvpaa": true,
+        "secureContext": true,
+        "clientCapabilities": {
+          "conditionalCreate": true,
+          "conditionalGet": true,
+          "extension:appid": true,
+          "extension:appidExclude": true,
+          "extension:cmtgKey": false,
+          "extension:credBlob": true,
+          "extension:credProps": true,
+          "extension:credentialProtectionPolicy": true,
+          "extension:crossDeviceFallbackUrl": false,
+          "extension:enforceCredentialProtectionPolicy": true,
+          "extension:getCredBlob": true,
+          "extension:hmacCreateSecret": true,
+          "extension:largeBlob": true,
+          "extension:minPinLength": true,
+          "extension:payment": true,
+          "extension:prf": true,
+          "hybridTransport": true,
+          "immediateGet": true,
+          "passkeyPlatformAuthenticator": true,
+          "relatedOrigins": true,
+          "signalAllAcceptedCredentials": true,
+          "signalCurrentUserDetails": true,
+          "signalUnknownCredential": true,
+          "userVerifyingPlatformAuthenticator": true
+        }
+      },
+      "create": {
+        "ok": true,
+        "id": "3EhBcMNewUSfDDlXm8pVTLifIniQVdMDwhi86lTQDts",
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": true,
+          "ED": false
+        },
+        "transports": [
+          "internal"
+        ],
+        "attachment": "platform",
+        "prf": {
+          "enabled": true,
+          "hasResults": true,
+          "firstBytes": 32
+        },
+        "extensionKeys": [
+          "prf"
+        ]
+      },
+      "getA1": {
+        "ok": true,
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": false,
+          "ED": false
+        },
+        "prf": {
+          "enabled": null,
+          "firstBytes": 32,
+          "firstHex": "<32 bytes>",
+          "secondHex": null
+        }
+      },
+      "getA2": {
+        "ok": true,
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": false,
+          "ED": false
+        },
+        "prf": {
+          "enabled": null,
+          "firstBytes": 32,
+          "firstHex": "<32 bytes>",
+          "secondHex": "<32 bytes>"
+        }
+      },
+      "getNoPrf": {
+        "ok": true,
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": false,
+          "ED": false
+        },
+        "prf": null
+      },
+      "prfDeterministic": true,
+      "prfSaltSeparates": true,
+      "prfWrap": {
+        "wrappedBytes": 40,
+        "roundTrip": true
+      },
+      "getAfterUvOff": {
+        "ok": false,
+        "error": "NotAllowedError: The operation either timed out or was not allowed. See: https://www.w3.org/TR/webauthn-2/#sctn-privacy-considerations-client."
+      },
+      "storedCredentials": [
+        {
+          "isResidentCredential": true,
+          "rpId": "localhost",
+          "signCount": 4
+        }
+      ]
+    },
+    "hmacSecretOnly": {
+      "options": {
+        "protocol": "ctap2",
+        "ctap2Version": "ctap2_1",
+        "transport": "internal",
+        "hasResidentKey": true,
+        "hasUserVerification": true,
+        "isUserVerified": true,
+        "automaticPresenceSimulation": true,
+        "hasHmacSecret": true
+      },
+      "capabilities": {
+        "uvpaa": true,
+        "secureContext": true,
+        "clientCapabilities": {
+          "conditionalCreate": true,
+          "conditionalGet": true,
+          "extension:appid": true,
+          "extension:appidExclude": true,
+          "extension:cmtgKey": false,
+          "extension:credBlob": true,
+          "extension:credProps": true,
+          "extension:credentialProtectionPolicy": true,
+          "extension:crossDeviceFallbackUrl": false,
+          "extension:enforceCredentialProtectionPolicy": true,
+          "extension:getCredBlob": true,
+          "extension:hmacCreateSecret": true,
+          "extension:largeBlob": true,
+          "extension:minPinLength": true,
+          "extension:payment": true,
+          "extension:prf": true,
+          "hybridTransport": true,
+          "immediateGet": true,
+          "passkeyPlatformAuthenticator": true,
+          "relatedOrigins": true,
+          "signalAllAcceptedCredentials": true,
+          "signalCurrentUserDetails": true,
+          "signalUnknownCredential": true,
+          "userVerifyingPlatformAuthenticator": true
+        }
+      },
+      "create": {
+        "ok": true,
+        "id": "GOoD7Z_G9czkX0RoPu9i47aYFdPRay0Ksh8JsizU68w",
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": true,
+          "ED": true
+        },
+        "transports": [
+          "internal"
+        ],
+        "attachment": "platform",
+        "prf": {
+          "enabled": true,
+          "hasResults": false,
+          "firstBytes": null
+        },
+        "extensionKeys": [
+          "prf"
+        ]
+      },
+      "getA1": {
+        "ok": true,
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": false,
+          "ED": true
+        },
+        "prf": {
+          "enabled": null,
+          "firstBytes": 32,
+          "firstHex": "<32 bytes>",
+          "secondHex": null
+        }
+      },
+      "getA2": {
+        "ok": true,
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": false,
+          "ED": true
+        },
+        "prf": {
+          "enabled": null,
+          "firstBytes": 32,
+          "firstHex": "<32 bytes>",
+          "secondHex": "<32 bytes>"
+        }
+      },
+      "getNoPrf": {
+        "ok": true,
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": false,
+          "ED": false
+        },
+        "prf": null
+      },
+      "prfDeterministic": true,
+      "prfSaltSeparates": true,
+      "prfWrap": {
+        "wrappedBytes": 40,
+        "roundTrip": true
+      },
+      "storedCredentials": [
+        {
+          "isResidentCredential": true,
+          "rpId": "localhost",
+          "signCount": 4
+        }
+      ]
+    },
+    "noPrf": {
+      "options": {
+        "protocol": "ctap2",
+        "ctap2Version": "ctap2_1",
+        "transport": "internal",
+        "hasResidentKey": true,
+        "hasUserVerification": true,
+        "isUserVerified": true,
+        "automaticPresenceSimulation": true
+      },
+      "capabilities": {
+        "uvpaa": true,
+        "secureContext": true,
+        "clientCapabilities": {
+          "conditionalCreate": true,
+          "conditionalGet": true,
+          "extension:appid": true,
+          "extension:appidExclude": true,
+          "extension:cmtgKey": false,
+          "extension:credBlob": true,
+          "extension:credProps": true,
+          "extension:credentialProtectionPolicy": true,
+          "extension:crossDeviceFallbackUrl": false,
+          "extension:enforceCredentialProtectionPolicy": true,
+          "extension:getCredBlob": true,
+          "extension:hmacCreateSecret": true,
+          "extension:largeBlob": true,
+          "extension:minPinLength": true,
+          "extension:payment": true,
+          "extension:prf": true,
+          "hybridTransport": true,
+          "immediateGet": true,
+          "passkeyPlatformAuthenticator": true,
+          "relatedOrigins": true,
+          "signalAllAcceptedCredentials": true,
+          "signalCurrentUserDetails": true,
+          "signalUnknownCredential": true,
+          "userVerifyingPlatformAuthenticator": true
+        }
+      },
+      "create": {
+        "ok": true,
+        "id": "--nqRMMbKWFta_dS53YpDfpjS5-jdwQ8EcPG84ntkFk",
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": true,
+          "ED": false
+        },
+        "transports": [
+          "internal"
+        ],
+        "attachment": "platform",
+        "prf": {
+          "enabled": false,
+          "hasResults": false,
+          "firstBytes": null
+        },
+        "extensionKeys": [
+          "prf"
+        ]
+      },
+      "getA1": {
+        "ok": true,
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": false,
+          "ED": false
+        },
+        "prf": {
+          "enabled": null,
+          "firstBytes": null,
+          "firstHex": null,
+          "secondHex": null
+        }
+      },
+      "getA2": {
+        "ok": true,
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": false,
+          "ED": false
+        },
+        "prf": {
+          "enabled": null,
+          "firstBytes": null,
+          "firstHex": null,
+          "secondHex": null
+        }
+      },
+      "getNoPrf": {
+        "ok": true,
+        "flags": {
+          "UP": true,
+          "UV": true,
+          "BE": false,
+          "BS": false,
+          "AT": false,
+          "ED": false
+        },
+        "prf": null
+      },
+      "storedCredentials": [
+        {
+          "isResidentCredential": true,
+          "rpId": "localhost",
+          "signCount": 4
+        }
+      ]
+    },
+    "uvFails": {
+      "options": {
+        "protocol": "ctap2",
+        "ctap2Version": "ctap2_1",
+        "transport": "internal",
+        "hasResidentKey": true,
+        "hasUserVerification": true,
+        "isUserVerified": false,
+        "automaticPresenceSimulation": true,
+        "hasPrf": true
+      },
+      "capabilities": {
+        "uvpaa": true,
+        "secureContext": true,
+        "clientCapabilities": {
+          "conditionalCreate": true,
+          "conditionalGet": true,
+          "extension:appid": true,
+          "extension:appidExclude": true,
+          "extension:cmtgKey": false,
+          "extension:credBlob": true,
+          "extension:credProps": true,
+          "extension:credentialProtectionPolicy": true,
+          "extension:crossDeviceFallbackUrl": false,
+          "extension:enforceCredentialProtectionPolicy": true,
+          "extension:getCredBlob": true,
+          "extension:hmacCreateSecret": true,
+          "extension:largeBlob": true,
+          "extension:minPinLength": true,
+          "extension:payment": true,
+          "extension:prf": true,
+          "hybridTransport": true,
+          "immediateGet": true,
+          "passkeyPlatformAuthenticator": true,
+          "relatedOrigins": true,
+          "signalAllAcceptedCredentials": true,
+          "signalCurrentUserDetails": true,
+          "signalUnknownCredential": true,
+          "userVerifyingPlatformAuthenticator": true
+        }
+      },
+      "create": {
+        "ok": false,
+        "error": "NotAllowedError: The operation either timed out or was not allowed. See: https://www.w3.org/TR/webauthn-2/#sctn-privacy-considerations-client."
+      }
+    },
+    "noUv": {
+      "options": {
+        "protocol": "ctap2",
+        "ctap2Version": "ctap2_1",
+        "transport": "internal",
+        "hasResidentKey": true,
+        "hasUserVerification": false,
+        "isUserVerified": false,
+        "automaticPresenceSimulation": true
+      },
+      "capabilities": {
+        "uvpaa": false,
+        "secureContext": true,
+        "clientCapabilities": {
+          "conditionalCreate": true,
+          "conditionalGet": false,
+          "extension:appid": true,
+          "extension:appidExclude": true,
+          "extension:cmtgKey": false,
+          "extension:credBlob": true,
+          "extension:credProps": true,
+          "extension:credentialProtectionPolicy": true,
+          "extension:crossDeviceFallbackUrl": false,
+          "extension:enforceCredentialProtectionPolicy": true,
+          "extension:getCredBlob": true,
+          "extension:hmacCreateSecret": true,
+          "extension:largeBlob": true,
+          "extension:minPinLength": true,
+          "extension:payment": true,
+          "extension:prf": true,
+          "hybridTransport": true,
+          "immediateGet": true,
+          "passkeyPlatformAuthenticator": true,
+          "relatedOrigins": true,
+          "signalAllAcceptedCredentials": true,
+          "signalCurrentUserDetails": true,
+          "signalUnknownCredential": true,
+          "userVerifyingPlatformAuthenticator": false
+        }
+      },
+      "create": {
+        "ok": false,
+        "error": "NotAllowedError: The operation either timed out or was not allowed. See: https://www.w3.org/TR/webauthn-2/#sctn-privacy-considerations-client."
+      }
+    }
+  },
+  "pin": {
+    "calibration": {
+      "100000": 10.6,
+      "300000": 29.7,
+      "600000": 62.2
+    },
+    "target": 2850000,
+    "targetMs": 287.8,
+    "wrap": {
+      "ms": 288.60000002384186,
+      "wrappedBytes": 40,
+      "wrongPinRejected": true
+    },
+    "spinMs": 93.3,
+    "throttled4x": {
+      "spinMs": 365.8,
+      "targetMs": 288
+    }
+  },
+  "node": {
+    "node": "v24.21.0",
+    "iterations": 2850000,
+    "runs": 5,
+    "subtleMedianMs": 1302,
+    "pbkdf2SyncMedianMs": 1237.7
+  },
+  "nodeEfficiencyCores": {
+    "node": "v24.21.0",
+    "iterations": 2850000,
+    "runs": 3,
+    "subtleMedianMs": 4346,
+    "pbkdf2SyncMedianMs": 3026.6
+  },
+  "loadavgEnd": [
+    42.6,
+    38.6,
+    25.7
+  ]
+}

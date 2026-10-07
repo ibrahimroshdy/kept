@@ -1,0 +1,176 @@
+---
+/**
+ * The landing page's hero (a Starlight component override; only pages with `hero` frontmatter
+ * render it). The copy comes from the page's frontmatter as in Starlight's own Hero; the art is
+ * the app itself, a desktop capture with the phone in front, in the page's theme. On the Arabic
+ * landing page both are the app in Arabic with the Arabic household (بيت العائلة), not the English
+ * home screen: Shot.astro picks the Arabic captures.
+ */
+import { LinkButton } from '@astrojs/starlight/components';
+import { withBase } from './landing/base';
+import Shot from './landing/Shot.astro';
+
+const { entry, lang } = Astro.locals.starlightRoute;
+const { title = entry.data.title, tagline, actions = [] } = entry.data.hero || {};
+const ar = lang === 'ar';
+
+const eyebrow = ar ? 'مستضاف ذاتيًا · مفتوح المصدر' : 'Self-hosted · Open source';
+const desktopAlt = ar
+  ? 'موقع «بيت العائلة» في Kept على حاسوب: غرفه، وما ينتظر مكانًا، والأشياء فيه'
+  : "Kept's home screen on a desktop: what needs you, the get-started checklist and recent activity";
+const phoneAlt = ar ? 'موقع «بيت العائلة» في Kept على هاتف' : "Kept's home screen on a phone";
+---
+
+<div class="kd-hero">
+  <div class="kd-hero-copy">
+    <span class="kd-hero-tape"><span class="kd-hero-hole" aria-hidden="true"></span>{eyebrow}</span>
+    <h1 id="_top" data-page-title set:html={title} />
+    {tagline && <p class="kd-hero-tagline" set:html={tagline} />}
+    {
+      actions.length > 0 && (
+        <div class="kd-hero-actions">
+          {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link, text, variant }) => (
+            <LinkButton href={withBase(link)} {variant} icon={icon?.name} class:list={[className]} {...attrs}>
+              {text}
+              {icon?.html && <Fragment set:html={icon.html} />}
+            </LinkButton>
+          ))}
+        </div>
+      )
+    }
+  </div>
+  <div class="kd-hero-art" aria-hidden="false">
+    <div class="kd-frame kd-frame-desktop">
+      <div class="kd-frame-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+      <Shot name="home" alt={desktopAlt} sizes="(min-width: 72rem) 36rem, (min-width: 50rem) 52vw, calc(100vw - 6rem)" eager />
+    </div>
+    <div class="kd-frame kd-frame-phone">
+      <Shot name="phone" alt={phoneAlt} sizes="11.5rem" eager />
+    </div>
+  </div>
+</div>
+
+<style>
+  .kd-hero {
+    display: grid;
+    gap: 2.5rem;
+    padding-block: 1.5rem 1rem;
+    align-items: center;
+  }
+  .kd-hero-copy {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+    min-width: 0;
+  }
+  .kd-hero-tape {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    background: var(--amber);
+    color: var(--amber-ink);
+    font: 600 0.75rem / 1 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.75rem 0.4375rem;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.12);
+  }
+  :global(:root:lang(ar)) .kd-hero-tape {
+    font-family: var(--arabic);
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 0.8125rem;
+  }
+  .kd-hero-hole {
+    inline-size: 6px;
+    block-size: 6px;
+    border-radius: 50%;
+    background: var(--paper);
+  }
+  h1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.75rem);
+    line-height: 1.04;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  :global(:root:lang(ar)) h1 {
+    letter-spacing: 0;
+    line-height: 1.25;
+  }
+  .kd-hero-tagline {
+    margin: 0;
+    max-inline-size: 34rem;
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+  .kd-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block-start: 0.5rem;
+  }
+  .kd-hero-actions :global(.sl-link-button) {
+    margin: 0;
+  }
+
+  .kd-hero-art {
+    position: relative;
+    min-width: 0;
+    padding-block-end: 2.5rem;
+    padding-inline-end: 3.5rem;
+  }
+  .kd-frame {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    overflow: hidden;
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.06),
+      0 18px 40px -18px rgb(0 0 0 / 0.28);
+  }
+  .kd-frame :global(img) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+  .kd-frame-desktop {
+    border-radius: 12px;
+  }
+  .kd-frame-bar {
+    display: flex;
+    gap: 6px;
+    padding: 9px 12px;
+    border-block-end: 1px solid var(--line);
+    background: var(--sunken);
+  }
+  .kd-frame-bar i {
+    inline-size: 9px;
+    block-size: 9px;
+    border-radius: 50%;
+    background: var(--line);
+  }
+  .kd-frame-phone {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-end: 0;
+    inline-size: clamp(7.5rem, 28%, 11.5rem);
+    border-radius: 22px;
+    border: 5px solid var(--charcoal);
+  }
+  .kd-frame-phone :global(img) {
+    border-radius: 16px;
+  }
+
+  @media (min-width: 50rem) {
+    .kd-hero {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: 3rem;
+      padding-block: clamp(2.5rem, 1rem + 6vmin, 5rem) 1.5rem;
+    }
+  }
+</style>

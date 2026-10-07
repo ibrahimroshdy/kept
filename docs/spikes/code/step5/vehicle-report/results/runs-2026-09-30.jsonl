@@ -1,0 +1,20 @@
+{"where":"macOS laptop (Apple silicon, node 24, shared with other agents' jobs)","dir":"en-200","wallMs":7049,"compileMs":6683,"sampledPeakMb":190,"maxRssMb":196,"peakFootprintMb":244,"pdfMb":5.7,"pages":55}
+{"where":"macOS laptop","dir":"ar-200","wallMs":1135,"compileMs":1028,"sampledPeakMb":309,"maxRssMb":309,"peakFootprintMb":261,"pdfMb":6,"pages":55}
+{"where":"macOS laptop","dir":"en-200","wallMs":1283,"compileMs":1157,"sampledPeakMb":284,"maxRssMb":285,"peakFootprintMb":249,"pdfMb":5.7,"pages":55}
+{"where":"macOS laptop","dir":"ar-200","wallMs":2897,"compileMs":2603,"sampledPeakMb":197,"maxRssMb":202,"peakFootprintMb":260,"pdfMb":6,"pages":55}
+{"where":"macOS laptop","dir":"en-200","wallMs":2948,"compileMs":2599,"sampledPeakMb":210,"maxRssMb":212,"peakFootprintMb":243,"pdfMb":5.7,"pages":55}
+{"where":"macOS laptop","dir":"ar-200","wallMs":3435,"compileMs":3108,"sampledPeakMb":206,"maxRssMb":208,"peakFootprintMb":260,"pdfMb":6,"pages":55}
+{"where":"macOS laptop","dir":"ar-200-cap60","wallMs":3146,"compileMs":2851,"sampledPeakMb":194,"maxRssMb":196,"peakFootprintMb":232,"pdfMb":4.8,"pages":50}
+{"where":"macOS laptop","dir":"ar-200-cap60","wallMs":4097,"compileMs":3815,"sampledPeakMb":146,"maxRssMb":153,"peakFootprintMb":232,"pdfMb":4.8,"pages":50}
+{"where":"macOS laptop","dir":"ar-200-x2","wallMs":7708,"compileMs":7394,"sampledPeakMb":301,"maxRssMb":313,"peakFootprintMb":464,"pdfMb":11.9,"pages":104}
+{"where":"macOS laptop","dir":"ar-200-x2","wallMs":5435,"compileMs":5231,"sampledPeakMb":276,"maxRssMb":281,"peakFootprintMb":453,"pdfMb":11.9,"pages":104}
+{"where":"macOS laptop (earlier set, same thumbnails)","dir":"en-400","wallMs":1019,"compileMs":936,"sampledPeakMb":358,"maxRssMb":404,"peakFootprintMb":412,"pdfMb":11.8,"pages":55}
+{"where":"macOS laptop (earlier set)","dir":"ar-400","wallMs":2060,"compileMs":1951,"sampledPeakMb":388,"maxRssMb":404,"peakFootprintMb":422,"pdfMb":12,"pages":55}
+{"where":"macOS laptop (earlier set)","dir":"en-400","wallMs":1037,"compileMs":915,"sampledPeakMb":391,"maxRssMb":397,"peakFootprintMb":412,"pdfMb":11.8,"pages":55}
+{"where":"macOS laptop (earlier set)","dir":"ar-400","wallMs":736,"compileMs":662,"sampledPeakMb":424,"maxRssMb":476,"peakFootprintMb":422,"pdfMb":12,"pages":55}
+{"where":"kept:ci-arm64, --memory 512m --memory-swap 512m --cpus 2","job":"en-200","code":0,"ms":10275,"childPeakRssMb":300,"containerPeakMb":269,"pdfMb":5.7}
+{"where":"kept:ci-arm64, 512m, 2 cpus","job":"ar-200","code":0,"ms":2944,"childPeakRssMb":302,"containerPeakMb":272,"pdfMb":6}
+{"where":"kept:ci-arm64, 512m, 2 cpus","job":"en-200","code":0,"ms":1892,"childPeakRssMb":297,"containerPeakMb":266,"pdfMb":5.7}
+{"where":"kept:ci-arm64, 512m, 2 cpus","job":"ar-200","code":0,"ms":4129,"childPeakRssMb":307,"containerPeakMb":278,"pdfMb":6}
+{"where":"kept:ci-arm64, 512m, 2 cpus","job":"ar-200-cap60","code":0,"ms":3337,"childPeakRssMb":284,"containerPeakMb":248,"pdfMb":4.8}
+{"where":"kept:ci-arm64, 512m, 2 cpus","job":"ar-200-x2","code":0,"ms":11432,"childPeakRssMb":507,"containerPeakMb":494,"pdfMb":11.9}

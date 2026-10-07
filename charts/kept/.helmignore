@@ -1,0 +1,5 @@
+# Not packaged: the check's value sets and golden renders (scripts/check-helm.sh).
+ci/
+.DS_Store
+*.swp
+*~

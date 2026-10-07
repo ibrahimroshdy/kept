@@ -1,0 +1,2671 @@
+{
+ "started": "2026-09-29T23:23:10.397Z",
+ "arch": "arm64",
+ "node": "v24.21.0",
+ "model": {
+  "id": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX",
+  "revision": "536a9f241cb3f02a9c5995a1e708c784bd274859",
+  "dtype": "q8",
+  "pooling": "cls"
+ },
+ "phases": {
+  "boot": {
+   "seconds": 1.75,
+   "role": "all",
+   "note": "from source under tsx: an upper bound for the built image"
+  },
+  "idleUnloaded": {
+   "rssMedianMB": 188.7,
+   "rssMaxMB": 188.8,
+   "heapUsedMB": 100
+  },
+  "imported": {
+   "ms": 527.12,
+   "rssMedianMB": 367.5,
+   "rssMaxMB": 367.6,
+   "heapUsedMB": 191.1
+  },
+  "download": {
+   "secondsIncludingLoad": 2.83,
+   "files": [
+    {
+     "file": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX/536a9f241cb3f02a9c5995a1e708c784bd274859/config.json",
+     "bytes": 1215,
+     "ok": true
+    },
+    {
+     "file": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX/536a9f241cb3f02a9c5995a1e708c784bd274859/onnx/model_quantized.onnx",
+     "bytes": 97858099,
+     "ok": true
+    },
+    {
+     "file": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX/536a9f241cb3f02a9c5995a1e708c784bd274859/tokenizer.json",
+     "bytes": 25301671,
+     "ok": true
+    },
+    {
+     "file": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX/536a9f241cb3f02a9c5995a1e708c784bd274859/tokenizer_config.json",
+     "bytes": 12860,
+     "ok": true
+    },
+    {
+     "file": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX/config.json",
+     "bytes": 1215,
+     "ok": true
+    }
+   ],
+   "allVerified": true
+  },
+  "loaded": {
+   "loadPeakMB": 794.3,
+   "rssMedianMB": 606.4,
+   "rssMaxMB": 694.6,
+   "heapUsedMB": 220.8,
+   "addedOverIdleMB": 417.7
+  },
+  "query": {
+   "n": 258,
+   "p50ms": 3.34,
+   "p95ms": 7.17,
+   "p99ms": 9.19,
+   "maxms": 27.78
+  },
+  "index": {
+   "bench": {
+    "things": 10210,
+    "seconds": 157.7,
+    "thingsPerSecond": 64.74,
+    "peakMB": 575,
+    "sample": [
+     "Box 1 · Box / bin صندوق / حاوية · Office › Zone 4.2 › Shelf 4.2.3",
+     "Box 2 · Box / bin صندوق / حاوية · Office › Zone 4.3 › Shelf 4.3.3 › Bin 4.3.3.1"
+    ]
+   },
+   "households": {
+    "things": 60,
+    "seconds": 0.48,
+    "thingsPerSecond": 125.36,
+    "peakMB": 569.6,
+    "sample": [
+     "Samsung TV, 55″ · TV / display تلفزيون / شاشة · Samsung QE55Q60B · Living room › TV unit",
+     "Wi-Fi router · Network device جهاز شبكة · TP-Link Archer AX55 · Living room › TV unit"
+    ]
+   }
+  },
+  "disposed": {
+   "rssMedianMB": 405.7,
+   "rssMaxMB": 600,
+   "heapUsedMB": 238.3
+  }
+ },
+ "locations": {
+  "bench": 1,
+  "households": 4
+ },
+ "scores": {
+  "bench.ar": {
+   "n": 34,
+   "recall10": {
+    "keyword": 0.15,
+    "semantic": 0.2,
+    "rrf": 0.26
+   },
+   "mrr10": {
+    "keyword": 0.15,
+    "semantic": 0.25,
+    "rrf": 0.32
+   }
+  },
+  "bench.en": {
+   "n": 34,
+   "recall10": {
+    "keyword": 0.24,
+    "semantic": 0.47,
+    "rrf": 0.46
+   },
+   "mrr10": {
+    "keyword": 0.24,
+    "semantic": 0.57,
+    "rrf": 0.54
+   }
+  },
+  "households.ar": {
+   "n": 31,
+   "recall10": {
+    "keyword": 0.24,
+    "semantic": 0.67,
+    "rrf": 0.69
+   },
+   "mrr10": {
+    "keyword": 0.35,
+    "semantic": 0.52,
+    "rrf": 0.57
+   }
+  },
+  "households.en": {
+   "n": 30,
+   "recall10": {
+    "keyword": 0.12,
+    "semantic": 0.81,
+    "rrf": 0.81
+   },
+   "mrr10": {
+    "keyword": 0.2,
+    "semantic": 0.65,
+    "rrf": 0.68
+   }
+  }
+ },
+ "perQuery": [
+  {
+   "part": "bench",
+   "id": "b-ar-01",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 173,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.3,
+    "mrr": 0.2
+   },
+   "rrf": {
+    "recall": 0.3,
+    "mrr": 0.2
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-02",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 178,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-03",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 166,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-04",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 166,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-05",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 168,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-06",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 183,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-07",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 197,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-08",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 168,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.7,
+    "mrr": 0.5
+   },
+   "rrf": {
+    "recall": 0.7,
+    "mrr": 0.5
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-09",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 178,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.2,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.2,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-10",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 165,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-11",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 174,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-12",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 182,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.1,
+    "mrr": 0.3333333333333333
+   },
+   "rrf": {
+    "recall": 0.1,
+    "mrr": 0.3333333333333333
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-13",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 166,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-14",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 348,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.1,
+    "mrr": 0.125
+   },
+   "rrf": {
+    "recall": 0.1,
+    "mrr": 0.125
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-15",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 184,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 0.4,
+    "mrr": 0.5
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-16",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 167,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.1,
+    "mrr": 0.3333333333333333
+   },
+   "rrf": {
+    "recall": 0.1,
+    "mrr": 0.3333333333333333
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-17",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 179,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-18",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 185,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-19",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 170,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-20",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 188,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 0.8,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-21",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 308,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.3,
+    "mrr": 0.14285714285714285
+   },
+   "rrf": {
+    "recall": 0.3,
+    "mrr": 0.14285714285714285
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-22",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 162,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-23",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 178,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-24",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 155,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.6,
+    "mrr": 0.5
+   },
+   "rrf": {
+    "recall": 0.6,
+    "mrr": 0.5
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-25",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 181,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.4,
+    "mrr": 0.5
+   },
+   "rrf": {
+    "recall": 0.4,
+    "mrr": 0.5
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-26",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 182,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-27",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 190,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-28",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 189,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.1,
+    "mrr": 0.3333333333333333
+   },
+   "rrf": {
+    "recall": 0.1,
+    "mrr": 0.3333333333333333
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-29",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 174,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 0.2,
+    "mrr": 0.14285714285714285
+   },
+   "rrf": {
+    "recall": 0.7,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-30",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 169,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.1,
+    "mrr": 0.3333333333333333
+   },
+   "rrf": {
+    "recall": 0.1,
+    "mrr": 0.3333333333333333
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-31",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 184,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.2,
+    "mrr": 0.2
+   },
+   "rrf": {
+    "recall": 0.2,
+    "mrr": 0.2
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-32",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 173,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-33",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 181,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0.6,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-ar-34",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 172,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.2,
+    "mrr": 0.25
+   },
+   "rrf": {
+    "recall": 0.2,
+    "mrr": 0.25
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-01",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 173,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-02",
+   "locale": "en",
+   "kind": "literal",
+   "relevant": 178,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-03",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 166,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-04",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 166,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.3,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.3,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-05",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 168,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.4,
+    "mrr": 0.3333333333333333
+   },
+   "rrf": {
+    "recall": 0.4,
+    "mrr": 0.3333333333333333
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-06",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 183,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.4,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.4,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-07",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 197,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.1,
+    "mrr": 0.25
+   },
+   "rrf": {
+    "recall": 0.1,
+    "mrr": 0.25
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-08",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 168,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-09",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 178,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-10",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 165,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.5,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.5,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-11",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 174,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-12",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 182,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.2,
+    "mrr": 0.3333333333333333
+   },
+   "rrf": {
+    "recall": 0.1,
+    "mrr": 0.125
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-13",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 166,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.3,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.1,
+    "mrr": 0.25
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-14",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 348,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.1,
+    "mrr": 0.1
+   },
+   "rrf": {
+    "recall": 0.1,
+    "mrr": 0.1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-15",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 167,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-16",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 179,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.4,
+    "mrr": 0.25
+   },
+   "rrf": {
+    "recall": 0.4,
+    "mrr": 0.25
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-17",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 185,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-18",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 170,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.4,
+    "mrr": 0.3333333333333333
+   },
+   "rrf": {
+    "recall": 0.4,
+    "mrr": 0.3333333333333333
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-19",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 188,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.4,
+    "mrr": 0.5
+   },
+   "rrf": {
+    "recall": 0.4,
+    "mrr": 0.5
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-20",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 308,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-21",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 162,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.2,
+    "mrr": 0.14285714285714285
+   },
+   "rrf": {
+    "recall": 0.2,
+    "mrr": 0.14285714285714285
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-22",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 155,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-23",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 181,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-24",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 182,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.9,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.9,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-25",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 190,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-26",
+   "locale": "en",
+   "kind": "literal",
+   "relevant": 189,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 0.9,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-27",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 174,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-28",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 169,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-29",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 184,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.9,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.9,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-30",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 181,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.6,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.6,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-31",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 251,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.9,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.9,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-32",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 199,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-33",
+   "locale": "en",
+   "kind": "literal",
+   "relevant": 166,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "bench",
+   "id": "b-en-34",
+   "locale": "en",
+   "kind": "literal",
+   "relevant": 166,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-01",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 4,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.75,
+    "mrr": 0.3333333333333333
+   },
+   "rrf": {
+    "recall": 0.75,
+    "mrr": 0.3333333333333333
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-02",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 3,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.5
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.5
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-03",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.5,
+    "mrr": 0.14285714285714285
+   },
+   "rrf": {
+    "recall": 0.5,
+    "mrr": 0.14285714285714285
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-04",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 4,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-05",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-06",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-07",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-08",
+   "locale": "en",
+   "kind": "literal",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.25
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.25
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-09",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-10",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.5
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.5
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-11",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 4,
+   "keyword": {
+    "recall": 0.25,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 0.75,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.75,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-12",
+   "locale": "en",
+   "kind": "literal",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0.5,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-13",
+   "locale": "en",
+   "kind": "literal",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0.5,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-14",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-15",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-16",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.3333333333333333
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.3333333333333333
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-17",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-18",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-19",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.1111111111111111
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.1111111111111111
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-20",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-21",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.14285714285714285
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.14285714285714285
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-22",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-23",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-24",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-25",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-26",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 3,
+   "keyword": {
+    "recall": 0.3333333333333333,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 0.3333333333333333,
+    "mrr": 0.125
+   },
+   "rrf": {
+    "recall": 0.3333333333333333,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-27",
+   "locale": "en",
+   "kind": "literal",
+   "relevant": 1,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-28",
+   "locale": "en",
+   "kind": "literal",
+   "relevant": 1,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-29",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-en-30",
+   "locale": "en",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-01",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 4,
+   "keyword": {
+    "recall": 0.25,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 0.75,
+    "mrr": 0.5
+   },
+   "rrf": {
+    "recall": 0.75,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-02",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 3,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.6666666666666666,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.6666666666666666,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-03",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.5
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.5
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-04",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 4,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0.5,
+    "mrr": 0.5
+   },
+   "rrf": {
+    "recall": 0.5,
+    "mrr": 0.5
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-05",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0.5,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-06",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-07",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.3333333333333333
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.3333333333333333
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-08",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-09",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-10",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.16666666666666666
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.16666666666666666
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-11",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 3,
+   "keyword": {
+    "recall": 0.3333333333333333,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-12",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0.5,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 0.5,
+    "mrr": 0.1111111111111111
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-13",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0.5,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 0.5,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 0.5,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-14",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.3333333333333333
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.3333333333333333
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-15",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-16",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.5
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.5
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-17",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-18",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-19",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-20",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.125
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.125
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-21",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 1,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-22",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 2,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-23",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-24",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-25",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 0.14285714285714285
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 0.14285714285714285
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-26",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-27",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-28",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-29",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-30",
+   "locale": "ar",
+   "kind": "meaning",
+   "relevant": 1,
+   "keyword": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "semantic": {
+    "recall": 0,
+    "mrr": 0
+   },
+   "rrf": {
+    "recall": 0,
+    "mrr": 0
+   }
+  },
+  {
+   "part": "households",
+   "id": "h-ar-31",
+   "locale": "ar",
+   "kind": "literal",
+   "relevant": 2,
+   "keyword": {
+    "recall": 0.5,
+    "mrr": 1
+   },
+   "semantic": {
+    "recall": 1,
+    "mrr": 1
+   },
+   "rrf": {
+    "recall": 1,
+    "mrr": 1
+   }
+  }
+ ],
+ "finished": "2026-09-29T23:27:08.282Z",
+ "firstRun": {
+  "note": "run 1: the first enable, model downloaded from the hub (51 s including load); its checksum check had a matching bug (fixed), the files were re-verified by hand",
+  "download": {
+   "secondsIncludingLoad": 51.34,
+   "files": [
+    {
+     "file": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX/536a9f241cb3f02a9c5995a1e708c784bd274859/config.json",
+     "bytes": 1215,
+     "ok": true
+    },
+    {
+     "file": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX/536a9f241cb3f02a9c5995a1e708c784bd274859/onnx/model_quantized.onnx",
+     "bytes": 97858099,
+     "ok": true
+    },
+    {
+     "file": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX/536a9f241cb3f02a9c5995a1e708c784bd274859/tokenizer.json",
+     "bytes": 25301671,
+     "ok": true
+    },
+    {
+     "file": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX/536a9f241cb3f02a9c5995a1e708c784bd274859/tokenizer_config.json",
+     "bytes": 12860,
+     "ok": true
+    },
+    {
+     "file": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX/config.json",
+     "bytes": 1215,
+     "ok": true
+    }
+   ],
+   "allVerified": false
+  },
+  "loaded": {
+   "loadPeakMB": 661.7,
+   "rssMedianMB": 567,
+   "rssMaxMB": 774.3,
+   "heapUsedMB": 220.9,
+   "addedOverIdleMB": 377
+  },
+  "query": {
+   "n": 258,
+   "p50ms": 3.89,
+   "p95ms": 11.17,
+   "p99ms": 17.66,
+   "maxms": 41.6
+  },
+  "indexBench": {
+   "things": 10210,
+   "seconds": 103.02,
+   "thingsPerSecond": 99.11,
+   "peakMB": 572.6,
+   "sample": [
+    "Box 1 · Box / bin صندوق / حاوية · Office › Zone 4.2 › Shelf 4.2.3",
+    "Box 2 · Box / bin صندوق / حاوية · Office › Zone 4.3 › Shelf 4.3.3 › Bin 4.3.3.1"
+   ]
+  }
+ }
+}

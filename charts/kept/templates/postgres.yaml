@@ -1,0 +1,151 @@
+{{- if .Values.postgres.bundled }}
+{{- $full := include "kept.fullname" . -}}
+{{- /*
+The bundled Postgres (D186, plan Q18): the pinned pgvector image Compose uses, one replica. Its
+first start on an empty volume runs files/roles.sh from /docker-entrypoint-initdb.d, which makes
+Kept's four logins and the extensions, as Compose's docker/initdb-prod does. Major upgrades are a
+dump and restore, never an image bump.
+*/}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $full }}-db-init
+  labels:
+    {{- include "kept.labels" . | nindent 4 }}
+data:
+  roles.sh: |
+    {{- .Files.Get "files/roles.sh" | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $full }}-postgres
+  labels:
+    {{- include "kept.labels" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+spec:
+  clusterIP: None
+  selector:
+    {{- include "kept.selector" (dict "root" . "component" "postgres") | nindent 4 }}
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ $full }}-postgres
+  labels:
+    {{- include "kept.labels" . | nindent 4 }}
+    app.kubernetes.io/component: postgres
+spec:
+  serviceName: {{ $full }}-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "kept.selector" (dict "root" . "component" "postgres") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kept.labels" . | nindent 8 }}
+        app.kubernetes.io/component: postgres
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      # The image's postgres user (uid 999). PGDATA lives under the volume's root
+      # (/var/lib/postgresql/18/docker), which the entrypoint creates as that user.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: postgres
+          image: {{ .Values.postgres.image }}
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgres.superuserSecret }}
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              value: {{ .Values.postgres.database | quote }}
+            - name: TZ
+              value: UTC
+            {{- range list "OWNER" "APP" "AUTH" "SYSTEM" }}
+            - name: KEPT_DB_{{ . }}_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.roles.existingSecret }}
+                  key: KEPT_DB_{{ . }}_PASSWORD
+            {{- end }}
+          ports:
+            - name: postgres
+              containerPort: 5432
+          readinessProbe:
+            # Over TCP: during init the server listens on the socket only.
+            exec:
+              command: ["pg_isready", "-h", "127.0.0.1", "-U", "postgres", "-d", {{ .Values.postgres.database | quote }}]
+            periodSeconds: 5
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-h", "127.0.0.1", "-U", "postgres", "-d", {{ .Values.postgres.database | quote }}]
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            {{- toYaml .Values.postgres.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql
+            - name: run
+              mountPath: /var/run/postgresql
+            - name: tmp
+              mountPath: /tmp
+            - name: init
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+      volumes:
+        - name: run
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+        - name: init
+          configMap:
+            name: {{ $full }}-db-init
+            defaultMode: 0555
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          {{- include "kept.selector" (dict "root" . "component" "postgres") | nindent 10 }}
+      spec:
+        accessModes: [ReadWriteOnce]
+        {{- with .Values.postgres.storage.storageClass }}
+        storageClassName: {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.postgres.storage.size }}
+{{- end }}

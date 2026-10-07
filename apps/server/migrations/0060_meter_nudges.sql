@@ -1,0 +1,2 @@
+ALTER TABLE "meters" ADD COLUMN "nudge_days" integer DEFAULT 30;--> statement-breakpoint
+ALTER TABLE "meters" ADD CONSTRAINT "meters_nudge_days_chk" CHECK (nudge_days IS NULL OR nudge_days BETWEEN 7 AND 365);

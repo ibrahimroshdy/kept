@@ -1,0 +1,15 @@
+# The quick start: bundled Postgres, files on a volume, keys generated into the config volume,
+# behind an ingress with TLS. Image pinned by digest, as a release's chart is.
+publicUrl: https://kept.example.org
+image:
+  tag: 1.0.0
+  digest: sha256:0000000000000000000000000000000000000000000000000000000000000001
+postgres:
+  superuserSecret: kept-postgres
+roles:
+  existingSecret: kept-db
+ingress:
+  enabled: true
+  className: traefik
+  tls:
+    enabled: true

@@ -1,0 +1,1629 @@
+{
+ "provisional": true,
+ "about": "S6.5's provisional search set (2026-09-30), NOT T17's set. Two parts. `bench`: the 10,000-thing 'Bench 10k' location of the bench seed (names from apps/server/src/seed/words.ts, 30% Arabic; types and brands are drawn at random there, so a thing's type often contradicts its name). A thing is relevant when its name's noun (the name minus the words.ts adjective) is one of the concept's nouns, in either language. `households`: the households seed's Home, Garage, Personal and بيت العائلة (60 realistic things), searched as Ibrahim; relevant things are named exactly. Seeded ids change on every seed, so expectations are names or nouns, resolved to ids at run time. `kind` is the author's label: `literal` when the query shares a word stem with the target's name or alias, `meaning` otherwise. Queries are Egyptian Arabic and English, written by the spike author; T17 grows and replaces this set (the maintainer's own phrasings welcome).",
+ "metric": "recall@10 = |relevant in top 10| / min(10, |relevant|); MRR@10 = 1/rank of the first relevant result in the top 10, else 0. Averaged per language per part.",
+ "bench": {
+  "location": "Bench 10k",
+  "concepts": {
+   "hdmi": {
+    "en": [
+     "HDMI cable"
+    ],
+    "ar": [
+     "كابل HDMI"
+    ]
+   },
+   "usb_c": {
+    "en": [
+     "USB-C cable"
+    ],
+    "ar": []
+   },
+   "phone_charger": {
+    "en": [
+     "phone charger"
+    ],
+    "ar": [
+     "شاحن"
+    ]
+   },
+   "laptop_charger": {
+    "en": [
+     "laptop charger"
+    ],
+    "ar": [
+     "شاحن لابتوب"
+    ]
+   },
+   "extension": {
+    "en": [
+     "extension cord",
+     "power strip"
+    ],
+    "ar": [
+     "وصلة كهرباء"
+    ]
+   },
+   "drill": {
+    "en": [
+     "drill"
+    ],
+    "ar": [
+     "مِثْقاب"
+    ]
+   },
+   "screwdriver": {
+    "en": [
+     "screwdriver"
+    ],
+    "ar": [
+     "مِفَكّ"
+    ]
+   },
+   "hammer": {
+    "en": [
+     "hammer"
+    ],
+    "ar": [
+     "شاكوش"
+    ]
+   },
+   "tape_measure": {
+    "en": [
+     "tape measure"
+    ],
+    "ar": [
+     "متر قياس"
+    ]
+   },
+   "spirit_level": {
+    "en": [
+     "spirit level"
+    ],
+    "ar": []
+   },
+   "wrench": {
+    "en": [
+     "wrench"
+    ],
+    "ar": [
+     "مفتاح إنجليزي"
+    ]
+   },
+   "pliers": {
+    "en": [
+     "pliers"
+    ],
+    "ar": [
+     "زَرَدِيّة"
+    ]
+   },
+   "painting": {
+    "en": [
+     "paint roller",
+     "paintbrush"
+    ],
+    "ar": []
+   },
+   "kettle": {
+    "en": [
+     "kettle"
+    ],
+    "ar": [
+     "غلّاية"
+    ]
+   },
+   "toaster": {
+    "en": [
+     "toaster"
+    ],
+    "ar": [
+     "محمصة"
+    ]
+   },
+   "blender": {
+    "en": [
+     "blender"
+    ],
+    "ar": [
+     "خلّاط"
+    ]
+   },
+   "hair_dryer": {
+    "en": [
+     "hair dryer"
+    ],
+    "ar": [
+     "مجفف شعر"
+    ]
+   },
+   "iron": {
+    "en": [
+     "iron"
+    ],
+    "ar": [
+     "مِكْواة"
+    ]
+   },
+   "vacuum": {
+    "en": [
+     "vacuum cleaner"
+    ],
+    "ar": [
+     "مكنسة كهربائية"
+    ]
+   },
+   "fan": {
+    "en": [
+     "fan"
+    ],
+    "ar": [
+     "مروحة"
+    ]
+   },
+   "heater": {
+    "en": [
+     "heater"
+    ],
+    "ar": [
+     "دفّاية"
+    ]
+   },
+   "lamp": {
+    "en": [
+     "lamp"
+    ],
+    "ar": [
+     "أباجورة"
+    ]
+   },
+   "torch": {
+    "en": [
+     "torch"
+    ],
+    "ar": [
+     "كشّاف"
+    ]
+   },
+   "lantern": {
+    "en": [
+     "lantern"
+    ],
+    "ar": [
+     "فانوس"
+    ]
+   },
+   "router": {
+    "en": [
+     "router"
+    ],
+    "ar": [
+     "راوتر"
+    ]
+   },
+   "keyboard": {
+    "en": [
+     "keyboard"
+    ],
+    "ar": [
+     "لوحة مفاتيح"
+    ]
+   },
+   "headphones": {
+    "en": [
+     "headphones"
+    ],
+    "ar": [
+     "سمّاعات"
+    ]
+   },
+   "camera": {
+    "en": [
+     "camera"
+    ],
+    "ar": [
+     "كاميرا"
+    ]
+   },
+   "backpack": {
+    "en": [
+     "backpack"
+    ],
+    "ar": [
+     "حقيبة ظهر"
+    ]
+   },
+   "suitcase": {
+    "en": [
+     "suitcase"
+    ],
+    "ar": [
+     "شنطة سفر"
+    ]
+   },
+   "rain": {
+    "en": [
+     "umbrella",
+     "raincoat"
+    ],
+    "ar": [
+     "شمسية"
+    ]
+   },
+   "scarf": {
+    "en": [
+     "scarf"
+    ],
+    "ar": [
+     "كوفية"
+    ]
+   },
+   "blanket": {
+    "en": [
+     "blanket"
+    ],
+    "ar": [
+     "بطّانية"
+    ]
+   },
+   "pillow": {
+    "en": [
+     "pillow"
+    ],
+    "ar": [
+     "مخدّة"
+    ]
+   },
+   "towel": {
+    "en": [
+     "towel"
+    ],
+    "ar": [
+     "فوطة"
+    ]
+   },
+   "bedsheet": {
+    "en": [
+     "bedsheet"
+    ],
+    "ar": [
+     "مِلاية"
+    ]
+   },
+   "games": {
+    "en": [
+     "board game",
+     "puzzle"
+    ],
+    "ar": [
+     "لعبة",
+     "بازل"
+    ]
+   },
+   "football": {
+    "en": [
+     "football"
+    ],
+    "ar": [
+     "كرة قدم"
+    ]
+   },
+   "bicycle_pump": {
+    "en": [
+     "bicycle pump"
+    ],
+    "ar": [
+     "منفاخ"
+    ]
+   },
+   "first_aid": {
+    "en": [
+     "first aid kit"
+    ],
+    "ar": [
+     "صندوق إسعافات"
+    ]
+   },
+   "thermometer": {
+    "en": [
+     "thermometer"
+    ],
+    "ar": [
+     "ترمومتر"
+    ]
+   },
+   "batteries": {
+    "en": [
+     "batteries"
+    ],
+    "ar": [
+     "بطاريات"
+    ]
+   },
+   "bulbs": {
+    "en": [
+     "light bulbs"
+    ],
+    "ar": [
+     "لمبات"
+    ]
+   },
+   "candles": {
+    "en": [
+     "candles"
+    ],
+    "ar": [
+     "شموع"
+    ]
+   },
+   "frame": {
+    "en": [
+     "picture frame"
+    ],
+    "ar": [
+     "برواز"
+    ]
+   },
+   "scissors": {
+    "en": [
+     "scissors"
+    ],
+    "ar": [
+     "مقصّ"
+    ]
+   },
+   "glue_gun": {
+    "en": [
+     "glue gun"
+    ],
+    "ar": [
+     "مسدس شمع"
+    ]
+   },
+   "stapler": {
+    "en": [
+     "stapler"
+    ],
+    "ar": [
+     "دبّاسة"
+    ]
+   },
+   "notebook": {
+    "en": [
+     "notebook"
+    ],
+    "ar": [
+     "دفتر"
+    ]
+   },
+   "cookbook": {
+    "en": [
+     "cookbook"
+    ],
+    "ar": [
+     "كتاب طبخ"
+    ]
+   },
+   "prayer_rug": {
+    "en": [],
+    "ar": [
+     "سجّادة صلاة"
+    ]
+   }
+  },
+  "queries": [
+   {
+    "id": "b-ar-01",
+    "locale": "ar",
+    "q": "حاجة أشحن بيها الموبايل",
+    "concepts": [
+     "phone_charger"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-02",
+    "locale": "ar",
+    "q": "شاحن اللابتوب",
+    "concepts": [
+     "laptop_charger"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "b-ar-03",
+    "locale": "ar",
+    "q": "سلك الشاشة",
+    "concepts": [
+     "hdmi"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-04",
+    "locale": "ar",
+    "q": "حاجة أغلي فيها المية",
+    "concepts": [
+     "kettle"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-05",
+    "locale": "ar",
+    "q": "أفك المسامير",
+    "concepts": [
+     "screwdriver"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-06",
+    "locale": "ar",
+    "q": "أدق مسمار في الحيطة",
+    "concepts": [
+     "hammer"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-07",
+    "locale": "ar",
+    "q": "أعمل خرم في الحيطة",
+    "concepts": [
+     "drill"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-08",
+    "locale": "ar",
+    "q": "أنشف شعري",
+    "concepts": [
+     "hair_dryer"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-09",
+    "locale": "ar",
+    "q": "أكوي القميص",
+    "concepts": [
+     "iron"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-10",
+    "locale": "ar",
+    "q": "أنضف السجاد",
+    "concepts": [
+     "vacuum"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-11",
+    "locale": "ar",
+    "q": "حاجة تبرد الأوضة في الصيف",
+    "concepts": [
+     "fan"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-12",
+    "locale": "ar",
+    "q": "تدفية في الشتا",
+    "concepts": [
+     "heater"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-13",
+    "locale": "ar",
+    "q": "نور جنب السرير",
+    "concepts": [
+     "lamp"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-14",
+    "locale": "ar",
+    "q": "كشاف لما النور يقطع",
+    "concepts": [
+     "torch",
+     "lantern"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "b-ar-15",
+    "locale": "ar",
+    "q": "فانوس رمضان",
+    "concepts": [
+     "lantern"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "b-ar-16",
+    "locale": "ar",
+    "q": "الواي فاي",
+    "concepts": [
+     "router"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-17",
+    "locale": "ar",
+    "q": "سماعة ودن",
+    "concepts": [
+     "headphones"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-18",
+    "locale": "ar",
+    "q": "أصور بيها",
+    "concepts": [
+     "camera"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-19",
+    "locale": "ar",
+    "q": "شنطة المدرسة اللي على الضهر",
+    "concepts": [
+     "backpack"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-20",
+    "locale": "ar",
+    "q": "شنطة السفر",
+    "concepts": [
+     "suitcase"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "b-ar-21",
+    "locale": "ar",
+    "q": "حاجة للمطر",
+    "concepts": [
+     "rain"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-22",
+    "locale": "ar",
+    "q": "غطا تقيل للشتا",
+    "concepts": [
+     "blanket"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-23",
+    "locale": "ar",
+    "q": "حاجة أحط عليها راسي وأنا نايم",
+    "concepts": [
+     "pillow"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-24",
+    "locale": "ar",
+    "q": "أقيس طول الحيطة",
+    "concepts": [
+     "tape_measure"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-25",
+    "locale": "ar",
+    "q": "شاش وقطن للجروح",
+    "concepts": [
+     "first_aid"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-26",
+    "locale": "ar",
+    "q": "أقيس الحرارة",
+    "concepts": [
+     "thermometer"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-27",
+    "locale": "ar",
+    "q": "حجارة للريموت",
+    "concepts": [
+     "batteries"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-28",
+    "locale": "ar",
+    "q": "لمبة",
+    "concepts": [
+     "bulbs"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "b-ar-29",
+    "locale": "ar",
+    "q": "مقص",
+    "concepts": [
+     "scissors"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "b-ar-30",
+    "locale": "ar",
+    "q": "ألزق بيها الخشب",
+    "concepts": [
+     "glue_gun"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-31",
+    "locale": "ar",
+    "q": "أنفخ كاوتش العجلة",
+    "concepts": [
+     "bicycle_pump"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-32",
+    "locale": "ar",
+    "q": "كورة",
+    "concepts": [
+     "football"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-ar-33",
+    "locale": "ar",
+    "q": "خلاط العصير",
+    "concepts": [
+     "blender"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "b-ar-34",
+    "locale": "ar",
+    "q": "أحمص العيش",
+    "concepts": [
+     "toaster"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-01",
+    "locale": "en",
+    "q": "something to charge my phone",
+    "concepts": [
+     "phone_charger"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-02",
+    "locale": "en",
+    "q": "laptop charger",
+    "concepts": [
+     "laptop_charger"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "b-en-03",
+    "locale": "en",
+    "q": "cable for the TV",
+    "concepts": [
+     "hdmi"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-04",
+    "locale": "en",
+    "q": "boil water",
+    "concepts": [
+     "kettle"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-05",
+    "locale": "en",
+    "q": "tighten screws",
+    "concepts": [
+     "screwdriver"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-06",
+    "locale": "en",
+    "q": "knock a nail into the wall",
+    "concepts": [
+     "hammer"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-07",
+    "locale": "en",
+    "q": "make holes in the wall",
+    "concepts": [
+     "drill"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-08",
+    "locale": "en",
+    "q": "dry my hair",
+    "concepts": [
+     "hair_dryer"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-09",
+    "locale": "en",
+    "q": "press my shirt",
+    "concepts": [
+     "iron"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-10",
+    "locale": "en",
+    "q": "clean the carpet",
+    "concepts": [
+     "vacuum"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-11",
+    "locale": "en",
+    "q": "keep the room cool in summer",
+    "concepts": [
+     "fan"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-12",
+    "locale": "en",
+    "q": "warm the room in winter",
+    "concepts": [
+     "heater"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-13",
+    "locale": "en",
+    "q": "bedside light",
+    "concepts": [
+     "lamp"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-14",
+    "locale": "en",
+    "q": "flashlight for power cuts",
+    "concepts": [
+     "torch",
+     "lantern"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-15",
+    "locale": "en",
+    "q": "wifi",
+    "concepts": [
+     "router"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-16",
+    "locale": "en",
+    "q": "listen to music privately",
+    "concepts": [
+     "headphones"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-17",
+    "locale": "en",
+    "q": "take photos",
+    "concepts": [
+     "camera"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-18",
+    "locale": "en",
+    "q": "school bag",
+    "concepts": [
+     "backpack"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-19",
+    "locale": "en",
+    "q": "luggage for the trip",
+    "concepts": [
+     "suitcase"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-20",
+    "locale": "en",
+    "q": "something for the rain",
+    "concepts": [
+     "rain"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-21",
+    "locale": "en",
+    "q": "keep warm in bed",
+    "concepts": [
+     "blanket"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-22",
+    "locale": "en",
+    "q": "measure the wall",
+    "concepts": [
+     "tape_measure"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-23",
+    "locale": "en",
+    "q": "bandages and plasters",
+    "concepts": [
+     "first_aid"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-24",
+    "locale": "en",
+    "q": "check for a fever",
+    "concepts": [
+     "thermometer"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-25",
+    "locale": "en",
+    "q": "AA cells for the remote",
+    "concepts": [
+     "batteries"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-26",
+    "locale": "en",
+    "q": "spare bulbs",
+    "concepts": [
+     "bulbs"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "b-en-27",
+    "locale": "en",
+    "q": "cut paper",
+    "concepts": [
+     "scissors"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-28",
+    "locale": "en",
+    "q": "hot glue",
+    "concepts": [
+     "glue_gun"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-29",
+    "locale": "en",
+    "q": "inflate the bike tyres",
+    "concepts": [
+     "bicycle_pump"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-30",
+    "locale": "en",
+    "q": "make a smoothie",
+    "concepts": [
+     "blender"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-31",
+    "locale": "en",
+    "q": "paint the bedroom walls",
+    "concepts": [
+     "painting"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-32",
+    "locale": "en",
+    "q": "adjustable spanner",
+    "concepts": [
+     "wrench"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "b-en-33",
+    "locale": "en",
+    "q": "HDMI",
+    "concepts": [
+     "hdmi"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "b-en-34",
+    "locale": "en",
+    "q": "kettle",
+    "concepts": [
+     "kettle"
+    ],
+    "kind": "literal"
+   }
+  ]
+ },
+ "households": {
+  "locations": [
+   "Home",
+   "Garage",
+   "Personal",
+   "بيت العائلة"
+  ],
+  "user": "Ibrahim (owner of Home, Garage and Personal; admin of بيت العائلة)",
+  "queries": [
+   {
+    "id": "h-en-01",
+    "locale": "en",
+    "q": "the thing for the TV",
+    "expect": [
+     "Display cable, 1.8 m",
+     "HDMI cable, 2 m",
+     "HDMI cable, 5 m",
+     "كابل HDMI"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-02",
+    "locale": "en",
+    "q": "charge my phone",
+    "expect": [
+     "USB-C charger, 65 W",
+     "Lightning cable, 1 m",
+     "شاحن سامسونج"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-03",
+    "locale": "en",
+    "q": "internet box",
+    "expect": [
+     "Wi-Fi router",
+     "Network switch, 4-port"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-04",
+    "locale": "en",
+    "q": "games for the kids",
+    "expect": [
+     "Lego city set",
+     "Nintendo Switch",
+     "Catan",
+     "Monopoly"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-05",
+    "locale": "en",
+    "q": "boil water",
+    "expect": [
+     "Old kettle",
+     "الغلاية الكهربائية"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-06",
+    "locale": "en",
+    "q": "fire safety",
+    "expect": [
+     "Fire extinguisher, 2 kg",
+     "Smoke alarm"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-07",
+    "locale": "en",
+    "q": "travel documents",
+    "expect": [
+     "Passports folder"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-08",
+    "locale": "en",
+    "q": "the car",
+    "expect": [
+     "Toyota Corolla"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-en-09",
+    "locale": "en",
+    "q": "change a flat tyre",
+    "expect": [
+     "Car jack",
+     "Tyre pump"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-10",
+    "locale": "en",
+    "q": "water the plants",
+    "expect": [
+     "Garden hose, 15 m"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-11",
+    "locale": "en",
+    "q": "holiday decorations",
+    "expect": [
+     "Christmas lights",
+     "Ramadan decorations box",
+     "Ramadan lantern",
+     "فَانُوس رَمَضَان"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-12",
+    "locale": "en",
+    "q": "screwdriver",
+    "expect": [
+     "Screwdriver set",
+     "مِفَكّ براغي"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-en-13",
+    "locale": "en",
+    "q": "hammer",
+    "expect": [
+     "Claw hammer",
+     "الشاكوش"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-en-14",
+    "locale": "en",
+    "q": "my laptop",
+    "expect": [
+     "ThinkPad T14"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-15",
+    "locale": "en",
+    "q": "mobile phone",
+    "expect": [
+     "Galaxy S23"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-16",
+    "locale": "en",
+    "q": "keep food cold",
+    "expect": [
+     "Fridge",
+     "ثلاجة توشيبا"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-17",
+    "locale": "en",
+    "q": "clean drinking water",
+    "expect": [
+     "Water filter cartridge"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-18",
+    "locale": "en",
+    "q": "bandages",
+    "expect": [
+     "First aid kit"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-19",
+    "locale": "en",
+    "q": "painting the walls",
+    "expect": [
+     "Paint roller set"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-20",
+    "locale": "en",
+    "q": "power for tools far from the socket",
+    "expect": [
+     "Extension cord, 10 m"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-21",
+    "locale": "en",
+    "q": "steam iron",
+    "expect": [
+     "مِكْواة البُخار"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-22",
+    "locale": "en",
+    "q": "television",
+    "expect": [
+     "Samsung TV, 55″",
+     "تلفزيون توشيبا"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-23",
+    "locale": "en",
+    "q": "game console",
+    "expect": [
+     "PlayStation 5",
+     "Nintendo Switch"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-24",
+    "locale": "en",
+    "q": "go cycling",
+    "expect": [
+     "City bike"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-25",
+    "locale": "en",
+    "q": "cold weather clothes",
+    "expect": [
+     "Winter scarves"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-26",
+    "locale": "en",
+    "q": "valuables",
+    "expect": [
+     "Wall safe",
+     "Grandfather's watch",
+     "Passports folder"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-27",
+    "locale": "en",
+    "q": "batteries for the remote",
+    "expect": [
+     "AA batteries"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-en-28",
+    "locale": "en",
+    "q": "house keys",
+    "expect": [
+     "House keys"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-en-29",
+    "locale": "en",
+    "q": "money and cards",
+    "expect": [
+     "Wallet"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-en-30",
+    "locale": "en",
+    "q": "bookshelf",
+    "expect": [
+     "المكتبة"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-01",
+    "locale": "ar",
+    "q": "وصلة الشاشة",
+    "expect": [
+     "Display cable, 1.8 m",
+     "HDMI cable, 2 m",
+     "HDMI cable, 5 m",
+     "كابل HDMI"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-ar-02",
+    "locale": "ar",
+    "q": "شاحن الموبايل",
+    "expect": [
+     "USB-C charger, 65 W",
+     "شاحن سامسونج",
+     "Lightning cable, 1 m"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-ar-03",
+    "locale": "ar",
+    "q": "الراوتر",
+    "expect": [
+     "Wi-Fi router"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-04",
+    "locale": "ar",
+    "q": "ألعاب الأطفال",
+    "expect": [
+     "Lego city set",
+     "Nintendo Switch",
+     "Catan",
+     "Monopoly"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-05",
+    "locale": "ar",
+    "q": "الغلاية",
+    "expect": [
+     "Old kettle",
+     "الغلاية الكهربائية"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-ar-06",
+    "locale": "ar",
+    "q": "طفاية حريق",
+    "expect": [
+     "Fire extinguisher, 2 kg"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-07",
+    "locale": "ar",
+    "q": "جوازات السفر",
+    "expect": [
+     "Passports folder"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-08",
+    "locale": "ar",
+    "q": "العربية",
+    "expect": [
+     "Toyota Corolla"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-09",
+    "locale": "ar",
+    "q": "كوريك العربية",
+    "expect": [
+     "Car jack"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-10",
+    "locale": "ar",
+    "q": "خرطوم الجنينة",
+    "expect": [
+     "Garden hose, 15 m"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-11",
+    "locale": "ar",
+    "q": "زينة رمضان",
+    "expect": [
+     "Ramadan decorations box",
+     "Ramadan lantern",
+     "فَانُوس رَمَضَان"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-12",
+    "locale": "ar",
+    "q": "مفك",
+    "expect": [
+     "Screwdriver set",
+     "مِفَكّ براغي"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-ar-13",
+    "locale": "ar",
+    "q": "شاكوش",
+    "expect": [
+     "Claw hammer",
+     "الشاكوش"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-ar-14",
+    "locale": "ar",
+    "q": "اللابتوب",
+    "expect": [
+     "ThinkPad T14"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-15",
+    "locale": "ar",
+    "q": "الموبايل",
+    "expect": [
+     "Galaxy S23"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-16",
+    "locale": "ar",
+    "q": "التلاجة",
+    "expect": [
+     "Fridge",
+     "ثلاجة توشيبا"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-ar-17",
+    "locale": "ar",
+    "q": "فلتر المية",
+    "expect": [
+     "Water filter cartridge"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-18",
+    "locale": "ar",
+    "q": "إسعافات أولية",
+    "expect": [
+     "First aid kit"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-19",
+    "locale": "ar",
+    "q": "رولة الدهان",
+    "expect": [
+     "Paint roller set"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-20",
+    "locale": "ar",
+    "q": "وصلة كهربا",
+    "expect": [
+     "Extension cord, 10 m"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-21",
+    "locale": "ar",
+    "q": "المكواة",
+    "expect": [
+     "مِكْواة البُخار"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-ar-22",
+    "locale": "ar",
+    "q": "التلفزيون",
+    "expect": [
+     "Samsung TV, 55″",
+     "تلفزيون توشيبا"
+    ],
+    "kind": "literal"
+   },
+   {
+    "id": "h-ar-23",
+    "locale": "ar",
+    "q": "بلايستيشن",
+    "expect": [
+     "PlayStation 5"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-24",
+    "locale": "ar",
+    "q": "العجلة",
+    "expect": [
+     "City bike"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-25",
+    "locale": "ar",
+    "q": "كوفيات الشتا",
+    "expect": [
+     "Winter scarves"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-26",
+    "locale": "ar",
+    "q": "الخزنة",
+    "expect": [
+     "Wall safe"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-27",
+    "locale": "ar",
+    "q": "حجارة",
+    "expect": [
+     "AA batteries"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-28",
+    "locale": "ar",
+    "q": "مفاتيح البيت",
+    "expect": [
+     "House keys"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-29",
+    "locale": "ar",
+    "q": "المحفظة",
+    "expect": [
+     "Wallet"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-30",
+    "locale": "ar",
+    "q": "الشنيور",
+    "expect": [
+     "Bosch drill, 18 V"
+    ],
+    "kind": "meaning"
+   },
+   {
+    "id": "h-ar-31",
+    "locale": "ar",
+    "q": "صندوق العدة",
+    "expect": [
+     "Toolbox",
+     "صندوق العدّة"
+    ],
+    "kind": "literal"
+   }
+  ]
+ }
+}

@@ -1,0 +1,185 @@
+# Kept's Helm chart (step 8 T16; D16, D85, D186, D193). values.schema.json validates this file.
+# Every variable the image reads is in Kept's configuration reference; this chart sets the ones it
+# owns (the database URLs, the public URL, storage, the role) and passes the rest through `backup`,
+# `extraEnv` and the secrets below.
+#
+# Secrets are referenced, never written here: create them first (README.md). Each secret holds
+# variables under their own names (KEPT_SECRET_KEY, KEPT_DB_APP_PASSWORD, …), as Compose's .env does.
+
+# Required: the address people open Kept at, e.g. https://kept.example.org. It sets
+# KEPT_PUBLIC_URL and, unless ingress.host says otherwise, the ingress host.
+publicUrl: ""
+
+image:
+  # The release's image (D187). Inferred as ghcr.io/ibrahimroshdy/kept from the Dockerfile's
+  # SOURCE default, to be confirmed by the maintainer (plan Q14).
+  repository: ghcr.io/ibrahimroshdy/kept
+  # Defaults to the chart's appVersion. Never `latest` (the chart refuses it).
+  tag: ""
+  # `sha256:…`: pins the exact image the release verified and signed; the tag is then a label.
+  digest: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+postgres:
+  # true: a StatefulSet on the same pinned pgvector image as Compose, its roles and extensions
+  # made on first start by files/roles.sh. false: your own PostgreSQL 18 (`external`).
+  bundled: true
+  # compose.yaml's pin (read from Docker Hub, multi-arch index digest).
+  image: pgvector/pgvector:0.8.6-pg18-bookworm@sha256:2ba9ca5f2e7daa0f0e7723cba1ee9167bab54efd3640516a44ac1a928dd67e7a
+  database: kept
+  storage:
+    size: 8Gi
+    storageClass: ""
+  # A secret holding POSTGRES_PASSWORD: the bundled server's superuser, or the external server's
+  # admin when roles.create is true. Required with the bundled server.
+  superuserSecret: ""
+  external:
+    host: ""
+    port: 5432
+    # The admin login the roles Job uses (external with roles.create only).
+    superuser: postgres
+    # libpq's sslmode for every login, e.g. require or verify-full; empty: the driver's default.
+    sslMode: ""
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+
+roles:
+  # A secret holding KEPT_DB_OWNER_PASSWORD, KEPT_DB_APP_PASSWORD, KEPT_DB_AUTH_PASSWORD and
+  # KEPT_DB_SYSTEM_PASSWORD. Required. Hex passwords (`openssl rand -hex 32`): they go inside
+  # postgres:// URLs, so URL-special characters would break them.
+  existingSecret: ""
+  # External Postgres only: true runs a pre-install Job that creates the four logins and the
+  # extensions with postgres.superuserSecret; false: run the managed-Postgres SQL yourself first.
+  create: true
+
+keys:
+  # A secret holding KEPT_SECRET_KEY and KEPT_AUTH_SECRET (and, after a rotation,
+  # KEPT_SECRET_KEY_VERSION and KEPT_SECRET_KEYS_RETIRED). Empty: Kept generates them on first
+  # boot into the config volume (D193). Required with split.enabled.
+  existingSecret: ""
+
+# The config volume (/config): the generated keys when keys.existingSecret is empty.
+config:
+  persistence:
+    size: 64Mi
+    storageClass: ""
+
+storage:
+  # local: files on a volume (/data), and the Deployment is Recreate. s3: files in a bucket, and
+  # /data is scratch space; rolling updates become possible (D186).
+  mode: local
+  persistence:
+    size: 20Gi
+    storageClass: ""
+    # ReadWriteMany only for split.enabled with local files.
+    accessMode: ReadWriteOnce
+  s3:
+    # A secret holding KEPT_S3_ACCESS_KEY_ID and KEPT_S3_SECRET_ACCESS_KEY.
+    existingSecret: ""
+    endpoint: ""
+    publicEndpoint: ""
+    region: ""
+    bucket: ""
+    forcePathStyle: false
+
+backup:
+  # Backups run in the worker (D186), never in a CronJob. The pod that runs the jobs then holds
+  # the owner login (the dump runs as kept_owner), and `kept migrate` takes its pre-upgrade
+  # snapshot. false: the owner login stays in the migrate Job only, and no backup can run.
+  enabled: true
+  # A secret holding the backup's secret variables: KEPT_BACKUP_PASSWORD, and for S3
+  # KEPT_BACKUP_S3_ACCESS_KEY_ID and KEPT_BACKUP_S3_SECRET_ACCESS_KEY. Each one set locks its
+  # field in Admin → Backups; leave it empty to set everything there.
+  existingSecret: ""
+  # Other KEPT_BACKUP_* variables, by name, e.g. KEPT_BACKUP_S3_BUCKET, KEPT_BACKUP_TIME.
+  env: {}
+  # A volume for a directory target, mounted at /backups with KEPT_BACKUP_DIR=/backups. Prefer a
+  # bucket or SFTP: a volume in the same cluster is not off the machine.
+  persistence:
+    enabled: false
+    size: 20Gi
+    storageClass: ""
+    existingClaim: ""
+
+split:
+  # true: a web Deployment and a single-replica worker Deployment (KEPT_ROLE=web / worker).
+  # Needs keys.existingSecret, and S3 storage or a ReadWriteMany files volume.
+  enabled: false
+  web:
+    replicas: 2
+
+worker:
+  # The worker's resources when split.enabled.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 768Mi
+
+smtp:
+  # A secret holding KEPT_SMTP_URL, e.g. smtps://user:password@mail.example.org:465.
+  existingSecret: ""
+  from: ""
+
+metrics:
+  # A secret holding KEPT_METRICS_TOKEN; set, /metrics answers with that bearer token.
+  tokenSecret: ""
+
+# KEPT_TRUSTED_PROXIES: the ingress controller's addresses (CIDRs), so X-Forwarded-For is
+# believed only from them.
+trustedProxies: ""
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  # Default: publicUrl's host.
+  host: ""
+  tls:
+    enabled: false
+    secretName: ""
+
+# The server's resources (KEPT_ROLE=all, or web when split). Defaults sized for the 2 GB floor
+# (D209) beside the bundled Postgres; inferred until V5 measures them.
+resources:
+  requests:
+    cpu: 100m
+    memory: 384Mi
+  limits:
+    memory: 1Gi
+
+# The migrate and roles Jobs.
+jobs:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+  # How long the migrate Job may run, the pre-upgrade snapshot included.
+  activeDeadlineSeconds: 1800
+
+# More variables for Kept's containers (the Jobs included), as Kubernetes EnvVar entries.
+extraEnv: []
+# More envFrom sources for Kept's containers.
+extraEnvFrom: []
+# More volumes for Kept's pods and mounts for its containers (e.g. an SFTP key and known_hosts
+# for KEPT_BACKUP_SFTP_KEY_FILE and KEPT_BACKUP_SFTP_KNOWN_HOSTS).
+extraVolumes: []
+extraVolumeMounts: []
+
+podAnnotations: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

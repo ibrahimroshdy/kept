@@ -1,0 +1,5 @@
+# The fake camera videos (apps/web/e2e/fixtures/make-y4m.mjs): raw frames, never diffed or
+# converted, even though they hold no NUL byte for git to notice.
+*.y4m binary
+# The Gallery's receipt photo (make-receipt.mjs): the mock AI's answer is keyed to its bytes.
+*.jpg binary

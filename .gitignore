@@ -1,0 +1,91 @@
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Editors and IDEs
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*.swo
+*~
+.fleet/
+.zed/
+
+# Dependencies (pnpm-lock.yaml IS committed)
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output and caches
+dist/
+build/
+out/
+*.tsbuildinfo
+.turbo/
+.cache/
+.vite/
+.eslintcache
+.stylelintcache
+.astro/
+
+# Tests
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
+# Environment and secrets: never commit; .env.example documents the contract (engineering spec 7.11)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# Local runtime data (dev Postgres volumes, uploaded files, backups, restic repositories and caches)
+/data/
+/uploads/
+/backups/
+*.dump
+*.sql.gz
+/restic/
+.restic-cache/
+
+# Release outputs: packaged charts, chart dependencies, cosign material and SBOMs from scripts/release.sh
+*.tgz
+charts/*/charts/
+*.sig
+*.bundle
+sbom*.json
+
+# Recovery kits written by `kept admin recovery-kit --out` (key material: never commit)
+kept-recovery-kit-*
+
+# Logs
+logs/
+*.log
+
+# The maintainer's evaluation photos (apps/server/eval/README.md): personal, never committed
+eval-data/
+
+# Local scratch
+.tmp/
+tmp/
+*.local
+
+# A developer's own private terms for scripts/check-no-local-paths.mjs (host names, domains,
+# project names that must never be published): local only, by design
+.private-terms

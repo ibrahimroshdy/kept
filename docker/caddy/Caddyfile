@@ -1,0 +1,8 @@
+# The optional `https` profile of compose.yaml (D193): Caddy gets a certificate for KEPT_DOMAIN
+# (Let's Encrypt or ZeroSSL; the domain must resolve to this host and ports 80/443 must reach it)
+# and forwards everything to Kept. Caddy sets X-Forwarded-For; Kept believes it only because
+# compose.yaml pins Caddy's address into KEPT_TRUSTED_PROXIES.
+{$KEPT_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy kept:8080
+}

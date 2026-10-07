@@ -1,0 +1,270 @@
+# Kept for self-hosters (task 29; D186, D193; engineering spec §7.11).
+#
+#   cp compose.env.example .env      # then fill in the passwords and KEPT_PUBLIC_URL
+#   docker compose up -d             # Kept on http://<host>:8080
+#   docker compose --profile https up -d   # plus Caddy on 80/443 for KEPT_DOMAIN
+#   docker compose --profile ollama up -d  # plus Ollama, a local AI model server (D85; below)
+#
+# Start order: db (healthy) → migrate (one-shot `kept migrate`, exits 0) → kept.
+# First boot generates KEPT_SECRET_KEY and KEPT_AUTH_SECRET into the kept-config volume (D193)
+# unless .env sets both; `docker compose logs kept` says where. Back that volume up, or keep the
+# recovery kit: without them, secret values are unreadable.
+#
+# (compose.dev.yaml is the developer database, not this.)
+name: kept
+
+x-kept-image: &kept-image
+  # Unset, the image is built from this checkout and tagged kept:local. Set KEPT_IMAGE to a released
+  # image (e.g. ghcr.io/ibrahimroshdy/kept:1.0.0) to use that instead (`docker compose pull`).
+  image: ${KEPT_IMAGE:-kept:local}
+  build:
+    context: .
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+
+# What both the serving process and `migrate` read: the keys, the downgrade switch and the backup
+# settings. Backups (step 8; D64, D66) are restic, to a directory, an S3 bucket or SFTP. Every
+# backup variable set in .env locks its field in Admin → Backups; empty ones leave it to the
+# screen. The serving process runs the nightly backup, as the database owner, so it also needs
+# KEPT_OWNER_DATABASE_URL from a compose.override.yaml (the docs' Backups page); `migrate` takes
+# the snapshot before an upgrade (plan Q8).
+# A directory target is a path inside the container: bind-mount the host directory on both
+# services (the commented `/backups` lines), owned by uid 10001. SFTP's key and known-hosts files
+# are mounted the same way, read-only. compose.env.example explains each variable.
+x-ops-env: &ops-env
+  KEPT_BACKUP_DIR: ${KEPT_BACKUP_DIR:-}
+  KEPT_BACKUP_PASSWORD: ${KEPT_BACKUP_PASSWORD:-}
+  KEPT_BACKUP_S3_BUCKET: ${KEPT_BACKUP_S3_BUCKET:-}
+  KEPT_BACKUP_S3_PREFIX: ${KEPT_BACKUP_S3_PREFIX:-}
+  KEPT_BACKUP_S3_ENDPOINT: ${KEPT_BACKUP_S3_ENDPOINT:-}
+  KEPT_BACKUP_S3_REGION: ${KEPT_BACKUP_S3_REGION:-}
+  KEPT_BACKUP_S3_ACCESS_KEY_ID: ${KEPT_BACKUP_S3_ACCESS_KEY_ID:-}
+  KEPT_BACKUP_S3_SECRET_ACCESS_KEY: ${KEPT_BACKUP_S3_SECRET_ACCESS_KEY:-}
+  KEPT_BACKUP_S3_FORCE_PATH_STYLE: ${KEPT_BACKUP_S3_FORCE_PATH_STYLE:-}
+  KEPT_BACKUP_SFTP: ${KEPT_BACKUP_SFTP:-}
+  KEPT_BACKUP_SFTP_KEY_FILE: ${KEPT_BACKUP_SFTP_KEY_FILE:-}
+  KEPT_BACKUP_SFTP_KNOWN_HOSTS: ${KEPT_BACKUP_SFTP_KNOWN_HOSTS:-}
+  KEPT_BACKUP_TIME: ${KEPT_BACKUP_TIME:-}
+  KEPT_BACKUP_KEEP_DAILY: ${KEPT_BACKUP_KEEP_DAILY:-}
+  KEPT_BACKUP_KEEP_WEEKLY: ${KEPT_BACKUP_KEEP_WEEKLY:-}
+  KEPT_BACKUP_KEEP_MONTHLY: ${KEPT_BACKUP_KEEP_MONTHLY:-}
+  # The keys open the backup settings sealed in the database (Admin → Backups). Both or neither;
+  # unset, they are read from the kept-config volume's secrets.json (D193).
+  KEPT_SECRET_KEY: ${KEPT_SECRET_KEY:-}
+  KEPT_AUTH_SECRET: ${KEPT_AUTH_SECRET:-}
+  # One-version rollback (plan Q9): `1` lets an older image start on a newer database anyway,
+  # audited. Only for a restore runbook.
+  KEPT_ALLOW_DOWNGRADE: ${KEPT_ALLOW_DOWNGRADE:-}
+
+services:
+  db:
+    # Tag read from Docker Hub, pinned by its multi-arch index digest. Postgres major upgrades
+    # are a dump and restore (D186), never a tag bump.
+    image: pgvector/pgvector:0.8.6-pg18-bookworm@sha256:2ba9ca5f2e7daa0f0e7723cba1ee9167bab54efd3640516a44ac1a928dd67e7a
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${KEPT_DB_SUPERUSER_PASSWORD:?set KEPT_DB_SUPERUSER_PASSWORD in .env}
+      POSTGRES_DB: kept
+      TZ: UTC
+      # Read once, by docker/initdb-prod/01-roles.sh, on the first start of an empty volume.
+      KEPT_DB_OWNER_PASSWORD: ${KEPT_DB_OWNER_PASSWORD:?set KEPT_DB_OWNER_PASSWORD in .env}
+      KEPT_DB_APP_PASSWORD: ${KEPT_DB_APP_PASSWORD:?set KEPT_DB_APP_PASSWORD in .env}
+      KEPT_DB_AUTH_PASSWORD: ${KEPT_DB_AUTH_PASSWORD:?set KEPT_DB_AUTH_PASSWORD in .env}
+      KEPT_DB_SYSTEM_PASSWORD: ${KEPT_DB_SYSTEM_PASSWORD:?set KEPT_DB_SYSTEM_PASSWORD in .env}
+    volumes:
+      - kept-db:/var/lib/postgresql
+      - ./docker/initdb-prod:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # Over TCP: during init the server listens on the socket only, so this passes only once
+      # the roles exist and the real server is up.
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d kept"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks: [kept]
+
+  migrate:
+    <<: *kept-image
+    entrypoint: ["kept"]
+    command: ["migrate"]
+    restart: "no"
+    # Only the owner login (engineering spec §7.12): the serving process never holds it. The
+    # public URL and mail settings are for `migrate admin <command>`, whose notices are mailed
+    # to the people they concern (D180). The keys (the config volume, read-only, or the two
+    # variables) and the backup settings are for the snapshot `kept migrate` takes before it
+    # migrates a populated database (plan Q8): with a backup target it snapshots the database
+    # first and migrates nothing if that fails; without one it says so loudly and goes on.
+    # KEPT_UPGRADE_SNAPSHOT=off skips it.
+    environment:
+      <<: *ops-env
+      KEPT_OWNER_DATABASE_URL: postgres://kept_owner:${KEPT_DB_OWNER_PASSWORD}@db:5432/kept
+      KEPT_PUBLIC_URL: ${KEPT_PUBLIC_URL:-}
+      KEPT_SMTP_URL: ${KEPT_SMTP_URL:-}
+      KEPT_SMTP_FROM: ${KEPT_SMTP_FROM:-}
+      KEPT_UPGRADE_SNAPSHOT: ${KEPT_UPGRADE_SNAPSHOT:-}
+    volumes:
+      # restic's cache and the snapshot's scratch space live under /data (KEPT_DATA_DIR).
+      - kept-data:/data
+      - kept-config:/config:ro
+      # - /mnt/backup/kept:/backups
+    healthcheck:
+      disable: true
+    depends_on:
+      db:
+        condition: service_healthy
+    networks: [kept]
+
+  kept:
+    <<: *kept-image
+    restart: unless-stopped
+    environment:
+      <<: *ops-env
+      KEPT_DATABASE_URL: postgres://kept_app:${KEPT_DB_APP_PASSWORD}@db:5432/kept
+      KEPT_AUTH_DATABASE_URL: postgres://kept_auth:${KEPT_DB_AUTH_PASSWORD}@db:5432/kept
+      KEPT_SYSTEM_DATABASE_URL: postgres://kept_system:${KEPT_DB_SYSTEM_PASSWORD}@db:5432/kept
+      KEPT_PUBLIC_URL: ${KEPT_PUBLIC_URL:?set KEPT_PUBLIC_URL in .env}
+      # KEPT_SECRET_KEY and KEPT_AUTH_SECRET come with the backup variables above: both or
+      # neither; unset, they are generated into kept-config on first boot (D193).
+      # Only Caddy's fixed address (below) is believed about X-Forwarded-For. Nothing else ever
+      # holds it: it lies outside the network's dynamic range.
+      KEPT_TRUSTED_PROXIES: 172.29.72.200
+      KEPT_SMTP_URL: ${KEPT_SMTP_URL:-}
+      KEPT_SMTP_FROM: ${KEPT_SMTP_FROM:-}
+      KEPT_LOG_LEVEL: ${KEPT_LOG_LEVEL:-info}
+      KEPT_LOG_FORMAT: ${KEPT_LOG_FORMAT:-json}
+      KEPT_SETUP_CODE: ${KEPT_SETUP_CODE:-}
+      KEPT_SIGNUP_OPEN: ${KEPT_SIGNUP_OPEN:-}
+      # Files (step 2): empty values fall back to the defaults (§7.11).
+      KEPT_MAX_FILE_MB: ${KEPT_MAX_FILE_MB:-}
+      KEPT_IMAGE_CONCURRENCY: ${KEPT_IMAGE_CONCURRENCY:-}
+      KEPT_STORAGE: ${KEPT_STORAGE:-local}
+      KEPT_S3_ENDPOINT: ${KEPT_S3_ENDPOINT:-}
+      KEPT_S3_PUBLIC_ENDPOINT: ${KEPT_S3_PUBLIC_ENDPOINT:-}
+      KEPT_S3_REGION: ${KEPT_S3_REGION:-}
+      KEPT_S3_BUCKET: ${KEPT_S3_BUCKET:-}
+      KEPT_S3_ACCESS_KEY_ID: ${KEPT_S3_ACCESS_KEY_ID:-}
+      KEPT_S3_SECRET_ACCESS_KEY: ${KEPT_S3_SECRET_ACCESS_KEY:-}
+      KEPT_S3_FORCE_PATH_STYLE: ${KEPT_S3_FORCE_PATH_STYLE:-}
+      # Barcode lookup (step 3, D104, D126): off unless the admin turns it on or this locks it.
+      KEPT_BARCODE_LOOKUP: ${KEPT_BARCODE_LOOKUP:-}
+      KEPT_BARCODE_CONTACT: ${KEPT_BARCODE_CONTACT:-}
+      # Web push (step 4): both keys or neither; unset, a pair is generated at first run.
+      KEPT_VAPID_PUBLIC_KEY: ${KEPT_VAPID_PUBLIC_KEY:-}
+      KEPT_VAPID_PRIVATE_KEY: ${KEPT_VAPID_PRIVATE_KEY:-}
+      KEPT_VAPID_SUBJECT: ${KEPT_VAPID_SUBJECT:-}
+      # Semantic search (step 6, D207) and generic OIDC sign-in (step 6, D127): empty values
+      # fall back to the defaults (§7.11).
+      KEPT_EMBEDDINGS: ${KEPT_EMBEDDINGS:-}
+      KEPT_OIDC_ISSUER: ${KEPT_OIDC_ISSUER:-}
+      KEPT_OIDC_CLIENT_ID: ${KEPT_OIDC_CLIENT_ID:-}
+      KEPT_OIDC_CLIENT_SECRET: ${KEPT_OIDC_CLIENT_SECRET:-}
+      KEPT_OIDC_NAME: ${KEPT_OIDC_NAME:-}
+      KEPT_OIDC_AUTOPROVISION_DOMAINS: ${KEPT_OIDC_AUTOPROVISION_DOMAINS:-}
+      KEPT_OIDC_AUTOPROVISION_GROUPS: ${KEPT_OIDC_AUTOPROVISION_GROUPS:-}
+      KEPT_OIDC_GROUPS_CLAIM: ${KEPT_OIDC_GROUPS_CLAIM:-}
+      KEPT_OIDC_SCOPES: ${KEPT_OIDC_SCOPES:-}
+      # Check for new versions (D65): off by default and an admin setting; true or false locks it.
+      KEPT_UPDATE_CHECK: ${KEPT_UPDATE_CHECK:-}
+      # Tracing to your own OpenTelemetry collector (D84): unset, nothing is loaded or sent.
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      # KEPT_SOURCE_URL is not set here: the image's default (its OCI source + revision, D147,
+      # D186) applies. A fork that serves modified code adds KEPT_SOURCE_URL pointing at its own.
+    volumes:
+      - kept-data:/data
+      - kept-config:/config
+      # - /mnt/backup/kept:/backups
+    ports:
+      - "${KEPT_HTTP_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks: [kept]
+
+  # A split deployment (D186), for when one process is not enough: replace `kept` above with a
+  # web service and a single worker, both from the same image and environment. The worker serves
+  # no HTTP and publishes no port; it runs the jobs, the nightly backup among them, so it is the
+  # one that needs a backup directory mounted. The image's HEALTHCHECK follows KEPT_ROLE: /readyz
+  # for web, and for worker the liveness file its job loop touches (docker/healthcheck.mjs), so
+  # neither needs a healthcheck override. With local file storage both mount kept-data.
+  #
+  # kept-web:
+  #   <<: *kept-image
+  #   restart: unless-stopped
+  #   environment: { <<: *ops-env, KEPT_ROLE: web, …the kept service's variables… }
+  #   volumes: [kept-data:/data, kept-config:/config]
+  #   ports: ["${KEPT_HTTP_PORT:-8080}:8080"]
+  #   depends_on: { db: { condition: service_healthy }, migrate: { condition: service_completed_successfully } }
+  #   networks: [kept]
+  # kept-worker:
+  #   <<: *kept-image
+  #   restart: unless-stopped
+  #   environment: { <<: *ops-env, KEPT_ROLE: worker, …the kept service's variables… }
+  #   volumes: [kept-data:/data, kept-config:/config]
+  #   depends_on: { db: { condition: service_healthy }, migrate: { condition: service_completed_successfully } }
+  #   networks: [kept]
+
+  caddy:
+    profiles: [https]
+    # Tag read from Docker Hub, pinned by its multi-arch index digest (D193: chosen at build
+    # time, tag verified on the registry).
+    image: caddy:2.11.4-alpine@sha256:6aeddd44c3078b0f9a35206472a11420648a79c184603ef95957d0a20044cb2b
+    restart: unless-stopped
+    environment:
+      # Not `:?`: Compose interpolates every service, profile or not, so a required value here
+      # would break plain `docker compose up`. The command refuses to start without it instead.
+      KEPT_DOMAIN: ${KEPT_DOMAIN:-}
+    command:
+      - sh
+      - -c
+      - >-
+        test -n "$$KEPT_DOMAIN" || { echo "caddy: set KEPT_DOMAIN in .env" >&2; exit 1; };
+        exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on: [kept]
+    networks:
+      kept:
+        ipv4_address: 172.29.72.200
+
+  ollama:
+    # A local model server for Kept's AI features (D85): `docker compose --profile ollama up -d`,
+    # then `docker compose exec ollama ollama pull <model>`. In Settings → AI, add an
+    # OpenAI-compatible provider with the base URL http://ollama:11434/v1 (Compose's network;
+    # Ollama ignores the API key) and the model you pulled. Nothing is published on the host.
+    # Tag read from Docker Hub (the latest stable release on 2026-10-06), pinned by its
+    # multi-arch index digest; about 3.8 GB (amd64) or 2.8 GB (arm64) to pull, before any model.
+    profiles: [ollama]
+    image: ollama/ollama:0.35.1@sha256:292ee7945dfc3d5840a181f3ab86fedb1e66703e02c8af98b50f4da56b7e278c
+    restart: unless-stopped
+    volumes:
+      # The models (Ollama's own Docker instructions mount this path).
+      - ollama:/root/.ollama
+    networks: [kept]
+
+networks:
+  kept:
+    ipam:
+      config:
+        # If 172.29.72.0/24 clashes with your LAN, change the subnet, ip_range, Caddy's
+        # ipv4_address and KEPT_TRUSTED_PROXIES together.
+        - subnet: 172.29.72.0/24
+          ip_range: 172.29.72.0/25
+
+volumes:
+  kept-db: {}
+  kept-data: {}
+  kept-config: {}
+  caddy-data: {}
+  caddy-config: {}
+  ollama: {}

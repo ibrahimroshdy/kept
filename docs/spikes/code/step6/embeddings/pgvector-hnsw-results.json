@@ -1,0 +1,66 @@
+{
+  "date": "2026-09-29T23:12:42.538Z",
+  "db": "kept_spike6_emb_mun9vz1n",
+  "hnswBuildSeconds": 0,
+  "hnswIndexSize": "100 MB",
+  "hnsw3072": "error: column cannot have more than 2000 dimensions for hnsw index",
+  "hnsw3072Halfvec": "created",
+  "exact1536": {
+    "n": 200,
+    "p50": 35.65,
+    "p95": 39.95,
+    "p99": 42.11,
+    "max": 51.57
+  },
+  "exact768": {
+    "n": 200,
+    "p50": 28.45,
+    "p95": 34.77,
+    "p99": 44.52,
+    "max": 46.76
+  },
+  "exact3072": {
+    "n": 100,
+    "p50": 116.81,
+    "p95": 142.9,
+    "p99": 157.58,
+    "max": 159.02
+  },
+  "hnsw1536": {
+    "n": 200,
+    "p50": 4.35,
+    "p95": 6.56,
+    "p99": 9.9,
+    "max": 35.22
+  },
+  "hnswRecallAt50": 0.178,
+  "hnswPlan": [
+    "Limit (actual time=10.765..11.251 rows=33.00 loops=1)",
+    "  Buffers: shared hit=937 read=1362 written=116",
+    "  ->  Result (actual time=10.764..11.247 rows=33.00 loops=1)",
+    "        One-Time Filter: (ANY ('01a0ef5f-97bc-7654-b261-b7c5511d8721'::uuid = (hashed SubPlan 1).col1))",
+    "        Buffers: shared hit=937 read=1362 written=116",
+    "        ->  Nested Loop (actual time=9.482..9.778 rows=33.00 loops=1)",
+    "              Buffers: shared hit=469 read=1321 written=116",
+    "              ->  Index Scan using spike_emb_hnsw_1536 on spike_thing_embeddings e (actual time=9.467..9.535 rows=33.00 loops=1)",
+    "                    Order By: ((embedding)::vector(1536) <=> '[…]'::vector(1536))",
+    "                    Filter: (location_id = '01a0ef5f-97bc-7654-b261-b7c5511d8721'::uuid)",
+    "                    Rows Removed by Filter: 7",
+    "                    Index Searches: 1",
+    "                    Buffers: shared hit=387 read=1304 written=115",
+    "              ->  Index Scan using things_pkey on things t (actual time=0.006..0.006 rows=1.00 loops=33)",
+    "                    Index Cond: (id = e.thing_id)",
+    "                    Filter: (deleted_at IS NULL)",
+    "                    Index Searches: 33",
+    "                    Buffers: shared hit=82 read=17 written=1",
+    "        SubPlan 1",
+    "          ->  ProjectSet (actual time=1.137..1.145 rows=4.00 loops=1)",
+    "                Buffers: shared hit=313 read=39",
+    "                ->  Result (actual time=0.000..0.001 rows=1.00 loops=1)",
+    "Planning:",
+    "  Buffers: shared hit=805 read=71 written=1",
+    "Planning Time: 1.822 ms",
+    "Execution Time: 11.315 ms"
+  ],
+  "storage": "e"
+}

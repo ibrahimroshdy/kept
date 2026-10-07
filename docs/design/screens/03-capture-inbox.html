@@ -1,0 +1,910 @@
+<style>
+.a3 figure{margin:0}
+.a3 .ic{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.a3 .pill .ic{stroke-width:2.4}
+.a3 .sugg .lbl .ic{stroke-width:1.5}
+.a3 .phone .btn{min-height:44px}
+.a3 .phone .chip{min-height:44px}
+.a3 .phone .content{gap:10px}
+.a3 .icard{gap:8px;padding:10px}
+.a3 .icard .ph{width:48px;height:48px}
+.a3 .ihd{grid-template-columns:48px 1fr}
+.a3 .phone .sugg.row{padding:8px 10px}
+.a3 .vhint.bot{top:auto;bottom:10px}
+.a3 .reco .btns{grid-template-columns:auto 1fr}
+.a3 .t-name .sid{margin-inline:6px;vertical-align:2px}
+.a3 .desktop .main{padding:0;border-top:0;gap:0}
+.a3 .desktop .work{padding:0;gap:0;grid-template-rows:auto 1fr auto;align-content:stretch;overflow:hidden}
+.a3 .desktop .chip{height:34px;min-height:34px}
+.a3 .chip b{font-weight:600;font-variant-numeric:tabular-nums}
+.a3 .num{font-variant-numeric:tabular-nums}
+/* camera: dark chrome in every theme */
+.a3 .cam{background:#0F0E0D;color:#F2EFE9;grid-template-rows:auto auto 1fr auto auto auto}
+.a3 .cam .status,.a3 .scan .status{background:#0F0E0D;color:#F2EFE9}
+.a3 .ctop{display:grid;gap:8px;padding:2px 12px 10px}
+.a3 .crow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.a3 .place{flex:1;min-width:0;display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 10px 6px 12px;border-radius:12px;background:#26231F;border:1px solid #34302A;color:#F2EFE9;font:600 14.5px/1.25 var(--sans);text-align:start}
+.a3 .place .grow{flex:1;min-width:0}
+.a3 .place .sub{display:block;font:500 12px/1.3 var(--sans);color:#BDB7AC;margin-top:2px}
+.a3 .done{min-height:48px;padding:0 16px;border-radius:12px;border:1px solid #4A463F;background:transparent;color:#F2EFE9;font:600 14px/1 var(--sans)}
+.a3 .ccount{font:600 14px/1 var(--sans);font-variant-numeric:tabular-nums}
+.a3 .csync{display:inline-flex;align-items:center;gap:6px;font:500 12.5px/1 var(--sans);padding:7px 10px;border-radius:999px;background:#26231F;border:1px solid #34302A;color:#F2EFE9}
+.a3 .vf{position:relative;margin-inline:12px;border-radius:14px;overflow:hidden;background:#1C1A17;min-height:0}
+.a3 .vf .scene,.a3 .svf .scene{position:absolute;inset:0;width:100%;height:100%;display:block}
+.a3 .vhint{position:absolute;inset-inline-start:10px;top:10px;display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(15,14,13,.8);font:500 12.5px/1.2 var(--sans);color:#F2EFE9}
+.a3 .namef{margin:10px 12px 0;display:flex;align-items:center;gap:6px;min-height:48px;padding-inline:14px 2px;border-radius:12px;background:#1E1C19;border:1px solid #34302A;color:#9A948A;font:400 15px/1.3 var(--sans)}
+.a3 .namef .grow{flex:1}
+.a3 .mic{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;color:#F2EFE9;background:transparent;border:0}
+.a3 .cam .modes{margin:10px 12px 0;justify-content:space-between}
+.a3 .cam .modes button{min-height:44px;flex:1;padding-inline:6px}
+.a3 .shut{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:12px 14px 18px}
+.a3 .shutter{width:76px;height:76px;border-radius:50%;border:4px solid #F2EFE9;background:transparent;display:grid;place-items:center;padding:0}
+.a3 .shutter i{width:58px;height:58px;border-radius:50%;background:var(--amber);display:block}
+.a3 .cside{display:grid;justify-items:center;gap:5px;min-width:44px;background:transparent;border:0;color:#F2EFE9;font:500 12px/1.25 var(--sans);text-align:center;padding:0}
+.a3 .cside .ring{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;background:#26231F;border:1px solid #4A463F}
+.a3 .cside.l{justify-self:start}
+.a3 .cside.r{justify-self:end;max-width:104px}
+.a3 .cside.r .ring{border-radius:50%}
+.a3 .reco{position:absolute;inset-inline:10px;bottom:10px;background:#1E1C19;border:1px solid #34302A;border-radius:14px;padding:12px;display:grid;gap:10px;color:#F2EFE9}
+.a3 .reco .hd{display:flex;gap:10px;align-items:center}
+.a3 .reco .hd b{font:600 16px/1.2 var(--sans)}
+.a3 .reco .p{font:400 13px/1.4 var(--sans);color:#BDB7AC}
+.a3 .reco .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.a3 .btn.dk{background:transparent;color:#F2EFE9;border-color:#4A463F}
+/* inbox, phone */
+.a3 .seg{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.a3 .kinds{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.a3 .kinds .chip{justify-content:center;padding-inline:6px}
+.a3 .bh{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.a3 .bh .t{font:600 13.5px/1.35 var(--sans);color:var(--ink)}
+.a3 .bh .s{display:block;font:400 12.5px/1.35 var(--sans);color:var(--ink-3)}
+.a3 .icard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:10px}
+.a3 .ihd{display:grid;grid-template-columns:56px 1fr;gap:12px;align-items:start}
+.a3 .ph{width:56px;height:56px;border-radius:10px;background:var(--sunken);display:grid;place-items:center;color:var(--ink-3);overflow:hidden}
+.a3 .acc{font:400 12.5px/1.4 var(--sans);color:var(--ink-3)}
+.a3 .body{font:400 13.5px/1.45 var(--sans);color:var(--ink-2)}
+.a3 .sugg.row{grid-template-columns:1fr auto;align-items:center;gap:3px 10px}
+.a3 .sugg.row .lbl,.a3 .sugg.row .val,.a3 .sugg.row .src{grid-column:1}
+.a3 .sugg.row .act{grid-column:2;grid-row:1 / span 3;margin:0}
+.a3 .sugg .src{font:400 12px/1.35 var(--sans);color:var(--ink-2)}
+.a3 .acts{display:flex;flex-wrap:wrap;gap:8px}
+.a3 .acts .grow{flex:1}
+.a3 .tl{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.a3 .tl div{padding:8px 4px;border-radius:8px;background:var(--paper);border:1px solid var(--line);font:400 12px/1.3 var(--sans);color:var(--ink-3)}
+.a3 .tl b{display:block;font:600 13.5px/1.3 var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.a3 .tl .bad{border-color:var(--warn)}
+.a3 .tl .bad b{color:var(--warn)}
+.a3 .pair2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.a3 .mini{display:grid;gap:4px;padding:8px;border-radius:8px;background:var(--paper);border:1px solid var(--line);font:400 12px/1.35 var(--sans);color:var(--ink-3)}
+.a3 .mini b{font:600 13px/1.3 var(--sans);color:var(--ink)}
+.a3 .asof{font:400 12px/1.4 var(--sans);color:var(--ink-3)}
+/* summary */
+.a3 .okmark{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--sunken);color:var(--ok)}
+.a3 .sumh{font:600 21px/1.3 var(--sans);color:var(--ink)}
+.a3 .grid12{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.a3 .tile{aspect-ratio:1;border-radius:10px;background:var(--sunken);position:relative;display:grid;place-items:center;color:var(--ink-3)}
+.a3 .tile .st{position:absolute;inset-inline-end:2px;bottom:2px;width:20px;height:20px;border-radius:50%;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center}
+.a3 .st.ok{color:var(--ok)}
+.a3 .st.wait{color:var(--ink-2)}
+.a3 .legend2{display:flex;flex-wrap:wrap;gap:6px 14px;font:500 12.5px/1.2 var(--sans);color:var(--ink-2)}
+.a3 .legend2 span{display:inline-flex;align-items:center;gap:6px}
+.a3 .foot{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px 14px 24px;background:var(--surface);border-top:1px solid var(--line)}
+/* scan outcome sheets */
+.a3 .phone.scan{height:640px;grid-template-rows:auto 1fr auto}
+.a3 .svf{position:relative;background:#0F0E0D;overflow:hidden}
+.a3 .ssheet{position:relative;margin-top:-18px;background:var(--surface);border-radius:18px 18px 0 0;padding:10px 16px 22px;display:grid;gap:12px;color:var(--ink)}
+.a3 .grab2{width:40px;height:5px;border-radius:3px;background:var(--line);justify-self:center}
+.a3 .ssheet h3{font:600 19px/1.3 var(--sans)}
+.a3 .opt{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;min-height:60px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);font:600 14.5px/1.3 var(--sans);text-align:start}
+.a3 .opt small{display:block;font:400 12.5px/1.35 var(--sans);color:var(--ink-3)}
+.a3 .opt .oi{width:40px;height:40px;border-radius:10px;background:var(--sunken);display:grid;place-items:center;color:var(--ink-2)}
+.a3 .opt.main{border-color:var(--ink)}
+.a3 .rowb{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.a3 .code{font:600 14px/1.2 var(--mono);color:var(--ink)}
+.a3 .bigi{width:48px;height:48px;border-radius:50%;background:var(--sunken);display:grid;place-items:center;color:var(--ink-2)}
+.a3 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* inbox, desktop */
+.a3 .dtool{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 20px;border-bottom:1px solid var(--line)}
+.a3 .dtool .sep{width:1px;height:24px;background:var(--line);margin-inline:4px}
+.a3 .keys .end{margin-inline-start:auto;color:var(--ink-3)}
+.a3 .sidebar .tree{align-content:start}
+.a3 .dsplit{display:grid;grid-template-columns:344px minmax(0,1fr);min-height:0}
+.a3 .dlist{border-inline-end:1px solid var(--line);background:var(--surface);overflow:hidden}
+.a3 .dh{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 14px 6px;font:600 11.5px/1.3 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.a3 .dh a{font:600 12.5px/1 var(--sans);letter-spacing:0;text-transform:none;color:var(--ink);text-underline-offset:2px}
+.a3 .q{display:grid;grid-template-columns:18px 40px 1fr;gap:10px;align-items:center;padding:8px 14px;border-top:1px solid var(--line)}
+.a3 .q.sel{background:var(--sunken);box-shadow:inset 3px 0 0 var(--amber)}
+.a3 .q .ph{width:40px;height:40px;border-radius:8px}
+.a3 .q .n{font:600 13.5px/1.3 var(--sans);color:var(--ink)}
+.a3 .q .m{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;align-items:center;font:400 12px/1.3 var(--sans);color:var(--ink-3)}
+.a3 .cb{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--ink-3);display:grid;place-items:center;color:var(--paper)}
+.a3 .cb.on{background:var(--ink);border-color:var(--ink)}
+.a3 .bulk{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 14px;background:var(--ink);color:var(--paper);font:600 13px/1 var(--sans)}
+.a3 .bulk .btn{border-color:rgba(255,255,255,.25);color:var(--paper);background:transparent}
+.a3 .ddet{overflow:hidden;padding:14px 22px;display:grid;gap:11px;align-content:start;min-width:0}
+.a3 .dhead{display:flex;align-items:flex-start;gap:12px}
+.a3 .dhead .grow{flex:1;min-width:0}
+.a3 .dhead h3{font:600 18px/1.3 var(--sans)}
+.a3 .dsub{font:400 13px/1.4 var(--sans);color:var(--ink-3);margin-top:2px}
+.a3 .keys{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:9px 20px;border-top:1px solid var(--line);background:var(--surface);font:500 12.5px/1.2 var(--sans);color:var(--ink-2)}
+.a3 kbd{display:inline-block;min-width:20px;text-align:center;font:600 11.5px/1 var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:3px 5px;background:var(--paper);color:var(--ink);margin-inline-end:5px}
+.a3 .rcpt{display:grid;grid-template-columns:128px 1fr;gap:16px;align-items:start}
+.a3 .rimg{width:128px;height:164px;border-radius:8px;border:1px solid var(--line);overflow:hidden;background:var(--sunken)}
+.a3 .fcol{display:grid;gap:8px}
+.a3 .kv2{display:flex;gap:8px;align-items:baseline;font:400 13.5px/1.35 var(--sans);color:var(--ink)}
+.a3 .kv2 span{color:var(--ink-3);min-width:62px}
+.a3 .sec{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.a3 .sec h4{margin:0;font:600 14px/1.3 var(--sans);color:var(--ink)}
+.a3 .line{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:10px 12px;display:grid;gap:7px}
+.a3 .line .lt{display:flex;justify-content:space-between;gap:10px;font:500 12.5px/1.3 var(--mono);color:var(--ink)}
+.a3 .cands{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.a3 .cand{display:grid;grid-template-columns:16px 1fr;gap:9px;align-items:center;padding:7px 10px;border-radius:8px;border:1px solid var(--line);font:600 13px/1.3 var(--sans);color:var(--ink)}
+.a3 .cand.on{border-color:var(--ink);background:var(--paper)}
+.a3 .cand small{display:block;font:400 12px/1.35 var(--sans);color:var(--ink-3)}
+.a3 .rd{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--ink-3)}
+.a3 .rd.on{border:5px solid var(--ink)}
+.a3 .lnk{font:600 12.5px/1.2 var(--sans);color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.a3 .shelf{border-radius:10px;overflow:hidden;border:1px solid var(--line);height:200px;position:relative;background:#2A2722}
+.a3 .shelf .scene{width:100%;height:100%;display:block}
+.a3 .crops{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.a3 .crop{display:grid;gap:6px;align-content:start;padding:6px;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+.a3 .crop.pick{border-color:var(--ink);background:var(--paper)}
+.a3 .crop.drop{opacity:.62}
+.a3 .crop .ci{height:62px;border-radius:6px;overflow:hidden;background:#2A2722;position:relative}
+.a3 .crop .ci svg{width:100%;height:100%;display:block}
+.a3 .crop .ci .cb{position:absolute;top:4px;inset-inline-start:4px;background:var(--surface)}
+.a3 .crop .ci .cb.on{background:var(--ink)}
+.a3 .crop .nm{font:600 11.5px/1.3 var(--sans);color:var(--ink);padding:5px 6px;border-radius:6px;background:var(--violet-soft);border:1px dashed var(--violet)}
+.a3 .crop .nm small{display:block;font:600 10px/1.2 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--violet);margin-bottom:2px}
+.a3 .crop .tools{display:flex;gap:4px}
+.a3 .tb{flex:1;height:30px;border-radius:6px;border:1px solid var(--line);background:transparent;color:var(--ink-2);display:grid;place-items:center;padding:0}
+.a3 .tb.on{border-color:var(--ink);color:var(--ink)}
+.a3 .crop .why{font:400 11.5px/1.3 var(--sans);color:var(--ink-3)}
+.a3 .mbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--ink);background:var(--surface);font:500 13.5px/1.35 var(--sans);color:var(--ink)}
+.a3 .mbar .grow{flex:1;min-width:220px}
+/* Arabic */
+.a3 [lang="ar"] *{font-family:var(--arabic)}
+.a3 [lang="ar"] .sid,.a3 [lang="ar"] .mono{font-family:var(--mono)}
+.a3 [lang="ar"] .sugg .lbl,.a3 [lang="ar"] .eyebrow{letter-spacing:0;text-transform:none}
+</style>
+<section class="area a3" id="capture-inbox">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="a3-scan" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></symbol>
+    <symbol id="a3-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="a3-assist" viewBox="0 0 24 24"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-6.5L8 20v-3.5H5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 14.9v.01"/></symbol>
+    <symbol id="a3-home" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></symbol>
+    <symbol id="a3-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></symbol>
+    <symbol id="a3-cam" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+    <symbol id="a3-inbox" viewBox="0 0 24 24"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></symbol>
+    <symbol id="a3-more" viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></symbol>
+    <symbol id="a3-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="a3-pin" viewBox="0 0 24 24"><path d="M12 21s-6-5.6-6-11a6 6 0 1 1 12 0c0 5.4-6 11-6 11Z"/><circle cx="12" cy="10" r="2"/></symbol>
+    <symbol id="a3-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="a3-off" viewBox="0 0 24 24"><path d="M7 18h9.5a3.5 3.5 0 0 0 1-6.9A5 5 0 0 0 8.1 9 4.5 4.5 0 0 0 7 18Z"/><path d="M4 4l16 16"/></symbol>
+    <symbol id="a3-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+    <symbol id="a3-gal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.5"/></symbol>
+    <symbol id="a3-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="a3-box" viewBox="0 0 24 24"><path d="M3 8l9-4 9 4v9l-9 4-9-4Z"/><path d="M3 8l9 4 9-4M12 12v9"/></symbol>
+    <symbol id="a3-rcpt" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2Z"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol>
+    <symbol id="a3-ok" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+    <symbol id="a3-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></symbol>
+    <symbol id="a3-warn" viewBox="0 0 24 24"><path d="M12 4 21 20H3Z"/><path d="M12 10v4M12 17v.01"/></symbol>
+    <symbol id="a3-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+    <symbol id="a3-split" viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5"/><circle cx="6" cy="17" r="2.5"/><path d="M8 8.5 20 17M8 15.5 20 7"/></symbol>
+    <symbol id="a3-merge" viewBox="0 0 24 24"><path d="M7 4v4c0 3 5 4 5 7v5M17 4v4c0 3-5 4-5 7"/></symbol>
+    <symbol id="a3-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+    <symbol id="a3-sg" viewBox="0 0 12 12"><path d="M6 1v3M6 8v3M1 6h3M8 6h3"/></symbol>
+    <symbol id="a3-tag" viewBox="0 0 24 24"><path d="M3 12V4h8l10 10-8 8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></symbol>
+    <symbol id="a3-move" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="a3-gauge" viewBox="0 0 24 24"><path d="M4 17a8 8 0 1 1 16 0"/><path d="M12 17l4-5"/></symbol>
+    <symbol id="a3-qr" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><path d="M14 14h2v2h-2zM18 18h2v2h-2zM14 19h1M19 14h1"/></symbol>
+    <symbol id="a3-dup" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V5a1 1 0 0 1 1-1h11"/></symbol>
+    <symbol id="a3-drill" viewBox="0 0 24 24"><path d="M4 12h9l3-3h4v6h-4l-3-3"/><path d="M7 12v5"/></symbol>
+    <symbol id="a3-cord" viewBox="0 0 24 24"><circle cx="10" cy="11" r="6"/><circle cx="10" cy="11" r="2"/><path d="M16 13c3 1 4 4 3 7"/></symbol>
+    <symbol id="a3-ext" viewBox="0 0 24 24"><rect x="8" y="8" width="8" height="13" rx="3"/><path d="M10 8V5h4v3M14 5h4l1 2"/></symbol>
+    <symbol id="a3-hash" viewBox="0 0 24 24"><path d="M9 4 7 20M17 4l-2 16M4 9h16M4 15h16"/></symbol>
+  </svg>
+
+  <header>
+    <span class="eyebrow">Screens · Capture, inbox &amp; scan</span>
+    <h2>Capture fast on the phone, review later at the desk</h2>
+    <p>The camera stays open, the place is pinned, and every photo is saved on the phone first, so capture works with no signal. AI fills the details after sync; low-stakes fields are accepted, money and dates wait in the Inbox as Suggested. Scanning a label always gives a plain answer, and never says whether a label belongs to someone else.</p>
+  </header>
+
+  <h3 class="grp">Capture</h3>
+  <div class="frames">
+
+<!-- ===== 1. CAPTURE · THING ===== -->
+    <figure id="f-capture">
+      <div class="phone cam t-dark" role="img" aria-label="Phone: capture camera in Thing mode, 12 captured, place Storage unit, Shelf A, suggested as nearby, offline with 8 waiting to sync">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="ctop">
+          <div class="crow">
+            <button class="place" type="button"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-pin"/></svg><span class="grow">Storage unit › Shelf A<span class="sub">Nearby · tap to change</span></span><svg class="ic" width="18" height="18" viewBox="0 0 24 24"><use href="#a3-chev"/></svg></button>
+            <button class="done" type="button">Done</button>
+          </div>
+          <div class="crow">
+            <span class="ccount">12 captured</span>
+            <span class="csync"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-off"/></svg>Offline · 8 waiting to sync</span>
+          </div>
+        </div>
+        <div class="vf">
+          <svg class="scene" viewBox="0 0 333 380" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="333" height="380" fill="#1C1A17"/>
+            <rect x="18" width="12" height="330" fill="#2A2722"/><rect x="303" width="12" height="330" fill="#2A2722"/>
+            <rect x="12" y="118" width="309" height="9" fill="#34302A"/><rect x="12" y="262" width="309" height="9" fill="#34302A"/>
+            <rect x="44" y="52" width="92" height="66" rx="2" fill="#2B2722"/><path d="M44 70h92" stroke="#221F1B" stroke-width="3"/>
+            <rect x="150" y="72" width="64" height="46" rx="2" fill="#29251F"/><rect x="226" y="40" width="62" height="78" rx="2" fill="#2E2A24"/>
+            <rect x="48" y="208" width="60" height="54" rx="3" fill="#2A2621"/>
+            <circle cx="166" cy="212" r="34" fill="none" stroke="#3E3A33" stroke-width="12"/><circle cx="166" cy="212" r="11" fill="#2C2924"/><path d="M198 228c16 8 22 20 18 34" stroke="#3E3A33" stroke-width="4" fill="none"/>
+            <rect x="252" y="178" width="28" height="84" rx="12" fill="#3A2B28"/><rect x="258" y="166" width="16" height="14" rx="3" fill="#2E2A24"/>
+            <rect y="330" width="333" height="50" fill="#151412"/>
+            <path d="M114 164v-14h14M204 150h14v14M218 262v14h-14M128 276h-14v-14" stroke="#F2EFE9" stroke-opacity=".85" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span class="vhint">Last saved: Extension cord · ID pending</span>
+        </div>
+        <div class="namef"><span class="grow">Name (optional)</span><button class="mic" type="button" aria-label="Dictate a name"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-mic"/></svg></button></div>
+        <div class="modes" role="radiogroup" aria-label="Capture mode">
+          <button type="button" role="radio" aria-checked="true">Thing</button>
+          <button type="button" role="radio" aria-checked="false">Receipt</button>
+          <button type="button" role="radio" aria-checked="false">Label</button>
+          <button type="button" role="radio" aria-checked="false">Reading</button>
+        </div>
+        <div class="shut">
+          <button class="cside l" type="button"><span class="ring"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-gal"/></svg></span>Gallery</button>
+          <button class="shutter" type="button" aria-label="Take photo: new thing"><i></i></button>
+          <button class="cside r" type="button"><span class="ring"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-plus"/></svg></span>+ photo to this thing</button>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Capture · phone · THING mode · camera chrome is dark in every theme. Place chip suggested by position on the device (D153); offline count per D17/D36; "+ photo to this thing" adds to the last draft (D19).</figcaption>
+    </figure>
+
+<!-- ===== 3. CAPTURE · RECEIPT ===== -->
+    <figure id="f-capture-receipt">
+      <div class="phone cam t-light" role="img" aria-label="Phone: capture camera in Receipt mode framing an Ace Hardware receipt, hold steady and fill the frame">
+        <div class="status"><span>9:44</span><span>●●● ▮</span></div>
+        <div class="ctop">
+          <div class="crow">
+            <button class="place" type="button"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-pin"/></svg><span class="grow">Storage unit › Shelf A<span class="sub">Nearby · tap to change</span></span><svg class="ic" width="18" height="18" viewBox="0 0 24 24"><use href="#a3-chev"/></svg></button>
+            <button class="done" type="button">Done</button>
+          </div>
+          <div class="crow">
+            <span class="ccount">12 captured</span>
+            <span class="csync"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-off"/></svg>Offline · 8 waiting to sync</span>
+          </div>
+        </div>
+        <div class="vf">
+          <svg class="scene" viewBox="0 0 333 380" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="333" height="380" fill="#221F1B"/>
+            <path d="M0 60h333M0 140h333M0 220h333M0 300h333" stroke="#282420" stroke-width="3"/>
+            <g transform="rotate(-3 166 190)">
+              <rect x="88" y="22" width="158" height="330" fill="#CFCABF"/>
+              <g font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#3F3B35">
+                <text x="167" y="52" text-anchor="middle" font-size="12" font-weight="600">ACE HARDWARE</text>
+                <text x="167" y="66" text-anchor="middle">CAIRO · 03/10/2026 14:02</text>
+                <text x="100" y="96">BOSCH IMPACT DRV</text><text x="234" y="96" text-anchor="end">4,500.00</text>
+                <text x="100" y="112">EXT CORD 5M 3-WAY</text><text x="234" y="112" text-anchor="end">350.00</text>
+                <text x="100" y="128">FIRE EXT 2KG</text><text x="234" y="128" text-anchor="end">950.00</text>
+                <text x="100" y="158" font-weight="600">TOTAL EGP</text><text x="234" y="158" text-anchor="end" font-weight="600">5,800.00</text>
+                <text x="100" y="174">CASH</text><text x="234" y="174" text-anchor="end">6,000.00</text>
+                <text x="100" y="188">CHANGE</text><text x="234" y="188" text-anchor="end">200.00</text>
+                <text x="167" y="218" text-anchor="middle">2-YR WARRANTY ON TOOLS</text>
+                <path d="M112 250h3v44h-3zM118 250h1v44h-1zM122 250h4v44h-4zM129 250h2v44h-2zM134 250h1v44h-1zM138 250h4v44h-4zM145 250h2v44h-2zM150 250h1v44h-1zM154 250h4v44h-4zM161 250h1v44h-1zM165 250h3v44h-3zM171 250h2v44h-2zM176 250h1v44h-1zM180 250h4v44h-4zM187 250h2v44h-2zM192 250h1v44h-1zM196 250h3v44h-3zM202 250h2v44h-2zM207 250h1v44h-1zM211 250h4v44h-4zM218 250h2v44h-2z"/>
+              </g>
+              <path d="M100 78h134M100 140h134" stroke="#8D877C" stroke-dasharray="3 3"/>
+              <rect x="88" y="22" width="158" height="330" fill="none" stroke="#F2EFE9" stroke-width="2.5"/>
+            </g>
+          </svg>
+          <span class="vhint bot"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" style="stroke-width:2.4"><use href="#a3-ok"/></svg>Hold steady · fill the frame · original kept</span>
+        </div>
+        <div class="namef"><span class="grow">Note (optional)</span><button class="mic" type="button" aria-label="Dictate a note"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-mic"/></svg></button></div>
+        <div class="modes" role="radiogroup" aria-label="Capture mode">
+          <button type="button" role="radio" aria-checked="false">Thing</button>
+          <button type="button" role="radio" aria-checked="true">Receipt</button>
+          <button type="button" role="radio" aria-checked="false">Label</button>
+          <button type="button" role="radio" aria-checked="false">Reading</button>
+        </div>
+        <div class="shut">
+          <button class="cside l" type="button"><span class="ring"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-gal"/></svg></span>Gallery</button>
+          <button class="shutter" type="button" aria-label="Take photo: receipt"><i></i></button>
+          <button class="cside r" type="button"><span class="ring"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-plus"/></svg></span>+ photo to this thing</button>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Capture · phone · RECEIPT mode, app theme light: the camera chrome stays dark. Full original kept as evidence (D34). The phone doesn't detect edges: the server crops during extraction, after sync (D196). "EGP" printed on the receipt is unambiguous (D136).</figcaption>
+    </figure>
+
+<!-- ===== 2. CAPTURE · LABEL RECOGNISED ===== -->
+    <figure id="f-capture-label">
+      <div class="phone cam t-dark" role="img" aria-label="Phone: capture camera recognises the Kept label on Box 3 and offers Open Box 3 or Capture into Box 3">
+        <div class="status"><span>9:42</span><span>●●● ▮</span></div>
+        <div class="ctop">
+          <div class="crow">
+            <button class="place" type="button"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-pin"/></svg><span class="grow">Storage unit › Shelf A<span class="sub">Nearby · tap to change</span></span><svg class="ic" width="18" height="18" viewBox="0 0 24 24"><use href="#a3-chev"/></svg></button>
+            <button class="done" type="button">Done</button>
+          </div>
+          <div class="crow">
+            <span class="ccount">12 captured</span>
+            <span class="csync"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-off"/></svg>Offline · 8 waiting to sync</span>
+          </div>
+        </div>
+        <div class="vf">
+          <svg class="scene" viewBox="0 0 333 380" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="333" height="380" fill="#1C1A17"/>
+            <rect x="12" y="250" width="309" height="9" fill="#34302A"/>
+            <path d="M36 70 64 40h206l28 30Z" fill="#43392E"/>
+            <rect x="36" y="70" width="262" height="180" fill="#3B3229"/><path d="M36 196h262" stroke="#342C24" stroke-width="2"/>
+            <rect x="96" y="92" width="146" height="88" rx="4" fill="#E6E2D9"/>
+            <rect x="104" y="100" width="38" height="38" fill="#1C1B19"/><rect x="108" y="104" width="30" height="30" fill="#E6E2D9"/><rect x="113" y="109" width="20" height="20" fill="#1C1B19"/>
+            <path d="M104 144h8v8h-8zM116 144h6v26h-6zM126 148h8v6h-8zM104 158h8v12h-8zM126 160h16v10h-16z" fill="#1C1B19"/>
+            <text x="150" y="122" font-family="IBM Plex Mono, monospace" font-weight="600" font-size="16" fill="#1C1B19">3KD‑7PX</text>
+            <text x="150" y="142" font-family="IBM Plex Sans, sans-serif" font-weight="600" font-size="12" fill="#1C1B19">Box 3</text>
+            <text x="150" y="158" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#55524C">Shelf A</text>
+            <rect x="88" y="84" width="162" height="104" rx="8" fill="none" stroke="#F2EFE9" stroke-width="2.5"/>
+            <rect x="88" y="58" width="92" height="20" rx="10" fill="#F2EFE9"/><text x="134" y="72" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-weight="600" font-size="11" fill="#1C1B19">Kept label</text>
+          </svg>
+          <div class="reco">
+            <div class="hd"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-box"/></svg><b>Box 3</b><span class="sid">3KD‑7PX</span></div>
+            <span class="p">Storage unit › Shelf A · 14 things · from this phone, as of last sync 14:02</span>
+            <div class="btns"><button class="btn dk" type="button">Open Box 3</button><button class="btn primary" type="button">Capture into Box 3</button></div>
+          </div>
+        </div>
+        <div class="namef"><span class="grow">Name (optional)</span><button class="mic" type="button" aria-label="Dictate a name"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-mic"/></svg></button></div>
+        <div class="modes" role="radiogroup" aria-label="Capture mode">
+          <button type="button" role="radio" aria-checked="true">Thing</button>
+          <button type="button" role="radio" aria-checked="false">Receipt</button>
+          <button type="button" role="radio" aria-checked="false">Label</button>
+          <button type="button" role="radio" aria-checked="false">Reading</button>
+        </div>
+        <div class="shut">
+          <button class="cside l" type="button"><span class="ring"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-gal"/></svg></span>Gallery</button>
+          <button class="shutter" type="button" aria-label="Take photo: new thing"><i></i></button>
+          <button class="cside r" type="button"><span class="ring"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-plus"/></svg></span>+ photo to this thing</button>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Capture · phone · a Kept label recognised in view, in any mode (D137). Resolved from the phone's snapshot, so it works offline. "Capture into Box 3" re-pins the place chip; the shutter still works.</figcaption>
+    </figure>
+
+<!-- ===== 4. CAPTURE SUMMARY ===== -->
+    <figure id="f-capture-summary">
+      <div class="phone t-light" role="img" aria-label="Phone: capture summary, 12 captured into Storage unit, Shelf A, 8 waiting to sync, with a note that on iPhone Kept must be open to finish syncing">
+        <div class="status"><span>9:47</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <h1>Capture done</h1>
+          <button class="icon-btn" aria-label="Close"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-x"/></svg></button>
+        </div>
+        <div class="content">
+          <span class="okmark"><svg class="ic" width="28" height="28" viewBox="0 0 24 24" style="stroke-width:2.2"><use href="#a3-ok"/></svg></span>
+          <p class="sumh">12 captured into Storage unit › Shelf A</p>
+          <div class="seg">
+            <span class="pill"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-clock"/></svg>8 waiting to sync</span>
+            <span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-ok"/></svg>4 synced</span>
+          </div>
+          <div class="banner info"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-off"/></svg><span><b>Open to finish syncing (8).</b> On iPhone, Kept uploads only while it's open. Keep it open when you're back in signal.</span></div>
+          <div class="grid12" aria-label="The 12 captures">
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-drill"/></svg><span class="st ok"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" style="stroke-width:3"><use href="#a3-ok"/></svg></span></div>
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-rcpt"/></svg><span class="st ok"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" style="stroke-width:3"><use href="#a3-ok"/></svg></span></div>
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-box"/></svg><span class="st ok"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" style="stroke-width:3"><use href="#a3-ok"/></svg></span></div>
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-ext"/></svg><span class="st ok"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" style="stroke-width:3"><use href="#a3-ok"/></svg></span></div>
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-cord"/></svg><span class="st wait"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" style="stroke-width:2.6"><use href="#a3-clock"/></svg></span></div>
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-box"/></svg><span class="st wait"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" style="stroke-width:2.6"><use href="#a3-clock"/></svg></span></div>
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-gal"/></svg><span class="st wait"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" style="stroke-width:2.6"><use href="#a3-clock"/></svg></span></div>
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-box"/></svg><span class="st wait"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" style="stroke-width:2.6"><use href="#a3-clock"/></svg></span></div>
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-gal"/></svg><span class="st wait"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" style="stroke-width:2.6"><use href="#a3-clock"/></svg></span></div>
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-gal"/></svg><span class="st wait"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" style="stroke-width:2.6"><use href="#a3-clock"/></svg></span></div>
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-box"/></svg><span class="st wait"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" style="stroke-width:2.6"><use href="#a3-clock"/></svg></span></div>
+            <div class="tile"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-gal"/></svg><span class="st wait"><svg class="ic" width="13" height="13" viewBox="0 0 24 24" style="stroke-width:2.6"><use href="#a3-clock"/></svg></span></div>
+          </div>
+          <div class="legend2"><span><svg class="ic" width="14" height="14" viewBox="0 0 24 24" style="stroke-width:2.6;color:var(--ok)"><use href="#a3-ok"/></svg>Synced, has an ID</span><span><svg class="ic" width="14" height="14" viewBox="0 0 24 24" style="stroke-width:2.2"><use href="#a3-clock"/></svg>Waiting · ID pending</span></div>
+          <p class="acc">Each one is saved and findable on this phone now. AI fills in details after sync; anything that needs you lands in the Inbox.</p>
+          <span class="asof">As of last sync, 14:02</span>
+        </div>
+        <div class="foot">
+          <button class="btn secondary" type="button">Keep capturing</button>
+          <button class="btn primary" type="button">Done</button>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Capture summary · phone · light. Counts come from the local queue; "Open to finish syncing (N)" is the iPhone rule from D36 (no Background Sync in Safari). IDs stay pending until the server allocates them (D112).</figcaption>
+    </figure>
+    <figure id="f-sync">
+      <div class="phone t-light k-frame" role="img" aria-label="Phone: Inbox just after the phone came back online, one draft being named, one named with a suggested price">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><h1>Inbox</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+
+          <div class="k-ptr-row"><span class="k-ptr word">Updated</span></div>
+          <div class="k-seg" role="radiogroup" aria-label="Whose"><span class="on">Mine · 3</span><span>Everyone's · 5</span></div>
+          <div class="k-card">
+            <div class="k-row2"><span class="k-thumb"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="k-rt"><b>Unnamed thing</b><small>Storage unit › Shelf A</small></span><span class="k-tape pend">ID pending</span></div>
+            <p class="k-ailine" style="color:var(--ink-3)"><i class="k-spin" style="width:10px;height:10px"></i>&nbsp;Naming…</p>
+          </div>
+          <div class="k-card">
+            <div class="k-row2"><span class="k-thumb"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="k-rt"><b>Bosch drill, 18 V</b><small>Bosch · GSR 18V-55 · Drill<br>Storage unit › Shelf A</small></span><bdi class="k-tape" dir="ltr">2HX‑9RB</bdi></div>
+            <div class="k-sugg"><span class="lbl">Suggested · price</span><span>4,500 EGP</span><span class="k-wrap"><b class="kb kb-s sm">Confirm</b><b class="kb kb-s sm">Reject</b></span></div>
+            <p class="k-ailine">AI · Groq · 1.6K tokens · ≈ $0.004 · paid by you<svg class="k-ic s"><use href="#k-chev"/></svg></p>
+            <div class="k-wrap"><b class="kb kb-p dis">Accept</b><b class="kb kb-s">Edit</b></div>
+            <small class="k-desc">Confirm or reject each suggested value first.</small>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a class="on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+        
+      </div>
+      <figcaption class="frame-cap">Syncing and AI naming · phone · light. Back in signal, the queue sends; each capture's ID chip prints as its code arrives (D195), AI names in turn ("Naming…"), and money waits as Suggested with the AI line under it (D18, D19, D206). Pull to refresh answers "Updated" (D212).</figcaption>
+    </figure>
+
+  </div>
+
+  <h3 class="grp">Inbox</h3>
+  <div class="frames">
+
+<!-- ===== 6a. INBOX · PHONE · LIGHT (top) ===== -->
+    <figure id="f-inbox">
+      <div class="phone t-light" role="img" aria-label="Phone: Inbox, Mine, grouped by capture batch, a Bosch impact driver draft with price and warranty waiting to be confirmed">
+        <div class="status"><span>21:10</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <h1>Inbox</h1>
+          <button class="icon-btn" aria-label="Notifications"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-bell"/></svg></button>
+          <button class="icon-btn" aria-label="Assistant"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-assist"/></svg></button>
+        </div>
+        <div class="content">
+          <div class="k-seg" role="radiogroup" aria-label="Whose"><span class="on">Mine · 15</span><span>Everyone's · 19</span></div>
+          <div class="kinds" aria-label="Kind">
+            <span class="chip on">All <b>15</b></span><span class="chip">Drafts <b>10</b></span><span class="chip">Receipts <b>2</b></span>
+            <span class="chip">Readings <b>1</b></span><span class="chip">Currency <b>1</b></span><span class="chip">Duplicates <b>1</b></span>
+          </div>
+          <div class="k-strip"><span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>Search names, shops, places</span><span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>Filters</span></div>
+          <div class="bh"><span class="t">Today, Sat 10 Oct<span class="s">12 captured · Storage unit › Shelf A</span></span><button class="btn secondary small" type="button">Accept 6 names</button></div>
+          <div class="icard">
+            <div class="ihd">
+              <span class="ph"><svg class="ic" width="26" height="26" viewBox="0 0 24 24"><use href="#a3-drill"/></svg></span>
+              <div><div class="t-name">Bosch impact driver, 18 V<span class="sid">5JV‑3TD</span></div><div class="t-path">Bosch · 18 V · Power tool</div></div>
+            </div>
+            <div class="sugg row"><span class="lbl"><svg class="ic" width="12" height="12" viewBox="0 0 12 12"><use href="#a3-sg"/></svg>Suggested · price</span><span class="val num">4,500 EGP</span><span class="src">Ace Hardware receipt</span><div class="act"><button class="btn primary small" type="button">Confirm</button><button class="btn secondary small" type="button">Edit</button></div></div>
+            <div class="sugg row"><span class="lbl"><svg class="ic" width="12" height="12" viewBox="0 0 12 12"><use href="#a3-sg"/></svg>Suggested · warranty end</span><span class="val">3 Oct 2028</span><span class="src">"2-yr warranty" printed</span><div class="act"><button class="btn primary small" type="button">Confirm</button><button class="btn secondary small" type="button">Edit</button></div></div>
+            <div class="acts"><span class="acc grow">Name, brand, model and type: filled by AI, accepted.</span><button class="btn secondary small" type="button">Move</button><button class="btn secondary small" type="button">Set type</button></div>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="Main">
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-home"/></svg>Home</a>
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-search"/></svg>Search</a>
+          <a class="capture" href="#"><span class="fab"><svg class="ic" viewBox="0 0 24 24" style="stroke-width:2"><use href="#a3-cam"/></svg></span>Capture</a>
+          <a class="on" href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-inbox"/></svg>Inbox</a>
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-more"/></svg>More</a>
+        </nav>
+      </div>
+      <figcaption class="frame-cap">Inbox · phone · light · top of the list. "Mine" is the default; grouped by capture batch; kind filters. Low-stakes fields are accepted and shown plainly; price and warranty date wait as Suggested (D18, D19).</figcaption>
+    </figure>
+
+<!-- ===== 6b. INBOX · PHONE · LIGHT (scrolled) ===== -->
+    <figure id="f-inbox-scroll">
+      <div class="phone t-light" role="img" aria-label="Phone: Inbox scrolled, a reading that doesn't fit and a receipt that needs a currency">
+        <div class="status"><span>21:11</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <h1>Inbox</h1>
+          <button class="icon-btn" aria-label="Notifications"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-bell"/></svg></button>
+          <button class="icon-btn" aria-label="Assistant"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-assist"/></svg></button>
+        </div>
+        <div class="content">
+          <div class="bh"><span class="t">Yesterday, Fri 9 Oct<span class="s">1 reading · Garage · synced from Alfred's phone</span></span></div>
+          <div class="icard">
+            <div class="ihd">
+              <span class="ph"><svg class="ic" width="26" height="26" viewBox="0 0 24 24"><use href="#a3-gauge"/></svg></span>
+              <div><div class="t-name">Corolla · odometer</div><div class="t-path">Garage › Bay 2</div><div class="t-meta"><span class="pill warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-warn"/></svg>Reading doesn't fit</span></div></div>
+            </div>
+            <p class="body">8 Oct, logged offline, is lower than the reading before it.</p>
+            <div class="tl"><div>27 Sep<b>52,020</b></div><div>2 Oct<b>52,340</b></div><div class="bad">8 Oct<b>51,980</b></div></div>
+            <div class="acts"><button class="btn primary small" type="button">Fix reading</button><button class="btn secondary small" type="button">Keep it</button><button class="btn secondary small" type="button">Discard</button></div>
+          </div>
+          <div class="bh"><span class="t">Shared in, Fri 9 Oct<span class="s">1 receipt · from WhatsApp · Home › Unplaced</span></span></div>
+          <div class="icard">
+            <div class="ihd">
+              <span class="ph"><svg class="ic" width="26" height="26" viewBox="0 0 24 24"><use href="#a3-rcpt"/></svg></span>
+              <div><div class="t-name">Travel adapter · receipt</div><div class="t-path">Total <span class="mono">$ 24.99</span></div><div class="t-meta"><span class="pill warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-warn"/></svg>Needs a currency</span></div></div>
+            </div>
+            <p class="body">"$" alone can mean US or Canadian dollars.</p>
+            <div class="pair2"><button class="btn secondary" type="button">US dollar · USD</button><button class="btn secondary" type="button">Canadian · CAD</button></div>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="Main">
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-home"/></svg>Home</a>
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-search"/></svg>Search</a>
+          <a class="capture" href="#"><span class="fab"><svg class="ic" viewBox="0 0 24 24" style="stroke-width:2"><use href="#a3-cam"/></svg></span>Capture</a>
+          <a class="on" href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-inbox"/></svg>Inbox</a>
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-more"/></svg>More</a>
+        </nav>
+      </div>
+      <figcaption class="frame-cap">Inbox · phone · light · scrolled. A late reading checked against its neighbours goes to the Inbox, not a silent rejection (D112). "$" alone always waits with no preselection, even in a USD or CAD location: the person picks USD or CAD (screens §8, D189).</figcaption>
+    </figure>
+    <figure id="f-inbox-bulk">
+      <div class="phone t-light k-frame" role="img" aria-label="Phone: Inbox after accepting three names at once, a toast with Undo">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><h1>Inbox</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+
+          <div class="k-seg" role="radiogroup" aria-label="Whose"><span class="on">Mine · 9</span><span>Everyone's · 13</span></div>
+          <div class="k-strip"><span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>Search names, shops, places</span><span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>Filters</span></div>
+          <div class="k-bh"><span><b>Today, Sat 10 Oct</b><small>9 left · Storage unit › Shelf A</small></span></div>
+          <ul class="k-list">
+            <li><span class="k-cb"><i></i></span><span class="k-rt"><b>Unnamed thing</b><small>Needs a name: tap Edit to type one.</small></span><span class="k-tape pend">ID pending</span></li>
+            <li><span class="k-cb"><i></i></span><span class="k-rt"><b>Ace Hardware receipt</b><small>Links to 2 things · 1,240 EGP to confirm</small></span></li>
+            <li><span class="k-cb"><i></i></span><span class="k-rt"><b>Extension cord, 5 m</b><small>Price to confirm</small></span><bdi class="k-tape" dir="ltr">7RC‑2NF</bdi></li>
+          </ul>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a class="on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+        <div class="k-toast float"><i class="bar ok"></i><span>Accepted 3 names</span><b class="k-undo">Undo</b><span class="k-x"><svg class="k-ic s"><use href="#k-x"/></svg></span></div>
+      </div>
+      <figcaption class="frame-cap">Accept names, Undo · phone · light. Three drafts were selected and "Accept 3 names" pressed in the bulk bar; the toast offers Undo for 10 s, then History keeps it for 7 days. Drafts without a name, or with values to confirm, are left for review (bulk-bar.tsx, history/undo.ts).</figcaption>
+    </figure>
+
+<!-- ===== 7a. INBOX · DESKTOP · RECEIPT ===== -->
+    <figure id="f-inbox-desk">
+      <div class="frame-scroll">
+        <div class="desktop t-light" role="img" aria-label="Desktop: Inbox bulk review, the Ace Hardware receipt selected, each line offered existing things to link">
+          <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a class="on" href="#">Inbox <span class="count">15</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+          <section class="main">
+            <div class="topbar"><h1>Inbox</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+            <div class="work">
+              <div class="dtool">
+                <div class="k-seg" role="radiogroup" aria-label="Whose" style="min-width:220px"><span class="on">Mine · 15</span><span>Everyone's · 19</span></div><span class="k-search" style="flex:0 1 240px"><svg class="k-ic s"><use href="#k-search"/></svg>Search names, shops, places</span><span class="k-chip"><svg class="k-ic s"><use href="#k-plus"/></svg>Filter</span>
+                <span class="sep"></span>
+                <span class="chip on">All <b>15</b></span><span class="chip">Drafts <b>10</b></span><span class="chip">Receipts <b>2</b></span><span class="chip">Readings <b>1</b></span><span class="chip">Currency <b>1</b></span><span class="chip">Duplicates <b>1</b></span>
+                              </div>
+              <div class="dsplit">
+                <div class="dlist">
+                  <div class="dh">Today · Shelf A · 12 <a href="#">Accept 6 names</a></div>
+                  <div class="q"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-drill"/></svg></span><div><div class="n">Bosch impact driver, 18 V</div><div class="m"><span class="sid">5JV‑3TD</span>Price and warranty to confirm</div></div></div>
+                  <div class="q sel"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-rcpt"/></svg></span><div><div class="n">Ace Hardware receipt</div><div class="m"><span class="pill"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-link"/></svg>3 lines to link</span></div></div></div>
+                  <div class="q"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-cord"/></svg></span><div><div class="n">Extension cord, 5 m</div><div class="m"><span class="sid">7RC‑2NF</span>Name accepted</div></div></div>
+                  <div class="q"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-gal"/></svg></span><div><div class="n">Shelf A photo · 6 found</div><div class="m">Multi-item draft</div></div></div>
+                  <div class="q"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-ext"/></svg></span><div><div class="n">Fire extinguisher, 2 kg</div><div class="m"><span class="sid">8VN‑2TC</span>Name accepted</div></div></div>
+                  <div class="dh">Shared in · Fri 9 Oct</div>
+                  <div class="q"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-rcpt"/></svg></span><div><div class="n">B.TECH receipt</div><div class="m">3,299.00 EGP · 1 line</div></div></div>
+                  <div class="q"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-rcpt"/></svg></span><div><div class="n">Travel adapter · receipt</div><div class="m"><span class="pill warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-warn"/></svg>Needs a currency</span></div></div></div>
+                  <div class="dh">Yesterday · Garage</div>
+                  <div class="q"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-gauge"/></svg></span><div><div class="n">Corolla · odometer</div><div class="m"><span class="pill warn"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-warn"/></svg>Reading doesn't fit</span></div></div></div>
+                </div>
+                <div class="ddet">
+                  <div class="dhead">
+                    <div class="grow"><h3>Ace Hardware receipt</h3><div class="dsub">Ibrahim · today 14:06 · Storage unit › Shelf A</div></div>
+                    <button class="btn secondary" type="button">Edit</button><button class="btn primary" type="button">Accept receipt and 2 links</button>
+                  </div>
+                  <div class="rcpt">
+                    <div class="rimg"><svg viewBox="0 0 128 190" width="128" height="164" preserveAspectRatio="xMidYMin slice" aria-hidden="true"><rect width="128" height="190" fill="#CFCABF"/><g fill="#6B675F"><rect x="30" y="14" width="68" height="7"/><rect x="40" y="26" width="48" height="4"/><rect x="12" y="44" width="60" height="4"/><rect x="92" y="44" width="24" height="4"/><rect x="12" y="54" width="66" height="4"/><rect x="96" y="54" width="20" height="4"/><rect x="12" y="64" width="44" height="4"/><rect x="96" y="64" width="20" height="4"/><rect x="12" y="82" width="40" height="5"/><rect x="88" y="82" width="28" height="5"/><path d="M24 150h2v26h-2zM29 150h1v26h-1zM33 150h3v26h-3zM39 150h1v26h-1zM43 150h2v26h-2zM48 150h3v26h-3zM54 150h1v26h-1zM58 150h2v26h-2zM63 150h3v26h-3zM69 150h1v26h-1zM73 150h2v26h-2zM78 150h3v26h-3zM84 150h1v26h-1zM88 150h2v26h-2zM93 150h3v26h-3zM99 150h2v26h-2z"/></g></svg></div>
+                    <div class="fcol">
+                      <div class="kv2"><span>Vendor</span>Ace Hardware · currency EGP, printed</div>
+                      <div class="sugg row"><span class="lbl"><svg class="ic" width="12" height="12" viewBox="0 0 12 12"><use href="#a3-sg"/></svg>Suggested · purchase date</span><span class="val">Sat 3 Oct 2026</span><div class="act"><button class="btn primary small" type="button">Confirm</button><button class="btn secondary small" type="button">Edit</button></div></div>
+                      <div class="sugg row"><span class="lbl"><svg class="ic" width="12" height="12" viewBox="0 0 12 12"><use href="#a3-sg"/></svg>Suggested · total</span><span class="val num">5,800.00 EGP</span><span class="src">Lines add up to the total</span><div class="act"><button class="btn primary small" type="button">Confirm</button><button class="btn secondary small" type="button">Edit</button></div></div>
+                    </div>
+                  </div>
+                  <div class="sec"><h4>Link to an existing thing</h4><span class="acc">Candidates in Storage unit, by brand and model or by name</span></div>
+                  <div class="line">
+                    <div class="lt"><span>BOSCH IMPACT DRV · 1 ×</span><span>4,500.00</span></div>
+                    <div class="cands">
+                      <div class="cand on"><span class="rd on"></span><span>Bosch impact driver, 18 V <span class="sid">5JV‑3TD</span><small>Shelf A · brand and name match · captured today</small></span></div>
+                      <div class="cand"><span class="rd"></span><span>Bosch drill bit set <span class="sid">6PD‑3KW</span><small>Shelf B · brand match</small></span></div>
+                    </div>
+                  </div>
+                  <div class="line">
+                    <div class="lt"><span>EXT CORD 5M 3-WAY · 1 ×</span><span>350.00</span></div>
+                    <div class="cands">
+                      <div class="cand on"><span class="rd on"></span><span>Extension cord, 5 m <span class="sid">7RC‑2NF</span><small>Shelf A · name match · captured today</small></span></div>
+                      <div class="cand"><span class="rd"></span><span>Create a new thing<small>From this line</small></span></div>
+                    </div>
+                  </div>
+                  <div class="line">
+                    <div class="lt"><span>FIRE EXT 2KG · 1 ×</span><span>950.00</span></div>
+                    <div class="rowb"><span class="acc">No match yet. Fire extinguisher, 2 kg is still a draft in this batch.</span><a class="lnk" href="#">Search things</a><a class="lnk" href="#">Create a new thing</a></div>
+                  </div>
+                </div>
+              </div>
+              <div class="keys"><span><kbd>j</kbd><kbd>k</kbd>Next, previous</span><span><kbd>a</kbd>Accept</span><span><kbd>e</kbd>Edit</span><span><kbd>m</kbd>Move</span><span><kbd>t</kbd>Type</span><span><kbd>x</kbd>Select</span><span><kbd>shift</kbd><kbd>a</kbd>Accept selected</span><span class="end">1–9 of 15</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Inbox · desktop · light · bulk review with the keyboard. A receipt links to things already captured, the normal J2 order: photo first, receipt later (D115, D36).</figcaption>
+    </figure>
+
+<!-- ===== 7b. INBOX · DESKTOP · MULTI-ITEM ===== -->
+    <figure id="f-inbox-multi">
+      <div class="frame-scroll">
+        <div class="desktop t-light" role="img" aria-label="Desktop: Inbox, one shelf photo split into six detections with crops, three paint cans selected to merge, one false detection marked to drop">
+          <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a class="on" href="#">Inbox <span class="count">15</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+          <section class="main">
+            <div class="topbar"><h1>Inbox</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+            <div class="work">
+              <div class="dtool">
+                <div class="k-seg" role="radiogroup" aria-label="Whose" style="min-width:220px"><span class="on">Mine · 15</span><span>Everyone's · 19</span></div><span class="k-search" style="flex:0 1 240px"><svg class="k-ic s"><use href="#k-search"/></svg>Search names, shops, places</span><span class="k-chip"><svg class="k-ic s"><use href="#k-plus"/></svg>Filter</span>
+                <span class="sep"></span>
+                <span class="chip">All <b>15</b></span><span class="chip on">Drafts <b>10</b></span><span class="chip">Receipts <b>2</b></span><span class="chip">Readings <b>1</b></span><span class="chip">Currency <b>1</b></span><span class="chip">Duplicates <b>1</b></span>
+                              </div>
+              <div class="dsplit">
+                <div class="dlist">
+                  <div class="bulk"><span class="grow">3 selected</span><button class="btn small" type="button">Accept</button><button class="btn small" type="button">Set type</button><button class="btn small" type="button">Move</button></div>
+                  <div class="dh">Today · Shelf A · 10 <a href="#">Accept 6 names</a></div>
+                  <div class="q"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-drill"/></svg></span><div><div class="n">Bosch impact driver, 18 V</div><div class="m"><span class="sid">5JV‑3TD</span>Price and warranty to confirm</div></div></div>
+                  <div class="q sel"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-gal"/></svg></span><div><div class="n">Shelf A photo · 6 found</div><div class="m">Multi-item draft · 1 photo</div></div></div>
+                  <div class="q"><span class="cb on"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" style="stroke-width:3.5"><use href="#a3-ok"/></svg></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-cord"/></svg></span><div><div class="n">Extension cord, 5 m</div><div class="m"><span class="sid">7RC‑2NF</span>Name accepted</div></div></div>
+                  <div class="q"><span class="cb on"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" style="stroke-width:3.5"><use href="#a3-ok"/></svg></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-ext"/></svg></span><div><div class="n">Fire extinguisher, 2 kg</div><div class="m"><span class="sid">8VN‑2TC</span>Name accepted</div></div></div>
+                  <div class="q"><span class="cb on"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" style="stroke-width:3.5"><use href="#a3-ok"/></svg></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-box"/></svg></span><div><div class="n">Plastic crate, grey</div><div class="m"><span class="sid">1QH‑5VA</span>Name accepted</div></div></div>
+                  <div class="q"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-box"/></svg></span><div><div class="n">Unnamed thing</div><div class="m"><span class="sid">3NZ‑6GE</span>Name suggested</div></div></div>
+                  <div class="dh">Shared in · Fri 9 Oct</div>
+                  <div class="q"><span class="cb"></span><span class="ph"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-rcpt"/></svg></span><div><div class="n">B.TECH receipt</div><div class="m">3,299.00 EGP · 1 line</div></div></div>
+                </div>
+                <div class="ddet">
+                  <div class="dhead">
+                    <div class="grow"><h3>Shelf A photo · 6 found</h3><div class="dsub">One photo, one draft per detection, all placed in Storage unit › Shelf A</div></div>
+                    <button class="btn secondary" type="button">Re-detect</button><button class="btn primary" type="button">Accept 4 drafts</button>
+                  </div>
+                  <div class="shelf">
+                    <svg class="scene" viewBox="0 0 604 228" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                      <rect width="604" height="228" fill="#2A2722"/><rect y="176" width="604" height="12" fill="#3B3731"/><rect y="188" width="604" height="40" fill="#221F1B"/>
+                      <circle cx="92" cy="128" r="40" fill="none" stroke="#6E695F" stroke-width="13"/><circle cx="92" cy="128" r="13" fill="#4A463F"/>
+                      <rect x="190" y="96" width="36" height="80" rx="6" fill="#55524C"/><rect x="236" y="96" width="36" height="80" rx="6" fill="#5A564F"/><rect x="282" y="96" width="36" height="80" rx="6" fill="#524E47"/>
+                      <rect x="200" y="86" width="16" height="12" fill="#3B3731"/><rect x="246" y="86" width="16" height="12" fill="#3B3731"/><rect x="292" y="86" width="16" height="12" fill="#3B3731"/>
+                      <rect x="352" y="118" width="84" height="16" rx="8" fill="#6E695F"/><rect x="360" y="148" width="84" height="16" rx="8" fill="#6E695F"/><path d="M436 126h16v30M444 156h10" stroke="#55524C" stroke-width="5" fill="none"/>
+                      <path d="M484 60h90l-10 116h-70Z" fill="#34302A" opacity=".8"/>
+                      <g fill="none" stroke="#A898FA" stroke-width="2" stroke-dasharray="6 4">
+                        <rect x="42" y="78" width="100" height="100" rx="4" stroke-dasharray="none" stroke="#FBFAF7" stroke-width="2.5"/>
+                        <rect x="184" y="80" width="46" height="100" rx="4"/><rect x="232" y="80" width="46" height="100" rx="4"/><rect x="278" y="80" width="46" height="100" rx="4"/>
+                        <rect x="344" y="108" width="116" height="66" rx="4"/><rect x="484" y="56" width="92" height="124" rx="4"/>
+                      </g>
+                      <g fill="#FBFAF7"><rect x="38" y="74" width="8" height="8"/><rect x="138" y="74" width="8" height="8"/><rect x="38" y="174" width="8" height="8"/><rect x="138" y="174" width="8" height="8"/></g>
+                      <g font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="600" text-anchor="middle">
+                        <circle cx="54" cy="92" r="9" fill="#5B3CC4"/><text x="54" y="96" fill="#fff">1</text>
+                        <circle cx="196" cy="94" r="9" fill="#5B3CC4"/><text x="196" y="98" fill="#fff">2</text>
+                        <circle cx="244" cy="94" r="9" fill="#5B3CC4"/><text x="244" y="98" fill="#fff">3</text>
+                        <circle cx="290" cy="94" r="9" fill="#5B3CC4"/><text x="290" y="98" fill="#fff">4</text>
+                        <circle cx="356" cy="122" r="9" fill="#5B3CC4"/><text x="356" y="126" fill="#fff">5</text>
+                        <circle cx="496" cy="70" r="9" fill="#5B3CC4"/><text x="496" y="74" fill="#fff">6</text>
+                      </g>
+                    </svg>
+                  </div>
+                  <div class="crops">
+                    <div class="crop pick"><div class="ci"><svg viewBox="0 0 90 62" aria-hidden="true"><rect width="90" height="62" fill="#2A2722"/><circle cx="45" cy="31" r="20" fill="none" stroke="#6E695F" stroke-width="8"/><circle cx="45" cy="31" r="6" fill="#4A463F"/></svg></div><span class="nm"><small>Suggested</small>Extension cord reel</span><span class="why">1 · crop being adjusted</span><div class="tools"><button class="tb" type="button" aria-label="Split"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-split"/></svg></button><button class="tb" type="button" aria-label="Drop"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-trash"/></svg></button></div></div>
+                    <div class="crop pick"><div class="ci"><svg viewBox="0 0 90 62" aria-hidden="true"><rect width="90" height="62" fill="#2A2722"/><rect x="34" y="12" width="22" height="46" rx="4" fill="#55524C"/></svg><span class="cb on"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" style="stroke-width:3.5"><use href="#a3-ok"/></svg></span></div><span class="nm"><small>Suggested</small>Spray paint, black</span><span class="why">2 · to merge</span><div class="tools"><button class="tb on" type="button" aria-label="Merge"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-merge"/></svg></button><button class="tb" type="button" aria-label="Drop"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-trash"/></svg></button></div></div>
+                    <div class="crop pick"><div class="ci"><svg viewBox="0 0 90 62" aria-hidden="true"><rect width="90" height="62" fill="#2A2722"/><rect x="34" y="12" width="22" height="46" rx="4" fill="#5A564F"/></svg><span class="cb on"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" style="stroke-width:3.5"><use href="#a3-ok"/></svg></span></div><span class="nm"><small>Suggested</small>Spray paint, black</span><span class="why">3 · to merge</span><div class="tools"><button class="tb on" type="button" aria-label="Merge"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-merge"/></svg></button><button class="tb" type="button" aria-label="Drop"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-trash"/></svg></button></div></div>
+                    <div class="crop pick"><div class="ci"><svg viewBox="0 0 90 62" aria-hidden="true"><rect width="90" height="62" fill="#2A2722"/><rect x="34" y="12" width="22" height="46" rx="4" fill="#524E47"/></svg><span class="cb on"><svg class="ic" width="12" height="12" viewBox="0 0 24 24" style="stroke-width:3.5"><use href="#a3-ok"/></svg></span></div><span class="nm"><small>Suggested</small>Spray paint, black</span><span class="why">4 · to merge</span><div class="tools"><button class="tb on" type="button" aria-label="Merge"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-merge"/></svg></button><button class="tb" type="button" aria-label="Drop"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-trash"/></svg></button></div></div>
+                    <div class="crop"><div class="ci"><svg viewBox="0 0 90 62" aria-hidden="true"><rect width="90" height="62" fill="#2A2722"/><rect x="14" y="18" width="52" height="10" rx="5" fill="#6E695F"/><rect x="20" y="36" width="52" height="10" rx="5" fill="#6E695F"/></svg></div><span class="nm"><small>Suggested</small>Paint rollers ×2</span><span class="why">5 · looks like 2 things</span><div class="tools"><button class="tb on" type="button" aria-label="Split"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-split"/></svg></button><button class="tb" type="button" aria-label="Drop"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-trash"/></svg></button></div></div>
+                    <div class="crop drop"><div class="ci"><svg viewBox="0 0 90 62" aria-hidden="true"><rect width="90" height="62" fill="#2A2722"/><path d="M26 6h40l-6 52H32Z" fill="#34302A"/></svg></div><span class="nm"><small>Suggested</small>Unclear shape</span><span class="why">6 · shadow, dropped</span><div class="tools"><button class="tb" type="button" aria-label="Split"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-split"/></svg></button><button class="tb on" type="button" aria-label="Undo drop"><svg class="ic" width="15" height="15" viewBox="0 0 24 24"><use href="#a3-trash"/></svg></button></div></div>
+                  </div>
+                  <div class="mbar"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-merge"/></svg><span class="grow">Merge 2, 3 and 4 into one row: <b>Spray paint, black × 3</b>. A quantity above 1 waits for you to confirm.</span><button class="btn secondary small" type="button">Cancel</button><button class="btn primary small" type="button">Merge 3</button></div>
+                </div>
+              </div>
+              <div class="keys"><span><kbd>j</kbd><kbd>k</kbd>Next, previous</span><span><kbd>a</kbd>Accept</span><span><kbd>e</kbd>Edit</span><span><kbd>m</kbd>Move</span><span><kbd>t</kbd>Type</span><span><kbd>x</kbd>Select</span><span><kbd>shift</kbd><kbd>a</kbd>Accept selected</span><span class="end">1–7 of 10</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Inbox · desktop · light · multi-item draft from one shelf photo, ships in 1.x (D20, D130). Boxes are violet dashed because they're AI suggestions; drag a crop to adjust it, then split, merge into a quantity row, or drop. Left: three drafts selected for bulk actions.</figcaption>
+    </figure>
+
+<!-- ===== 8. INBOX · PHONE · DARK ===== -->
+    <figure id="f-inbox-everyone">
+      <div class="phone t-dark" role="img" aria-label="Phone: Inbox in dark theme, Everyone's, Alfred's batch with a likely duplicate">
+        <div class="status"><span>21:14</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <h1>Inbox</h1>
+          <button class="icon-btn" aria-label="Notifications"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-bell"/></svg></button>
+          <button class="icon-btn" aria-label="Assistant"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-assist"/></svg></button>
+        </div>
+        <div class="content">
+          <div class="k-seg" role="radiogroup" aria-label="Whose"><span>Mine · 15</span><span class="on">Everyone's · 19</span></div>
+          <div class="kinds" aria-label="Kind">
+            <span class="chip on">All <b>21</b></span><span class="chip">Drafts <b>14</b></span><span class="chip">Receipts <b>3</b></span>
+            <span class="chip">Readings <b>1</b></span><span class="chip">Currency <b>1</b></span><span class="chip">Duplicates <b>2</b></span>
+          </div>
+          <div class="k-strip"><span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>Search names, shops, places</span><span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>Filters</span></div>
+          <div class="bh"><span class="t">Alfred · today, Sat 10 Oct<span class="s">5 captured · Garage › Shelf A</span></span></div>
+          <div class="icard">
+            <div class="ihd">
+              <span class="ph"><svg class="ic" width="26" height="26" viewBox="0 0 24 24"><use href="#a3-cord"/></svg></span>
+              <div><div class="t-name">Extension cord, 5 m</div><div class="t-path">Garage › Shelf A</div><div class="t-meta"><span class="pill info"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-dup"/></svg>Likely duplicate</span></div></div>
+            </div>
+            <div class="pair2">
+              <div class="mini"><b>This draft</b>Alfred · today<br>Garage › Shelf A</div>
+              <div class="mini"><b>Extension cord, 5 m <span class="sid">7RC‑2NF</span></b>Ibrahim · today<br>Storage unit › Shelf A</div>
+            </div>
+            <span class="acc">Same brand and model. Merge keeps both histories.</span>
+            <div class="pair2"><button class="btn secondary" type="button">Keep both</button><button class="btn primary" type="button">Merge</button></div>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="Main">
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-home"/></svg>Home</a>
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-search"/></svg>Search</a>
+          <a class="capture" href="#"><span class="fab"><svg class="ic" viewBox="0 0 24 24" style="stroke-width:2"><use href="#a3-cam"/></svg></span>Capture</a>
+          <a class="on" href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-inbox"/></svg>Inbox</a>
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-more"/></svg>More</a>
+        </nav>
+      </div>
+      <figcaption class="frame-cap">Inbox · phone · dark · "Everyone's": Alfred's batch. A likely duplicate (same brand and model in another place); merging keeps both histories (D36).</figcaption>
+    </figure>
+
+<!-- ===== 9. INBOX · PHONE · ARABIC RTL ===== -->
+    <figure id="f-inbox-ar">
+      <div class="phone t-light" dir="rtl" lang="ar" role="img" aria-label="الهاتف: صندوق الوارد بالعربية، مسودة مفك صدمات بوش بسعر وتاريخ ضمان مقترحين">
+        <div class="status"><span class="ltr">9:41</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <h1>الوارد</h1>
+          <button class="icon-btn" aria-label="الإشعارات"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-bell"/></svg></button>
+          <button class="icon-btn" aria-label="المساعد"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-assist"/></svg></button>
+        </div>
+        <div class="content">
+          <div class="k-seg" role="radiogroup" aria-label="Whose"><span class="on">لي · ١٥</span><span>الجميع · ١٩</span></div>
+          <div class="kinds" aria-label="النوع">
+            <span class="chip on">الكل <b>١٥</b></span><span class="chip">مسودات <b>١٠</b></span><span class="chip">إيصالات <b>٢</b></span>
+            <span class="chip">قراءات <b>١</b></span><span class="chip">عملة <b>١</b></span><span class="chip">مكررات <b>١</b></span>
+          </div>
+          <div class="k-strip"><span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>ابحث في الأسماء والمتاجر والأماكن</span><span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>الفلاتر</span></div>
+          <div class="bh"><span class="t">اليوم، السبت ١٠ أكتوبر<span class="s">١٢ لقطة · وحدة التخزين › الرف <span class="ltr">A</span></span></span><button class="btn secondary small" type="button">قبول ٦ أسماء</button></div>
+          <div class="icard">
+            <div class="ihd">
+              <span class="ph"><svg class="ic" width="26" height="26" viewBox="0 0 24 24"><use href="#a3-drill"/></svg></span>
+              <div><div class="t-name">مفك صدمات بوش، ١٨ فولت<span class="sid ltr">5JV‑3TD</span></div><div class="t-path"><span class="ltr">Bosch</span> · أداة كهربائية</div></div>
+            </div>
+            <div class="sugg row"><span class="lbl"><svg class="ic" width="12" height="12" viewBox="0 0 12 12"><use href="#a3-sg"/></svg>مقترح · السعر</span><span class="val">٤٬٥٠٠ ج.م.</span><span class="src">من إيصال إيس هاردوير</span><div class="act"><button class="btn primary small" type="button">تأكيد</button><button class="btn secondary small" type="button">تعديل</button></div></div>
+            <div class="sugg row"><span class="lbl"><svg class="ic" width="12" height="12" viewBox="0 0 12 12"><use href="#a3-sg"/></svg>مقترح · نهاية الضمان</span><span class="val">٣ أكتوبر ٢٠٢٨</span><span class="src">«ضمان سنتين» مطبوع</span><div class="act"><button class="btn primary small" type="button">تأكيد</button><button class="btn secondary small" type="button">تعديل</button></div></div>
+            <div class="acts"><span class="acc grow">الاسم والعلامة والطراز والنوع: ملأها الذكاء الاصطناعي وقُبلت.</span><button class="btn secondary small" type="button">نقل</button><button class="btn secondary small" type="button">تحديد النوع</button></div>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="التنقل الرئيسي">
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-home"/></svg>الرئيسية</a>
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-search"/></svg>بحث</a>
+          <a class="capture" href="#"><span class="fab"><svg class="ic" viewBox="0 0 24 24" style="stroke-width:2"><use href="#a3-cam"/></svg></span>التقاط</a>
+          <a class="on" href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-inbox"/></svg>الوارد</a>
+          <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-more"/></svg>المزيد</a>
+        </nav>
+      </div>
+      <figcaption class="frame-cap">Inbox · phone · Arabic, right to left. Layout mirrors; amounts, dates and counts use Eastern digits (§8); the short ID and brand stay as printed, left to right; EGP is written <bdi lang="ar">ج.م.</bdi>, never "£" (D136, D78).</figcaption>
+    </figure>
+
+  </div>
+
+  <h3 class="grp">Scan: what a scan answers</h3>
+  <div class="frames">
+
+<!-- ===== 5a. SCAN · BLANK LABEL ===== -->
+    <figure id="f-scan">
+      <div class="phone t-dark k-frame k-cam" role="img" aria-label="Phone: the scanner, always dark, pointing at a label">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="k-camhead"><span class="k-x" aria-label="Close scanner"><svg class="k-ic"><use href="#k-x"/></svg></span><b>Scan</b><span></span></div>
+        <div class="k-view"><div class="k-finder"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i></div>
+          <p class="k-hint">Point at a Kept label, or a product's barcode.</p>
+          <b class="kb kb-s k-typecode">Type the code</b>
+        </div>
+        
+      </div>
+      <figcaption class="frame-cap">Scan · phone · always dark, over the tab bar. One tap from Home or Search; resolves on the phone first, so it works offline (D137). "Type the code" is the fallback, amber when the camera can't be used; the reasons are in words ("Camera access is off for Kept").</figcaption>
+    </figure>
+    <figure id="f-scan-claim">
+      <div class="phone scan t-light" role="img" aria-label="Phone: scan result sheet for a blank label, offering New box here or Attach to an existing thing">
+        <div class="status"><span>10:05</span><span>●●● ▮</span></div>
+        <div class="svf">
+          <svg class="scene" viewBox="0 0 357 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="357" height="400" fill="#141311"/><rect x="60" y="60" width="240" height="200" fill="#2B251F"/>
+            <rect x="130" y="110" width="100" height="74" rx="4" fill="#8F8B83"/><rect x="138" y="118" width="32" height="32" fill="#2A2824"/><rect x="178" y="122" width="44" height="6" fill="#55524C"/>
+            <path d="M118 98v-12h12M230 86h12v12M242 196v12h-12M130 208h-12v-12" stroke="#F2EFE9" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="ssheet">
+          <span class="grab2"></span>
+          <div class="rowb"><span class="sid">9RM‑4TB</span><span class="pill"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-tag"/></svg>Blank label</span></div>
+          <h3>Claim this label</h3>
+          <p class="body">This label isn't on anything yet. Use it for:</p>
+          <button class="opt main" type="button"><span class="oi"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-box"/></svg></span><span>New box here<small>Storage unit › Shelf A</small></span><svg class="ic" width="18" height="18" viewBox="0 0 24 24" style="transform:rotate(-90deg)"><use href="#a3-chev"/></svg></button>
+          <button class="opt" type="button"><span class="oi"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-link"/></svg></span><span>Attach to an existing thing<small>Search, or scan its current label</small></span><svg class="ic" width="18" height="18" viewBox="0 0 24 24" style="transform:rotate(-90deg)"><use href="#a3-chev"/></svg></button>
+          <p class="acc">Works offline. The claim stays pending until it syncs; if another phone claimed this label first, you'll be told.</p>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Scan outcome · phone · light · blank label → claim (D43). Offline claims are pending and the server decides who wins (D112).</figcaption>
+    </figure>
+
+<!-- ===== 5b. SCAN · NOT IN YOUR KEPT ===== -->
+    <figure id="f-scan-notyours">
+      <div class="phone scan t-light" role="img" aria-label="Phone: scan result sheet saying Not in your Kept">
+        <div class="status"><span>10:06</span><span>●●● ▮</span></div>
+        <div class="svf">
+          <svg class="scene" viewBox="0 0 357 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="357" height="400" fill="#141311"/><rect x="40" y="80" width="280" height="190" fill="#2A2621"/>
+            <rect x="120" y="120" width="116" height="80" rx="4" fill="#8F8B83"/><rect x="128" y="128" width="34" height="34" fill="#2A2824"/><rect x="170" y="132" width="56" height="7" fill="#55524C"/>
+            <path d="M108 108v-12h12M236 96h12v12M248 212v12h-12M120 224h-12v-12" stroke="#F2EFE9" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="ssheet">
+          <span class="grab2"></span>
+          <span class="bigi"><svg class="ic" width="24" height="24" viewBox="0 0 24 24"><use href="#a3-qr"/></svg></span>
+          <h3>Not in your Kept</h3>
+          <p class="body">Nothing in the locations you belong to has this label.</p>
+          <div class="kv2"><span>Label</span><b class="code">4TW‑8HC</b></div>
+          <div class="grid2"><button class="btn secondary" type="button">Scan again</button><button class="btn primary" type="button">Done</button></div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Scan outcome · phone · light · "Not in your Kept" (D137 case 3). The same words whether the code is another household's, from a location you left, or deleted, so a scan never shows that a label exists somewhere else.</figcaption>
+    </figure>
+
+<!-- ===== 5c. SCAN · HOMEBOX LABEL ===== -->
+    <figure id="f-scan-legacy">
+      <div class="phone scan t-light" role="img" aria-label="Phone: scan result sheet, old Homebox label asset 000-014 resolved to Toolbox">
+        <div class="status"><span>10:08</span><span>●●● ▮</span></div>
+        <div class="svf">
+          <svg class="scene" viewBox="0 0 357 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="357" height="400" fill="#141311"/><rect x="50" y="90" width="260" height="150" rx="8" fill="#3A2B28"/><rect x="140" y="72" width="80" height="22" rx="6" fill="#2E2A24"/>
+            <rect x="130" y="130" width="100" height="56" rx="3" fill="#8F8B83"/><rect x="136" y="136" width="28" height="28" fill="#2A2824"/><rect x="170" y="142" width="52" height="6" fill="#55524C"/>
+            <path d="M118 118v-12h12M230 106h12v12M242 198v12h-12M130 210h-12v-12" stroke="#F2EFE9" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="ssheet">
+          <span class="grab2"></span>
+          <div class="rowb"><span class="pill info"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-link"/></svg>Old Homebox label</span></div>
+          <h3><span class="mono">Asset 000‑014</span> → Toolbox</h3>
+          <div class="ui"><div class="thing"><div class="thumb"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-box"/></svg></div><div><div class="t-name">Toolbox</div><div class="t-path">Garage › Shelf A</div><div class="t-meta"><span class="sid">4FT‑8QA</span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a3-ok"/></svg>Seen just now</span></div></div></div></div>
+          <p class="acc">Imported from Homebox on 26 Sep. The old label keeps working.</p>
+          <div class="grid2"><button class="btn secondary" type="button">Print a Kept label</button><button class="btn primary" type="button">Open Toolbox</button></div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Scan outcome · phone · light · a Homebox asset ID resolved through its legacy code (D146); last seen updated (D40).</figcaption>
+    </figure>
+    <figure id="f-scan-barcode">
+      <div class="phone t-dark k-frame k-cam dim" role="img" aria-label="Phone: scan outcome, a product barcode not found in the product databases">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="k-camhead"><span class="k-x" aria-label="Close scanner"><svg class="k-ic"><use href="#k-x"/></svg></span><b>Scan</b><span></span></div>
+        <div class="k-view"><div class="k-finder"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i></div>
+          <p class="k-hint">Point at a Kept label, or a product's barcode.</p>
+          <b class="kb kb-s k-typecode">Type the code</b>
+        </div>
+        <div class="k-scrim"></div><div class="k-sheet float t-light">
+          <span class="k-meta">Product barcode · <bdi class="mono">6 224000 123456</bdi></span>
+          <b class="k-h3">A product barcode</b>
+          <p class="k-p">Not found in the product databases.</p>
+          <p class="k-p">Kept stores the barcode with it.</p>
+          <b class="kb kb-p full">Add as a new thing</b><div class="k-foot"><b class="kb kb-s">Scan again</b><b class="kb kb-p">Done</b></div></div>
+      </div>
+      <figcaption class="frame-cap">Scan outcome · product barcode (D137 case 4). With lookup on (D126) the product's name shows "From {source}"; not found, or lookup off or offline, it is still "Add as a new thing" with the barcode stored. No name: it waits in the Inbox.</figcaption>
+    </figure>
+    <figure id="f-scan-notkept">
+      <div class="phone t-dark k-frame k-cam dim" role="img" aria-label="Phone: scan outcome, not a Kept label, the text shown">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="k-camhead"><span class="k-x" aria-label="Close scanner"><svg class="k-ic"><use href="#k-x"/></svg></span><b>Scan</b><span></span></div>
+        <div class="k-view"><div class="k-finder"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i></div>
+          <p class="k-hint">Point at a Kept label, or a product's barcode.</p>
+          <b class="kb kb-s k-typecode">Type the code</b>
+        </div>
+        <div class="k-scrim"></div><div class="k-sheet float t-light">
+          <b class="k-h3">Not a Kept label</b>
+          <p class="k-p">This code isn't one of Kept's labels. It says:</p>
+          <div class="k-raw"><bdi class="mono">https://www.bosch-diy.com/manual/GSR18V-55</bdi></div><div class="k-foot"><b class="kb kb-s">Scan again</b><b class="kb kb-p">Done</b></div></div>
+      </div>
+      <figcaption class="frame-cap">Scan outcome · any other QR (D137 case 5): "Not a Kept label", with the text shown so nothing is hidden. Kept never opens the link itself.</figcaption>
+    </figure>
+    <figure id="f-scan-notonphone">
+      <div class="phone t-dark k-frame k-cam dim" role="img" aria-label="Phone: scan outcome, not on this phone, will check when online">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="k-camhead"><span class="k-x" aria-label="Close scanner"><svg class="k-ic"><use href="#k-x"/></svg></span><b>Scan</b><span></span></div>
+        <div class="k-view"><div class="k-finder"><i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i></div>
+          <p class="k-hint">Point at a Kept label, or a product's barcode.</p>
+          <b class="kb kb-s k-typecode">Type the code</b>
+        </div>
+        <div class="k-scrim"></div><div class="k-sheet float t-light">
+          <span class="k-eic"><svg class="k-ic"><use href="#k-cloudoff"/></svg></span>
+          <b class="k-h3">Not on this phone</b>
+          <p class="k-p">It will check when you're online.</p>
+          <div class="k-wrap"><span class="k-meta">Label</span><bdi class="k-tape" dir="ltr">4KD‑7PX</bdi></div><div class="k-foot"><b class="kb kb-s">Scan again</b><b class="kb kb-p">Done</b></div></div>
+      </div>
+      <figcaption class="frame-cap">Scan outcome · offline and not in the snapshot (D137 case 6). The scan is kept; online again, the scanner offers "1 scan from while you were offline · Check now".</figcaption>
+    </figure>
+
+  </div>
+</section>

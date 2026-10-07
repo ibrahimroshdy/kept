@@ -1,0 +1,190 @@
+{
+  "date": "2026-09-30",
+  "detection": [
+    {
+      "browser": "Google Chrome (installed)",
+      "version": "154.0.8037.92",
+      "support": {
+        "SpeechRecognition": "function",
+        "webkitSpeechRecognition": "function",
+        "available": true,
+        "isSecureContext": true,
+        "availableStatic": true
+      },
+      "langs": [
+        {
+          "set": "en",
+          "kept": "en"
+        },
+        {
+          "set": "ar",
+          "kept": "ar"
+        },
+        {
+          "set": "fr",
+          "kept": "fr"
+        },
+        {
+          "set": "de",
+          "kept": "de"
+        },
+        {
+          "set": "it",
+          "kept": "it"
+        },
+        {
+          "set": "ar-EG",
+          "kept": "ar-EG"
+        }
+      ]
+    },
+    {
+      "browser": "Chrome for Testing (Playwright chromium-1243)",
+      "version": "153.0.8010.12",
+      "support": {
+        "SpeechRecognition": "function",
+        "webkitSpeechRecognition": "function",
+        "available": true,
+        "isSecureContext": true,
+        "availableStatic": true
+      },
+      "langs": [
+        {
+          "set": "en",
+          "kept": "en"
+        },
+        {
+          "set": "ar",
+          "kept": "ar"
+        },
+        {
+          "set": "fr",
+          "kept": "fr"
+        },
+        {
+          "set": "de",
+          "kept": "de"
+        },
+        {
+          "set": "it",
+          "kept": "it"
+        },
+        {
+          "set": "ar-EG",
+          "kept": "ar-EG"
+        }
+      ]
+    }
+  ],
+  "stubbed": [
+    {
+      "scenario": "speech",
+      "lang": "en",
+      "words": [
+        "where",
+        "where is",
+        "where is the drill"
+      ],
+      "result": {
+        "lang": "en",
+        "keptLang": "en",
+        "supported": true,
+        "events": [
+          "start@7",
+          "audiostart@11",
+          "speechstart@22",
+          "result@33",
+          "result@41",
+          "result@51",
+          "result@62",
+          "speechend@71",
+          "end@82"
+        ],
+        "interim": [
+          "where",
+          "where is",
+          "where is the drill"
+        ],
+        "interimCount": 3,
+        "final": "where is the drill",
+        "error": null,
+        "ms": 82
+      }
+    },
+    {
+      "scenario": "speech",
+      "lang": "ar",
+      "words": [
+        "أين",
+        "أين المثقاب"
+      ],
+      "result": {
+        "lang": "ar",
+        "keptLang": "ar",
+        "supported": true,
+        "events": [
+          "start@6",
+          "audiostart@11",
+          "speechstart@21",
+          "result@31",
+          "result@42",
+          "result@51",
+          "speechend@61",
+          "end@71"
+        ],
+        "interim": [
+          "أين",
+          "أين المثقاب"
+        ],
+        "interimCount": 2,
+        "final": "أين المثقاب",
+        "error": null,
+        "ms": 71
+      }
+    },
+    {
+      "scenario": "speech",
+      "lang": "en",
+      "opts": {
+        "stopAfterMs": 15
+      },
+      "result": {
+        "lang": "en",
+        "keptLang": "en",
+        "supported": true,
+        "events": [
+          "start@6",
+          "audiostart@11",
+          "end@18"
+        ],
+        "interim": [],
+        "interimCount": 0,
+        "final": "",
+        "error": null,
+        "ms": 18
+      }
+    },
+    {
+      "scenario": "denied",
+      "lang": "en",
+      "result": {
+        "lang": "en",
+        "keptLang": "en",
+        "supported": true,
+        "events": [
+          "start@5",
+          "error:not-allowed@11",
+          "end@11"
+        ],
+        "interim": [],
+        "interimCount": 0,
+        "final": "",
+        "error": {
+          "error": "not-allowed",
+          "message": ""
+        },
+        "ms": 11
+      }
+    }
+  ]
+}

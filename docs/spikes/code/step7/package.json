@@ -1,0 +1,10 @@
+{
+  "name": "kept-step7-spikes",
+  "private": true,
+  "type": "module",
+  "description": "Throwaway: step-7 spikes (Z1 archive reader and writer, P1 passphrase KDF, E1 alias batches). Not part of the workspace.",
+  "dependencies": {
+    "yauzl": "3.4.0",
+    "yazl": "3.3.1"
+  }
+}

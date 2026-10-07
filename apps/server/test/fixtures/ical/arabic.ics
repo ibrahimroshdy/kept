@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Kept//Calendar feed//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Kept
+BEGIN:VEVENT
+UID:document-0192f0c3-7c55-7000-8000-000000000004-date:2027-02-28@kept.exam
+ ple.org
+DTSTAMP:20261001T091200Z
+DTSTART;VALUE=DATE:20270228
+DTEND;VALUE=DATE:20270301
+SUMMARY:عقد الإيجار · بيت العائلة، الطابق ال
+ أرضي، المطبخ، الخزانة العلوية الكبيرة
+DESCRIPTION:المرآب › الرف العلوي › الصندوق ال
+ أزرق الكبير › العلبة الصغيرة · بيت العائ
+ لة
+URL:https://kept.example.org/loc/0192f0c3-7c55-7000-8000-000000000005
+TRANSP:TRANSPARENT
+END:VEVENT
+END:VCALENDAR

@@ -1,0 +1,48 @@
+{"check":"6","case":"loopback issuer, allowPrivate false","pass":true,"evidence":{"error":"PrivateAddressError","code":"private_address"}}
+{"check":"6","case":"hostname resolving to 127.0.0.1, allowPrivate false","pass":true,"evidence":{"error":"PrivateAddressError"}}
+{"check":"6","case":"discovery with allowPrivate true, through guardedFetch","pass":true,"evidence":{"guarded":["GET /kept/.well-known/openid-configuration"],"unguarded":[],"issuer":"http://127.0.0.1:18790/kept"}}
+{"check":"6","case":"issuer mismatch refused (trailing slash)","pass":true,"evidence":{"reason":"issuer_mismatch"}}
+{"check":"6","case":"stock genericOAuth discoveryUrl uses the global fetch (unguarded)","pass":true,"evidence":{"unguardedFetches":["http://127.0.0.1:18790/kept/.well-known/openid-configuration"],"providerRegistered":false}}
+{"check":"1","case":"IdP asserts an existing verified email, not linked: refused","pass":true,"evidence":{"error":"account_not_linked","location":"/err?error=account_not_linked","authorizeRequest":{"scope":"openid email profile","nonce":false,"pkce":"S256"},"oidcAccounts":0}}
+{"check":"6","case":"a full sign-in: back-channel calls all went through guardedFetch","pass":true,"evidence":{"guarded":["POST /kept/token","GET /kept/jwks"],"unguarded":[]}}
+{"check":"1","case":"explicit /link-social from a fresh session links","pass":true,"evidence":{"location":"/done","status":302,"start":{"scope":"openid email profile","nonce":false,"pkce":"S256"},"accounts":[{"account_id":"idp-bruce","access_token":null,"refresh_token":null,"id_token":null}]}}
+{"check":"extra","case":"IdP tokens are not stored on the linked account","pass":true,"evidence":{}}
+{"check":"1","case":"linked sub signs in to that account","pass":true,"evidence":{"location":"/done","userId":true}}
+{"check":"1","case":"a different sub with the same email: refused","pass":true,"evidence":{"error":"account_not_linked"}}
+{"check":"1","case":"link from a session older than freshAge (600 s): refused","pass":true,"evidence":{"status":403,"body":{"message":"Sign in again, then link the account.","code":"SESSION_NOT_FRESH"}}}
+{"check":"1","case":"link where the IdP email differs from the account: refused","pass":true,"evidence":{"error":"email_does_not_match"}}
+{"check":"1","case":"id_token sign-in (no redirect) refused","pass":true,"evidence":{"status":404,"body":{"message":"id_token not supported","code":"ID_TOKEN_NOT_SUPPORTED"}}}
+{"check":"2","case":"email_verified false","pass":true,"evidence":{"error":"email_unverified","userCreated":false}}
+{"check":"2","case":"email_verified missing","pass":true,"evidence":{"error":"email_unverified","userCreated":false}}
+{"check":"2","case":"email_verified \"true\" (a string)","pass":true,"evidence":{"error":"email_unverified","userCreated":false}}
+{"check":"2","case":"email_verified false + a claim literally named emailVerified: true","pass":true,"evidence":{"error":"email_unverified","userCreated":false}}
+{"check":"2","case":"linked account, IdP now says unverified: sign-in refused","pass":true,"evidence":{"error":"email_unverified"}}
+{"check":"3","case":"someone@managed.invalid (verified, allowed group)","pass":true,"evidence":{"error":"email_undeliverable"}}
+{"check":"3","case":"SOMEONE@Example.INVALID (verified, allowed group)","pass":true,"evidence":{"error":"email_undeliverable"}}
+{"check":"4","case":"Ibrahim (TOTP on) links OIDC from his satisfied session","pass":true,"evidence":{"location":"/done"}}
+{"check":"4","case":"OIDC session of a TOTP user is pending: Kept 403 mfa_required, Better Auth 403 MFA_REQUIRED","pass":true,"evidence":{"resolved":{"twoFactorEnabled":true,"mfa":false,"mfaPending":true},"gate":{"ok":false,"status":403,"code":"mfa_required"},"betterAuth":{"status":403,"code":"MFA_REQUIRED"}}}
+{"check":"4","case":"TOTP in that session satisfies it","pass":true,"evidence":{"status":200,"after":{"mfa":true,"mfaPending":false}}}
+{"check":"4","case":"OIDC session of a user without 2FA: allowed, app.mfa false","pass":true,"evidence":{"gate":{"ok":true,"scope":{"userId":"01a0ef61-28f7-7742-85b3-ec4c70bf76f4","mfa":false}}}}
+{"check":"extra","case":"with the rotation hook on /callback/:id, the previous session is retired","pass":true,"evidence":{"oldSessionStillExists":false,"newSignIn":"/done","callbackPathAsHooksSeeIt":["/callback/:id","after /callback/:id apiError=true statusCode=302 newSession=false","after /callback/:id apiError=true statusCode=302 newSession=true"]}}
+{"check":"5","case":"allowed domain example.org: created","pass":true,"evidence":{"error":null,"userCreated":true,"onUserCreated":1}}
+{"check":"5","case":"allowed domain, upper case: created","pass":true,"evidence":{"error":null,"userCreated":true,"onUserCreated":1}}
+{"check":"5","case":"other domain, no group: refused","pass":true,"evidence":{"error":"signup_closed","userCreated":false,"onUserCreated":0}}
+{"check":"5","case":"lookalike domain evil-example.org: refused","pass":true,"evidence":{"error":"signup_closed","userCreated":false,"onUserCreated":0}}
+{"check":"5","case":"lookalike domain example.org.evil.net: refused","pass":true,"evidence":{"error":"signup_closed","userCreated":false,"onUserCreated":0}}
+{"check":"5","case":"subdomain sub.example.org (exact match only): refused","pass":true,"evidence":{"error":"signup_closed","userCreated":false,"onUserCreated":0}}
+{"check":"5","case":"allowed group kept-family: created","pass":true,"evidence":{"error":null,"userCreated":true,"onUserCreated":1}}
+{"check":"5","case":"group as a single string: created","pass":true,"evidence":{"error":null,"userCreated":true,"onUserCreated":1}}
+{"check":"5","case":"other group: refused","pass":true,"evidence":{"error":"signup_closed","userCreated":false,"onUserCreated":0}}
+{"check":"5","case":"group claim under another name: refused","pass":true,"evidence":{"error":"signup_closed","userCreated":false,"onUserCreated":0}}
+{"check":"5","case":"invite (server context), other domain: created","pass":true,"evidence":{"error":null,"location":"/done"}}
+{"check":"5","case":"email-bound invite, different verified email: refused","pass":true,"evidence":{"error":"invite_email_mismatch"}}
+{"check":"5","case":"unknown invite token: refused","pass":true,"evidence":{"error":"signup_closed"}}
+{"check":"5","case":"client-forged invite in additionalData: refused","pass":true,"evidence":{"error":"signup_closed"}}
+{"check":"extra","case":"managed account (.invalid, admin createUser) still created with the policy on","pass":true,"evidence":{"email":"<uuid>@managed.invalid"}}
+{"check":"6","case":"no unguarded fetch during all Kept flows","pass":true,"evidence":{"unguarded":[],"guardedCalls":31}}
+{"check":"stock","case":"Better Auth defaults: an IdP asserting Louis's verified email is auto-linked and signed in as Louis","pass":true,"evidence":{"location":"/done","linkedSubs":["idp-attacker"],"tokensStored":true}}
+{"check":"stock","case":"without the hook (security.ts today), an OIDC sign-in leaves the previous session alive","pass":true,"evidence":{"oldSessionStillExists":true}}
+{"check":"stock","case":"Better Auth defaults: email_verified false + claim emailVerified: true is treated as verified (linked)","pass":true,"evidence":{"location":"/done","error":null}}
+{"check":"stock","case":"Better Auth defaults: any new verified email is signed up (no autoprovision rule)","pass":true,"evidence":{"location":"/done"}}
+{"check":"stock","case":"Better Auth defaults: a .invalid email is accepted","pass":true,"evidence":{"location":"/done","error":null}}
+{"check":"tables","case":"getAuthTables with vs without genericOAuth","pass":true,"evidence":{"models":["user","session","account","verification"],"account":["accessToken","accessTokenExpiresAt","accountId","createdAt","idToken","password","providerId","refreshToken","refreshTokenExpiresAt","scope","updatedAt","userId"]}}

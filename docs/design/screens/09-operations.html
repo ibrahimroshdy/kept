@@ -1,0 +1,263 @@
+<style>
+.a9 .phone[dir="rtl"] *:not(.mono):not(kbd){font-family:var(--arabic)}
+.a9 [dir="rtl"] .flip{transform:scaleX(-1)}
+.a9 .desktop .work{display:grid}
+.a9 .phone.tall{height:auto}
+.a9 .phone.tall .content{overflow:visible}
+.a9 .a9-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;align-items:start}
+.a9 .a9-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.a9 .a9-tiles.one{grid-template-columns:1fr}
+.a9 .a9-tile{display:grid;gap:6px;align-content:start;padding:12px 14px;border:1px solid var(--line);border-inline-start-width:4px;border-radius:10px;background:var(--surface)}
+.a9 .a9-tile b{font:600 15px/1.3 var(--sans);color:var(--ink)}
+.a9 .a9-tile small{color:var(--ink-2);font:400 13px/1.4 var(--sans)}
+.a9 .a9-tile.warn{border-inline-start-color:var(--warn)}
+.a9 .a9-tile.danger{border-inline-start-color:var(--danger)}
+.a9 .a9-tile .k-pill{justify-self:start}
+.a9 .a9-tile .k-link{font-size:13px}
+.a9 .a9-lock{display:grid;justify-items:center;gap:14px;padding-block:28px 8px;text-align:center;color:var(--ink)}
+.a9 .a9-dots{display:flex;gap:12px}
+.a9 .a9-dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink-2)}
+.a9 .a9-dots i.f{background:var(--ink);border-color:var(--ink)}
+.a9 .a9-pad{display:grid;grid-template-columns:repeat(3,64px);gap:12px}
+.a9 .a9-pad span{display:grid;place-items:center;height:64px;border-radius:50%;background:var(--sunken);font:500 22px/1 var(--sans);color:var(--ink)}
+.a9 .a9-pad span.g{background:none;font-size:13px;color:var(--ink-2)}
+.a9 .a9-lock small{color:var(--ink-3)}
+</style>
+<section class="area a9" id="operations">
+<header>
+  <span class="eyebrow">Screens · Backups, status &amp; this device</span>
+  <h2>Kept looks after itself, and tells you plainly when it can't</h2>
+  <p>Step 8's screens, before they are built (plan T3): Admin → Backups for each kind of target, a target the server's environment locks, the full status page, the recovery kit behind the password, and this device's app lock and offline locations. Instance admin Ibrahim, Tuesday 6 October 2026; the Arabic frame is Alfred on a fresh server.</p>
+</header>
+  <h3 class="grp">Backups · where they go, and every run</h3>
+  <div class="frames">
+    <figure id="f-backups-s3">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: Admin, Backups: an S3-compatible target with its secret key kept, the password set, the nightly time, retention and the Test result">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Instance admin</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span role="tab">Import</span><span role="tab">Export</span><span class="on" role="tab" aria-selected="true">Admin</span></div>
+          <div class="k-tabs sm" role="tablist" aria-label="Instance admin"><span role="tab">Users</span><span role="tab">Admins</span><span role="tab">Status</span><span class="on" role="tab" aria-selected="true">Backups</span><span role="tab">Failed jobs</span><span role="tab">Alerts</span><span role="tab">Sign-up</span><span role="tab">Currencies</span><span role="tab">AI</span></div>
+          <div class="k-notice info"><svg class="k-ic"><use href="#k-checkc"/></svg><span><b>Last good backup 4 hours ago</b>9 runs this week · 2.1 GB in the repository</span></div>
+          <span class="k-lab">Where backups go</span>
+          <div class="k-seg"><span>Directory</span><span class="on">S3-compatible</span><span>SFTP</span></div>
+          <div class="k-field"><span class="k-lab">Endpoint</span><span class="k-in"><bdi class="mono">https://s3.example.org</bdi></span><span class="k-desc">Empty for AWS. B2 and R2 through their S3 endpoints.</span></div>
+          <div class="k-field"><span class="k-lab">Bucket</span><span class="k-in mono">kept-backups</span></div>
+          <div class="k-field"><span class="k-lab">Access key ID</span><span class="k-in mono">KEPTEXAMPLEKEYID</span></div>
+          <div class="k-field"><span class="k-lab">Secret access key</span><span class="k-wrap" style="justify-content:space-between"><span class="k-meta">Saved · never shown again</span><b class="kb kb-s sm">Replace</b></span></div>
+          <div class="k-field"><span class="k-lab">Backup password</span><span class="k-wrap" style="justify-content:space-between"><span class="k-meta">Set · in the recovery kit</span><b class="kb kb-s sm">Replace</b></span><span class="k-desc">At least 12 characters. Without it nobody can read the backups, Kept included.</span></div>
+          <div class="k-wrap"><div class="k-field" style="flex:1"><span class="k-lab">Every night at (UTC)</span><span class="k-in k-combo">02:30<svg class="k-ic"><use href="#k-down"/></svg></span></div></div>
+          <span class="k-lab">Keep</span>
+          <div class="k-stats three"><div class="k-stat"><b>7</b><small>daily</small></div><div class="k-stat"><b>4</b><small>weekly</small></div><div class="k-stat"><b>6</b><small>monthly</small></div></div>
+          <div class="k-card"><div class="k-wrap" style="justify-content:space-between"><b>Test</b><span class="k-pill ok"><svg class="k-ic s"><use href="#k-checkc"/></svg>Reached · 17 snapshots</span></div><small>Opened the repository with this password just now.</small></div>
+          <div class="k-foot k-sticky"><b class="kb kb-s">Test</b><b class="kb kb-s">Run now</b><b class="kb kb-p">Save</b></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Admin → Backups, S3 · phone · light (backup-target-form.tsx, T21; D64, D186). One target, chosen with a segmented control. Write-only fields show "Saved · Replace" and are never sent back. Test opens the repository with the saved settings and says so inline (<code>restic_failed</code> reasons are translated: wrong password, unreachable, locked). The first save needs the recovery kit acknowledged (409 opens the kit step).</figcaption>
+    </figure>
+    <figure id="f-backups-sftp">
+      <div class="phone t-dark k-frame tall" role="img" aria-label="Phone: Admin, Backups: SFTP to a NAS with the pinned host key, a new private key pasted, and the Test failing: wrong password">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Instance admin</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span role="tab">Import</span><span role="tab">Export</span><span class="on" role="tab" aria-selected="true">Admin</span></div>
+          <div class="k-tabs sm" role="tablist" aria-label="Instance admin"><span role="tab">Users</span><span role="tab">Admins</span><span role="tab">Status</span><span class="on" role="tab" aria-selected="true">Backups</span><span role="tab">Failed jobs</span><span role="tab">Alerts</span><span role="tab">Sign-up</span><span role="tab">Currencies</span><span role="tab">AI</span></div>
+          <div class="k-seg"><span>Directory</span><span>S3-compatible</span><span class="on">SFTP</span></div>
+          <div class="k-wrap"><div class="k-field" style="flex:3"><span class="k-lab">Server</span><span class="k-in mono">nas.lan</span></div><div class="k-field" style="flex:1"><span class="k-lab">Port</span><span class="k-in mono">22</span></div></div>
+          <div class="k-field"><span class="k-lab">User</span><span class="k-in mono">kept</span></div>
+          <div class="k-field"><span class="k-lab">Folder on the server</span><span class="k-in mono">backups/kept</span></div>
+          <div class="k-field"><span class="k-lab">Host key</span><span class="k-in mono" style="overflow-wrap:anywhere;white-space:normal;height:auto;padding-block:8px">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOq0ZcXcGv0rqk1E1Hb0bq3Gk5t8Lz1A2b3C4d5E6f7G</span><span class="k-desc">The server's own key, from <bdi class="mono">ssh-keyscan</bdi>. Kept connects to no other.</span></div>
+          <div class="k-field"><span class="k-lab">Private key</span><span class="k-in" style="height:auto;padding-block:8px">-----BEGIN OPENSSH PRIVATE KEY----- ··· pasted, 411 characters</span><span class="k-desc">Replaces the saved key when you save.</span></div>
+          <div class="k-notice danger"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>Test: wrong password</b>The repository on nas.lan was made with another password. Enter that one, or choose an empty folder.</span></div>
+          <div class="k-foot k-sticky"><b class="kb kb-s">Test</b><b class="kb kb-p">Save</b></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Admin → Backups, SFTP · phone · dark (backup-target-form.tsx, T21; plan Q3). The host key is pinned: the known_hosts file holds only it. The private key is write-only like the S3 secret. A failed Test names the reason and the next step; nothing is saved until Save.</figcaption>
+    </figure>
+    <figure id="f-backups-locked">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: Admin, Backups: a directory target set by the server environment, read-only, on the same disk as the data, over plain http">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Instance admin</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span role="tab">Import</span><span role="tab">Export</span><span class="on" role="tab" aria-selected="true">Admin</span></div>
+          <div class="k-tabs sm" role="tablist" aria-label="Instance admin"><span role="tab">Users</span><span role="tab">Admins</span><span role="tab">Status</span><span class="on" role="tab" aria-selected="true">Backups</span><span role="tab">Failed jobs</span><span role="tab">Alerts</span><span role="tab">Sign-up</span><span role="tab">Currencies</span><span role="tab">AI</span></div>
+          <div class="k-notice warn"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>This page is on plain HTTP</b>Backup settings and the recovery kit can only be changed over HTTPS.</span></div>
+          <div class="k-notice danger"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>Backups are on the same disk as your data</b>If that disk fails, the backups go with it. Point the backup at another disk.</span></div>
+          <span class="k-lab">Where backups go</span>
+          <div class="k-card"><div class="k-row2"><span class="k-tile"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="k-rt"><b>Directory</b><small><bdi class="mono">/mnt/backup/kept</bdi></small></span></div><span class="k-pill info"><svg class="k-ic s"><use href="#k-key"/></svg>Set by the server’s environment</span></div>
+          <div class="k-field"><span class="k-lab">Backup password</span><span class="k-meta">Set by the server's environment</span></div>
+          <div class="k-wrap"><div class="k-field" style="flex:1"><span class="k-lab">Every night at (UTC)</span><span class="k-in k-combo">02:30<svg class="k-ic"><use href="#k-down"/></svg></span></div></div>
+          <span class="k-lab">Keep</span>
+          <div class="k-stats three"><div class="k-stat"><b>7</b><small>daily</small></div><div class="k-stat"><b>4</b><small>weekly</small></div><div class="k-stat"><b>6</b><small>monthly</small></div></div>
+          <p class="k-p">Change these in the server's configuration (<bdi class="mono">KEPT_BACKUP_DIR</bdi>, <bdi class="mono">KEPT_BACKUP_PASSWORD</bdi>) and restart Kept.</p>
+          <div class="k-foot k-sticky"><b class="kb kb-s dis">Test</b><b class="kb kb-s">Run now</b><b class="kb kb-p dis">Save</b></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Admin → Backups, locked · phone · light (D186). A field the environment sets is read-only with "Set by the server's environment"; the target locks as a whole. Over plain HTTP the writes are refused (403 <code>https_required</code>, D181) and the page says why before anyone tries. The same-disk warning is the status page's (D66).</figcaption>
+    </figure>
+    <figure id="f-backups-desk">
+  <div class="frame-scroll">
+    <div class="desktop t-dark" role="img" aria-label="Desktop: Admin, Backups: the target, schedule and retention on the left, the runs list with filters grouped by day, and the snapshots">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Consumables</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Instance admin</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work k-frame-work" style="gap:14px;align-content:start;overflow:auto">
+          <div class="k-tabs sm" role="tablist" aria-label="Instance admin"><span role="tab">Users</span><span role="tab">Admins</span><span role="tab">Status</span><span class="on" role="tab" aria-selected="true">Backups</span><span role="tab">Failed jobs</span><span role="tab">Alerts</span><span role="tab">Sign-up</span><span role="tab">Currencies</span><span role="tab">AI</span></div>
+          <div class="a9-two">
+            <div class="k-card" style="gap:10px"><div class="k-wrap" style="justify-content:space-between"><b>S3-compatible · kept-backups</b><span class="k-pill ok"><svg class="k-ic s"><use href="#k-checkc"/></svg>Configured</span></div>
+              <small>s3.example.org · prefix <bdi class="mono">kept-backups/</bdi> · secret key saved</small>
+              <small>Every night at 02:30 UTC · keep 7 daily, 4 weekly, 6 monthly · before every upgrade, the last 3</small>
+              <div class="k-wrap"><b class="kb kb-s sm">Edit</b><b class="kb kb-s sm">Test</b><b class="kb kb-p sm">Run now</b></div></div>
+            <div class="k-card" style="gap:6px"><b>Snapshots</b><small>From the repository, 2 minutes ago</small>
+              <ul class="k-list"><li><span class="k-rt"><b>Today 10:12</b><small>manual · v1.2.0</small></span></li><li><span class="k-rt"><b>Yesterday 02:30</b><small>nightly · v1.2.0</small></span></li><li><span class="k-rt"><b>1 Oct 02:30</b><small>before upgrade · v1.1.0</small></span></li></ul>
+              <small>Restoring is a command, not a button: <bdi class="mono">kept admin restore</bdi> (the backup runbook).</small></div>
+          </div>
+          <div class="k-strip"><span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>Search runs</span><span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>Kind</span><span class="k-chip on-open"><svg class="k-ic s"><use href="#k-filter"/></svg>Status: not ok</span><span class="k-chip">Group: day</span></div>
+          <span class="eyebrow">Yesterday</span>
+          <ul class="k-list">
+            <li><span class="k-rt"><b>Nightly · 02:30–02:36</b><small>The dump was much smaller than the last good one: things, attachments. Older snapshots were kept.</small></span><span class="k-pill warn"><svg class="k-ic s"><use href="#k-alert"/></svg>Suspiciously small</span></li>
+          </ul>
+          <span class="eyebrow">Sunday 4 October</span>
+          <ul class="k-list">
+            <li><span class="k-rt"><b>Nightly · 02:30</b><small>Couldn't reach the backup storage. The next run tries again tonight.</small></span><span class="k-pill danger"><svg class="k-ic s"><use href="#k-alert"/></svg>Failed</span><b class="kb kb-g sm">Run now</b></li>
+          </ul>
+          <div class="k-wrap" style="justify-content:space-between"><span class="k-meta">2 of 9 runs</span><b class="kb kb-g sm">Clear filters</b></div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Admin → Backups · desktop · dark (admin.backups.tsx, backup-runs.tsx, snapshots-list.tsx, T21). The runs list is a ListSurface: search (an error code or the target), kind and status filters, grouped by day, paginated, all in the URL. A warning run explains itself in words, never a code. Snapshots are read-only (plan Q4).</figcaption>
+    </figure>
+  </div>
+  <h3 class="grp">Status · the recovery kit</h3>
+  <div class="frames">
+    <figure id="f-status-ops">
+  <div class="frame-scroll">
+    <div class="desktop t-light" role="img" aria-label="Desktop: Admin, Status: tiles for backups, the restore drill, the repository check, bucket versioning, disk, the recovery kit, the release, failed jobs and an available update">
+      <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Consumables</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+      <section class="main">
+        <div class="topbar"><h1>Instance admin</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
+        <div class="work k-frame-work" style="gap:14px;align-content:start;overflow:auto">
+          <div class="k-tabs sm" role="tablist" aria-label="Instance admin"><span role="tab">Users</span><span role="tab">Admins</span><span class="on" role="tab" aria-selected="true">Status</span><span role="tab">Backups</span><span role="tab">Failed jobs</span><span role="tab">Alerts</span><span role="tab">Sign-up</span><span role="tab">Currencies</span><span role="tab">AI</span></div>
+          <div class="k-notice info"><svg class="k-ic"><use href="#k-info"/></svg><span><b>Kept 1.3.0 is available</b>You run 1.2.0. <b class="k-link">What's new</b> (opens the release page)</span></div>
+          <div class="a9-tiles">
+            <div class="a9-tile warn"><span class="k-meta">Backups</span><b>Last good backup 4 hours ago</b><small>Last night’s dump was suspiciously small; older snapshots kept.</small><span class="k-pill warn"><svg class="k-ic s"><use href="#k-alert"/></svg>Needs a look</span><b class="k-link">Open Backups</b></div>
+            <div class="a9-tile warn"><span class="k-meta">Restore drill</span><b>Last drill 41 days ago</b><small>Once a month, restore into a scratch database and compare.</small><span class="k-pill warn"><svg class="k-ic s"><use href="#k-alert"/></svg>Due</span><b class="k-link">How to run a drill</b></div>
+            <div class="a9-tile"><span class="k-meta">Repository check</span><b>Checked 5 days ago</b><small>Every snapshot readable.</small><span class="k-pill ok"><svg class="k-ic s"><use href="#k-checkc"/></svg>OK</span></div>
+            <div class="a9-tile danger"><span class="k-meta">File bucket versioning</span><b>Off</b><small>With S3 file storage, a deleted file can only come back if versioning is on.</small><span class="k-pill danger"><svg class="k-ic s"><use href="#k-alert"/></svg>Turn it on</span><b class="k-link">How</b></div>
+            <div class="a9-tile warn"><span class="k-meta">Disk</span><b>Data 88% full</b><small>12 GB free. Kept warns at 85%.</small><span class="k-pill warn"><svg class="k-ic s"><use href="#k-alert"/></svg>Low</span></div>
+            <div class="a9-tile warn"><span class="k-meta">Recovery kit</span><b>Changed since you downloaded it</b><small>Downloaded 16 Sep; the backup settings changed since.</small><span class="k-pill warn"><svg class="k-ic s"><use href="#k-key"/></svg>Download again</span><b class="k-link">Download recovery kit</b></div>
+            <div class="a9-tile"><span class="k-meta">Release</span><b>1.2.0</b><small>Revision <bdi class="mono">3f9ed1d</bdi> · migrated to <bdi class="mono">0083</bdi></small><b class="k-link">Source code</b></div>
+            <div class="a9-tile warn"><span class="k-meta">Failed jobs</span><b>2 in the last day</b><small>They need a decision.</small><b class="k-link">Failed jobs</b></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <figcaption class="frame-cap">Status · desktop · light (status-tiles.tsx, update-line.tsx, T21; D66, D166). Loud, plain words: "Last good backup 4 hours ago", "Backups are on the same disk as your data". Each warning tile links to its fix. Every figure comes from rows already kept (T10), never a restic call. The update line links to the release page the check returned (D65).</figcaption>
+    </figure>
+    <figure id="f-status-ar">
+      <div class="phone t-light k-frame tall" dir="rtl" lang="ar" role="img" aria-label="Phone, Arabic, right to left: the status page with no backup configured, the disk nearly full and the recovery kit to download">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="رجوع"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>مدير الخادم</h1><button class="icon-btn" aria-label="الإشعارات"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="مدير الخادم"><span role="tab">المستخدمون</span><span class="on" role="tab" aria-selected="true">الحالة</span><span role="tab">النسخ الاحتياطي</span><span role="tab">المهام الفاشلة</span></div>
+          <div class="k-notice danger"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>لا توجد نسخة احتياطية</b>لا شيء يُنسخ من هذا الخادم. اختر قرصًا آخر أو حاوية S3 أو خادم SFTP في النسخ الاحتياطي.</span></div>
+          <div class="a9-tiles one">
+            <div class="a9-tile danger"><span class="k-meta">النسخ الاحتياطي</span><b>غير مُعدّ</b><b class="k-link">إعداد النسخ الاحتياطي</b></div>
+            <div class="a9-tile warn"><span class="k-meta">القرص</span><b>البيانات ممتلئة بنسبة ٨٨٪</b><small>يتبقى ١٢ غيغابايت.</small></div>
+            <div class="a9-tile warn"><span class="k-meta">حزمة الاسترداد</span><b>لم تُنزَّل بعد</b><small>المفاتيح وكلمة مرور النسخ الاحتياطي وخطوات الاستعادة، في ملف واحد تحفظه بعيدًا عن هذا الخادم.</small><b class="k-link">تنزيل حزمة الاسترداد</b></div>
+            <div class="a9-tile"><span class="k-meta">الإصدار</span><b><bdi class="mono">1.2.0</bdi></b><small>آخر فحص للتحديثات قبل ٥ ساعات</small></div>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="الرئيسي"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>الرئيسية</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>البحث</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>التقاط</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>الوارد</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>المزيد</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">Status in Arabic · phone · light · RTL (status-tiles.tsx, T21). Alfred's view as an instance admin on a fresh server: no backup is red and first. Eastern digits and the Arabic percent sign follow the person's setting; versions and paths stay Latin inside <code>&lt;bdi&gt;</code>. Tiles stack on a phone, nothing cut with "…".</figcaption>
+    </figure>
+    <figure id="f-kit-reauth">
+      <div class="phone t-dark k-frame" role="img" aria-label="Phone: the recovery kit download sheet asking for the password again, with what the kit holds and the format choice">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>Instance admin</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="k-tabs sm" role="tablist" aria-label="Settings"><span role="tab">Me</span><span role="tab">Locations</span><span role="tab">Account</span><span role="tab">AI</span><span role="tab">Import</span><span role="tab">Export</span><span class="on" role="tab" aria-selected="true">Admin</span></div>
+          <div class="k-tabs sm" role="tablist" aria-label="Instance admin"><span role="tab">Users</span><span role="tab">Admins</span><span class="on" role="tab" aria-selected="true">Status</span><span role="tab">Backups</span><span role="tab">Failed jobs</span><span role="tab">Alerts</span><span role="tab">Sign-up</span><span role="tab">Currencies</span><span role="tab">AI</span></div>
+          <p class="k-p">Status</p>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+        <div class="k-scrim"></div><div class="k-sheet float">
+          <div class="k-dh"><b>Download the recovery kit</b><span class="k-x"><svg class="k-ic"><use href="#k-x"/></svg></span></div>
+          <p class="k-p">Everything needed to bring Kept back on a new server: the secret keys, the backup's location, its password and storage keys, and the restore steps.</p>
+          <div class="k-notice warn"><svg class="k-ic"><use href="#k-key"/></svg><span><b>Keep it off this server</b>Print it or store it in a password manager. Anyone with it can read your backups.</span></div>
+          <div class="k-seg"><span class="on">Text file</span><span>Printable page</span></div>
+          <div class="k-field"><span class="k-lab">Your password</span><span class="k-in err">••••••••••</span><span class="k-desc" style="color:var(--danger)">That password isn't right.</span></div>
+          <div class="k-foot"><b class="kb kb-s">Cancel</b><b class="kb kb-p">Download</b></div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Recovery kit download · phone · dark (kit-download.tsx, reauth-sheet.tsx, T22; D182, D176). The password again, or "Sign in again" for a passkey-only account. The kit arrives as a file and its Blob URL is revoked at once: nothing of it stays in the page, a store or the cache. A wrong password keeps the sheet open with the message.</figcaption>
+    </figure>
+  </div>
+  <h3 class="grp">This device · the app lock and offline locations</h3>
+  <div class="frames">
+    <figure id="f-device">
+      <div class="phone t-light k-frame tall" role="img" aria-label="Phone: Settings, Me, This device: the app lock on with a PIN and Face ID, and Home kept available offline with its size and the warning">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic flip"><use href="#k-back"/></svg></button><h1>This device</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <span class="k-lab">App lock</span>
+          <span class="k-sw-row"><i class="k-tog on"></i>Lock Kept on this device</span>
+          <span class="k-sw-row"><i class="k-tog on"></i>Use Face ID or fingerprint</span>
+          <div class="k-wrap" style="justify-content:space-between"><span class="k-meta">PIN set · locks after 5 minutes away</span><b class="kb kb-s sm">Change PIN</b></div>
+          <span class="k-lab">Keep available offline</span>
+          <div class="k-notice warn"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>If this phone is lost</b>Whoever unlocks Kept sees prices and documents for these locations.</span></div>
+          <ul class="k-list">
+            <li><span class="k-rt"><b>Home</b><small>3 things · 4 documents · 8.8 MB · updated 2 hours ago</small><small>1 document is too large to keep offline: TV service manual (40 MB)</small></span><i class="k-tog on"></i></li>
+            <li><span class="k-rt"><b>Garage</b><small>About 14 MB to download</small></span><i class="k-tog"></i></li>
+          </ul>
+          <div class="k-meter"><i style="inline-size:4%"></i></div><span class="k-meta">8.8 MB of 250 MB on this device</span>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+
+      </div>
+      <figcaption class="frame-cap">This device · phone · light (app-lock-settings.tsx, keep-offline.tsx, T23; D159, D181, plan Q21, Q22). Keep offline needs the app lock on. The size comes from the server's estimate before anything downloads; documents only, encrypted on the device, never in the browser's cache. Off, sign-out or a 401 removes them.</figcaption>
+    </figure>
+    <figure id="f-lock-screen">
+      <div class="phone t-dark k-frame" role="img" aria-label="Phone: the lock screen with the PIN pad, four of six digits entered, and the Face ID button">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        
+        <div class="content">
+          <div class="a9-lock">
+            <svg class="k-ic" style="width:40px;height:40px"><use href="#k-key"/></svg>
+            <b>Enter your PIN</b>
+            <div class="a9-dots"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i></div>
+            <div class="a9-pad"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span class="g">Face ID</span><span>0</span><span class="g">Delete</span></div>
+            <small>Forgot it? Sign out and sign in again.</small>
+          </div>
+        </div>
+        
+
+      </div>
+      <figcaption class="frame-cap">Lock screen · phone · dark (lock-screen.tsx, T23; D181). It covers everything, online and offline, until unlocked. Ten wrong PINs remove this device's copy but keep the person's own unsent captures, still locked (D210). The keypad is the app's own, never the system's.</figcaption>
+    </figure>
+  </div>
+</section>

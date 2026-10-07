@@ -1,0 +1,12 @@
+{
+  "name": "kept-step6-embeddings-spike",
+  "private": true,
+  "type": "module",
+  "description": "Throwaway: step-6 spike S6.4, embed/embedMany wire shapes (stubbed fetch). pgvector.spike.ts runs from apps/server instead. Not part of the workspace.",
+  "dependencies": {
+    "@ai-sdk/google": "4.0.82",
+    "@ai-sdk/openai": "4.0.78",
+    "ai": "7.0.116",
+    "tsx": "4.23.15"
+  }
+}

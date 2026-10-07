@@ -1,0 +1,28 @@
+{
+  "name": "kept",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.23.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "lint": "biome check . && node scripts/check-logical-css.mjs && node scripts/check-i18n.mjs && node scripts/check-no-local-paths.mjs",
+    "format": "biome format --write .",
+    "typecheck": "tsc -p tsconfig.json && pnpm -r --parallel typecheck",
+    "test": "vitest run",
+    "ci": "bash scripts/ci-local.sh",
+    "bench:rls": "pnpm --filter @kept/server bench && pnpm --filter @kept/server bench:pi",
+    "eval:extraction": "pnpm --filter @kept/server exec tsx eval/run.ts",
+    "eval:assistant": "pnpm --filter @kept/server exec tsx eval/assistant/run.ts",
+    "eval:search": "pnpm --filter @kept/server exec tsx eval/search/run.ts",
+    "docs:dev": "pnpm --filter @kept/docs dev",
+    "docs:build": "pnpm --filter @kept/docs build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.14",
+    "sharp": "0.35.4",
+    "typescript": "7.0.2",
+    "vitest": "5.0.2"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "description": "Kept's dependency updates (D187). Inert until the Renovate app is enabled on the public repository (the 1.0 checklist has the step). config:best-practices pins Docker images and GitHub Actions by digest (docker:pinDigests, helpers:pinGitHubActionDigests).",
+  "extends": ["config:best-practices"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "Better Auth and its plugins move together: one version across the core and every @better-auth package.",
+      "matchPackageNames": ["better-auth", "@better-auth/*"],
+      "groupName": "Better Auth"
+    },
+    {
+      "description": "Postgres major versions are a dump and restore (D186), never a dependency bump. pgvector's tag carries the Postgres major (0.8.6-pg18-bookworm): the compatibility group keeps pg18-bookworm, so only pgvector's own version moves.",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["pgvector/pgvector"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<compatibility>pg\\d+-.+)$"
+    },
+    {
+      "description": "No Postgres major bumps from any other image either.",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["postgres", "pgvector/pgvector"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "The documentation site's toolchain (Astro, Starlight and its plugins) updates as one.",
+      "matchFileNames": ["apps/docs/package.json"],
+      "groupName": "docs site"
+    }
+  ]
+}

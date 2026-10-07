@@ -1,0 +1,233 @@
+{
+  "about": "The mock embedder's lexicon (step-6 T14, T17; ai/mock.ts conceptVector): each concept is one dimension, and a text lights a concept when one of its words starts with one of the concept's words (a word of three letters or fewer must match whole, or with a plural s; a two-word entry matches as a phrase), after Kept's normalize() with Arabic prefixes stripped. It makes KEPT_AI_MOCK's vectors mean something, so 'the thing for the TV' lands near the HDMI cable and 'شاحن الموبايل' near the phone charger, deterministically and with no network. It is not a model: real providers are measured by eval:search with a key.",
+  "concepts": [
+    {
+      "name": "tv",
+      "words": [
+        "tv",
+        "television",
+        "hdmi",
+        "remote",
+        "screen",
+        "تلفزيون",
+        "تليفزيون",
+        "تلفاز",
+        "شاشه",
+        "ريموت"
+      ]
+    },
+    {
+      "name": "cable",
+      "words": ["cable", "cord", "wire", "lead", "lightning", "كابل", "سلك", "وصله"]
+    },
+    {
+      "name": "charging",
+      "words": ["charger", "charging", "charge", "adapter", "شاحن", "شحن"]
+    },
+    {
+      "name": "phone",
+      "words": [
+        "phone",
+        "mobile",
+        "galaxy",
+        "iphone",
+        "smartphone",
+        "cell",
+        "موبايل",
+        "هاتف",
+        "جوال",
+        "تليفون",
+        "تلفون"
+      ]
+    },
+    {
+      "name": "network",
+      "words": [
+        "router",
+        "wifi",
+        "wi-fi",
+        "internet",
+        "network",
+        "modem",
+        "راوتر",
+        "انترنت",
+        "شبكه",
+        "واي"
+      ]
+    },
+    {
+      "name": "tools",
+      "words": [
+        "drill",
+        "driver",
+        "screwdriver",
+        "hammer",
+        "tool",
+        "wrench",
+        "spanner",
+        "bit",
+        "عده",
+        "عدد",
+        "ادوات",
+        "شاكوش",
+        "مطرقه",
+        "مفك",
+        "مثقاب",
+        "شنيور",
+        "hole",
+        "repair",
+        "fix",
+        "تصليح",
+        "ثقب"
+      ]
+    },
+    {
+      "name": "car",
+      "words": [
+        "car",
+        "corolla",
+        "toyota",
+        "tyre",
+        "tire",
+        "jack",
+        "vehicle",
+        "pump",
+        "سياره",
+        "عربيه",
+        "اطار",
+        "كاوتش"
+      ]
+    },
+    {
+      "name": "kitchen",
+      "words": [
+        "kettle",
+        "fridge",
+        "refrigerator",
+        "kitchen",
+        "cook",
+        "boil",
+        "غلايه",
+        "ثلاجه",
+        "مطبخ",
+        "براد",
+        "tea",
+        "food",
+        "cold",
+        "تسخين",
+        "شاي",
+        "اكل",
+        "بارد"
+      ]
+    },
+    {
+      "name": "fire",
+      "words": ["extinguisher", "smoke", "alarm", "fire", "حريق", "طفايه", "دخان", "انذار"]
+    },
+    {
+      "name": "games",
+      "words": [
+        "game",
+        "catan",
+        "monopoly",
+        "playstation",
+        "nintendo",
+        "lego",
+        "toy",
+        "play",
+        "لعبه",
+        "العاب",
+        "لعب"
+      ]
+    },
+    {
+      "name": "documents",
+      "words": [
+        "passport",
+        "folder",
+        "document",
+        "papers",
+        "certificate",
+        "جواز",
+        "اوراق",
+        "مستندات",
+        "ملف"
+      ]
+    },
+    {
+      "name": "festive",
+      "words": [
+        "lights",
+        "lantern",
+        "christmas",
+        "ramadan",
+        "decoration",
+        "festive",
+        "فانوس",
+        "زينه",
+        "رمضان",
+        "holiday"
+      ]
+    },
+    {
+      "name": "garden",
+      "words": ["hose", "garden", "plant", "حديقه", "خرطوم", "جنينه"]
+    },
+    {
+      "name": "winter",
+      "words": ["scarf", "scarves", "winter", "coat", "warm", "شتاء", "شتوي", "كوفيه", "تلفيعه"]
+    },
+    {
+      "name": "firstaid",
+      "words": ["first aid", "aid", "bandage", "medicine", "plaster", "اسعاف", "دواء", "ادويه"]
+    },
+    {
+      "name": "computer",
+      "words": ["laptop", "thinkpad", "computer", "notebook", "لابتوب", "كمبيوتر", "حاسوب"]
+    },
+    {
+      "name": "paint",
+      "words": ["paint", "roller", "brush", "دهان", "بويه", "فرشاه"]
+    },
+    {
+      "name": "battery",
+      "words": ["battery", "batteries", "aa", "بطاريه", "بطاريات", "حجاره"]
+    },
+    {
+      "name": "water",
+      "words": ["filter", "water", "cartridge", "فلتر", "مياه", "ماء"]
+    },
+    {
+      "name": "iron",
+      "words": ["iron", "steam", "ironing", "مكواه", "كوي", "بخار", "clothes", "كي", "ملابس"]
+    },
+    {
+      "name": "bike",
+      "words": ["bike", "bicycle", "cycle", "دراجه", "عجله", "ride"]
+    },
+    {
+      "name": "keys",
+      "words": ["keys", "key", "wallet", "مفاتيح", "مفتاح", "محفظه"]
+    },
+    {
+      "name": "furniture",
+      "words": ["sofa", "bookcase", "shelf", "couch", "furniture", "كنبه", "مكتبه"]
+    },
+    {
+      "name": "hair",
+      "words": ["hair", "dryer", "سشوار", "مجفف", "شعر"]
+    },
+    {
+      "name": "safe",
+      "words": ["safe", "lock", "خزنه"]
+    },
+    {
+      "name": "extension",
+      "words": ["extension", "power strip", "socket", "plug", "مشترك", "فيشه"]
+    },
+    {
+      "name": "console",
+      "words": ["console", "controller", "joystick", "gaming", "بلايستيشن", "دراع"]
+    }
+  ]
+}

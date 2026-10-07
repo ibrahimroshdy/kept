@@ -1,0 +1,2 @@
+ALTER TABLE "place_kinds" DROP CONSTRAINT "place_kinds_named_chk";--> statement-breakpoint
+ALTER TABLE "place_kinds" ADD CONSTRAINT "place_kinds_named_chk" CHECK (owner_account_id IS NULL OR name IS NOT NULL OR key IN ('floor', 'room', 'zone', 'closet'));

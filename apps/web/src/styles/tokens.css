@@ -1,0 +1,56 @@
+/*
+ * Kept design tokens (D131). Copied verbatim from docs/design/kept-design-board.html (:root and the
+ * two dark blocks) and docs/design/screens/kit.css (the forced .t-light / .t-dark panels, which
+ * also carry the series colours the board omits there). Names, values and even hex case are the
+ * board's, so a value can be grepped across both; Biome skips this file for that reason. Do not
+ * edit a value here without editing the board.
+ */
+:root{
+  --paper:#F2F1EC; --surface:#FBFAF7; --sunken:#ECEAE4; --line:#DEDBD3;
+  --ink:#1C1B19; --ink-2:#55524C; --ink-3:#6B675F;
+  --amber:#F0B03A; --amber-ink:#2E2100; --amber-text:#8A5700;
+  --violet:#5B3CC4; --violet-soft:#EEEAFD;
+  --ok:#1E7B3C; --warn:#A6480A; --danger:#B42318; --info:#2459A8;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s-other:#A8A399;
+  --charcoal:#1E1C19;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --arabic:"IBM Plex Sans Arabic","Noto Sans Arabic",Tahoma,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#151412; --surface:#1E1C19; --sunken:#26231F; --line:#34302A;
+    --ink:#F2EFE9; --ink-2:#BDB7AC; --ink-3:#9A948A;
+    --amber:#F0B03A; --amber-ink:#2E2100; --amber-text:#F4C165;
+    --violet:#A898FA; --violet-soft:#2A2447;
+    --ok:#5CC27F; --warn:#F28A4E; --danger:#F97066; --info:#7FA8EE;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s-other:#6E695F;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#151412; --surface:#1E1C19; --sunken:#26231F; --line:#34302A;
+  --ink:#F2EFE9; --ink-2:#BDB7AC; --ink-3:#9A948A;
+  --amber:#F0B03A; --amber-ink:#2E2100; --amber-text:#F4C165;
+  --violet:#A898FA; --violet-soft:#2A2447;
+  --ok:#5CC27F; --warn:#F28A4E; --danger:#F97066; --info:#7FA8EE;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s-other:#6E695F;
+}
+/* forced theme panels, for showing both themes side by side */
+.t-light{
+  color-scheme:light;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s-other:#A8A399;
+  --paper:#F2F1EC; --surface:#FBFAF7; --sunken:#ECEAE4; --line:#DEDBD3;
+  --ink:#1C1B19; --ink-2:#55524C; --ink-3:#6B675F;
+  --amber-text:#8A5700; --violet:#5B3CC4; --violet-soft:#EEEAFD;
+  --ok:#1E7B3C; --warn:#A6480A; --danger:#B42318; --info:#2459A8;
+}
+.t-dark{
+  color-scheme:dark;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s-other:#6E695F;
+  --paper:#151412; --surface:#1E1C19; --sunken:#26231F; --line:#34302A;
+  --ink:#F2EFE9; --ink-2:#BDB7AC; --ink-3:#9A948A;
+  --amber-text:#F4C165; --violet:#A898FA; --violet-soft:#2A2447;
+  --ok:#5CC27F; --warn:#F28A4E; --danger:#F97066; --info:#7FA8EE;
+}

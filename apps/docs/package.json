@@ -1,0 +1,31 @@
+{
+  "name": "@kept/docs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Kept's documentation site (Starlight, D102, D199): built to static files in dist/, published to GitHub Pages at https://ibrahimroshdy.com/kept/.",
+  "scripts": {
+    "dev": "pnpm run gen:openapi && ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "pnpm run gen:openapi && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "gen:openapi": "tsx scripts/openapi.ts openapi/kept.json",
+    "gen:config": "tsx scripts/env-reference.ts src/content/docs/reference/configuration.md",
+    "check:config": "tsx scripts/env-reference.ts --check src/content/docs/reference/configuration.md",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@astrojs/markdown-remark": "7.3.1",
+    "@astrojs/markdown-satteri": "0.4.2",
+    "@astrojs/starlight": "0.42.5",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/ibm-plex-sans": "5.3.0",
+    "@fontsource/ibm-plex-sans-arabic": "5.3.0",
+    "@types/node": "26.6.3",
+    "astro": "7.3.5",
+    "satteri": "0.10.5",
+    "starlight-links-validator": "0.26.0",
+    "starlight-openapi": "0.26.3",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}

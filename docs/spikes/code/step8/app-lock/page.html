@@ -1,0 +1,139 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>L1 app-lock probe</title>
+<script>
+// Spike L1: everything the node driver calls through page.evaluate. Served from http://localhost,
+// a secure context, so WebAuthn and WebCrypto are available. Synthetic data only.
+const enc = new TextEncoder();
+const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const fromB64u = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0));
+const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+
+function flagsOf(authData) {
+  const f = new Uint8Array(authData)[32];
+  return { UP: !!(f & 0x01), UV: !!(f & 0x04), BE: !!(f & 0x08), BS: !!(f & 0x10), AT: !!(f & 0x40), ED: !!(f & 0x80) };
+}
+
+window.probe = {
+  async capabilities() {
+    const out = {
+      uvpaa: await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable(),
+      secureContext: isSecureContext,
+    };
+    if (typeof PublicKeyCredential.getClientCapabilities === 'function') {
+      out.clientCapabilities = await PublicKeyCredential.getClientCapabilities();
+    }
+    return out;
+  },
+
+  async create({ prfFirst, uv = 'required' }) {
+    try {
+      const cred = await navigator.credentials.create({
+        publicKey: {
+          rp: { name: 'Kept', id: 'localhost' },
+          user: { id: crypto.getRandomValues(new Uint8Array(16)), name: 'ibrahim@kept.test', displayName: 'Ibrahim' },
+          challenge: crypto.getRandomValues(new Uint8Array(32)),
+          pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+          authenticatorSelection: { authenticatorAttachment: 'platform', residentKey: 'required', userVerification: uv },
+          timeout: 10000,
+          ...(prfFirst !== undefined ? { extensions: { prf: { eval: { first: enc.encode(prfFirst) } } } } : {}),
+        },
+      });
+      const ext = cred.getClientExtensionResults();
+      return {
+        ok: true,
+        id: cred.id,
+        flags: flagsOf(cred.response.getAuthenticatorData()),
+        transports: cred.response.getTransports?.() ?? null,
+        attachment: cred.authenticatorAttachment,
+        prf: ext.prf
+          ? { enabled: ext.prf.enabled ?? null, hasResults: !!ext.prf.results, firstBytes: ext.prf.results?.first?.byteLength ?? null }
+          : null,
+        extensionKeys: Object.keys(ext),
+      };
+    } catch (e) {
+      return { ok: false, error: `${e.name}: ${e.message}` };
+    }
+  },
+
+  async get({ id, prfFirst, prfSecond, uv = 'required' }) {
+    try {
+      const prf = prfFirst === undefined ? undefined : { eval: { first: enc.encode(prfFirst), ...(prfSecond ? { second: enc.encode(prfSecond) } : {}) } };
+      const a = await navigator.credentials.get({
+        publicKey: {
+          challenge: crypto.getRandomValues(new Uint8Array(32)),
+          rpId: 'localhost',
+          allowCredentials: [{ type: 'public-key', id: fromB64u(id) }],
+          userVerification: uv,
+          timeout: 10000,
+          ...(prf ? { extensions: { prf } } : {}),
+        },
+      });
+      const ext = a.getClientExtensionResults();
+      const r = ext.prf?.results;
+      return {
+        ok: true,
+        flags: flagsOf(a.response.authenticatorData),
+        prf: ext.prf ? { enabled: ext.prf.enabled ?? null, firstBytes: r?.first?.byteLength ?? null, firstHex: r?.first ? hex(r.first) : null, secondHex: r?.second ? hex(r.second) : null } : null,
+      };
+    } catch (e) {
+      return { ok: false, error: `${e.name}: ${e.message}` };
+    }
+  },
+
+  // The PRF output as a key-encryption key: HKDF-SHA-256 → AES-KW, wrapping a random AES-GCM data key.
+  async prfWrap(firstHex) {
+    const ikm = Uint8Array.from(firstHex.match(/../g).map((h) => parseInt(h, 16)));
+    const base = await crypto.subtle.importKey('raw', ikm, 'HKDF', false, ['deriveKey']);
+    const kek = await crypto.subtle.deriveKey(
+      { name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32), info: enc.encode('kept app lock v1') },
+      base, { name: 'AES-KW', length: 256 }, false, ['wrapKey', 'unwrapKey']);
+    const dataKey = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+    const wrapped = await crypto.subtle.wrapKey('raw', dataKey, kek, 'AES-KW');
+    const back = await crypto.subtle.unwrapKey('raw', wrapped, kek, 'AES-KW', { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, dataKey, enc.encode('extras'));
+    const pt = new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, back, ct));
+    return { wrappedBytes: wrapped.byteLength, roundTrip: pt === 'extras' };
+  },
+
+  // The PIN path: PBKDF2-SHA-256(PIN, 16-byte salt, n) → AES-KW key that wraps the AES-GCM data key.
+  async pinWrap(iterations, pin = '482913') {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const t0 = performance.now();
+    const base = await crypto.subtle.importKey('raw', enc.encode(pin), 'PBKDF2', false, ['deriveKey']);
+    const kek = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, base,
+      { name: 'AES-KW', length: 256 }, false, ['wrapKey', 'unwrapKey']);
+    const ms = performance.now() - t0;
+    const dataKey = await crypto.subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+    const wrapped = await crypto.subtle.wrapKey('raw', dataKey, kek, 'AES-KW');
+    await crypto.subtle.unwrapKey('raw', wrapped, kek, 'AES-KW', { name: 'AES-GCM' }, false, ['decrypt']);
+    // A wrong PIN must fail to unwrap (AES-KW's integrity check), not yield a wrong key.
+    const badBase = await crypto.subtle.importKey('raw', enc.encode('000000'), 'PBKDF2', false, ['deriveKey']);
+    const badKek = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: 1000, hash: 'SHA-256' }, badBase,
+      { name: 'AES-KW', length: 256 }, false, ['unwrapKey']);
+    let wrongPinRejected = false;
+    try { await crypto.subtle.unwrapKey('raw', wrapped, badKek, 'AES-KW', { name: 'AES-GCM' }, false, ['decrypt']); }
+    catch { wrongPinRejected = true; }
+    return { ms, wrappedBytes: wrapped.byteLength, wrongPinRejected };
+  },
+
+  // PBKDF2 alone (deriveBits), for the timing series.
+  async pbkdf2Ms(iterations) {
+    const base = await crypto.subtle.importKey('raw', enc.encode('482913'), 'PBKDF2', false, ['deriveBits']);
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const t0 = performance.now();
+    await crypto.subtle.deriveBits({ name: 'PBKDF2', salt, iterations, hash: 'SHA-256' }, base, 256);
+    return performance.now() - t0;
+  },
+
+  // A main-thread busy loop, to show whether CPU throttling is in effect at all.
+  spinMs(n = 2e7) {
+    const t0 = performance.now();
+    let x = 0;
+    for (let i = 0; i < n; i++) x = (x + i * 7) % 1000003;
+    return { ms: performance.now() - t0, x };
+  },
+};
+</script>
+<p>L1 probe</p>

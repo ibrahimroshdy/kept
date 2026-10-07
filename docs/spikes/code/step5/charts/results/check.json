@@ -1,0 +1,417 @@
+{
+  "when": "2026-09-29T22:52:54.346Z",
+  "checks": [
+    {
+      "name": "en: time axis runs left to right",
+      "pass": true,
+      "months": [
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sept"
+      ],
+      "centres": [
+        172,
+        355,
+        539,
+        723,
+        907,
+        1091
+      ]
+    },
+    {
+      "name": "en: value ticks use Western digits",
+      "pass": true,
+      "ticks": [
+        "0",
+        "2k",
+        "4k",
+        "6k",
+        "8k",
+        "84,000",
+        "86,000",
+        "88,000",
+        "90,000",
+        "92,000"
+      ]
+    },
+    {
+      "name": "en: costs-svg value labels sit outside the plot, inside the svg",
+      "pass": true,
+      "plot": {
+        "l": 52,
+        "r": 1210
+      },
+      "labels": [
+        [
+          "0",
+          35,
+          41
+        ],
+        [
+          "2k",
+          30,
+          41
+        ],
+        [
+          "4k",
+          30,
+          41
+        ],
+        [
+          "6k",
+          30,
+          41
+        ],
+        [
+          "8k",
+          30,
+          41
+        ]
+      ],
+      "svgWidth": 1218,
+      "direction": "ltr"
+    },
+    {
+      "name": "en: odo-svg value labels sit outside the plot, inside the svg",
+      "pass": true,
+      "plot": {
+        "l": 51,
+        "r": 1207
+      },
+      "labels": [
+        [
+          "84,000",
+          12,
+          45
+        ],
+        [
+          "86,000",
+          12,
+          45
+        ],
+        [
+          "88,000",
+          12,
+          45
+        ],
+        [
+          "90,000",
+          12,
+          45
+        ],
+        [
+          "92,000",
+          12,
+          45
+        ]
+      ],
+      "svgWidth": 1218,
+      "direction": "ltr"
+    },
+    {
+      "name": "en: every costs bar reachable by keyboard with a tooltip",
+      "pass": true,
+      "marks": 12,
+      "reached": 12,
+      "oneTabStop": true,
+      "nextTabGoesTo": "BUTTON:Show as table",
+      "sample": "April 2026. Fuel: EGP 2,140. Total: EGP 2,520"
+    },
+    {
+      "name": "en: costs table shows the same numbers as the tooltips",
+      "pass": true,
+      "compared": 12,
+      "mismatches": [],
+      "row0": {
+        "month": "2026-04",
+        "cells": {
+          "fuel": "EGP 2,140",
+          "service": "EGP 0",
+          "fees": "EGP 380",
+          "total": "EGP 2,520"
+        }
+      }
+    },
+    {
+      "name": "en: every odometer point reachable, tooltip equals the table",
+      "pass": true,
+      "reached": 7,
+      "oneTabStop": true,
+      "mismatches": [],
+      "estimateTip": "Estimated ~30 Oct 2026. Reading: 91,790 km"
+    },
+    {
+      "name": "en: the estimate is a dashed segment after the last reading",
+      "pass": true,
+      "dasharray": "5 4",
+      "lastActualX": 935.3837837837838,
+      "estimateX": 1146
+    },
+    {
+      "name": "ar: time axis runs right to left",
+      "pass": true,
+      "months": [
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس",
+        "سبتمبر"
+      ],
+      "centres": [
+        1047,
+        863,
+        679,
+        495,
+        311,
+        127
+      ]
+    },
+    {
+      "name": "ar: value ticks use Eastern digits",
+      "pass": true,
+      "ticks": [
+        "٠",
+        "٢ ألف",
+        "٤ آلاف",
+        "٦ آلاف",
+        "٨ آلاف",
+        "٨٤٬٠٠٠",
+        "٨٦٬٠٠٠",
+        "٨٨٬٠٠٠",
+        "٩٠٬٠٠٠",
+        "٩٢٬٠٠٠"
+      ]
+    },
+    {
+      "name": "ar: costs-svg value labels sit outside the plot, inside the svg",
+      "pass": true,
+      "plot": {
+        "l": 8,
+        "r": 1166
+      },
+      "labels": [
+        [
+          "٠",
+          1177,
+          1183
+        ],
+        [
+          "٢ ألف",
+          1177,
+          1199
+        ],
+        [
+          "٤ آلاف",
+          1177,
+          1203
+        ],
+        [
+          "٦ آلاف",
+          1177,
+          1203
+        ],
+        [
+          "٨ آلاف",
+          1177,
+          1203
+        ]
+      ],
+      "svgWidth": 1218,
+      "direction": "ltr"
+    },
+    {
+      "name": "ar: odo-svg value labels sit outside the plot, inside the svg",
+      "pass": true,
+      "plot": {
+        "l": 11,
+        "r": 1167
+      },
+      "labels": [
+        [
+          "٨٤٬٠٠٠",
+          1173,
+          1205
+        ],
+        [
+          "٨٦٬٠٠٠",
+          1173,
+          1205
+        ],
+        [
+          "٨٨٬٠٠٠",
+          1173,
+          1205
+        ],
+        [
+          "٩٠٬٠٠٠",
+          1173,
+          1205
+        ],
+        [
+          "٩٢٬٠٠٠",
+          1173,
+          1205
+        ]
+      ],
+      "svgWidth": 1218,
+      "direction": "ltr"
+    },
+    {
+      "name": "ar: every costs bar reachable by keyboard with a tooltip",
+      "pass": true,
+      "marks": 12,
+      "reached": 12,
+      "oneTabStop": true,
+      "nextTabGoesTo": "BUTTON:اعرض كجدول",
+      "sample": "أبريل ٢٠٢٦. الوقود: ‏٢٬١٤٠ ج.م.‏. الإجمالي: ‏٢٬٥٢٠ ج.م.‏"
+    },
+    {
+      "name": "ar: costs table shows the same numbers as the tooltips",
+      "pass": true,
+      "compared": 12,
+      "mismatches": [],
+      "row0": {
+        "month": "2026-04",
+        "cells": {
+          "fuel": "‏٢٬١٤٠ ج.م.‏",
+          "service": "‏٠ ج.م.‏",
+          "fees": "‏٣٨٠ ج.م.‏",
+          "total": "‏٢٬٥٢٠ ج.م.‏"
+        }
+      }
+    },
+    {
+      "name": "ar: every odometer point reachable, tooltip equals the table",
+      "pass": true,
+      "reached": 7,
+      "oneTabStop": true,
+      "mismatches": [],
+      "estimateTip": "تقديري ~٣٠‏/١٠‏/٢٠٢٦. القراءة: ٩١٬٧٩٠ كم"
+    },
+    {
+      "name": "ar: the estimate is a dashed segment after the last reading",
+      "pass": true,
+      "dasharray": "5 4",
+      "lastActualX": 210.61621621621623,
+      "estimateX": 0
+    },
+    {
+      "name": "reduced motion: no transitions, no animations",
+      "pass": true,
+      "moving": [],
+      "animations": 0
+    },
+    {
+      "name": "no-preference (control): only the tooltip fades",
+      "pass": true,
+      "moving": [
+        "div.visx-tooltip tip 0.12s",
+        "div.visx-tooltip tip 0.12s"
+      ],
+      "animations": 0
+    },
+    {
+      "name": "ar 375: no sideways scroll",
+      "pass": true,
+      "scrollWidth": 375,
+      "svg": 313
+    },
+    {
+      "name": "ar 375: a horizontal drag across the chart doesn't arm pull to refresh",
+      "pass": true,
+      "rightToLeft": {
+        "pulls": 0,
+        "released": []
+      },
+      "leftToRight": {
+        "pulls": 0,
+        "released": []
+      },
+      "slanted40": {
+        "pulls": 0,
+        "released": []
+      },
+      "verticalControl": {
+        "pulls": 11,
+        "released": [
+          true
+        ]
+      }
+    },
+    {
+      "name": "ar 375: a tap on a bar opens its tooltip",
+      "pass": true,
+      "tip": "سبتمبر ٢٠٢٦\nالوقود: ‏١٬٧٢٠ ج.م.‏\nالإجمالي: ‏٧٬٠٧٠ ج.م.‏"
+    },
+    {
+      "name": "en 375: no sideways scroll",
+      "pass": true,
+      "scrollWidth": 375,
+      "svg": 313
+    },
+    {
+      "name": "en 375: a horizontal drag across the chart doesn't arm pull to refresh",
+      "pass": true,
+      "rightToLeft": {
+        "pulls": 0,
+        "released": []
+      },
+      "leftToRight": {
+        "pulls": 0,
+        "released": []
+      },
+      "slanted40": {
+        "pulls": 0,
+        "released": []
+      },
+      "verticalControl": {
+        "pulls": 11,
+        "released": [
+          true
+        ]
+      }
+    },
+    {
+      "name": "en 375: a tap on a bar opens its tooltip",
+      "pass": true,
+      "tip": "September 2026\nFuel: EGP 1,720\nTotal: EGP 7,070"
+    }
+  ],
+  "naive": {
+    "direction": "rtl",
+    "plotRight": 1166,
+    "labels": [
+      [
+        "٠",
+        1171,
+        1177
+      ],
+      [
+        "٢ ألف",
+        1155,
+        1177
+      ],
+      [
+        "٤ آلاف",
+        1151,
+        1177
+      ],
+      [
+        "٦ آلاف",
+        1151,
+        1177
+      ],
+      [
+        "٨ آلاف",
+        1151,
+        1177
+      ]
+    ],
+    "overlapping": 4
+  },
+  "pass": true
+}

@@ -1,0 +1,4 @@
+{"at":"2026-10-06T06:27:14.948Z","label":"default","chromium":"153.0.8010.12","iterations":2850000,"medianMs":288.5,"spinMs":87.2,"loadavg":[33.4,36.7,25.5]}
+{"at":"2026-10-06T06:27:56.291Z","label":"taskpolicy -b","chromium":"153.0.8010.12","iterations":2850000,"medianMs":1896.5,"spinMs":2153.2,"loadavg":[28,34.8,25.3]}
+{"at":"2026-10-06T06:28:07.611Z","label":"default","chromium":"153.0.8010.12","iterations":600000,"medianMs":67.7,"spinMs":106.9,"loadavg":[26.6,34.1,25.3]}
+{"at":"2026-10-06T06:28:44.582Z","label":"taskpolicy -b","chromium":"153.0.8010.12","iterations":600000,"medianMs":717.7,"spinMs":1065.8,"loadavg":[28.9,34,25.6]}

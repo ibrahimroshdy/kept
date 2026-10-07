@@ -1,0 +1,26 @@
+{
+  "name": "kept-spike-step5-charts",
+  "private": true,
+  "type": "module",
+  "description": "SPIKE (step 5, T0, V38): visx 4.0.0 charts in RTL. Throwaway; never merged into apps/.",
+  "scripts": {
+    "build": "vite build",
+    "measure": "node measure.mjs",
+    "check": "node check.mjs"
+  },
+  "dependencies": {
+    "@visx/axis": "4.0.0",
+    "@visx/group": "4.0.0",
+    "@visx/responsive": "4.0.0",
+    "@visx/scale": "4.0.0",
+    "@visx/shape": "4.0.0",
+    "@visx/tooltip": "4.0.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "vite": "8.3.1"
+  }
+}

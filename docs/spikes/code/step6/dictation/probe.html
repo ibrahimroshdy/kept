@@ -1,0 +1,69 @@
+<!doctype html>
+<!--
+  Spike S6.6 (V13): the dictation probe T19 puts on the diagnostics page, as a standalone page.
+  window.probe(lang, {stopAfterMs}) starts recognition in `lang` and resolves with what happened:
+  support, the lang the recogniser kept, events in order, interim and final text, and any error.
+  Nothing here sends anything anywhere; the browser's own recogniser does what it does.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dictation probe</title>
+</head>
+<body>
+<pre id="out"></pre>
+<script>
+  const Ctor = window.SpeechRecognition ?? window.webkitSpeechRecognition;
+  window.support = {
+    SpeechRecognition: typeof window.SpeechRecognition,
+    webkitSpeechRecognition: typeof window.webkitSpeechRecognition,
+    available: typeof Ctor === 'function',
+    isSecureContext: window.isSecureContext,
+    availableStatic: typeof Ctor?.available === 'function',
+  };
+  window.probe = (lang, opts = {}) =>
+    new Promise((resolve) => {
+      if (!Ctor) return resolve({ lang, supported: false });
+      const r = new Ctor();
+      r.lang = lang;
+      r.interimResults = true;
+      r.continuous = false;
+      r.maxAlternatives = 1;
+      const t0 = performance.now();
+      const events = [];
+      const interim = [];
+      let final = '';
+      let error = null;
+      const at = () => Math.round(performance.now() - t0);
+      for (const name of ['start', 'audiostart', 'soundstart', 'speechstart', 'speechend', 'soundend', 'audioend', 'nomatch']) {
+        r.addEventListener(name, () => events.push(`${name}@${at()}`));
+      }
+      r.onresult = (e) => {
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const res = e.results[i];
+          const text = res[0]?.transcript ?? '';
+          if (res.isFinal) final += text;
+          else interim.push(text);
+        }
+        events.push(`result@${at()}`);
+      };
+      r.onerror = (e) => {
+        error = { error: e.error, message: e.message };
+        events.push(`error:${e.error}@${at()}`);
+      };
+      r.onend = () => {
+        events.push(`end@${at()}`);
+        resolve({ lang, keptLang: r.lang, supported: true, events, interim: interim.slice(-3), interimCount: interim.length, final, error, ms: at() });
+      };
+      try {
+        r.start();
+      } catch (e) {
+        resolve({ lang, supported: true, threw: String(e) });
+        return;
+      }
+      if (opts.stopAfterMs) setTimeout(() => r.stop(), opts.stopAfterMs);
+      setTimeout(() => r.abort(), opts.hardLimitMs ?? 20000);
+    });
+</script>
+</body>
+</html>

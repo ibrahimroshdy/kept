@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-kept
+  labels: {app.kubernetes.io/name: kept, app.kubernetes.io/instance: {{ .Release.Name }}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app.kubernetes.io/name: kept, app.kubernetes.io/instance: {{ .Release.Name }}}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: kept, app.kubernetes.io/instance: {{ .Release.Name }}}
+    spec:
+      securityContext: {runAsUser: 10001, runAsGroup: 10001, runAsNonRoot: true, fsGroup: 10001}
+      containers:
+        - name: kept
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports: [{name: http, containerPort: 8080}]
+          readinessProbe: {httpGet: {path: /readyz, port: http}}
+          securityContext: {readOnlyRootFilesystem: true, allowPrivilegeEscalation: false, capabilities: {drop: [ALL]}}
+          resources: {{- toYaml .Values.resources | nindent 12 }}

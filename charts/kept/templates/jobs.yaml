@@ -1,0 +1,199 @@
+{{- $full := include "kept.fullname" . -}}
+{{- $v := .Values -}}
+{{- /*
+Two hook Jobs.
+
+roles (external Postgres with roles.create): before anything else, files/roles.sh as the server's
+admin makes Kept's logins and extensions. The bundled Postgres does this itself at first start.
+
+migrate: `kept migrate` with the owner login, the keys and the backup settings, so a populated
+database gets its pre-upgrade snapshot first (plan T8, Q8). The new version never serves before
+its migrations: on upgrade the Job runs before the Deployment changes. On install with the bundled
+Postgres it runs post-install, because a pre-install hook runs before the chart's StatefulSet
+exists. Until it finishes, the server isn't ready (inferred: not run on a cluster yet), so a first
+install with the bundled Postgres must not use `helm install --wait`, which would wait for a ready
+server before running post-install hooks.
+
+On upgrade, generated keys (the config volume) and a backup directory are ReadWriteOnce volumes
+the running pod holds, so the Job is scheduled beside that pod to mount them read-only and
+read-write respectively.
+*/ -}}
+{{- if and (not $v.postgres.bundled) $v.roles.create }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $full }}-db-roles
+  labels:
+    {{- include "kept.labels" . | nindent 4 }}
+    app.kubernetes.io/component: db-roles
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-weight: "-10"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 2
+  activeDeadlineSeconds: 600
+  template:
+    metadata:
+      labels:
+        {{- include "kept.selector" (dict "root" . "component" "db-roles") | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        {{- include "kept.podSecurityContext" . | nindent 8 }}
+      {{- with $v.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: roles
+          image: {{ include "kept.image" . }}
+          imagePullPolicy: {{ $v.image.pullPolicy }}
+          command: ["bash", "-c", {{ .Files.Get "files/roles.sh" | quote }}]
+          env:
+            - name: PGHOST
+              value: {{ $v.postgres.external.host | quote }}
+            - name: PGPORT
+              value: {{ $v.postgres.external.port | quote }}
+            {{- with $v.postgres.external.sslMode }}
+            - name: PGSSLMODE
+              value: {{ . | quote }}
+            {{- end }}
+            - name: PGCONNECT_TIMEOUT
+              value: "10"
+            - name: POSTGRES_USER
+              value: {{ $v.postgres.external.superuser | quote }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $v.postgres.superuserSecret }}
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              value: {{ $v.postgres.database | quote }}
+            {{- range list "OWNER" "APP" "AUTH" "SYSTEM" }}
+            - name: KEPT_DB_{{ . }}_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $v.roles.existingSecret }}
+                  key: KEPT_DB_{{ . }}_PASSWORD
+            {{- end }}
+          securityContext:
+            {{- include "kept.securityContext" . | nindent 12 }}
+          resources:
+            {{- toYaml $v.jobs.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+{{ end -}}
+{{- $configPvc := and .Release.IsUpgrade (eq (include "kept.configIsPvc" .) "true") -}}
+{{- $backupPvc := and .Release.IsUpgrade $v.backup.persistence.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $full }}-migrate
+  labels:
+    {{- include "kept.labels" . | nindent 4 }}
+    app.kubernetes.io/component: migrate
+  annotations:
+    helm.sh/hook: {{ ternary "post-install,pre-upgrade" "pre-install,pre-upgrade" $v.postgres.bundled }}
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  # A failed migration is not retried blindly: its log says why (`kubectl logs job/…`).
+  backoffLimit: 0
+  activeDeadlineSeconds: {{ $v.jobs.activeDeadlineSeconds }}
+  template:
+    metadata:
+      labels:
+        {{- include "kept.selector" (dict "root" . "component" "migrate") | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        {{- include "kept.podSecurityContext" . | nindent 8 }}
+      {{- with $v.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if or $configPvc $backupPvc }}
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  {{- include "kept.selector" (dict "root" . "component" (include "kept.jobsComponent" .)) | nindent 18 }}
+      {{- end }}
+      initContainers:
+        {{- include "kept.waitForDb" . | nindent 8 }}
+      containers:
+        - name: migrate
+          image: {{ include "kept.image" . }}
+          imagePullPolicy: {{ $v.image.pullPolicy }}
+          command: ["kept"]
+          args: ["migrate"]
+          env:
+            {{- include "kept.dbUrlEnv" (dict "root" . "login" "owner" "var" "KEPT_OWNER_DATABASE_URL") | nindent 12 }}
+            # restic's cache, never on a volume the running pod holds.
+            - name: KEPT_RESTIC_CACHE_DIR
+              value: /tmp/restic-cache
+            {{- include "kept.commonEnv" . | nindent 12 }}
+          {{- with include "kept.envFrom" . | trim }}
+          envFrom:
+            {{- . | nindent 12 }}
+          {{- end }}
+          securityContext:
+            {{- include "kept.securityContext" . | nindent 12 }}
+          resources:
+            {{- toYaml $v.jobs.resources | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /config
+              readOnly: true
+            {{- if $backupPvc }}
+            - name: backups
+              mountPath: /backups
+            {{- end }}
+            {{- with $v.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: data
+          emptyDir: {}
+        - name: config
+          {{- if $configPvc }}
+          persistentVolumeClaim:
+            claimName: {{ $full }}-config
+            readOnly: true
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- if $backupPvc }}
+        - name: backups
+          persistentVolumeClaim:
+            claimName: {{ include "kept.backupClaim" . }}
+        {{- end }}
+        {{- with $v.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with $v.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $v.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,261 @@
+# The release (D87, D186, D187, L100–L104): `scripts/release.sh` split across GitHub-hosted
+# runners. It runs on the private repository (no `private == false` gate, unlike ci.yml and
+# docs.yml) and ONLY when a release tag is pushed, or by hand for an existing tag. Never on a branch
+# push or a pull request: Actions minutes are billed, so one run is one release.
+#
+# The gate is NOT here: `bash scripts/release.sh X.Y.Z --run-gate` (ci-local in a clean worktree)
+# passes on the laptop before the tag is pushed (docs/runbooks/release.md). Re-running a slice of
+# it on a 2-vCPU runner would cost minutes and prove less.
+#
+# Three jobs, no emulation (docs/runbooks/release.md has the timings):
+#   preflight  everything that can refuse in seconds, before a build minute is spent;
+#   build      one per architecture, in parallel, each on a runner of that architecture
+#              (`ubuntu-24.04` x64, `ubuntu-24.04-arm`; both offered to private repositories):
+#              `release.sh --ci --arch <a>` builds that platform natively, pushes it BY DIGEST
+#              (no tag) with its SBOM and provenance, pulls it back and smokes it natively;
+#   publish    `release.sh --ci --publish` joins the two smoked digests into one index by digest
+#              (`imagetools create`: no layer is rebuilt, so the published manifests are the
+#              smoked ones), signs it, tags X.Y.Z (X.Y, X), pushes the chart and writes the
+#              record; then the GitHub release.
+# Nothing is tagged before both architectures passed and the signature verified (L101): the build
+# jobs push by digest only.
+#
+# The layer cache is a registry cache per architecture in GHCR (`kept-cache:buildcache-<arch>`,
+# mode=max), which every later tag reads: Actions' own cache (type=gha) is scoped by ref, so a new
+# tag could never read an earlier tag's cache. A missing cache is a warning, never a failure.
+#
+# Signing is key-based (D187): the cosign key and its password are repository secrets
+# COSIGN_PRIVATE_KEY and COSIGN_PASSWORD (runbook W1), used by the publish job only. While the
+# repository is private no signature goes to the public transparency log (plan Q14); once it is
+# public, the run signs into it (KEPT_RELEASE_TLOG=1) and the release notes say so. Pushes use
+# GITHUB_TOKEN (packages: write).
+#
+# Until the key exists, a release goes out UNSIGNED: with neither secret set and no cosign.pub
+# committed, the preflight warns ("unsigned release: …") and release.sh runs with
+# KEPT_RELEASE_UNSIGNED=1, which it refuses for 1.0.0 and every final release after it. With both
+# secrets and cosign.pub, the run signs as above. Anything in between (one secret, or the secrets
+# without cosign.pub) is a half-done setup and fails the preflight rather than ship unsigned.
+#
+# Every action is pinned by commit SHA with its tag in a comment (spike W1).
+name: release
+
+on:
+  push:
+    # Kept's version format (scripts/release/version.mjs): vX.Y.Z or vX.Y.Z-<prerelease>. A filter
+    # is a glob, not semver: the first step checks the version exactly.
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: An existing release tag to build again, e.g. v1.0.0 (after a failed run)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+
+# One release at a time, never cancelled half-published. A re-pushed tag waits, then stops in its
+# first minutes: the version is already in the registry (release.sh's preflight).
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.preflight.outputs.version }}
+      unsigned: ${{ steps.preflight.outputs.unsigned }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/tags/{0}', inputs.tag) || github.ref }}
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - name: Preflight
+        id: preflight
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HAS_KEY: ${{ secrets.COSIGN_PRIVATE_KEY != '' }}
+          HAS_PASSWORD: ${{ secrets.COSIGN_PASSWORD != '' }}
+        run: |
+          [[ $TAG == v* ]] || { echo "::error::'$TAG' is not a release tag (vX.Y.Z)"; exit 1; }
+          version=${TAG#v}
+          node scripts/release/version.mjs tags "$version" >/dev/null ||
+            { echo "::error::'$TAG' is not Kept's version format (vX.Y.Z or vX.Y.Z-<prerelease>)"; exit 1; }
+          has_pub=false
+          [[ -f cosign.pub ]] && has_pub=true
+          if [[ $HAS_KEY == true && $HAS_PASSWORD == true && $has_pub == true ]]; then
+            echo "unsigned=" >>"$GITHUB_OUTPUT"
+          elif [[ $HAS_KEY == false && $HAS_PASSWORD == false && $has_pub == false ]]; then
+            why=$(node scripts/release/version.mjs unsigned "$version" 2>&1) ||
+              { echo "::error::$why. Set COSIGN_PRIVATE_KEY and COSIGN_PASSWORD and commit cosign.pub (docs/runbooks/release.md, W1)"; exit 1; }
+            echo "::warning::unsigned release: $TAG goes out with no cosign signature on the image or the chart (no signing key is set up yet: docs/runbooks/release.md, W1)"
+            echo "unsigned=1" >>"$GITHUB_OUTPUT"
+          else
+            echo "::error::signing is half set up (COSIGN_PRIVATE_KEY set: $HAS_KEY, COSIGN_PASSWORD set: $HAS_PASSWORD, cosign.pub committed: $has_pub): finish W1 in docs/runbooks/release.md, or undo it to release unsigned"
+            exit 1
+          fi
+          if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::error::the GitHub release $TAG already exists"; exit 1
+          fi
+          echo "version=$version" >>"$GITHUB_OUTPUT"
+
+  build:
+    needs: preflight
+    strategy:
+      # One architecture failing fails the release: stop the other's minutes.
+      fail-fast: true
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      packages: write # GHCR: the image by digest, and the layer cache
+    # Each leg sets only its own architecture's outputs; GitHub combines a matrix's outputs.
+    outputs:
+      amd64_index: ${{ steps.release.outputs.amd64_index }}
+      amd64_manifest: ${{ steps.release.outputs.amd64_manifest }}
+      arm64_index: ${{ steps.release.outputs.arm64_index }}
+      arm64_manifest: ${{ steps.release.outputs.arm64_manifest }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/tags/{0}', inputs.tag) || github.ref }}
+          # Every tag (the version must be newer than each) and origin/main (the tagged commit must
+          # be on it).
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Registry login
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          # smoke-image.sh defaults DOCKER_CONFIG to the laptop's /tmp/kept-docker-config.
+          echo "DOCKER_CONFIG=$HOME/.docker" >>"$GITHUB_ENV"
+          mkdir -p "$HOME/.docker"
+          printf '%s' "$TOKEN" | DOCKER_CONFIG=$HOME/.docker docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          df -h /
+
+      # This platform, natively: build, push by digest, pull back, smoke, check /version.
+      - id: release
+        name: scripts/release.sh --ci --arch ${{ matrix.arch }}
+        env:
+          VERSION: ${{ needs.preflight.outputs.version }}
+          ARCH: ${{ matrix.arch }}
+          KEPT_RELEASE_UNSIGNED: ${{ needs.preflight.outputs.unsigned }}
+          KEPT_RELEASE_SOURCE: ${{ github.server_url }}/${{ github.repository }}
+          # The runner's disk is 14 GB; the laptop's 15 GB floor doesn't fit it.
+          KEPT_RELEASE_MIN_FREE_GB: '8'
+          KEPT_RELEASE_CACHE_FROM: type=registry,ref=ghcr.io/${{ github.repository_owner }}/kept-cache:buildcache-${{ matrix.arch }}
+          KEPT_RELEASE_CACHE_TO: type=registry,ref=ghcr.io/${{ github.repository_owner }}/kept-cache:buildcache-${{ matrix.arch }},mode=max,ignore-error=true
+          # Native, not emulated: the smoke's first boot takes seconds.
+          KEPT_RELEASE_BOOT_TIMEOUT: '180'
+        run: bash scripts/release.sh "$VERSION" --ci --arch "$ARCH"
+
+      - name: Remove the login
+        if: always()
+        run: docker logout ghcr.io || true
+
+  publish:
+    needs: [preflight, build]
+    # The arm64 runner is billed below the x64 one; the job only joins, signs, tags and pushes.
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 20
+    permissions:
+      contents: write # the GitHub release
+      packages: write # GHCR: the index, its signatures, the tags and the chart
+    env:
+      VERSION: ${{ needs.preflight.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && format('refs/tags/{0}', inputs.tag) || github.ref }}
+          # Every tag (the previous release, for the changelog and the floating tags) and
+          # origin/main.
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      # helm and cosign at the pinned versions, checksum-verified (scripts/tools.sh).
+      - run: bash scripts/tools.sh fetch cosign helm
+
+      - name: Registry logins
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          echo "DOCKER_CONFIG=$HOME/.docker" >>"$GITHUB_ENV"
+          mkdir -p "$HOME/.docker"
+          printf '%s' "$TOKEN" | DOCKER_CONFIG=$HOME/.docker docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          printf '%s' "$TOKEN" | "$(bash scripts/tools.sh path helm)" registry login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+
+      - name: The signing key, to a file only this job can read
+        if: needs.preflight.outputs.unsigned != '1'
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+        run: |
+          umask 077
+          printf '%s\n' "$COSIGN_PRIVATE_KEY" >"$RUNNER_TEMP/cosign.key"
+          echo "KEPT_COSIGN_KEY=$RUNNER_TEMP/cosign.key" >>"$GITHUB_ENV"
+
+      # Join the two smoked digests into one index by digest, sign, tag, the chart, the release
+      # record. Stops at the first failing stage. Unsigned (KEPT_RELEASE_UNSIGNED=1): the same
+      # without signing or verifying, and the record says the release is unsigned.
+      - id: release
+        name: scripts/release.sh --ci --publish
+        env:
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          KEPT_RELEASE_UNSIGNED: ${{ needs.preflight.outputs.unsigned }}
+          KEPT_RELEASE_TLOG: ${{ github.event.repository.private == false && '1' || '' }}
+          KEPT_RELEASE_SOURCE: ${{ github.server_url }}/${{ github.repository }}
+          KEPT_RELEASE_MIN_FREE_GB: '8'
+          KEPT_RELEASE_AMD64_INDEX: ${{ needs.build.outputs.amd64_index }}
+          KEPT_RELEASE_AMD64_MANIFEST: ${{ needs.build.outputs.amd64_manifest }}
+          KEPT_RELEASE_ARM64_INDEX: ${{ needs.build.outputs.arm64_index }}
+          KEPT_RELEASE_ARM64_MANIFEST: ${{ needs.build.outputs.arm64_manifest }}
+        run: bash scripts/release.sh "$VERSION" --ci --publish
+
+      - name: The GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ steps.release.outputs.notes_file }}
+          SECTION: ${{ steps.release.outputs.changelog_section }}
+          NOTICES: ${{ steps.release.outputs.notices_file }}
+          PRERELEASE: ${{ steps.release.outputs.prerelease }}
+        run: |
+          body=$RUNNER_TEMP/release-body.md
+          # The changelog section, then the release record without its title (digests, tags,
+          # the chart, the verify commands).
+          { cat "$SECTION"; echo; sed '1d' "$NOTES"; } >"$body"
+          bash scripts/check-attribution.sh "$body"
+          # In the log too, so a failed `gh release create` can be done by hand from it.
+          cat "$body"
+          flags=()
+          [[ $PRERELEASE == true ]] && flags+=(--prerelease)
+          gh release create "$TAG" -R "$GITHUB_REPOSITORY" --verify-tag --title "Kept $VERSION" \
+            --notes-file "$body" ${flags[@]+"${flags[@]}"} "$NOTICES" "$NOTES"
+
+      - name: Remove the key and the logins
+        if: always()
+        run: |
+          rm -f "$RUNNER_TEMP/cosign.key"
+          docker logout ghcr.io || true
+          helm=$(bash scripts/tools.sh path helm 2>/dev/null) && "$helm" registry logout ghcr.io || true

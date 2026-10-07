@@ -1,0 +1,340 @@
+[
+  {
+    "kind": "openai",
+    "call": "embed(1)",
+    "requests": 1,
+    "paths": [
+      "/v1/embeddings"
+    ],
+    "usageTokens": 7,
+    "dims": 8,
+    "headersReachResult": true
+  },
+  {
+    "kind": "openai",
+    "call": "embedMany(3)",
+    "maxParallelCalls": "default",
+    "requests": 1,
+    "inputsPerRequest": [
+      3
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1/embeddings"
+    ],
+    "usageTokens": 21,
+    "responses": 1,
+    "headersReachResult": true,
+    "embeddings": 3
+  },
+  {
+    "kind": "openai",
+    "call": "embedMany(3)",
+    "maxParallelCalls": 1,
+    "requests": 1,
+    "inputsPerRequest": [
+      3
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1/embeddings"
+    ],
+    "usageTokens": 21,
+    "responses": 1,
+    "headersReachResult": true,
+    "embeddings": 3
+  },
+  {
+    "kind": "openai",
+    "call": "embedMany(64)",
+    "maxParallelCalls": "default",
+    "requests": 1,
+    "inputsPerRequest": [
+      64
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1/embeddings"
+    ],
+    "usageTokens": 448,
+    "responses": 1,
+    "headersReachResult": true,
+    "embeddings": 64
+  },
+  {
+    "kind": "openai",
+    "call": "embedMany(64)",
+    "maxParallelCalls": 1,
+    "requests": 1,
+    "inputsPerRequest": [
+      64
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1/embeddings"
+    ],
+    "usageTokens": 448,
+    "responses": 1,
+    "headersReachResult": true,
+    "embeddings": 64
+  },
+  {
+    "kind": "openai",
+    "call": "embedMany(150)",
+    "maxParallelCalls": "default",
+    "requests": 1,
+    "inputsPerRequest": [
+      150
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1/embeddings"
+    ],
+    "usageTokens": 1050,
+    "responses": 1,
+    "headersReachResult": true,
+    "embeddings": 150
+  },
+  {
+    "kind": "openai",
+    "call": "embedMany(150)",
+    "maxParallelCalls": 1,
+    "requests": 1,
+    "inputsPerRequest": [
+      150
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1/embeddings"
+    ],
+    "usageTokens": 1050,
+    "responses": 1,
+    "headersReachResult": true,
+    "embeddings": 150
+  },
+  {
+    "kind": "openai",
+    "call": "embedMany(2100)",
+    "maxParallelCalls": "default",
+    "requests": 2,
+    "inputsPerRequest": [
+      2048,
+      52
+    ],
+    "peakInFlight": 2,
+    "paths": [
+      "/v1/embeddings"
+    ],
+    "usageTokens": 14700,
+    "responses": 2,
+    "headersReachResult": true,
+    "embeddings": 2100
+  },
+  {
+    "kind": "openai",
+    "call": "embedMany(2100)",
+    "maxParallelCalls": 1,
+    "requests": 2,
+    "inputsPerRequest": [
+      2048,
+      52
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1/embeddings"
+    ],
+    "usageTokens": 14700,
+    "responses": 2,
+    "headersReachResult": true,
+    "embeddings": 2100
+  },
+  {
+    "kind": "google",
+    "call": "embed(1)",
+    "requests": 1,
+    "paths": [
+      "/v1beta/models/gemini-embedding-001:embedContent"
+    ],
+    "usageTokens": null,
+    "dims": 8,
+    "headersReachResult": true
+  },
+  {
+    "kind": "google",
+    "call": "embedMany(3)",
+    "maxParallelCalls": "default",
+    "requests": 1,
+    "inputsPerRequest": [
+      3
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1beta/models/gemini-embedding-001:batchEmbedContents"
+    ],
+    "usageTokens": null,
+    "responses": 1,
+    "headersReachResult": true,
+    "embeddings": 3
+  },
+  {
+    "kind": "google",
+    "call": "embedMany(3)",
+    "maxParallelCalls": 1,
+    "requests": 1,
+    "inputsPerRequest": [
+      3
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1beta/models/gemini-embedding-001:batchEmbedContents"
+    ],
+    "usageTokens": null,
+    "responses": 1,
+    "headersReachResult": true,
+    "embeddings": 3
+  },
+  {
+    "kind": "google",
+    "call": "embedMany(64)",
+    "maxParallelCalls": "default",
+    "requests": 1,
+    "inputsPerRequest": [
+      64
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1beta/models/gemini-embedding-001:batchEmbedContents"
+    ],
+    "usageTokens": null,
+    "responses": 1,
+    "headersReachResult": true,
+    "embeddings": 64
+  },
+  {
+    "kind": "google",
+    "call": "embedMany(64)",
+    "maxParallelCalls": 1,
+    "requests": 1,
+    "inputsPerRequest": [
+      64
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1beta/models/gemini-embedding-001:batchEmbedContents"
+    ],
+    "usageTokens": null,
+    "responses": 1,
+    "headersReachResult": true,
+    "embeddings": 64
+  },
+  {
+    "kind": "google",
+    "call": "embedMany(150)",
+    "maxParallelCalls": "default",
+    "requests": 2,
+    "inputsPerRequest": [
+      100,
+      50
+    ],
+    "peakInFlight": 2,
+    "paths": [
+      "/v1beta/models/gemini-embedding-001:batchEmbedContents"
+    ],
+    "usageTokens": null,
+    "responses": 2,
+    "headersReachResult": true,
+    "embeddings": 150
+  },
+  {
+    "kind": "google",
+    "call": "embedMany(150)",
+    "maxParallelCalls": 1,
+    "requests": 2,
+    "inputsPerRequest": [
+      100,
+      50
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1beta/models/gemini-embedding-001:batchEmbedContents"
+    ],
+    "usageTokens": null,
+    "responses": 2,
+    "headersReachResult": true,
+    "embeddings": 150
+  },
+  {
+    "kind": "google",
+    "call": "embedMany(2100)",
+    "maxParallelCalls": "default",
+    "requests": 21,
+    "inputsPerRequest": [
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100
+    ],
+    "peakInFlight": 21,
+    "paths": [
+      "/v1beta/models/gemini-embedding-001:batchEmbedContents"
+    ],
+    "usageTokens": null,
+    "responses": 21,
+    "headersReachResult": true,
+    "embeddings": 2100
+  },
+  {
+    "kind": "google",
+    "call": "embedMany(2100)",
+    "maxParallelCalls": 1,
+    "requests": 21,
+    "inputsPerRequest": [
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100
+    ],
+    "peakInFlight": 1,
+    "paths": [
+      "/v1beta/models/gemini-embedding-001:batchEmbedContents"
+    ],
+    "usageTokens": null,
+    "responses": 21,
+    "headersReachResult": true,
+    "embeddings": 2100
+  }
+]

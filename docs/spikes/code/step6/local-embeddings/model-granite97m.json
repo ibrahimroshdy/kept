@@ -1,0 +1,42 @@
+{
+ "id": "onnx-community/granite-embedding-97m-multilingual-r2-ONNX",
+ "revision": "536a9f241cb3f02a9c5995a1e708c784bd274859",
+ "licence": "apache-2.0 (repo card and hub tag license:apache-2.0)",
+ "baseModel": "ibm-granite/granite-embedding-97m-multilingual-r2 (Apache-2.0)",
+ "dtype": "q8",
+ "pooling": "cls",
+ "prefixes": null,
+ "files": [
+  {
+   "path": "config.json",
+   "bytes": 1215,
+   "sha256": "ae74d55a56f779774cb9a8e63d3c2da9ae1af83c00229ffdff43d0b38407a0ee",
+   "lfs": false
+  },
+  {
+   "path": "tokenizer.json",
+   "bytes": 25301671,
+   "sha256": "51947676cae1f991fa51c6b9a24e14ee5460e5f0b9f692f13bb3159829d1592a",
+   "lfs": true
+  },
+  {
+   "path": "tokenizer_config.json",
+   "bytes": 12860,
+   "sha256": "6ed69389e30a8ecabfce2f9ebcdf0c908b34056f24d994340f2f216521c057d5",
+   "lfs": false
+  },
+  {
+   "path": "special_tokens_map.json",
+   "bytes": 871,
+   "sha256": "013787ee251ff611722479197c00853b62113ad303cb0a36524231783c676c69",
+   "lfs": false
+  },
+  {
+   "path": "onnx/model_quantized.onnx",
+   "bytes": 97858099,
+   "sha256": "704c1ebca5fbb7cd83ced41827658ac4c9990c64f7f2874d22b78044e5022e22",
+   "lfs": true
+  }
+ ],
+ "source": "https://huggingface.co/api/models/onnx-community/granite-embedding-97m-multilingual-r2-ONNX?blobs=true (sha, siblings[].lfs.sha256); non-LFS files hashed from https://huggingface.co/onnx-community/granite-embedding-97m-multilingual-r2-ONNX/resolve/536a9f241cb3f02a9c5995a1e708c784bd274859/<path>"
+}

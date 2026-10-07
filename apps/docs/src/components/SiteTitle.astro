@@ -1,0 +1,55 @@
+---
+/**
+ * The site title is Kept's lockup (D135, "B · Label tape"): the square mark (amber tape with its
+ * punched hole and a heavy mono K) and KEPT beside it, both as IBM Plex Mono SemiBold outlines, as
+ * apps/web/src/components/brand.tsx draws BrandLockup (scripts/render-icons.mjs has the same
+ * geometry). The hole is cut out, so it shows the header; the wordmark takes the text colour.
+ */
+const { siteTitle, siteTitleHref, lang } = Astro.locals.starlightRoute;
+const sub = lang === 'ar' ? 'التوثيق' : 'Docs';
+---
+
+<a href={siteTitleHref} class="site-title kd-site-title" aria-label={siteTitle} translate="no">
+  <svg viewBox="0 0 191 64" width="96" height="32.2" aria-hidden="true">
+    <path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"></path>
+    <path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"></path>
+    <g fill="currentColor">
+      <path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"></path>
+      <path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"></path>
+      <path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"></path>
+      <path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"></path>
+    </g>
+  </svg>
+  <span class="kd-site-sub">{sub}</span>
+</a>
+
+<style>
+  .kd-site-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    text-decoration: none;
+    min-width: 0;
+  }
+  .kd-site-title svg {
+    display: block;
+    flex-shrink: 0;
+    direction: ltr;
+  }
+  .kd-site-sub {
+    font: 500 0.875rem / 1 var(--mono);
+    letter-spacing: 0.08em;
+    color: var(--ink-3);
+    padding-inline-start: 0.625rem;
+    border-inline-start: 1px solid var(--line);
+  }
+  :global(:root:lang(ar)) .kd-site-sub {
+    font-family: var(--arabic);
+    letter-spacing: 0;
+  }
+  @media (max-width: 30rem) {
+    .kd-site-sub {
+      display: none;
+    }
+  }
+</style>

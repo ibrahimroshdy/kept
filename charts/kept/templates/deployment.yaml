@@ -1,0 +1,190 @@
+{{- include "kept.validate" . -}}
+{{/*
+One Kept Deployment. component: server (KEPT_ROLE=all), web, or worker (split.enabled).
+- Recreate whenever the pod holds a ReadWriteOnce volume (local files, the generated keys, a backup
+  directory): the old pod must let go of it before the new one starts (D186). RollingUpdate
+  (maxSurge 1, maxUnavailable 0) otherwise, which in practice means S3 files and secret keys.
+- The worker is always one replica and Recreate: backups run there (D186), never in a CronJob.
+*/}}
+{{- define "kept.deployment" -}}
+{{- $root := .root -}}
+{{- $c := .component -}}
+{{- $v := $root.Values -}}
+{{- $full := include "kept.fullname" $root -}}
+{{- $jobs := eq $c (include "kept.jobsComponent" $root) -}}
+{{- $holdsRwo := or (and (eq $v.storage.mode "local") (ne $v.storage.persistence.accessMode "ReadWriteMany")) (eq (include "kept.configIsPvc" $root) "true") (and $jobs $v.backup.persistence.enabled) -}}
+{{- $role := ternary "all" $c (eq $c "server") -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ ternary $full (printf "%s-%s" $full $c) (eq $c "server") }}
+  labels:
+    {{- include "kept.labels" $root | nindent 4 }}
+    app.kubernetes.io/component: {{ $c }}
+spec:
+  replicas: {{ ternary $v.split.web.replicas 1 (eq $c "web") }}
+  revisionHistoryLimit: 3
+  strategy:
+  {{- if or (eq $c "worker") $holdsRwo }}
+    type: Recreate
+  {{- else }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "kept.selector" (dict "root" $root "component" $c) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "kept.labels" $root | nindent 8 }}
+        app.kubernetes.io/component: {{ $c }}
+      {{- with $v.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      # Kubernetes would otherwise inject KEPT_PORT=tcp://… for a Service named `kept`, which Kept
+      # reads as its listening port.
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        {{- include "kept.podSecurityContext" $root | nindent 8 }}
+      {{- with $v.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        {{- include "kept.waitForDb" $root | nindent 8 }}
+      containers:
+        - name: kept
+          image: {{ include "kept.image" $root }}
+          imagePullPolicy: {{ $v.image.pullPolicy }}
+          env:
+            - name: KEPT_ROLE
+              value: {{ $role }}
+            {{- include "kept.dbUrlEnv" (dict "root" $root "login" "app" "var" "KEPT_DATABASE_URL") | nindent 12 }}
+            {{- include "kept.dbUrlEnv" (dict "root" $root "login" "auth" "var" "KEPT_AUTH_DATABASE_URL") | nindent 12 }}
+            {{- include "kept.dbUrlEnv" (dict "root" $root "login" "system" "var" "KEPT_SYSTEM_DATABASE_URL") | nindent 12 }}
+            {{- if and $jobs $v.backup.enabled }}
+            {{- include "kept.dbUrlEnv" (dict "root" $root "login" "owner" "var" "KEPT_OWNER_DATABASE_URL") | nindent 12 }}
+            {{- end }}
+            {{- include "kept.commonEnv" $root | nindent 12 }}
+          {{- $envFrom := include "kept.envFrom" $root | trim }}
+          {{- if or $envFrom (and $v.metrics.tokenSecret (ne $c "worker")) }}
+          envFrom:
+            {{- $envFrom | nindent 12 }}
+            {{- if and $v.metrics.tokenSecret (ne $c "worker") }}
+            - secretRef:
+                name: {{ $v.metrics.tokenSecret }}
+            {{- end }}
+          {{- end }}
+          {{- if ne $c "worker" }}
+          ports:
+            - name: http
+              containerPort: 8080
+          startupProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          lifecycle:
+            # Let the Service drop this pod before it stops answering (L97).
+            preStop:
+              exec:
+                command: ["sleep", "5"]
+          {{- else }}
+          # The worker serves no HTTP: it is alive while its job fetches touch
+          # /tmp/kept-worker-alive (docker/healthcheck.mjs, step-8 T13).
+          startupProbe:
+            exec:
+              command: ["node", "/app/docker/healthcheck.mjs", "--worker"]
+            periodSeconds: 15
+            failureThreshold: 20
+          livenessProbe:
+            exec:
+              command: ["node", "/app/docker/healthcheck.mjs", "--worker"]
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          {{- end }}
+          securityContext:
+            {{- include "kept.securityContext" $root | nindent 12 }}
+          resources:
+            {{- toYaml (ternary $v.worker.resources $v.resources (eq $c "worker")) | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /config
+            {{- if and $jobs $v.backup.persistence.enabled }}
+            - name: backups
+              mountPath: /backups
+            {{- end }}
+            {{- with $v.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: data
+          {{- if eq $v.storage.mode "local" }}
+          persistentVolumeClaim:
+            claimName: {{ $full }}-data
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: config
+          {{- if eq (include "kept.configIsPvc" $root) "true" }}
+          persistentVolumeClaim:
+            claimName: {{ $full }}-config
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- if and $jobs $v.backup.persistence.enabled }}
+        - name: backups
+          persistentVolumeClaim:
+            claimName: {{ include "kept.backupClaim" $root }}
+        {{- end }}
+        {{- with $v.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with $v.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $v.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with $v.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end -}}
+
+{{- if .Values.split.enabled }}
+{{ include "kept.deployment" (dict "root" . "component" "web") }}
+---
+{{ include "kept.deployment" (dict "root" . "component" "worker") }}
+{{- else }}
+{{ include "kept.deployment" (dict "root" . "component" "server") }}
+{{- end }}

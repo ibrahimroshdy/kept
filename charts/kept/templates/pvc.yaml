@@ -1,0 +1,32 @@
+{{- /* The files, the generated keys and a backup directory. Kept on uninstall: losing them by
+`helm uninstall` would lose the household's records (delete them yourself, README.md). */ -}}
+{{- $full := include "kept.fullname" . -}}
+{{- define "kept.pvc" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .name }}
+  labels:
+    {{- include "kept.labels" .root | nindent 4 }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes: [{{ .accessMode }}]
+  {{- with .storageClass }}
+  storageClassName: {{ . | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .size }}
+{{- end -}}
+{{- if eq .Values.storage.mode "local" }}
+{{ include "kept.pvc" (dict "root" . "name" (printf "%s-data" $full) "accessMode" .Values.storage.persistence.accessMode "storageClass" .Values.storage.persistence.storageClass "size" .Values.storage.persistence.size) }}
+{{- end }}
+{{- if eq (include "kept.configIsPvc" .) "true" }}
+---
+{{ include "kept.pvc" (dict "root" . "name" (printf "%s-config" $full) "accessMode" "ReadWriteOnce" "storageClass" .Values.config.persistence.storageClass "size" .Values.config.persistence.size) }}
+{{- end }}
+{{- if and .Values.backup.persistence.enabled (not .Values.backup.persistence.existingClaim) }}
+---
+{{ include "kept.pvc" (dict "root" . "name" (printf "%s-backups" $full) "accessMode" "ReadWriteOnce" "storageClass" .Values.backup.persistence.storageClass "size" .Values.backup.persistence.size) }}
+{{- end }}

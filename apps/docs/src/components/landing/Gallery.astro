@@ -1,0 +1,385 @@
+---
+/**
+ * A strip of the app's screens to step through: captioned captures side by side, scrolled
+ * sideways with scroll snapping. It is a plain scrolling list first, so it works with no
+ * JavaScript at all; the script adds previous and next buttons, a counter, and the arrow keys
+ * while the strip or a button has focus. "Next" moves toward the inline end, so on an Arabic page
+ * it goes leftwards, and the left and right arrow keys follow what is on screen. Smooth scrolling
+ * is off under prefers-reduced-motion.
+ *
+ * It also turns by itself, every few seconds and back to the first at the end, while at least half
+ * of it is on screen. It holds while the mouse is over it or the keyboard is in it, stops for good
+ * once the reader steps, swipes or scrolls it, and never starts under prefers-reduced-motion. The
+ * Pause button stops and restarts it (WCAG 2.2.2). The counter isn't announced while it turns.
+ *
+ * The captures are Shot's (light or dark with the page's theme, Arabic on an Arabic page), made by
+ * scripts/capture-screens.mjs. A desktop capture is shown at most 40rem wide; a phone capture
+ * (`*-phone`) stands about as tall as a desktop one beside it.
+ */
+import Shot from './Shot.astro';
+
+interface Item {
+  /** The capture's base name in src/assets/screens/. */
+  name: string;
+  /** A short name for the screen, shown before the caption. */
+  title: string;
+  caption: string;
+  alt: string;
+}
+interface Props {
+  items: Item[];
+  /** The strip's accessible name. */
+  label: string;
+}
+const { items, label } = Astro.props;
+const ar = Astro.locals.starlightRoute.lang === 'ar';
+const numbers = ar ? 'ar-EG-u-nu-arab' : 'en';
+const t = ar
+  ? {
+      previous: 'الشاشة السابقة',
+      next: 'الشاشة التالية',
+      of: 'من',
+      pause: 'إيقاف العرض',
+      play: 'تشغيل العرض',
+    }
+  : {
+      previous: 'Previous screen',
+      next: 'Next screen',
+      of: 'of',
+      pause: 'Pause the slideshow',
+      play: 'Play the slideshow',
+    };
+const format = new Intl.NumberFormat(numbers);
+const count = (i: number) => `${format.format(i)} ${t.of} ${format.format(items.length)}`;
+const isPhone = (name: string) => name.endsWith('-phone');
+const chevron = 'M9 6l6 6l-6 6';
+---
+
+<div class="kd-gallery" data-kd-gallery data-numbers={numbers} data-of={t.of} data-pause={t.pause} data-play={t.play}>
+  <ol class="kd-gallery-track" tabindex="0" aria-label={label}>
+    {
+      items.map(({ name, title, caption, alt }, i) => (
+        <li class:list={['kd-gallery-slide', isPhone(name) ? 'kd-gallery-phone' : 'kd-gallery-desktop']}>
+          <figure>
+            <Shot {name} {alt} sizes={isPhone(name) ? '12rem' : '(min-width: 50rem) 40rem, 88vw'} />
+            <figcaption>
+              <span class="kd-gallery-title">{title}</span>
+              {caption}
+            </figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="kd-gallery-controls" hidden>
+    <button type="button" class="kd-gallery-button" data-step="-1" aria-label={t.previous} title={t.previous}>
+      <svg class="kd-gallery-back" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d={chevron} />
+      </svg>
+    </button>
+    <span class="kd-gallery-count" aria-live="polite" aria-atomic="true">{count(1)}</span>
+    <button type="button" class="kd-gallery-button" data-step="1" aria-label={t.next} title={t.next}>
+      <svg class="kd-gallery-forward" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d={chevron} />
+      </svg>
+    </button>
+    <button type="button" class="kd-gallery-button" data-toggle aria-label={t.pause} title={t.pause}>
+      <svg class="kd-gallery-pause" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 6v12M15 6v12" />
+      </svg>
+      <svg class="kd-gallery-play" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M8 5.5v13l10-6.5z" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-kd-gallery]')) {
+    const track = root.querySelector<HTMLElement>('.kd-gallery-track');
+    const controls = root.querySelector<HTMLElement>('.kd-gallery-controls');
+    const counter = root.querySelector<HTMLElement>('.kd-gallery-count');
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-step]')];
+    const toggle = root.querySelector<HTMLButtonElement>('[data-toggle]');
+    if (!track || !controls || !counter) continue;
+    const slides = [...track.querySelectorAll<HTMLElement>('.kd-gallery-slide')];
+    const format = new Intl.NumberFormat(root.dataset.numbers);
+    const of = root.dataset.of ?? 'of';
+    const rtl = () => getComputedStyle(track).direction === 'rtl';
+    let current = 0;
+
+    /** The slide whose start edge is nearest the strip's start; the last one once it can't scroll. */
+    const nearest = () => {
+      const room = track.scrollWidth - track.clientWidth;
+      if (room > 0 && Math.abs(track.scrollLeft) >= room - 2) return slides.length - 1;
+      const box = track.getBoundingClientRect();
+      const pad = Number.parseFloat(getComputedStyle(track).scrollPaddingInlineStart) || 0;
+      let best = 0;
+      let bestGap = Number.POSITIVE_INFINITY;
+      slides.forEach((slide, i) => {
+        const r = slide.getBoundingClientRect();
+        const gap = Math.abs(rtl() ? box.right - pad - r.right : r.left - box.left - pad);
+        if (gap < bestGap) {
+          best = i;
+          bestGap = gap;
+        }
+      });
+      return best;
+    };
+
+    const show = (i: number) => {
+      current = i;
+      counter.textContent = `${format.format(i + 1)} ${of} ${format.format(slides.length)}`;
+      for (const button of buttons) {
+        const step = Number(button.dataset.step);
+        const end = step < 0 ? i === 0 : i === slides.length - 1;
+        // aria-disabled, not disabled: a disabled button would drop the keyboard focus.
+        button.setAttribute('aria-disabled', String(end));
+      }
+    };
+
+    /** Scrolls the strip alone to a slide: never the page, which a turn must not move. */
+    const go = (i: number) => {
+      const target = slides[Math.max(0, Math.min(slides.length - 1, i))];
+      if (!target) return;
+      const box = track.getBoundingClientRect();
+      const r = target.getBoundingClientRect();
+      const pad = Number.parseFloat(getComputedStyle(track).scrollPaddingInlineStart) || 0;
+      const left = rtl() ? r.right - (box.right - pad) : r.left - (box.left + pad);
+      track.scrollBy({ left, behavior: reduce.matches ? 'auto' : 'smooth' });
+      show(slides.indexOf(target));
+    };
+
+    // Turning by itself (see the header).
+    const INTERVAL_MS = 5000;
+    let playing = !reduce.matches;
+    let onScreen = false;
+    let hovered = false;
+    let timer = 0;
+    const keyboardInside = () => {
+      const el = document.activeElement;
+      return el instanceof HTMLElement && root.contains(el) && el.matches(':focus-visible');
+    };
+    const sync = () => {
+      window.clearInterval(timer);
+      if (playing && onScreen && !hovered && !keyboardInside() && !document.hidden) {
+        timer = window.setInterval(() => go(current === slides.length - 1 ? 0 : current + 1), INTERVAL_MS);
+      }
+      counter.setAttribute('aria-live', playing ? 'off' : 'polite');
+      if (toggle) {
+        const label = (playing ? root.dataset.pause : root.dataset.play) ?? '';
+        toggle.setAttribute('aria-label', label);
+        toggle.title = label;
+        toggle.dataset.playing = String(playing);
+      }
+    };
+    /** The reader took over: stop turning for good (Play starts it again). */
+    const stop = () => {
+      if (!playing) return;
+      playing = false;
+      sync();
+    };
+    toggle?.addEventListener('click', () => {
+      playing = !playing;
+      sync();
+    });
+    new IntersectionObserver(
+      ([entry]) => {
+        onScreen = (entry?.intersectionRatio ?? 0) >= 0.5;
+        sync();
+      },
+      { threshold: [0, 0.5, 1] },
+    ).observe(root);
+    root.addEventListener('pointerenter', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      hovered = true;
+      sync();
+    });
+    root.addEventListener('pointerleave', () => {
+      hovered = false;
+      sync();
+    });
+    root.addEventListener('focusin', sync);
+    root.addEventListener('focusout', () => requestAnimationFrame(sync));
+    document.addEventListener('visibilitychange', sync);
+    track.addEventListener('pointerdown', stop);
+    track.addEventListener('wheel', stop, { passive: true });
+    track.addEventListener('touchstart', stop, { passive: true });
+
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        stop();
+        if (button.getAttribute('aria-disabled') === 'true') return;
+        go(current + Number(button.dataset.step));
+      });
+    }
+
+    root.addEventListener('keydown', (event) => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      const keys: Record<string, number> = {
+        ArrowLeft: rtl() ? 1 : -1,
+        ArrowRight: rtl() ? -1 : 1,
+      };
+      if (event.key in keys) {
+        event.preventDefault();
+        stop();
+        go(current + (keys[event.key] ?? 0));
+      } else if (event.target === track && (event.key === 'Home' || event.key === 'End')) {
+        event.preventDefault();
+        stop();
+        go(event.key === 'Home' ? 0 : slides.length - 1);
+      }
+    });
+
+    let frame = 0;
+    track.addEventListener(
+      'scroll',
+      () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => show(nearest()));
+      },
+      { passive: true },
+    );
+
+    controls.hidden = false;
+    show(0);
+    sync();
+  }
+</script>
+
+<style>
+  .kd-gallery {
+    container-type: inline-size;
+    display: grid;
+    gap: 1rem;
+    /* A desktop capture's width; its height is that over 1.6 (1280×800). */
+    --kd-gallery-w: min(40rem, 88cqi);
+  }
+  .kd-gallery-track {
+    list-style: none;
+    margin: 0;
+    padding: 0.25rem 0.125rem 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+    scroll-padding-inline: 0.125rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .kd-gallery-track {
+      scroll-behavior: smooth;
+    }
+  }
+  .kd-gallery-track:focus-visible {
+    outline-offset: 4px;
+    border-radius: var(--kd-radius);
+  }
+  .kd-gallery-slide {
+    flex: none;
+    margin: 0;
+    scroll-snap-align: start;
+  }
+  .kd-gallery-desktop {
+    inline-size: var(--kd-gallery-w);
+  }
+  /* As tall as a desktop capture (420×909 with its bezel), and never narrower than 9rem. */
+  .kd-gallery-phone {
+    inline-size: max(9rem, calc(var(--kd-gallery-w) / 1.6 * 0.462 + 10px));
+  }
+  .kd-gallery figure {
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .kd-gallery :global(.kd-shot img) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--kd-radius);
+    background: var(--surface);
+  }
+  .kd-gallery-phone :global(.kd-shot img) {
+    border: 5px solid var(--charcoal);
+    border-radius: 22px;
+  }
+  .kd-gallery figcaption {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+  .kd-gallery-title {
+    display: block;
+    margin-block-end: 0.125rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .kd-gallery-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .kd-gallery-button[data-playing='true'] .kd-gallery-play,
+  .kd-gallery-button[data-playing='false'] .kd-gallery-pause,
+  .kd-gallery-button:not([data-playing]) .kd-gallery-play {
+    display: none;
+  }
+  .kd-gallery-controls[hidden] {
+    display: none;
+  }
+  .kd-gallery-button {
+    display: grid;
+    place-items: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .kd-gallery-button:hover {
+    border-color: var(--ink-3);
+  }
+  .kd-gallery-button[aria-disabled='true'] {
+    color: var(--ink-3);
+    border-color: var(--line);
+    opacity: 0.5;
+    cursor: default;
+  }
+  /* The chevron points toward the slide it goes to: the inline start or end. */
+  .kd-gallery-back {
+    transform: scaleX(-1);
+  }
+  :root[dir='rtl'] .kd-gallery-back {
+    transform: none;
+  }
+  :root[dir='rtl'] .kd-gallery-forward {
+    transform: scaleX(-1);
+  }
+  .kd-gallery-count {
+    min-inline-size: 5.5rem;
+    text-align: center;
+    font: 600 0.8125rem / 1 var(--mono);
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  :root:lang(ar) .kd-gallery-count {
+    font-family: var(--arabic);
+    letter-spacing: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .kd-gallery-button {
+      transition: border-color 120ms ease;
+    }
+  }
+</style>

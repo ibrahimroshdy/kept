@@ -1,0 +1,2 @@
+# RFC 5545 fixtures: CRLF line ends are the point; never convert them.
+*.ics -text

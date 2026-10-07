@@ -1,0 +1,521 @@
+{
+  "date": "2026-09-29T22:39:41.149Z",
+  "versions": {
+    "node": "v24.21.0",
+    "server": "2.2.0",
+    "nodeAdapter": "2.1.0",
+    "client": "2.2.0",
+    "fastify": "5.12.5"
+  },
+  "factoryRunsTotal": 36,
+  "httpRequestsTotal": 60,
+  "factoryEras": {
+    "modern": 20,
+    "legacy": 16
+  },
+  "authSeenByFactory": [
+    "token:bruce-home-read"
+  ],
+  "results": [
+    {
+      "mount": "a-toNodeHandler",
+      "legacy": "stateless",
+      "modern": {
+        "era": "modern",
+        "tools": [
+          "whoami",
+          "search_things"
+        ],
+        "whoami": {
+          "client": "token:bruce-home-read",
+          "scopes": [
+            "kept:read"
+          ]
+        },
+        "bigToolTextBytes": 6971,
+        "unknownTool": {
+          "threw": "ProtocolError",
+          "message": "Tool whoami_missing not found"
+        },
+        "ok": true,
+        "wire": [
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 284,
+            "method": "server/discover"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 1024,
+            "method": "tools/list"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 327,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 8261,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 90,
+            "method": "tools/call"
+          }
+        ],
+        "factoryRuns": 5,
+        "httpRequests": 5
+      },
+      "legacyClient": {
+        "era": "legacy",
+        "tools": [
+          "whoami",
+          "search_things"
+        ],
+        "whoami": {
+          "client": "token:bruce-home-read",
+          "scopes": [
+            "kept:read"
+          ]
+        },
+        "bigToolTextBytes": 6971,
+        "unknownTool": {
+          "threw": "ProtocolError",
+          "message": "Tool whoami_missing not found"
+        },
+        "ok": true,
+        "wire": [
+          {
+            "status": 200,
+            "contentType": "text/event-stream",
+            "bytes": 188,
+            "method": "initialize"
+          },
+          {
+            "status": 202,
+            "contentType": null,
+            "bytes": 0,
+            "method": "notifications/initialized"
+          },
+          {
+            "status": 405,
+            "contentType": null,
+            "bytes": 0,
+            "method": "?"
+          },
+          {
+            "status": 200,
+            "contentType": "text/event-stream",
+            "bytes": 903,
+            "method": "tools/list"
+          },
+          {
+            "status": 200,
+            "contentType": "text/event-stream",
+            "bytes": 239,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "text/event-stream",
+            "bytes": 8173,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "text/event-stream",
+            "bytes": 113,
+            "method": "tools/call"
+          }
+        ],
+        "factoryRuns": 6,
+        "httpRequests": 7
+      },
+      "guards": {
+        "foreignHost": {
+          "status": 403,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Invalid Host: evil.example\"},\"id\":null}",
+          "contentType": "application/json"
+        },
+        "foreignOrigin": {
+          "status": 403,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Invalid Origin: evil.example\"},\"id\":null}",
+          "contentType": "application/json"
+        },
+        "keptOrigin": {
+          "status": 200,
+          "body": "event: message\ndata: {\"result\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"tools\":{\"listChanged\":true}},\"serverInfo\":{\"name\":\"kept-spike\",\"version\":\"0.0.0\"}},\"jsonrpc\":\"2.0\",\"id\":1}\n\n",
+          "contentType": "text/event-stream"
+        },
+        "noOrigin": {
+          "status": 200,
+          "body": "event: message\ndata: {\"result\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"tools\":{\"listChanged\":true}},\"serverInfo\":{\"name\":\"kept-spike\",\"version\":\"0.0.0\"}},\"jsonrpc\":\"2.0\",\"id\":1}\n\n",
+          "contentType": "text/event-stream"
+        },
+        "wrongContentType": {
+          "status": 415,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Unsupported Media Type: Content-Type must be application/json\"},\"id\":null}",
+          "contentType": "application/json"
+        }
+      },
+      "getStatus": 405
+    },
+    {
+      "mount": "a-toNodeHandler",
+      "legacy": "reject",
+      "modern": {
+        "era": "modern",
+        "tools": [
+          "whoami",
+          "search_things"
+        ],
+        "whoami": {
+          "client": "token:bruce-home-read",
+          "scopes": [
+            "kept:read"
+          ]
+        },
+        "bigToolTextBytes": 6971,
+        "unknownTool": {
+          "threw": "ProtocolError",
+          "message": "Tool whoami_missing not found"
+        },
+        "ok": true,
+        "wire": [
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 284,
+            "method": "server/discover"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 1024,
+            "method": "tools/list"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 327,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 8261,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 90,
+            "method": "tools/call"
+          }
+        ],
+        "factoryRuns": 5,
+        "httpRequests": 5
+      },
+      "legacyClient": {
+        "era": "legacy",
+        "ok": false,
+        "error": "SdkHttpError: Error POSTing to endpoint: {\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32022,\"message\":\"Unsupported protocol version: 2025-11-25\",\"data\":{\"supported\":[\"2026-07-28\"],\"requested\":\"2025-11-25\"}},\"id\":0}",
+        "wire": [
+          {
+            "status": 400,
+            "contentType": "application/json",
+            "bytes": 162,
+            "method": "initialize"
+          }
+        ],
+        "factoryRuns": 0,
+        "httpRequests": 1
+      },
+      "guards": {
+        "foreignHost": {
+          "status": 403,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Invalid Host: evil.example\"},\"id\":null}",
+          "contentType": "application/json"
+        },
+        "foreignOrigin": {
+          "status": 403,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Invalid Origin: evil.example\"},\"id\":null}",
+          "contentType": "application/json"
+        },
+        "keptOrigin": {
+          "status": 400,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32022,\"message\":\"Unsupported protocol version: 2025-06-18\",\"data\":{\"supported\":[\"2026-07-28\"],\"requested\":\"2025-06-18\"}},\"id\":1}",
+          "contentType": "application/json"
+        },
+        "noOrigin": {
+          "status": 400,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32022,\"message\":\"Unsupported protocol version: 2025-06-18\",\"data\":{\"supported\":[\"2026-07-28\"],\"requested\":\"2025-06-18\"}},\"id\":1}",
+          "contentType": "application/json"
+        },
+        "wrongContentType": {
+          "status": 415,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Unsupported Media Type: Content-Type must be application/json\"},\"id\":null}",
+          "contentType": "application/json"
+        }
+      },
+      "getStatus": 405
+    },
+    {
+      "mount": "b-byHand",
+      "legacy": "stateless",
+      "modern": {
+        "era": "modern",
+        "tools": [
+          "whoami",
+          "search_things"
+        ],
+        "whoami": {
+          "client": "token:bruce-home-read",
+          "scopes": [
+            "kept:read"
+          ]
+        },
+        "bigToolTextBytes": 6971,
+        "unknownTool": {
+          "threw": "ProtocolError",
+          "message": "Tool whoami_missing not found"
+        },
+        "ok": true,
+        "wire": [
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 284,
+            "method": "server/discover"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 1024,
+            "method": "tools/list"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 327,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 8261,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 90,
+            "method": "tools/call"
+          }
+        ],
+        "factoryRuns": 5,
+        "httpRequests": 5
+      },
+      "legacyClient": {
+        "era": "legacy",
+        "tools": [
+          "whoami",
+          "search_things"
+        ],
+        "whoami": {
+          "client": "token:bruce-home-read",
+          "scopes": [
+            "kept:read"
+          ]
+        },
+        "bigToolTextBytes": 6971,
+        "unknownTool": {
+          "threw": "ProtocolError",
+          "message": "Tool whoami_missing not found"
+        },
+        "ok": true,
+        "wire": [
+          {
+            "status": 200,
+            "contentType": "text/event-stream",
+            "bytes": 188,
+            "method": "initialize"
+          },
+          {
+            "status": 202,
+            "contentType": null,
+            "bytes": 0,
+            "method": "notifications/initialized"
+          },
+          {
+            "status": 405,
+            "contentType": null,
+            "bytes": 0,
+            "method": "?"
+          },
+          {
+            "status": 200,
+            "contentType": "text/event-stream",
+            "bytes": 903,
+            "method": "tools/list"
+          },
+          {
+            "status": 200,
+            "contentType": "text/event-stream",
+            "bytes": 239,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "text/event-stream",
+            "bytes": 8173,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "text/event-stream",
+            "bytes": 113,
+            "method": "tools/call"
+          }
+        ],
+        "factoryRuns": 6,
+        "httpRequests": 7
+      },
+      "guards": {
+        "foreignHost": {
+          "status": 403,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Invalid Host: evil.example\"},\"id\":null}",
+          "contentType": "application/json"
+        },
+        "foreignOrigin": {
+          "status": 403,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Invalid Origin: evil.example\"},\"id\":null}",
+          "contentType": "application/json"
+        },
+        "keptOrigin": {
+          "status": 200,
+          "body": "event: message\ndata: {\"result\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"tools\":{\"listChanged\":true}},\"serverInfo\":{\"name\":\"kept-spike\",\"version\":\"0.0.0\"}},\"jsonrpc\":\"2.0\",\"id\":1}\n\n",
+          "contentType": "text/event-stream"
+        },
+        "noOrigin": {
+          "status": 200,
+          "body": "event: message\ndata: {\"result\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{\"tools\":{\"listChanged\":true}},\"serverInfo\":{\"name\":\"kept-spike\",\"version\":\"0.0.0\"}},\"jsonrpc\":\"2.0\",\"id\":1}\n\n",
+          "contentType": "text/event-stream"
+        },
+        "wrongContentType": {
+          "status": 415,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Unsupported Media Type: Content-Type must be application/json\"},\"id\":null}",
+          "contentType": "application/json"
+        }
+      },
+      "getStatus": 405
+    },
+    {
+      "mount": "b-byHand",
+      "legacy": "reject",
+      "modern": {
+        "era": "modern",
+        "tools": [
+          "whoami",
+          "search_things"
+        ],
+        "whoami": {
+          "client": "token:bruce-home-read",
+          "scopes": [
+            "kept:read"
+          ]
+        },
+        "bigToolTextBytes": 6971,
+        "unknownTool": {
+          "threw": "ProtocolError",
+          "message": "Tool whoami_missing not found"
+        },
+        "ok": true,
+        "wire": [
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 284,
+            "method": "server/discover"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 1024,
+            "method": "tools/list"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 327,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 8261,
+            "method": "tools/call"
+          },
+          {
+            "status": 200,
+            "contentType": "application/json",
+            "bytes": 90,
+            "method": "tools/call"
+          }
+        ],
+        "factoryRuns": 5,
+        "httpRequests": 5
+      },
+      "legacyClient": {
+        "era": "legacy",
+        "ok": false,
+        "error": "SdkHttpError: Error POSTing to endpoint: {\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32022,\"message\":\"Unsupported protocol version: 2025-11-25\",\"data\":{\"supported\":[\"2026-07-28\"],\"requested\":\"2025-11-25\"}},\"id\":0}",
+        "wire": [
+          {
+            "status": 400,
+            "contentType": "application/json",
+            "bytes": 162,
+            "method": "initialize"
+          }
+        ],
+        "factoryRuns": 0,
+        "httpRequests": 1
+      },
+      "guards": {
+        "foreignHost": {
+          "status": 403,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Invalid Host: evil.example\"},\"id\":null}",
+          "contentType": "application/json"
+        },
+        "foreignOrigin": {
+          "status": 403,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Invalid Origin: evil.example\"},\"id\":null}",
+          "contentType": "application/json"
+        },
+        "keptOrigin": {
+          "status": 400,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32022,\"message\":\"Unsupported protocol version: 2025-06-18\",\"data\":{\"supported\":[\"2026-07-28\"],\"requested\":\"2025-06-18\"}},\"id\":1}",
+          "contentType": "application/json"
+        },
+        "noOrigin": {
+          "status": 400,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32022,\"message\":\"Unsupported protocol version: 2025-06-18\",\"data\":{\"supported\":[\"2026-07-28\"],\"requested\":\"2025-06-18\"}},\"id\":1}",
+          "contentType": "application/json"
+        },
+        "wrongContentType": {
+          "status": 415,
+          "body": "{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32000,\"message\":\"Unsupported Media Type: Content-Type must be application/json\"},\"id\":null}",
+          "contentType": "application/json"
+        }
+      },
+      "getStatus": 405
+    }
+  ]
+}

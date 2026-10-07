@@ -1,0 +1,152 @@
+[
+  { "in": "Café", "normalized": "cafe", "stripped": "cafe" },
+  { "in": "Café", "normalized": "cafe", "stripped": "cafe", "note": "decomposed é" },
+  { "in": "MÜLLER", "normalized": "muller", "stripped": "muller" },
+  { "in": "Ångström", "normalized": "angstrom", "stripped": "angstrom" },
+  {
+    "in": "Ångström",
+    "normalized": "angstrom",
+    "stripped": "angstrom",
+    "note": "Angstrom sign, NFKC"
+  },
+  { "in": "São Paulo", "normalized": "sao paulo", "stripped": "sao paulo" },
+  { "in": "straße", "normalized": "strasse", "stripped": "strasse" },
+  { "in": "STRASSE", "normalized": "strasse", "stripped": "strasse" },
+  { "in": "Größe", "normalized": "grosse", "stripped": "grosse" },
+  { "in": "Øresund", "normalized": "oresund", "stripped": "oresund" },
+  { "in": "Encyclopædia", "normalized": "encyclopaedia", "stripped": "encyclopaedia" },
+  { "in": "Cœur", "normalized": "coeur", "stripped": "coeur" },
+  { "in": "Đorđe", "normalized": "dorde", "stripped": "dorde" },
+  { "in": "Łódź", "normalized": "lodz", "stripped": "lodz" },
+  { "in": "Þórr", "normalized": "thorr", "stripped": "thorr" },
+  { "in": "Crème brûlée", "normalized": "creme brulee", "stripped": "creme brulee" },
+  { "in": "naïve Niño Ça", "normalized": "naive nino ca", "stripped": "naive nino ca" },
+  { "in": "ＨＤＭＩ", "normalized": "hdmi", "stripped": "hdmi", "note": "full-width, NFKC" },
+  { "in": "ﬁle", "normalized": "file", "stripped": "file", "note": "fi ligature, NFKC" },
+  { "in": "Ⅻ", "normalized": "xii", "stripped": "xii", "note": "roman numeral, NFKC" },
+  {
+    "in": "  hello \t world\n ",
+    "normalized": "hello world",
+    "stripped": "hello world",
+    "note": "mixed spaces and tabs"
+  },
+  {
+    "in": " padded  text ",
+    "normalized": "padded text",
+    "stripped": "padded text",
+    "note": "no-break spaces, NFKC to space"
+  },
+  { "in": "HDMI  2.1", "normalized": "hdmi 2.1", "stripped": "hdmi 2.1" },
+  { "in": "iPhone 15 Pro Max", "normalized": "iphone 15 pro max", "stripped": "iphone 15 pro max" },
+  { "in": "SN-12345/AB", "normalized": "sn-12345/ab", "stripped": "sn-12345/ab" },
+  { "in": "", "normalized": "", "stripped": "" },
+  { "in": " \t\n ", "normalized": "", "stripped": "" },
+  { "in": "أحمد", "normalized": "احمد", "stripped": "احمد" },
+  { "in": "إبراهيم", "normalized": "ابراهيم", "stripped": "ابراهيم" },
+  {
+    "in": "آلة",
+    "normalized": "اله",
+    "stripped": "اله",
+    "note": "ال + one letter is not a prefix"
+  },
+  { "in": "ٱلكتاب", "normalized": "الكتاب", "stripped": "كتاب", "note": "alef wasla" },
+  { "in": "مكتبة", "normalized": "مكتبه", "stripped": "مكتبه" },
+  { "in": "مكتبه", "normalized": "مكتبه", "stripped": "مكتبه" },
+  { "in": "مستشفى", "normalized": "مستشفي", "stripped": "مستشفي" },
+  { "in": "على", "normalized": "علي", "stripped": "علي" },
+  { "in": "إلى", "normalized": "الي", "stripped": "الي", "note": "ال + one letter" },
+  { "in": "كِتَابٌ", "normalized": "كتاب", "stripped": "كتاب", "note": "harakat" },
+  { "in": "هٰذا", "normalized": "هذا", "stripped": "هذا", "note": "dagger alef" },
+  { "in": "مكيّف", "normalized": "مكيف", "stripped": "مكيف", "note": "shadda" },
+  { "in": "كـــتاب", "normalized": "كتاب", "stripped": "كتاب", "note": "tatweel" },
+  {
+    "in": "مـُـكـيِّـف",
+    "normalized": "مكيف",
+    "stripped": "مكيف",
+    "note": "tatweel and harakat together"
+  },
+  { "in": "کتابی", "normalized": "كتابي", "stripped": "كتابي", "note": "Persian kaf and yeh" },
+  { "in": "یک", "normalized": "يك", "stripped": "يك" },
+  { "in": "٣٤٥", "normalized": "345", "stripped": "345", "note": "Eastern Arabic digits" },
+  { "in": "۴۵", "normalized": "45", "stripped": "45", "note": "Persian digits" },
+  { "in": "غرفة ٣", "normalized": "غرفه 3", "stripped": "غرفه 3" },
+  { "in": "غرفة ۳", "normalized": "غرفه 3", "stripped": "غرفه 3" },
+  { "in": "ﻻ", "normalized": "لا", "stripped": "لا", "note": "lam-alef presentation form" },
+  {
+    "in": "مسؤول",
+    "normalized": "مسؤول",
+    "stripped": "مسؤول",
+    "note": "hamza on waw is kept (not in D42)"
+  },
+  {
+    "in": "رئيس",
+    "normalized": "رئيس",
+    "stripped": "رئيس",
+    "note": "hamza on yeh is kept (not in D42)"
+  },
+  { "in": "سماء", "normalized": "سماء", "stripped": "سماء" },
+  { "in": "الكابل", "normalized": "الكابل", "stripped": "كابل" },
+  { "in": "والكتاب", "normalized": "والكتاب", "stripped": "كتاب" },
+  { "in": "وَالْكِتَابُ", "normalized": "والكتاب", "stripped": "كتاب" },
+  { "in": "بالبيت", "normalized": "بالبيت", "stripped": "بيت" },
+  { "in": "للبيت", "normalized": "للبيت", "stripped": "بيت" },
+  { "in": "فالشاحن", "normalized": "فالشاحن", "stripped": "شاحن" },
+  { "in": "كالعادة", "normalized": "كالعاده", "stripped": "عاده" },
+  { "in": "بالمطبخ", "normalized": "بالمطبخ", "stripped": "مطبخ" },
+  { "in": "فالغرفة", "normalized": "فالغرفه", "stripped": "غرفه" },
+  { "in": "للأطفال", "normalized": "للاطفال", "stripped": "اطفال" },
+  { "in": "للغسيل", "normalized": "للغسيل", "stripped": "غسيل" },
+  { "in": "بالإنجليزي", "normalized": "بالانجليزي", "stripped": "انجليزي" },
+  { "in": "الغسّالة", "normalized": "الغساله", "stripped": "غساله" },
+  { "in": "الـكـابـل", "normalized": "الكابل", "stripped": "كابل", "note": "tatweel after ال" },
+  { "in": "الكابل الجديد", "normalized": "الكابل الجديد", "stripped": "كابل جديد" },
+  { "in": "ثلاجة المطبخ", "normalized": "ثلاجه المطبخ", "stripped": "ثلاجه مطبخ" },
+  { "in": "إبريق الشاي", "normalized": "ابريق الشاي", "stripped": "ابريق شاي" },
+  { "in": "ثلاجة\tالمطبخ", "normalized": "ثلاجه المطبخ", "stripped": "ثلاجه مطبخ" },
+  { "in": "كابل، شاحن", "normalized": "كابل، شاحن", "stripped": "كابل، شاحن" },
+  {
+    "in": "ورق",
+    "normalized": "ورق",
+    "stripped": "ورق",
+    "note": "و alone is never stripped (Q20)"
+  },
+  {
+    "in": "بيت",
+    "normalized": "بيت",
+    "stripped": "بيت",
+    "note": "ب alone is never stripped (Q20)"
+  },
+  { "in": "فرن", "normalized": "فرن", "stripped": "فرن" },
+  { "in": "كلام", "normalized": "كلام", "stripped": "كلام" },
+  { "in": "بلال", "normalized": "بلال", "stripped": "بلال" },
+  { "in": "ليل", "normalized": "ليل", "stripped": "ليل" },
+  { "in": "والد", "normalized": "والد", "stripped": "والد", "note": "و + ال + one letter" },
+  { "in": "والي", "normalized": "والي", "stripped": "والي" },
+  { "in": "ال", "normalized": "ال", "stripped": "ال" },
+  {
+    "in": "آلات",
+    "normalized": "الات",
+    "stripped": "ات",
+    "note": "known false positive; recall holds because both forms are indexed (Q20)"
+  },
+  { "in": "كابل HDMI", "normalized": "كابل hdmi", "stripped": "كابل hdmi", "note": "seed (V20)" },
+  {
+    "in": "شاحن سامسونج",
+    "normalized": "شاحن سامسونج",
+    "stripped": "شاحن سامسونج",
+    "note": "seed (V20)"
+  },
+  {
+    "in": "ثلاجة توشيبا",
+    "normalized": "ثلاجه توشيبا",
+    "stripped": "ثلاجه توشيبا",
+    "note": "seed (V20)"
+  },
+  { "in": "Ibrahim إبراهيم", "normalized": "ibrahim ابراهيم", "stripped": "ibrahim ابراهيم" },
+  {
+    "in": "Samsung سامسونج ٢٠٢٤",
+    "normalized": "samsung سامسونج 2024",
+    "stripped": "samsung سامسونج 2024"
+  },
+  { "in": "📱 Phone", "normalized": "📱 phone", "stripped": "📱 phone" }
+]

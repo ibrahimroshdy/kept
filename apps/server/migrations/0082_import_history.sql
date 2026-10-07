@@ -1,0 +1,2 @@
+ALTER TABLE "legacy_codes" DROP CONSTRAINT "legacy_codes_source_chk";--> statement-breakpoint
+ALTER TABLE "legacy_codes" ADD CONSTRAINT "legacy_codes_source_chk" CHECK ("source" IN ('homebox', 'csv', 'own', 'kept'));

@@ -1,0 +1,487 @@
+{
+  "toolCall": {
+    "toolCalls": [
+      {
+        "type": "tool-call",
+        "toolCallId": "call_1",
+        "toolName": "where_is",
+        "input": {
+          "query": "drill"
+        }
+      }
+    ],
+    "finishReason": "tool-calls",
+    "rawFinishReason": "tool_calls",
+    "text": "",
+    "reasoningText": "The user asks where the drill is."
+  },
+  "responseMessages": [
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "reasoning",
+          "text": "The user asks where the drill is."
+        },
+        {
+          "type": "tool-call",
+          "toolCallId": "call_1",
+          "toolName": "where_is",
+          "input": {
+            "query": "drill"
+          }
+        }
+      ]
+    }
+  ],
+  "toolsAsSentToProvider": [
+    {
+      "type": "function",
+      "name": "where_is",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1
+          },
+          "location_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "additionalProperties": false
+      },
+      "description": "Where is a thing? Give a name or words from it."
+    },
+    {
+      "type": "function",
+      "name": "get_thing",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      },
+      "description": "One thing by id or short code."
+    }
+  ],
+  "toolChoiceAsSent": {
+    "type": "auto"
+  },
+  "followupPromptAsSentToProvider": [
+    {
+      "role": "system",
+      "content": "You are Kept. Answer from tool results only."
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "Where is the drill?"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "reasoning",
+          "text": "The user asks where the drill is."
+        },
+        {
+          "type": "tool-call",
+          "toolCallId": "call_1",
+          "toolName": "where_is",
+          "input": {
+            "query": "drill"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": [
+        {
+          "type": "tool-result",
+          "toolCallId": "call_1",
+          "toolName": "where_is",
+          "output": {
+            "type": "json",
+            "value": {
+              "data": [
+                {
+                  "id": "t1",
+                  "path": [
+                    "Garage",
+                    "Shelf 2"
+                  ],
+                  "untrusted": {
+                    "name": "Drill"
+                  }
+                }
+              ],
+              "as_of": "2026-09-30T00:00:00Z"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "historyMessagesKeptSends": [
+    {
+      "role": "user",
+      "content": "Where is the drill?"
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "reasoning",
+          "text": "The user asks where the drill is."
+        },
+        {
+          "type": "tool-call",
+          "toolCallId": "call_1",
+          "toolName": "where_is",
+          "input": {
+            "query": "drill"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": [
+        {
+          "type": "tool-result",
+          "toolCallId": "call_1",
+          "toolName": "where_is",
+          "output": {
+            "type": "json",
+            "value": {
+              "data": [
+                {
+                  "id": "t1",
+                  "path": [
+                    "Garage",
+                    "Shelf 2"
+                  ],
+                  "untrusted": {
+                    "name": "Drill"
+                  }
+                }
+              ],
+              "as_of": "2026-09-30T00:00:00Z"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "invalidInput": {
+    "threw": false,
+    "requests": 1,
+    "finishReason": "tool-calls",
+    "toolCalls": [
+      {
+        "type": "tool-call",
+        "toolCallId": "call_1",
+        "toolName": "where_is",
+        "input": {
+          "location_id": "x"
+        }
+      }
+    ],
+    "content": [
+      {
+        "type": "reasoning"
+      },
+      {
+        "type": "tool-call",
+        "input": {
+          "location_id": "x"
+        }
+      }
+    ]
+  },
+  "invalidInputZod": {
+    "threw": false,
+    "requests": 1,
+    "finishReason": "tool-calls",
+    "toolCalls": [
+      {
+        "toolName": "where_is",
+        "input": {
+          "location_id": "x"
+        },
+        "invalid": true,
+        "error": "AI_InvalidToolInputError"
+      }
+    ],
+    "content": [
+      {
+        "type": "reasoning"
+      },
+      {
+        "type": "tool-call"
+      },
+      {
+        "type": "tool-error",
+        "error": "AI_InvalidToolInputError: Invalid input for tool where_is: AI_TypeValidationError: Type validation failed: Value: {\"location_id\":\"x\"}.\nError message: [\n  {\n    "
+      }
+    ]
+  },
+  "unknownTool": {
+    "threw": false,
+    "requests": 1,
+    "finishReason": "tool-calls",
+    "toolCalls": [
+      {
+        "type": "tool-call",
+        "toolCallId": "call_1",
+        "toolName": "delete_everything",
+        "input": {},
+        "dynamic": true,
+        "invalid": true,
+        "error": {
+          "name": "AI_NoSuchToolError",
+          "toolName": "delete_everything",
+          "availableTools": [
+            "where_is",
+            "get_thing"
+          ]
+        }
+      }
+    ],
+    "content": [
+      {
+        "type": "reasoning"
+      },
+      {
+        "type": "tool-call",
+        "invalid": true,
+        "toolName": "delete_everything"
+      },
+      {
+        "type": "tool-error",
+        "error": "AI_NoSuchToolError: Model tried to call unavailable tool 'delete_everything'. Available tools: where_is, get_thing."
+      }
+    ]
+  },
+  "checks": [
+    {
+      "name": "one request for a tool-call step",
+      "ok": true,
+      "detail": 1
+    },
+    {
+      "name": "finishReason is tool-calls",
+      "ok": true,
+      "detail": {
+        "finishReason": "tool-calls",
+        "raw": "tool_calls"
+      }
+    },
+    {
+      "name": "toolCalls carries id, name, input (parsed)",
+      "ok": true,
+      "detail": [
+        {
+          "type": "tool-call",
+          "toolCallId": "call_1",
+          "toolName": "where_is",
+          "input": {
+            "query": "drill"
+          }
+        }
+      ]
+    },
+    {
+      "name": "no tool results (no execute)",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "name": "steps.length is 1",
+      "ok": true,
+      "detail": 1
+    },
+    {
+      "name": "usage reported (single step: usage == totalUsage)",
+      "ok": true,
+      "detail": {
+        "usage": {
+          "inputTokens": 900,
+          "inputTokenDetails": {
+            "noCacheTokens": 900,
+            "cacheReadTokens": 0,
+            "cacheWriteTokens": 0
+          },
+          "outputTokens": 60,
+          "outputTokenDetails": {
+            "textTokens": 20,
+            "reasoningTokens": 40
+          },
+          "totalTokens": 960
+        },
+        "totalUsage": {
+          "inputTokens": 900,
+          "inputTokenDetails": {
+            "noCacheTokens": 900,
+            "cacheReadTokens": 0,
+            "cacheWriteTokens": 0
+          },
+          "outputTokens": 60,
+          "outputTokenDetails": {
+            "textTokens": 20,
+            "reasoningTokens": 40
+          },
+          "totalTokens": 960
+        }
+      }
+    },
+    {
+      "name": "tool set is JSON-serialisable (no functions)",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "name": "follow-up: one request",
+      "ok": true,
+      "detail": 1
+    },
+    {
+      "name": "follow-up: text answer, finishReason stop",
+      "ok": true,
+      "detail": {
+        "text": "The drill is in Garage › Shelf 2 [link].",
+        "finishReason": "stop"
+      }
+    },
+    {
+      "name": "invalid input: one request, no throw",
+      "ok": true,
+      "detail": {
+        "threw": false,
+        "requests": 1,
+        "finishReason": "tool-calls",
+        "toolCalls": [
+          {
+            "type": "tool-call",
+            "toolCallId": "call_1",
+            "toolName": "where_is",
+            "input": {
+              "location_id": "x"
+            }
+          }
+        ],
+        "content": [
+          {
+            "type": "reasoning"
+          },
+          {
+            "type": "tool-call",
+            "input": {
+              "location_id": "x"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "invalid input (zod): one request",
+      "ok": true,
+      "detail": {
+        "threw": false,
+        "requests": 1,
+        "finishReason": "tool-calls",
+        "toolCalls": [
+          {
+            "toolName": "where_is",
+            "input": {
+              "location_id": "x"
+            },
+            "invalid": true,
+            "error": "AI_InvalidToolInputError"
+          }
+        ],
+        "content": [
+          {
+            "type": "reasoning"
+          },
+          {
+            "type": "tool-call"
+          },
+          {
+            "type": "tool-error",
+            "error": "AI_InvalidToolInputError: Invalid input for tool where_is: AI_TypeValidationError: Type validation failed: Value: {\"location_id\":\"x\"}.\nError message: [\n  {\n    "
+          }
+        ]
+      }
+    },
+    {
+      "name": "unknown tool: one request",
+      "ok": true,
+      "detail": {
+        "threw": false,
+        "requests": 1,
+        "finishReason": "tool-calls",
+        "toolCalls": [
+          {
+            "type": "tool-call",
+            "toolCallId": "call_1",
+            "toolName": "delete_everything",
+            "input": {},
+            "dynamic": true,
+            "invalid": true,
+            "error": {
+              "name": "AI_NoSuchToolError",
+              "toolName": "delete_everything",
+              "availableTools": [
+                "where_is",
+                "get_thing"
+              ]
+            }
+          }
+        ],
+        "content": [
+          {
+            "type": "reasoning"
+          },
+          {
+            "type": "tool-call",
+            "invalid": true,
+            "toolName": "delete_everything"
+          },
+          {
+            "type": "tool-error",
+            "error": "AI_NoSuchToolError: Model tried to call unavailable tool 'delete_everything'. Available tools: where_is, get_thing."
+          }
+        ]
+      }
+    },
+    {
+      "name": "two calls in one step: one request, both read",
+      "ok": true,
+      "detail": [
+        "where_is",
+        "get_thing"
+      ]
+    },
+    {
+      "name": "default stopWhen: one request (default is isStepCount(1))",
+      "ok": true,
+      "detail": 1
+    }
+  ]
+}

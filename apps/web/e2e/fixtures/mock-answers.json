@@ -1,0 +1,55 @@
+{
+  "receipt-usd.jpg": {
+    "usage": { "input": 2000, "output": 420 },
+    "output": {
+      "vendor": { "name": { "value": "CORNER HARDWARE", "confidence": 0.95 } },
+      "date": { "value": "2026-09-14", "confidence": 0.9 },
+      "currency": { "value": "$", "confidence": 0.9 },
+      "total": { "value": 20.5, "confidence": 0.95 },
+      "lines": [
+        {
+          "description": { "value": "Tape measure 5 m", "confidence": 0.9 },
+          "quantity": { "value": 1, "confidence": 0.9 },
+          "unit_price": { "value": 12.5, "confidence": 0.9 },
+          "line_total": { "value": 12.5, "confidence": 0.9 }
+        },
+        {
+          "description": { "value": "Utility knife", "confidence": 0.9 },
+          "quantity": { "value": 1, "confidence": 0.9 },
+          "unit_price": { "value": 8, "confidence": 0.9 },
+          "line_total": { "value": 8, "confidence": 0.9 }
+        }
+      ]
+    }
+  },
+  "invoice-service.jpg": {
+    "usage": { "input": 2000, "output": 480 },
+    "output": {
+      "vendor": { "name": { "value": "BAY MOTORS", "confidence": 0.95 } },
+      "date": { "value": "2026-10-04", "confidence": 0.9 },
+      "currency": { "value": "EGP", "confidence": 0.9 },
+      "total": { "value": 2250, "confidence": 0.95 },
+      "lines": [
+        {
+          "description": { "value": "Engine oil 5W-30", "confidence": 0.9 },
+          "kind": { "value": "fluid", "confidence": 0.9 },
+          "quantity": { "value": 4, "confidence": 0.9 },
+          "unit_price": { "value": 350, "confidence": 0.9 },
+          "line_total": { "value": 1400, "confidence": 0.9 }
+        },
+        {
+          "description": { "value": "Oil filter", "confidence": 0.9 },
+          "kind": { "value": "part", "confidence": 0.9 },
+          "quantity": { "value": 1, "confidence": 0.9 },
+          "unit_price": { "value": 250, "confidence": 0.9 },
+          "line_total": { "value": 250, "confidence": 0.9 }
+        },
+        {
+          "description": { "value": "Labour", "confidence": 0.9 },
+          "kind": { "value": "labour", "confidence": 0.9 },
+          "line_total": { "value": 600, "confidence": 0.9 }
+        }
+      ]
+    }
+  }
+}

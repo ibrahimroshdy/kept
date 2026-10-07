@@ -1,0 +1,14 @@
+{
+  "name": "kept-step6-mcp-spike",
+  "private": true,
+  "type": "module",
+  "description": "Throwaway: step-6 spike S6.1, MCP SDK v2 on Fastify 5. Not part of the workspace.",
+  "dependencies": {
+    "@modelcontextprotocol/client": "2.2.0",
+    "@modelcontextprotocol/node": "2.1.0",
+    "@modelcontextprotocol/server": "2.2.0",
+    "fastify": "5.12.5",
+    "tsx": "4.23.15",
+    "zod": "4.6.5"
+  }
+}

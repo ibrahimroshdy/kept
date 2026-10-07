@@ -1,0 +1,1 @@
+ALTER TABLE "llm_calls" ADD COLUMN "usage_estimated" boolean DEFAULT false NOT NULL;

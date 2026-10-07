@@ -1,0 +1,19 @@
+{
+  "name": "kept-pdf-spike",
+  "private": true,
+  "type": "module",
+  "description": "Throwaway: PDF engine spike for the inventory report (D201, V34). Not part of the workspace.",
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/ibm-plex-sans": "5.3.0",
+    "@fontsource/ibm-plex-sans-arabic": "5.3.0",
+    "@ibm/plex-mono": "2.5.0",
+    "@ibm/plex-sans": "1.1.0",
+    "@ibm/plex-sans-arabic": "1.1.0",
+    "@myriaddreamin/typst-ts-node-compiler": "0.7.0",
+    "@react-pdf/renderer": "4.9.0",
+    "playwright-core": "1.63.0",
+    "qrcode": "1.5.4",
+    "react": "19.3.0"
+  }
+}

@@ -1,0 +1,201 @@
+<!--
+  The kit, as built (apps/web/src/styles/index.css, tokens.css, components/ui/*, components/page.tsx,
+  components/filters/*, components/brand.tsx). assemble.py emits this panel twice, once inside
+  .t-light and once inside .t-dark, and fills {{SWATCHES}} with that theme's hex values.
+  No ids in here: the panel appears twice on the page.
+-->
+<div class="k-block" data-k="colour">
+  <h4 class="k-h">Colour <span class="dec">D131 · tokens.css</span></h4>
+  <div class="k-sw">{{SWATCHES}}</div>
+  <p class="k-note">Amber is a fill with amber-ink on it (8.2:1), never text on paper; amber-text is the text colour. Violet is only for AI-suggested values; s1–s3 only for chart series.</p>
+</div>
+
+<div class="k-block" data-k="type">
+  <h4 class="k-h">Type <span class="dec">D132 · IBM Plex</span></h4>
+  <div class="k-type">
+    <div><span class="k-meta">display 28/34 600</span><span style="font:600 28px/34px var(--sans);letter-spacing:-.01em">Garage, shelf A</span></div>
+    <div><span class="k-meta">title 20/26 600</span><span style="font:600 20px/26px var(--sans)">Bosch drill, 18 V</span></div>
+    <div><span class="k-meta">body 15/23 400</span><span style="font:400 15px/23px var(--sans)">Bought from Ace Hardware on 3 March for 4,500 EGP.</span></div>
+    <div><span class="k-meta">small 13/18 400</span><span style="font:400 13px/18px var(--sans);color:var(--ink-2)">Garage › Tool wall · last seen 12 days ago</span></div>
+    <div><span class="k-meta">label 11.5 600 caps +.08em</span><span class="eyebrow">Needs you</span></div>
+    <div><span class="k-meta">mono · IDs, serials, readings</span><span style="font:600 20px/26px var(--mono);font-variant-numeric:tabular-nums">52,340 km</span></div>
+    <div dir="rtl" lang="ar"><span class="k-meta" dir="ltr">Arabic 15 · line 1.75</span><span style="font:400 15px/1.75 var(--arabic)">اشتُري من إيس هاردوير في ٣ مارس.</span></div>
+  </div>
+</div>
+
+<div class="k-block" data-k="space">
+  <h4 class="k-h">Spacing, radius, shadow</h4>
+  <div class="k-space" aria-label="Spacing steps in pixels">
+    <span><i style="inline-size:4px"></i>4</span><span><i style="inline-size:6px"></i>6</span><span><i style="inline-size:8px"></i>8</span><span><i style="inline-size:10px"></i>10</span><span><i style="inline-size:12px"></i>12</span><span><i style="inline-size:14px"></i>14</span><span><i style="inline-size:16px"></i>16</span><span><i style="inline-size:20px"></i>20</span><span><i style="inline-size:24px"></i>24</span>
+  </div>
+  <p class="k-note">Tailwind's 4 px steps as the app uses them: gap 2.5 (10) inside cards, 3.5 (14) card padding, 5 (20) between page sections.</p>
+  <div class="k-radii">
+    <span style="border-radius:3px">3<small>tape</small></span>
+    <span style="border-radius:7px">7<small>button</small></span>
+    <span style="border-radius:8px">8<small>input, menu row</small></span>
+    <span style="border-radius:10px">10<small>card, list, toast</small></span>
+    <span style="border-radius:12px">12<small>dialog</small></span>
+    <span style="border-radius:16px">16<small>sheet top, Capture</small></span>
+    <span style="border-radius:999px">full<small>pill, chip</small></span>
+  </div>
+  <div class="k-shadows">
+    <span style="box-shadow:0 10px 30px rgba(0,0,0,.14)">popover<small>0 10 30 / .14</small></span>
+    <span style="box-shadow:0 10px 30px rgba(0,0,0,.2)">dialog, toast<small>0 10 30 / .20</small></span>
+    <span style="box-shadow:0 4px 14px rgba(0,0,0,.12)">floating<small>0 4 14 / .12</small></span>
+    <span style="box-shadow:0 6px 18px rgba(0,0,0,.18)">tooltip<small>0 6 18 / .18</small></span>
+  </div>
+</div>
+
+<div class="k-block" data-k="buttons">
+  <h4 class="k-h">Buttons <span class="dec">ui/button.tsx</span></h4>
+  <div class="k-states" role="table" aria-label="Button variants by state">
+    <div class="k-row k-head" role="row"><span role="columnheader"></span><span role="columnheader">default</span><span role="columnheader">hover</span><span role="columnheader">focus</span><span role="columnheader">pressed</span><span role="columnheader">disabled</span><span role="columnheader">loading</span></div>
+    <div class="k-row" role="row"><span class="k-rl" role="rowheader">primary</span><span role="cell"><b class="kb kb-p">Save</b></span><span role="cell"><b class="kb kb-p hov">Save</b></span><span role="cell"><b class="kb kb-p foc">Save</b></span><span role="cell"><b class="kb kb-p prs">Save</b></span><span role="cell"><b class="kb kb-p dis">Save</b></span><span role="cell"><b class="kb kb-p lod"><i class="k-spin"></i>Save</b></span></div>
+    <div class="k-row" role="row"><span class="k-rl" role="rowheader">secondary</span><span role="cell"><b class="kb kb-s">Edit</b></span><span role="cell"><b class="kb kb-s hov">Edit</b></span><span role="cell"><b class="kb kb-s foc">Edit</b></span><span role="cell"><b class="kb kb-s prs">Edit</b></span><span role="cell"><b class="kb kb-s dis">Edit</b></span><span role="cell"><b class="kb kb-s lod"><i class="k-spin"></i>Edit</b></span></div>
+    <div class="k-row" role="row"><span class="k-rl" role="rowheader">ghost</span><span role="cell"><b class="kb kb-g">Skip</b></span><span role="cell"><b class="kb kb-g hov">Skip</b></span><span role="cell"><b class="kb kb-g foc">Skip</b></span><span role="cell"><b class="kb kb-g prs">Skip</b></span><span role="cell"><b class="kb kb-g dis">Skip</b></span><span role="cell"><b class="kb kb-g lod"><i class="k-spin"></i>Skip</b></span></div>
+    <div class="k-row" role="row"><span class="k-rl" role="rowheader">danger</span><span role="cell"><b class="kb kb-d">Delete</b></span><span role="cell"><b class="kb kb-d hov">Delete</b></span><span role="cell"><b class="kb kb-d foc">Delete</b></span><span role="cell"><b class="kb kb-d prs">Delete</b></span><span role="cell"><b class="kb kb-d dis">Delete</b></span><span role="cell"><b class="kb kb-d lod"><i class="k-spin"></i>Delete</b></span></div>
+    <div class="k-row" role="row"><span class="k-rl" role="rowheader">icon</span><span role="cell"><b class="kb kb-i" aria-label="Scan"><svg class="k-ic"><use href="#k-scan"/></svg></b></span><span role="cell"><b class="kb kb-i hov"><svg class="k-ic"><use href="#k-scan"/></svg></b></span><span role="cell"><b class="kb kb-i foc"><svg class="k-ic"><use href="#k-scan"/></svg></b></span><span role="cell"><b class="kb kb-i prs"><svg class="k-ic"><use href="#k-scan"/></svg></b></span><span role="cell"><b class="kb kb-i dis"><svg class="k-ic"><use href="#k-scan"/></svg></b></span><span role="cell"><b class="kb kb-i lod"><i class="k-spin"></i></b></span></div>
+  </div>
+  <p class="k-note">Default 40 px high, small 32 px; on a touch screen every control's hit area grows to 44 px. Hover and pressed darken the fill (brightness 95 / 90) or add the sunken ground; focus is a 2 px info ring, 2 px out; disabled is 50% opacity; loading keeps the label and shows a spinner (React Aria's isPending).</p>
+</div>
+
+<div class="k-block" data-k="inputs">
+  <h4 class="k-h">Inputs <span class="dec">ui/field.tsx · text-field</span></h4>
+  <div class="k-grid2">
+    <label class="k-field"><span class="k-lab">Name</span><span class="k-in ph">e.g. Bosch drill</span><span class="k-desc">empty</span></label>
+    <label class="k-field"><span class="k-lab">Name</span><span class="k-in">HDMI cable, 2 m</span><span class="k-desc">filled</span></label>
+    <label class="k-field"><span class="k-lab">Name</span><span class="k-in foc">Cable box</span><span class="k-desc">focus</span></label>
+    <label class="k-field"><span class="k-lab">Odometer, km</span><span class="k-in err"><bdi class="mono">51,900</bdi></span><span class="k-err">Lower than the last reading, 52,340 km on 2 Oct.</span></label>
+    <label class="k-field dis"><span class="k-lab">Currency</span><span class="k-in">EGP</span><span class="k-desc">disabled · 50%</span></label>
+    <div class="k-field"><span class="k-lab">Type</span><span class="k-in k-combo">TV / display<svg class="k-ic"><use href="#k-down"/></svg></span>
+      <div class="k-pop" role="listbox" aria-label="Type"><span class="k-opt on">TV / display<svg class="k-ic s"><use href="#k-check"/></svg></span><span class="k-opt">Tool</span><span class="k-opt">Cable</span></div>
+    </div>
+  </div>
+  <p class="k-note">16 px text so iOS never zooms; 44 px tall. The combobox and select are React Aria (list in a popover), never a native select or OS date picker; dates use Kept's own calendar.</p>
+</div>
+
+<div class="k-block" data-k="choices">
+  <h4 class="k-h">Checkbox, radio, switch, segmented</h4>
+  <div class="k-wrap">
+    <span class="k-cb"><i></i>Off</span>
+    <span class="k-cb on"><i><svg class="k-ic s"><use href="#k-check"/></svg></i>On</span>
+    <span class="k-cb foc"><i></i>Focus</span>
+    <span class="k-cb dis"><i></i>Disabled</span>
+  </div>
+  <div class="k-choice on"><i></i><span><b>Household</b><small>Home things, rooms, lending and paperwork</small></span></div>
+  <div class="k-choice"><i></i><span><b>Just a list</b><small>Things and where they are, nothing else</small></span></div>
+  <div class="k-wrap">
+    <span class="k-sw-row"><i class="k-tog"></i>Barcode lookup</span>
+    <span class="k-sw-row"><i class="k-tog on"></i>Remind me</span>
+  </div>
+  <div class="k-seg" role="radiogroup" aria-label="Content width"><span class="on" role="radio" aria-checked="true">Centered</span><span role="radio" aria-checked="false">Full width</span></div>
+</div>
+
+<div class="k-block" data-k="chips">
+  <h4 class="k-h">Chips, ID tape, badges, tabs <span class="dec">D134</span></h4>
+  <div class="k-wrap">
+    <span class="k-chip">Garage</span>
+    <span class="k-chip"><svg class="k-ic s"><use href="#k-filter"/></svg>Filters<b class="k-n">2</b></span>
+    <span class="k-achip"><span>Person: Alfred, Bruce</span><span class="x" aria-label="Remove the Person filter"><svg class="k-ic s"><use href="#k-x"/></svg></span></span>
+  </div>
+  <div class="k-wrap">
+    <bdi class="k-tape" dir="ltr">7KQ‑4MZ</bdi>
+    <bdi class="k-tape lg" dir="ltr">3CB‑8WN</bdi>
+    <span class="k-tape pend">ID pending</span>
+    <span class="k-count">4</span>
+  </div>
+  <div class="k-wrap">
+    <span class="k-pill"><svg class="k-ic s"><use href="#k-x3"/></svg>× 3</span>
+    <span class="k-pill ok"><svg class="k-ic s"><use href="#k-checkc"/></svg>Covered</span>
+    <span class="k-pill warn"><svg class="k-ic s"><use href="#k-alert"/></svg>Needs review</span>
+    <span class="k-pill danger"><svg class="k-ic s"><use href="#k-alert"/></svg>Overdue 2 days</span>
+    <span class="k-pill info"><svg class="k-ic s"><use href="#k-pencil"/></svg>Draft</span>
+  </div>
+  <div class="k-tabs" role="tablist" aria-label="Thing sections"><span class="on" role="tab" aria-selected="true">Overview</span><span role="tab">Paperwork</span><span role="tab">Loans</span><span role="tab">Services</span><span role="tab">History</span><span role="tab">Values</span></div>
+  <p class="k-note">A state pill is always icon + word + colour, never colour alone. Tabs stay one row and scroll sideways; the chosen tab has an amber underline.</p>
+</div>
+
+<div class="k-block" data-k="strip">
+  <h4 class="k-h">Filter strip, Views, Display <span class="dec">D205 · D211</span></h4>
+  <div class="k-tabs sm" role="tablist" aria-label="Saved views"><span class="on" role="tab">All</span><span role="tab">Lent out</span><span role="tab">No photo</span></div>
+  <div class="k-strip">
+    <span class="k-search"><svg class="k-ic s"><use href="#k-search"/></svg>Search Garage</span>
+    <span class="k-achip"><span>Kind: Tools</span><span class="x"><svg class="k-ic s"><use href="#k-x"/></svg></span></span>
+    <span class="k-chip"><svg class="k-ic s"><use href="#k-plus"/></svg>Filter</span>
+    <span class="k-chip"><svg class="k-ic s"><use href="#k-bookmark"/></svg>Views<svg class="k-ic s"><use href="#k-down"/></svg></span>
+    <span class="k-chip on-open"><svg class="k-ic s"><use href="#k-sort"/></svg>Name · by type</span>
+  </div>
+  <div class="k-menu" role="menu" aria-label="Display options">
+    <span class="k-mh">Sort</span>
+    <span class="k-mi">Name<svg class="k-ic s"><use href="#k-check"/></svg></span>
+    <span class="k-mi">Last seen</span>
+    <div class="k-dir"><span class="on">A to Z</span><span>Z to A</span></div>
+    <span class="k-sep"></span>
+    <span class="k-mh">Group</span>
+    <span class="k-mi">None</span>
+    <span class="k-mi">Type<svg class="k-ic s"><use href="#k-check"/></svg></span>
+  </div>
+  <p class="k-note">Phones show "Filters (n)" and the Display menu as a bottom sheet; from 768 px, "+ Filter" and the menu are popovers. Only filters in use show as chips; "Clear all" appears with two or more.</p>
+</div>
+
+<div class="k-block" data-k="lists">
+  <h4 class="k-h">List rows, card, table, More</h4>
+  <ul class="k-list">
+    <li><span class="k-tile"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="k-rt"><b>Cable box</b><small>Home › Office › Desk drawer</small></span><bdi class="k-tape" dir="ltr">3CB‑8WN</bdi></li>
+    <li><span class="k-tile"><svg class="k-ic"><use href="#k-tag"/></svg></span><span class="k-rt"><b>Labels</b><small>Print, reprint, blank sheets</small></span><svg class="k-ic s k-chev"><use href="#k-chev"/></svg></li>
+  </ul>
+  <div class="k-card"><b>Warranty</b><small>Samsung, until 14 Jan 2027. Receipt attached.</small><div class="k-wrap"><b class="kb kb-s sm">Open claim</b><b class="kb kb-g sm">Edit</b></div></div>
+  <div class="k-tablewrap"><table class="k-table"><thead><tr><th>Person</th><th>Role</th><th>Until</th></tr></thead><tbody><tr><td>Bruce</td><td>Admin</td><td>—</td></tr><tr><td>Louis</td><td>Member</td><td>31 Dec</td></tr></tbody></table></div>
+  <p class="k-note">More (phone, /more) is a page, not a sheet: a Locations list, then "Everything else" as rows; later-step entries read "Coming in a later step".</p>
+</div>
+
+<div class="k-block" data-k="overlays">
+  <h4 class="k-h">Dialog, confirm, sheet, toast</h4>
+  <div class="k-dialog"><div class="k-dh"><b>Rename place</b><span class="k-x" aria-label="Close"><svg class="k-ic"><use href="#k-x"/></svg></span></div><span class="k-in">Shelf A</span><div class="k-foot"><b class="kb kb-s">Cancel</b><b class="kb kb-p">Save</b></div></div>
+  <div class="k-dialog" role="alertdialog"><b>Remove Louis from Home?</b><small>He loses access at once. His things and history stay.</small><div class="k-foot"><b class="kb kb-s foc">Cancel</b><b class="kb kb-d">Remove</b></div></div>
+  <div class="k-sheet"><div class="k-dh"><b>Display</b><span class="k-x"><svg class="k-ic"><use href="#k-x"/></svg></span></div><span class="k-mi">Name<svg class="k-ic s"><use href="#k-check"/></svg></span><span class="k-mi">Last seen</span><b class="kb kb-p">Done</b></div>
+  <div class="k-toast"><i class="bar"></i><span>Moved 3 things to Shelf A</span><b class="k-undo">Undo</b><span class="k-x"><svg class="k-ic s"><use href="#k-x"/></svg></span></div>
+  <div class="k-toast"><i class="bar ok"></i><span>Printed 12 labels</span><span class="k-x"><svg class="k-ic s"><use href="#k-x"/></svg></span></div>
+  <p class="k-note">A confirm (useConfirm) starts focus on Cancel and a click outside doesn't dismiss it. Sheets rise from the bottom on phones with rounded top corners and no grab handle; from 768 px they're a centred dialog. A toast sits above the tab bar, dark ink, with a tone bar, one action and ×.</p>
+</div>
+
+<div class="k-block" data-k="notices">
+  <h4 class="k-h">Banners, AI line, empty, skeleton <span class="dec">D206</span></h4>
+  <div class="k-notice info"><svg class="k-ic"><use href="#k-info"/></svg><span><b>From this phone</b>Details need a connection · as of last sync, 14:02</span></div>
+  <div class="k-notice warn"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>Couldn't sync 2 changes</b>Alfred edited the same field. Open to choose.</span></div>
+  <div class="k-notice danger"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>Couldn't load this</b>Needs a connection. Try again when you're back online.<b class="kb kb-s sm">Try again</b></span></div>
+  <div class="k-notice warn"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>AI paused until 1 Oct · Home's monthly cap reached</b>Photos still save; naming waits.<b class="kb kb-s sm">Resume now</b></span></div>
+  <div class="k-sugg"><span class="lbl">Suggested · warranty end</span><span>3 March 2028</span></div>
+  <p class="k-ailine">AI · Groq · 1.6K tokens · ≈ $0.004 · paid by you<svg class="k-ic s"><use href="#k-chev"/></svg></p>
+  <div class="k-empty"><span class="k-eic"><svg class="k-ic"><use href="#k-inbox"/></svg></span><b>Nothing to review</b><small>New captures land here after they sync.</small></div>
+  <div class="k-skel"><i></i><i></i><i style="inline-size:60%"></i></div>
+</div>
+
+<div class="k-block" data-k="phone">
+  <h4 class="k-h">Phone only: pull to refresh, status strip <span class="dec">D212</span></h4>
+  <div class="k-wrap">
+    <span class="k-ptr"><svg class="k-ic s"><use href="#k-retry"/></svg></span>
+    <span class="k-ptr word">Updated</span>
+    <span class="k-ptr word">Offline</span>
+    <span class="k-ptr word">Couldn't sync</span>
+  </div>
+  <div class="k-strips" aria-label="The installed app's top and bottom strips">
+    <span class="top">status strip · paper</span>
+    <span class="hdr">page header · paper</span>
+    <span class="body">content scrolls under nothing</span>
+    <span class="bar">tab bar · surface</span>
+    <span class="bot">bottom strip · surface</span>
+  </div>
+  <p class="k-note">Pull arms only after 16 px down at the top of the page, so a tap is never lost. In the installed iPhone app an opaque strip the height of the safe area sits at the top (paper) and, with the tab bar, at the bottom (surface), so iOS 26 tints rather than blurs the edges.</p>
+</div>
+
+<div class="k-block" data-k="brand">
+  <h4 class="k-h">Avatar, logo, app icon <span class="dec">D135 · mark B</span></h4>
+  <div class="k-wrap">
+    <span class="k-av">B</span><span class="k-av you">I</span>
+    <svg width="96" height="32.2" viewBox="0 0 191 64" role="img" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+  </div>
+  <div class="k-icons">
+    {{APPICONS}}
+  </div>
+</div>

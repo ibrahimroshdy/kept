@@ -1,0 +1,114 @@
+{
+  "date": "2026-09-29T22:53:30.540Z",
+  "db": "kept_spike6_emb_mun9vz1n",
+  "seedSeconds": 58,
+  "pgvector": "0.8.6",
+  "postgres": "18.6 (Debian 18.6-1.pgdg12+2)",
+  "thingsTotal": 12810,
+  "thingsInBigLocation": 10210,
+  "insertSeconds": 46,
+  "tableSize": "276 MB",
+  "exactScan": [
+    {
+      "model": "openai:text-embedding-3-small",
+      "dims": 1536,
+      "rows": 50,
+      "query": {
+        "n": 200,
+        "p50": 81.69,
+        "p95": 286.82,
+        "p99": 867.36,
+        "max": 1602.95
+      },
+      "withScopeWall": {
+        "n": 200,
+        "p50": 94.38,
+        "p95": 313.08,
+        "p99": 982.64,
+        "max": 2156.45
+      }
+    },
+    {
+      "model": "google:gemini-embedding-001",
+      "dims": 3072,
+      "rows": 50,
+      "query": {
+        "n": 200,
+        "p50": 198.55,
+        "p95": 897.02,
+        "p99": 1520.25,
+        "max": 3215.99
+      },
+      "withScopeWall": {
+        "n": 200,
+        "p50": 203.72,
+        "p95": 905.61,
+        "p99": 1541.37,
+        "max": 3325.04
+      }
+    }
+  ],
+  "exactScanViewer": {
+    "model": "openai:text-embedding-3-small",
+    "dims": 1536,
+    "rows": 50,
+    "query": {
+      "n": 200,
+      "p50": 79.67,
+      "p95": 358.08,
+      "p99": 865.62,
+      "max": 1084.89
+    },
+    "withScopeWall": {
+      "n": 200,
+      "p50": 90.39,
+      "p95": 397.89,
+      "p99": 933.51,
+      "max": 1196.55
+    }
+  },
+  "explainDoorAsApp": [
+    "Function Scan on spike_semantic_thing_ids  (cost=0.25..10.25 rows=1000 width=24) (actual time=65.868..65.871 rows=50.00 loops=1)",
+    "  Buffers: shared hit=32198",
+    "Planning Time: 0.030 ms",
+    "Execution Time: 65.890 ms"
+  ],
+  "appDirectRead": 0,
+  "explainInnerAsOwner": [
+    "Limit  (cost=2734.91..2735.04 rows=50 width=24) (actual time=121.498..121.517 rows=50.00 loops=1)",
+    "  Buffers: shared hit=32541 read=35 written=28",
+    "  ->  Sort  (cost=2734.91..2760.44 rows=10210 width=24) (actual time=121.496..121.510 rows=50.00 loops=1)",
+    "        Sort Key: ((e.embedding <=> '[…]'::vector))",
+    "        Sort Method: top-N heapsort  Memory: 30kB",
+    "        Buffers: shared hit=32541 read=35 written=28",
+    "        ->  Result  (cost=799.48..2395.74 rows=10210 width=24) (actual time=8.471..118.245 rows=10210.00 loops=1)",
+    "              One-Time Filter: (ANY ('01a0ef5f-97bc-7654-b261-b7c5511d8721'::uuid = (hashed SubPlan 1).col1))",
+    "              Buffers: shared hit=32538 read=35 written=28",
+    "              ->  Hash Join  (cost=799.48..2370.22 rows=10210 width=34) (actual time=6.160..21.007 rows=10210.00 loops=1)",
+    "                    Hash Cond: (t.id = e.thing_id)",
+    "                    Buffers: shared hit=1566",
+    "                    ->  Seq Scan on things t  (cost=0.00..1537.10 rows=12810 width=16) (actual time=0.003..7.243 rows=12810.00 loops=1)",
+    "                          Filter: (deleted_at IS NULL)",
+    "                          Buffers: shared hit=1409",
+    "                    ->  Hash  (cost=664.09..664.09 rows=10210 width=34) (actual time=6.125..6.128 rows=10210.00 loops=1)",
+    "                          Buckets: 16384  Batches: 1  Memory Usage: 787kB",
+    "                          Buffers: shared hit=157",
+    "                          ->  Bitmap Heap Scan on spike_thing_embeddings e  (cost=144.94..664.09 rows=10210 width=34) (actual time=0.292..2.441 rows=10210.00 loops=1)",
+    "                                Recheck Cond: ((location_id = '01a0ef5f-97bc-7654-b261-b7c5511d8721'::uuid) AND (model_key = 'openai:text-embedding-3-small'::text))",
+    "                                Heap Blocks: exact=147",
+    "                                Buffers: shared hit=157",
+    "                                ->  Bitmap Index Scan on spike_emb_loc_model  (cost=0.00..142.39 rows=10210 width=0) (actual time=0.264..0.264 rows=10210.00 loops=1)",
+    "                                      Index Cond: ((location_id = '01a0ef5f-97bc-7654-b261-b7c5511d8721'::uuid) AND (model_key = 'openai:text-embedding-3-small'::text))",
+    "                                      Index Searches: 1",
+    "                                      Buffers: shared hit=10",
+    "              SubPlan 1",
+    "                ->  ProjectSet  (cost=0.00..5.27 rows=1000 width=16) (actual time=1.663..1.674 rows=4.00 loops=1)",
+    "                      Buffers: shared hit=319 read=33 written=26",
+    "                      ->  Result  (cost=0.00..0.01 rows=1 width=0) (actual time=0.000..0.001 rows=1.00 loops=1)",
+    "Planning:",
+    "  Buffers: shared hit=728 read=82 written=1",
+    "Planning Time: 7.022 ms",
+    "Execution Time: 121.604 ms"
+  ],
+  "strangerRows": 0
+}

@@ -1,0 +1,268 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Kept chart values",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["publicUrl", "image", "postgres", "roles", "keys", "storage", "backup"],
+  "definitions": {
+    "name": {
+      "description": "A Kubernetes object name, or empty",
+      "type": "string",
+      "pattern": "^$|^[a-z0-9]([-a-z0-9.]*[a-z0-9])?$",
+      "maxLength": 253
+    },
+    "storageClass": { "type": "string" },
+    "size": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?(Ki|Mi|Gi|Ti|k|M|G|T)?$"
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requests": {
+          "type": "object",
+          "required": ["cpu", "memory"],
+          "properties": {
+            "cpu": { "type": ["string", "number"] },
+            "memory": { "type": "string" }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "required": ["memory"],
+          "properties": {
+            "cpu": { "type": ["string", "number"] },
+            "memory": { "type": "string" }
+          }
+        }
+      },
+      "required": ["requests", "limits"]
+    }
+  },
+  "properties": {
+    "global": { "type": "object" },
+    "publicUrl": {
+      "description": "Required: the address people open Kept at (KEPT_PUBLIC_URL)",
+      "type": "string",
+      "pattern": "^$|^https?://[^/\\s]+/?$"
+    },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository"],
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "tag": {
+          "description": "Defaults to the chart's appVersion; never latest (the templates refuse it)",
+          "type": "string"
+        },
+        "digest": { "type": "string", "pattern": "^$|^sha256:[0-9a-f]{64}$" },
+        "pullPolicy": { "enum": ["IfNotPresent", "Always", "Never"] }
+      }
+    },
+    "imagePullSecrets": { "type": "array" },
+    "postgres": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["bundled", "image", "database"],
+      "properties": {
+        "bundled": { "type": "boolean" },
+        "image": {
+          "description": "Pinned by digest, like compose.yaml",
+          "type": "string",
+          "pattern": "^[^:@\\s]+(:[^@\\s]+)?@sha256:[0-9a-f]{64}$"
+        },
+        "database": { "type": "string", "pattern": "^[a-z_][a-z0-9_]*$" },
+        "storage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "size": { "$ref": "#/definitions/size" },
+            "storageClass": { "$ref": "#/definitions/storageClass" }
+          }
+        },
+        "superuserSecret": { "$ref": "#/definitions/name" },
+        "external": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "host": { "type": "string" },
+            "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+            "superuser": { "type": "string" },
+            "sslMode": {
+              "enum": ["", "disable", "allow", "prefer", "require", "verify-ca", "verify-full"]
+            }
+          }
+        },
+        "resources": { "$ref": "#/definitions/resources" }
+      }
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "existingSecret": { "$ref": "#/definitions/name" },
+        "create": { "type": "boolean" }
+      }
+    },
+    "keys": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "existingSecret": { "$ref": "#/definitions/name" } }
+    },
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "persistence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "size": { "$ref": "#/definitions/size" },
+            "storageClass": { "$ref": "#/definitions/storageClass" }
+          }
+        }
+      }
+    },
+    "storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": { "enum": ["local", "s3"] },
+        "persistence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "size": { "$ref": "#/definitions/size" },
+            "storageClass": { "$ref": "#/definitions/storageClass" },
+            "accessMode": { "enum": ["ReadWriteOnce", "ReadWriteMany", "ReadWriteOncePod"] }
+          }
+        },
+        "s3": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "existingSecret": { "$ref": "#/definitions/name" },
+            "endpoint": { "type": "string" },
+            "publicEndpoint": { "type": "string" },
+            "region": { "type": "string" },
+            "bucket": { "type": "string" },
+            "forcePathStyle": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "backup": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "existingSecret": { "$ref": "#/definitions/name" },
+        "env": {
+          "description": "KEPT_BACKUP_* variables by name; secrets go in existingSecret",
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^KEPT_BACKUP_[A-Z0-9_]+$",
+            "not": {
+              "enum": [
+                "KEPT_BACKUP_PASSWORD",
+                "KEPT_BACKUP_S3_ACCESS_KEY_ID",
+                "KEPT_BACKUP_S3_SECRET_ACCESS_KEY"
+              ]
+            }
+          },
+          "additionalProperties": { "type": ["string", "number", "boolean"] }
+        },
+        "persistence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "size": { "$ref": "#/definitions/size" },
+            "storageClass": { "$ref": "#/definitions/storageClass" },
+            "existingClaim": { "$ref": "#/definitions/name" }
+          }
+        }
+      }
+    },
+    "split": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "web": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": { "replicas": { "type": "integer", "minimum": 1 } }
+        }
+      }
+    },
+    "worker": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "resources": { "$ref": "#/definitions/resources" } }
+    },
+    "smtp": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "existingSecret": { "$ref": "#/definitions/name" },
+        "from": { "type": "string" }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "tokenSecret": { "$ref": "#/definitions/name" } }
+    },
+    "trustedProxies": { "type": "string" },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": { "enum": ["ClusterIP", "NodePort", "LoadBalancer"] },
+        "port": { "type": "integer", "minimum": 1, "maximum": 65535 }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "className": { "type": "string" },
+        "annotations": { "type": "object" },
+        "host": { "type": "string" },
+        "tls": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "secretName": { "$ref": "#/definitions/name" }
+          }
+        }
+      }
+    },
+    "resources": { "$ref": "#/definitions/resources" },
+    "jobs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resources": { "$ref": "#/definitions/resources" },
+        "activeDeadlineSeconds": { "type": "integer", "minimum": 60 }
+      }
+    },
+    "extraEnv": { "type": "array", "items": { "type": "object", "required": ["name"] } },
+    "extraEnvFrom": { "type": "array", "items": { "type": "object" } },
+    "extraVolumes": { "type": "array", "items": { "type": "object", "required": ["name"] } },
+    "extraVolumeMounts": {
+      "type": "array",
+      "items": { "type": "object", "required": ["name", "mountPath"] }
+    },
+    "podAnnotations": { "type": "object" },
+    "nodeSelector": { "type": "object" },
+    "tolerations": { "type": "array" },
+    "affinity": { "type": "object" }
+  }
+}

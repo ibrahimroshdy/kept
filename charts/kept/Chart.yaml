@@ -1,0 +1,21 @@
+apiVersion: v2
+name: kept
+description: Kept, a home inventory you can self-host. The same image and variables as Compose.
+type: application
+# Both set by the release (`helm package --version X.Y.Z --app-version X.Y.Z`,
+# scripts/release/chart.sh): the published chart's version IS Kept's version, every release (plan
+# Q17, from 1.0.1 on; 0.1.0 and 0.2.0 were published by hand-bumping this line). Each published
+# chart pins one image digest, so every release needs a chart version of its own anyway. A
+# checkout's chart says 0.0.0-dev for both, which no registry holds (set image.tag); check-helm
+# keeps it that way. Never bump these by hand.
+version: 0.0.0-dev
+appVersion: 0.0.0-dev
+# Inferred from the Dockerfile's SOURCE default; the maintainer confirms it (plan Q14).
+home: https://github.com/ibrahimroshdy/kept
+sources:
+  - https://github.com/ibrahimroshdy/kept
+keywords:
+  - inventory
+  - self-hosted
+annotations:
+  licenses: AGPL-3.0-only

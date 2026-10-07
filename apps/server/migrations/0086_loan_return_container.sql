@@ -1,0 +1,2 @@
+ALTER TABLE "loans" ADD COLUMN "return_container_id" uuid;--> statement-breakpoint
+ALTER TABLE "loans" ADD CONSTRAINT "loans_return_where_chk" CHECK (num_nonnulls(return_place_id, return_container_id) <= 1);

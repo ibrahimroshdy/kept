@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Step 5 charts spike</title>
+    <style>
+      :root {
+        --paper: #f2f1ec; --surface: #fbfaf7; --line: #dedbd3; --ink: #1c1b19; --ink-2: #55524c;
+        --ink-3: #6b675f; --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s-other: #a8a399;
+        --focus: #1c1b19;
+      }
+      html { overscroll-behavior: none; }
+      body { margin: 0; background: var(--paper); color: var(--ink);
+        font-family: system-ui, 'IBM Plex Sans', 'IBM Plex Sans Arabic', sans-serif; }
+      main { padding-inline: 16px; padding-block: 16px 400px; }
+      section.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+        padding: 14px; margin-block-end: 16px; }
+      .mark:focus { outline: none; }
+      .mark:focus-visible, .mark[data-active='true']:focus { stroke: var(--focus); stroke-width: 2; }
+      .tip { background: var(--ink); color: var(--surface); padding: 6px 8px; border-radius: 6px;
+        font-size: 12.5px; pointer-events: none; white-space: nowrap; position: absolute; }
+      @media (prefers-reduced-motion: no-preference) {
+        .tip { transition: opacity 120ms ease-out; }
+      }
+      table { border-collapse: collapse; font-size: 13px; width: 100%; }
+      th, td { border-block-end: 1px solid var(--line); padding-block: 6px; padding-inline-end: 12px;
+        text-align: end; white-space: nowrap; font-variant-numeric: tabular-nums; }
+      th:first-child, td:first-child { text-align: start; }
+      button { min-height: 44px; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

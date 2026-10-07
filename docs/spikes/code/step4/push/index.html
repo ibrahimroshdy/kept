@@ -1,0 +1,6 @@
+<!doctype html><meta charset="utf-8"><title>push spike</title>
+<script>
+window.pushes = [];
+navigator.serviceWorker.addEventListener('message', (e) => window.pushes.push(e.data.push));
+window.ready = navigator.serviceWorker.register('/sw.js').then(() => navigator.serviceWorker.ready);
+</script>

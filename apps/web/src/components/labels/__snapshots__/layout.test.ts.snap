@@ -1,0 +1,151 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`placeLabels per stock > a4_24_70x37: the first page, cell by cell 1`] = `
+{
+  "cells": 24,
+  "first": {
+    "cell": 0,
+    "col": 0,
+    "row": 0,
+    "x": 0,
+    "y": 0.5,
+  },
+  "last": {
+    "cell": 23,
+    "col": 2,
+    "row": 7,
+    "x": 140,
+    "y": 259.5,
+  },
+  "page": "@page { size: 210mm 297mm; margin: 0; }",
+  "second": {
+    "cell": 1,
+    "col": 1,
+    "row": 0,
+    "x": 70,
+    "y": 0.5,
+  },
+}
+`;
+
+exports[`placeLabels per stock > a4_65_38x21: the first page, cell by cell 1`] = `
+{
+  "cells": 65,
+  "first": {
+    "cell": 0,
+    "col": 0,
+    "row": 0,
+    "x": 4.75,
+    "y": 10.7,
+  },
+  "last": {
+    "cell": 64,
+    "col": 4,
+    "row": 12,
+    "x": 167.15,
+    "y": 265.1,
+  },
+  "page": "@page { size: 210mm 297mm; margin: 0; }",
+  "second": {
+    "cell": 1,
+    "col": 1,
+    "row": 0,
+    "x": 45.35,
+    "y": 10.7,
+  },
+}
+`;
+
+exports[`placeLabels per stock > letter_30_67x25: the first page, cell by cell 1`] = `
+{
+  "cells": 30,
+  "first": {
+    "cell": 0,
+    "col": 0,
+    "row": 0,
+    "x": 4.763,
+    "y": 12.7,
+  },
+  "last": {
+    "cell": 29,
+    "col": 2,
+    "row": 9,
+    "x": 144.462,
+    "y": 241.3,
+  },
+  "page": "@page { size: 215.9mm 279.4mm; margin: 0; }",
+  "second": {
+    "cell": 1,
+    "col": 1,
+    "row": 0,
+    "x": 74.612,
+    "y": 12.7,
+  },
+}
+`;
+
+exports[`placeLabels per stock > thermal_40x30: the first page, cell by cell 1`] = `
+{
+  "cells": 1,
+  "first": {
+    "cell": 0,
+    "col": 0,
+    "row": 0,
+    "x": 0,
+    "y": 0,
+  },
+  "last": {
+    "cell": 0,
+    "col": 0,
+    "row": 0,
+    "x": 0,
+    "y": 0,
+  },
+  "page": "@page { size: 40mm 30mm; margin: 0; }",
+  "second": undefined,
+}
+`;
+
+exports[`placeLabels per stock > thermal_50x30: the first page, cell by cell 1`] = `
+{
+  "cells": 1,
+  "first": {
+    "cell": 0,
+    "col": 0,
+    "row": 0,
+    "x": 0,
+    "y": 0,
+  },
+  "last": {
+    "cell": 0,
+    "col": 0,
+    "row": 0,
+    "x": 0,
+    "y": 0,
+  },
+  "page": "@page { size: 50mm 30mm; margin: 0; }",
+  "second": undefined,
+}
+`;
+
+exports[`placeLabels per stock > thermal_62x29: the first page, cell by cell 1`] = `
+{
+  "cells": 1,
+  "first": {
+    "cell": 0,
+    "col": 0,
+    "row": 0,
+    "x": 0,
+    "y": 0,
+  },
+  "last": {
+    "cell": 0,
+    "col": 0,
+    "row": 0,
+    "x": 0,
+    "y": 0,
+  },
+  "page": "@page { size: 62mm 29mm; margin: 0; }",
+  "second": undefined,
+}
+`;

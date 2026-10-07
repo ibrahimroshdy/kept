@@ -1,0 +1,125 @@
+/*
+ * Kept's look for driver.js's hints and the "Show me around" tour (D138), loaded after the
+ * library's own sheets (driver-kit.ts). Logical CSS only: driver.css pins a few things to
+ * physical sides (the close button, the footer's alignment, the gap between the tour's buttons),
+ * which the rules marked `logical-css-ignore` undo so Arabic mirrors.
+ */
+
+.kept-hint-beacon {
+  --driver-hint-color: var(--amber);
+}
+
+.driver-popover.kept-hint,
+.driver-popover.kept-tour {
+  font-family: var(--sans);
+  background-color: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  min-inline-size: 240px;
+  max-inline-size: min(320px, calc(100vw - 32px));
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.2);
+  filter: none;
+}
+
+:lang(ar) .driver-popover.kept-hint,
+:lang(ar) .driver-popover.kept-tour {
+  font-family: var(--arabic);
+}
+
+.kept-hint .driver-popover-arrow,
+.kept-tour .driver-popover-arrow {
+  display: none;
+}
+
+.kept-hint .driver-popover-title,
+.kept-tour .driver-popover-title {
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+  padding-inline-end: 36px;
+}
+
+.kept-hint .driver-popover-description,
+.kept-tour .driver-popover-description {
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.kept-hint .driver-popover-footer,
+.kept-tour .driver-popover-footer {
+  text-align: start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.kept-tour .driver-popover-progress-text {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.kept-hint .driver-popover-footer-btn,
+.kept-tour .driver-popover-footer-btn {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  min-block-size: 44px;
+  padding-inline: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background-color: var(--surface);
+  color: var(--ink);
+  text-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kept-hint .driver-popover-footer-btn:hover,
+.kept-tour .driver-popover-footer-btn:hover {
+  background-color: var(--sunken);
+}
+
+.kept-hint .driver-popover-footer-btn:focus-visible,
+.kept-tour .driver-popover-footer-btn:focus-visible,
+.kept-tour .driver-popover-close-btn:focus-visible {
+  outline: 2px solid var(--info);
+  outline-offset: 2px;
+}
+
+/* "Got it" and "Next" / "Done": the primary action. */
+.kept-hint .driver-popover-footer-btn:last-child,
+.kept-tour .driver-popover-next-btn {
+  background-color: var(--amber);
+  color: var(--amber-ink);
+  border-color: transparent;
+}
+
+.kept-tour .driver-popover-navigation-btns {
+  gap: 8px;
+}
+
+.kept-tour .driver-popover-navigation-btns button + button {
+  margin-left: 0; /* logical-css-ignore: undoes driver.css's physical gap; `gap` spaces them */
+}
+
+.kept-tour .driver-popover-close-btn {
+  right: auto; /* logical-css-ignore: undoes driver.css pinning the close button to the right */
+  inset-inline-end: 4px;
+  inset-block-start: 4px;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: 10px;
+  color: var(--ink-3);
+  font-size: 22px;
+}
+
+.kept-tour .driver-popover-close-btn:hover {
+  color: var(--ink);
+  background-color: var(--sunken);
+}

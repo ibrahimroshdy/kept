@@ -1,0 +1,9 @@
+{
+  "name": "kept-step8-app-lock-spike",
+  "private": true,
+  "type": "module",
+  "description": "Throwaway: step-8 spike L1, the app lock: WebAuthn UV + PRF in headless Chromium with a CDP virtual authenticator, and the PIN's PBKDF2 cost. Not part of the workspace.",
+  "dependencies": {
+    "playwright": "1.63.0"
+  }
+}

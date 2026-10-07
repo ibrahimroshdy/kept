@@ -1,0 +1,562 @@
+/*
+ * Kept's kit on Starlight.
+ *
+ * The colours are the app's own: astro.config.mjs loads apps/web/src/styles/tokens.css (D131)
+ * before this file, so --paper, --surface, --ink, --amber and the rest are the very values the
+ * app uses, in light and dark. Starlight always writes data-theme="light" or "dark" on <html>
+ * before the first paint, which is exactly what tokens.css keys its dark block on, so the docs
+ * and the app agree on both themes without a second copy of any hex value.
+ *
+ * Below: Starlight's variables mapped onto the tokens, then the kit's look for the pieces
+ * Starlight draws (header, sidebar, code, asides, tables, cards), then the landing page, then the
+ * diagram classes the developer pages use (kd-*). Logical properties only, so Arabic mirrors.
+ * IBM Plex is served from this site (the @fontsource imports in astro.config.mjs), never a CDN.
+ */
+
+/* ---------------------------------------------------------------- Starlight variables */
+
+:root {
+  --sl-font: var(--sans);
+  --sl-font-mono: var(--mono);
+
+  --sl-color-white: var(--ink); /* headings, strong text */
+  --sl-color-gray-1: var(--ink);
+  --sl-color-gray-2: var(--ink-2);
+  --sl-color-gray-3: var(--ink-3);
+  --sl-color-gray-4: var(--s-other);
+  --sl-color-gray-5: var(--line);
+  --sl-color-gray-6: var(--sunken);
+  --sl-color-gray-7: var(--surface);
+  --sl-color-black: var(--paper); /* the page */
+
+  --kd-amber-soft: color-mix(in srgb, var(--amber) 24%, var(--surface));
+  --sl-color-accent-low: var(--kd-amber-soft);
+  --sl-color-accent: var(--amber-text);
+  --sl-color-accent-high: var(--amber-text);
+
+  --sl-color-text: var(--ink);
+  --sl-color-text-accent: var(--amber-text);
+  --sl-color-text-invert: var(--amber-ink);
+  --sl-color-bg: var(--paper);
+  --sl-color-bg-nav: var(--paper);
+  --sl-color-bg-sidebar: var(--paper);
+  --sl-color-bg-inline-code: var(--sunken);
+  --sl-color-bg-accent: var(--amber);
+  --sl-color-hairline-light: var(--line);
+  --sl-color-hairline: var(--line);
+  --sl-color-hairline-shade: var(--line);
+  --sl-color-backdrop-overlay: color-mix(in srgb, var(--charcoal) 55%, transparent);
+
+  /* The kit's type scale (D132) is set for an app; prose gets a little more room. */
+  --sl-text-h1: 2rem;
+  --sl-text-h2: 1.5rem;
+  --sl-text-h3: 1.1875rem;
+  --sl-text-h4: 1.0625rem;
+  --sl-text-h5: 1rem;
+  --sl-line-height: 1.7;
+  --sl-line-height-headings: 1.25;
+  --sl-content-width: 46rem;
+
+  --kd-radius: 10px;
+  --kd-radius-sm: 6px;
+}
+
+@media (min-width: 50em) {
+  :root {
+    --sl-text-h1: 2.375rem;
+    --sl-text-h2: 1.625rem;
+    --sl-text-h3: 1.25rem;
+    --sl-text-h4: 1.0625rem;
+  }
+}
+
+:root:lang(ar) {
+  --sl-font: var(--arabic), var(--sans);
+  --sl-line-height: 1.85;
+}
+
+/* ---------------------------------------------------------------- page chrome */
+
+html {
+  background: var(--paper);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "kern";
+}
+
+:focus-visible {
+  outline: 2px solid var(--info);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--amber) 45%, transparent);
+  color: var(--ink);
+}
+
+/* The site title is the label-tape lockup (src/components/SiteTitle.astro). */
+.site-title {
+  color: var(--ink);
+}
+
+/* Search: the kit's command palette field. */
+site-search button[data-open-modal] {
+  border-radius: 8px;
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink-3);
+}
+site-search button[data-open-modal]:hover {
+  border-color: var(--ink-3);
+  color: var(--ink-2);
+}
+site-search kbd {
+  font-family: var(--mono);
+  background: var(--sunken);
+  border-radius: 4px;
+}
+
+/* Theme and language pickers. */
+starlight-theme-select select,
+starlight-lang-select select {
+  color: var(--ink-2);
+}
+
+/* ---------------------------------------------------------------- sidebar */
+
+.sidebar-content ul ul summary .large {
+  font-size: 0.875rem;
+  color: var(--ink);
+}
+/* Top-level groups read as the kit's eyebrow; nested groups (Install, Backups) keep Starlight's. */
+.sidebar-content .top-level > li > details > summary .large {
+  font: 600 0.71875rem / 1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+:root:lang(ar) .sidebar-content .top-level > li > details > summary .large {
+  font-family: var(--arabic);
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.sidebar-content .top-level > li + li {
+  margin-block-start: 1.25rem;
+}
+.sidebar-content a {
+  border-radius: 4px;
+  color: var(--ink-2);
+}
+.sidebar-content a:hover,
+.sidebar-content a:focus-visible {
+  color: var(--ink);
+  background: var(--sunken);
+}
+/* The current page is a strip of label tape, the same material as the brand and the short IDs. */
+.sidebar-content a[aria-current="page"],
+.sidebar-content a[aria-current="page"]:hover,
+.sidebar-content a[aria-current="page"]:focus {
+  background: var(--amber);
+  color: var(--amber-ink);
+  font-weight: 600;
+  box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.12);
+}
+
+/* ---------------------------------------------------------------- page title and prose */
+
+.content-panel h1#_top {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+:root:lang(ar) .content-panel h1#_top {
+  letter-spacing: 0;
+}
+
+.sl-markdown-content :is(h2, h3, h4):not(:where(.not-content *)) {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+:root:lang(ar) .sl-markdown-content :is(h2, h3, h4) {
+  letter-spacing: 0;
+}
+.sl-markdown-content .sl-heading-wrapper.level-h2 {
+  margin-block-start: 2.5rem;
+  padding-block-start: 1.5rem;
+  border-block-start: 1px solid var(--line);
+}
+.sl-markdown-content :is(p, li, dd, blockquote):not(:where(.not-content *)) {
+  text-wrap: pretty;
+}
+
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--amber-text);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, var(--amber-text) 45%, transparent);
+}
+.sl-markdown-content a:not(:where(.not-content *)):hover {
+  text-decoration-color: currentColor;
+}
+
+.sl-markdown-content strong:not(:where(.not-content *)) {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Inline code: the kit's sunken chip. */
+.sl-markdown-content :not(pre) > code:not(:where(.not-content *)) {
+  font-family: var(--mono);
+  font-size: 0.875em;
+  background: var(--sunken);
+  color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  border-radius: 4px;
+  padding: 0.0625em 0.35em;
+  overflow-wrap: anywhere;
+}
+.sl-markdown-content a:not(:where(.not-content *)) > code {
+  color: inherit;
+}
+
+.sl-markdown-content hr:not(:where(.not-content *)) {
+  border: 0;
+  border-block-start: 1px solid var(--line);
+}
+
+.sl-markdown-content blockquote:not(:where(.not-content *)) {
+  border-inline-start: 3px solid var(--amber);
+  color: var(--ink-2);
+}
+
+/* Tables: a card with hairlines, the kit's row list. */
+.sl-markdown-content table:not(:where(.not-content *)) {
+  border: 1px solid var(--line);
+  border-radius: var(--kd-radius);
+  background: var(--surface);
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.9375em;
+  line-height: 1.5;
+  max-width: 100%;
+}
+.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+  border-block-end: 1px solid var(--line);
+  padding: 0.6rem 0.9rem;
+}
+.sl-markdown-content :is(th:first-child, td:first-child):not(:where(.not-content *)) {
+  padding-inline-start: 0.9rem;
+}
+.sl-markdown-content :is(th:last-child, td:last-child):not(:where(.not-content *)) {
+  padding-inline-end: 0.9rem;
+}
+.sl-markdown-content tr:last-child td:not(:where(.not-content *)) {
+  border-block-end: 0;
+}
+.sl-markdown-content th:not(:where(.not-content *)) {
+  background: var(--sunken);
+  color: var(--ink-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.sl-markdown-content thead th:first-child {
+  border-start-start-radius: calc(var(--kd-radius) - 1px);
+}
+.sl-markdown-content thead th:last-child {
+  border-start-end-radius: calc(var(--kd-radius) - 1px);
+}
+
+/* Pagination at the foot of a page. */
+.pagination-links a {
+  border-radius: var(--kd-radius);
+  border-color: var(--line);
+  background: var(--surface);
+  box-shadow: none;
+}
+.pagination-links a:hover {
+  border-color: var(--ink-3);
+}
+
+/* ---------------------------------------------------------------- asides (callouts) */
+
+.starlight-aside {
+  --kd-aside: var(--info);
+  border: 1px solid color-mix(in srgb, var(--kd-aside) 35%, var(--line));
+  border-inline-start: 3px solid var(--kd-aside);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--kd-aside) 7%, var(--surface));
+  color: var(--ink);
+  padding: 0.875rem 1rem;
+}
+.starlight-aside--note {
+  --kd-aside: var(--info);
+}
+.starlight-aside--tip {
+  --kd-aside: var(--ok);
+}
+.starlight-aside--caution {
+  --kd-aside: var(--warn);
+}
+.starlight-aside--danger {
+  --kd-aside: var(--danger);
+}
+.starlight-aside .starlight-aside__title {
+  --sl-color-asides-text-accent: var(--kd-aside);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--kd-aside);
+}
+.starlight-aside .starlight-aside__content a {
+  color: inherit;
+  text-decoration-color: currentColor;
+}
+
+/* ---------------------------------------------------------------- code blocks */
+
+.expressive-code {
+  --ec-brdRad: 8px;
+  --ec-codeFontFml: var(--mono);
+  --ec-uiFontFml: var(--sans);
+}
+.expressive-code .frame {
+  border-radius: 8px;
+}
+.expressive-code pre {
+  border-color: var(--line);
+}
+
+/* ---------------------------------------------------------------- Starlight cards and buttons */
+
+.sl-link-button {
+  border-radius: 7px;
+  font-weight: 600;
+}
+.sl-link-button.primary,
+.sl-link-button.primary:hover {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--amber-ink);
+  box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.12);
+}
+.sl-link-button.secondary {
+  border-color: var(--line);
+  color: var(--ink);
+  background: var(--surface);
+}
+.sl-link-button.secondary:hover {
+  border-color: var(--ink-3);
+}
+
+.card,
+.sl-link-card {
+  border-radius: var(--kd-radius);
+  border-color: var(--line);
+  background: var(--surface);
+  box-shadow: none;
+}
+
+/* "Not translated yet" and other notices. */
+.sl-banner,
+.content-panel .starlight-aside--caution:first-child {
+  border-radius: 8px;
+}
+
+/* ---------------------------------------------------------------- diagrams (developer pages) */
+
+.kd-diagram {
+  margin-block: 1.75rem;
+  margin-inline: 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--kd-radius);
+  background: var(--paper);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--ink-3) 22%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 16px 16px;
+  overflow-x: auto;
+}
+.kd-diagram svg {
+  display: block;
+  inline-size: 100%;
+  min-inline-size: 36rem;
+  block-size: auto;
+  margin-inline: auto;
+  direction: ltr;
+}
+.kd-diagram figcaption {
+  margin-block-start: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--ink-3);
+  text-align: center;
+}
+.kd-diagram .kd-box {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1.25;
+}
+.kd-diagram .kd-box.kd-accent {
+  fill: var(--amber);
+  stroke: color-mix(in srgb, var(--amber) 70%, var(--amber-ink));
+}
+.kd-diagram .kd-box.kd-sunken {
+  fill: var(--sunken);
+}
+.kd-diagram .kd-zone {
+  fill: color-mix(in srgb, var(--surface) 55%, transparent);
+  stroke: var(--ink-3);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+.kd-diagram .kd-edge {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1.5;
+}
+.kd-diagram .kd-edge.kd-dashed {
+  stroke-dasharray: 5 4;
+}
+.kd-diagram .kd-head {
+  fill: var(--ink-3);
+}
+.kd-diagram text {
+  font-family: var(--sans);
+}
+.kd-diagram .kd-t {
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+.kd-diagram .kd-t2 {
+  font-size: 11.5px;
+  fill: var(--ink-2);
+}
+.kd-diagram .kd-mono {
+  font-family: var(--mono);
+}
+.kd-diagram .kd-on-accent {
+  fill: var(--amber-ink);
+}
+.kd-diagram .kd-zone-t {
+  font: 600 10.5px var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  fill: var(--ink-3);
+}
+
+/* ---------------------------------------------------------------- landing page */
+
+[data-has-hero] .header {
+  background: var(--paper);
+}
+[data-has-hero] .content-panel:first-of-type {
+  border-block-start: 0;
+}
+[data-has-hero] .sl-markdown-content .sl-heading-wrapper.level-h2 {
+  border-block-start: 0;
+  padding-block-start: 0;
+}
+
+.kd-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font: 600 0.71875rem / 1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+:root:lang(ar) .kd-eyebrow {
+  font-family: var(--arabic);
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 0.8125rem;
+}
+
+.kd-section {
+  margin-block: 3.5rem 0;
+}
+.kd-section > header {
+  display: grid;
+  gap: 0.5rem;
+  margin-block-end: 1.5rem;
+  max-inline-size: 40rem;
+}
+.kd-section > header h2 {
+  margin: 0;
+  font-size: 1.625rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+:root:lang(ar) .kd-section > header h2 {
+  letter-spacing: 0;
+}
+.kd-section > header p {
+  margin: 0;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+/* Screenshots are shown at about the size they were taken, never stretched across a wide
+   column: a desktop capture at most 40rem wide (the content column), a phone at most 12rem. */
+.kd-screens {
+  display: grid;
+  gap: 1.5rem;
+  align-items: end;
+}
+@media (min-width: 50rem) {
+  .kd-screens {
+    grid-template-columns: minmax(0, 40rem) 12rem;
+    justify-content: start;
+    gap: 2.5rem;
+  }
+}
+.kd-screens figure {
+  margin: 0;
+  display: grid;
+  gap: 0.625rem;
+}
+.kd-screens figcaption {
+  font-size: 0.8125rem;
+  color: var(--ink-3);
+}
+.kd-screens .kd-shot img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--kd-radius);
+  background: var(--surface);
+}
+.kd-screen-desktop {
+  max-inline-size: 40rem;
+}
+.kd-screen-phone {
+  justify-self: center;
+  inline-size: 100%;
+  max-inline-size: 10rem;
+}
+@media (min-width: 50rem) {
+  .kd-screen-phone {
+    max-inline-size: 12rem;
+  }
+}
+.kd-screen-phone .kd-shot img {
+  border: 5px solid var(--charcoal);
+  border-radius: 22px;
+}
+/* A capture of the app shows only in its own theme (src/components/landing/Shot.astro). */
+:root[data-theme="light"] .kd-only-dark,
+:root:not([data-theme="light"]) .kd-only-light {
+  display: none;
+}

@@ -1,0 +1,17 @@
+{
+  "name": "kept-step8-docs-site-spike",
+  "private": true,
+  "type": "module",
+  "description": "Throwaway: step-8 spike D1, a Starlight site with five locales, Pagefind, the OpenAPI reference and a link check. Not part of the workspace.",
+  "scripts": {
+    "build": "ASTRO_TELEMETRY_DISABLED=1 NODE_OPTIONS='--import ./net-guard.mjs' NET_GUARD=block astro build --root site"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "7.3.1",
+    "@astrojs/markdown-satteri": "0.4.2",
+    "@astrojs/starlight": "0.42.5",
+    "astro": "7.3.5",
+    "starlight-links-validator": "0.26.0",
+    "starlight-openapi": "0.26.3"
+  }
+}

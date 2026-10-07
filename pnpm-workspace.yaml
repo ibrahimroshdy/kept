@@ -1,0 +1,18 @@
+packages:
+  - apps/*
+  - packages/*
+allowBuilds:
+  # The IBM Plex packages' postinstall is IBM's telemetry (ibmtelemetry); the report's fonts
+  # (apps/server, D201) need only their WOFF files, so it never runs.
+  '@ibm/plex-mono': false
+  '@ibm/plex-sans': false
+  '@ibm/plex-sans-arabic': false
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@types/node@26.6.3'
+  - '@vitest/mocker@5.0.2'
+  - '@vitest/spy@5.0.2'
+  - vitest@5.0.2
+  - '@aws-sdk/client-s3@3.1141.0'
+  - '@aws-sdk/s3-request-presigner@3.1141.0'
+  - '@ai-sdk/openai@4.0.78'

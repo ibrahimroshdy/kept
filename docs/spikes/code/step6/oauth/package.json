@@ -1,0 +1,30 @@
+{
+  "name": "kept-spike-step6-oauth",
+  "private": true,
+  "type": "module",
+  "description": "Spike S6.2 (V15): Better Auth as the OAuth server for /mcp, with CIMD. Throwaway; never imported by apps/.",
+  "scripts": {
+    "generate": "auth generate --config ./auth-cli.config.ts --adapter drizzle --dialect postgresql --output ./generated/auth-schema.cli.ts --yes",
+    "spike": "tsx run.ts"
+  },
+  "dependencies": {
+    "@better-auth/cimd": "1.7.6",
+    "@better-auth/core": "1.7.6",
+    "@better-auth/mcp": "1.7.6",
+    "@better-auth/oauth-provider": "1.7.6",
+    "@better-auth/utils": "0.4.2",
+    "@better-fetch/fetch": "1.3.2",
+    "@modelcontextprotocol/client": "2.2.0",
+    "@modelcontextprotocol/server": "2.2.0",
+    "better-auth": "1.7.6",
+    "better-call": "1.4.0",
+    "drizzle-orm": "0.45.3",
+    "pg": "8.23.0",
+    "uuid": "14.0.2",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "auth": "1.7.6",
+    "tsx": "4.23.15"
+  }
+}

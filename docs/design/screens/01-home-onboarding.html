@@ -1,0 +1,796 @@
+<style>
+.a1 figure{margin:0}
+.a1 .grp{font:600 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-top:6px}
+.a1 .a1-defs{position:absolute;width:0;height:0;overflow:hidden}
+.a1 svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.a1 .pill svg.i{width:13px;height:13px;stroke-width:2}
+.a1 [dir="rtl"] .flip{transform:scaleX(-1)}
+.a1 .phone[dir="rtl"] *:not(.sid):not(.mono):not(kbd){font-family:var(--arabic)}
+.a1 .phone.tall{height:auto}
+.a1 .phone.tall .content{overflow:visible}
+.a1 .phone .content{grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content}
+.a1 .phone .btn{min-height:44px}
+.a1 .phone .icon-btn{width:44px;height:44px}
+.a1 .desktop .main{padding:0;border:0;gap:0}
+.a1 .sidebar .tree{align-content:start}
+.a1 .desktop .work{padding-block:14px 16px}
+.a1 .desktop .sh{margin-top:0}
+.a1 .toast button{background:var(--amber);color:var(--amber-ink);border-radius:6px;padding:8px 12px;min-height:36px}
+.a1 .ltr{direction:ltr;unicode-bidi:isolate}
+/* top row: date + location filter */
+.a1 .hd{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.a1 .date{font:500 13.5px/1.3 var(--sans);color:var(--ink-2)}
+.a1 .fchip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font:500 13.5px/1 var(--sans);color:var(--ink)}
+.a1 .fchip svg.i{width:16px;height:16px;color:var(--ink-3)}
+/* section heads */
+.a1 .sh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;min-height:20px}
+.a1 .sh h3{font:600 11.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.a1 .sh a{font:600 13px/1 var(--sans);color:var(--ink-2);text-decoration:none;display:inline-flex;align-items:center;min-height:44px;margin-block:-12px}
+.a1 [dir="rtl"] .sh h3{letter-spacing:0;text-transform:none;font-size:13px}
+/* tape chip (amber fill, dark text) */
+.a1 .tp{display:inline-flex;align-items:center;background:var(--amber);color:var(--amber-ink);font:600 12px/1 var(--mono);letter-spacing:.06em;padding:5px 7px 4px;border-radius:3px;white-space:nowrap;box-shadow:inset 0 -1px 0 rgba(0,0,0,.12)}
+/* get-started checklist */
+.a1 .gs{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 14px 4px;display:grid;gap:12px}
+.a1 .gs-top{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:start}
+.a1 .gs-top h3{font:600 16px/1.3 var(--sans);color:var(--ink)}
+.a1 .gs-top p{font-size:13px;line-height:1.4;margin-top:2px}
+.a1 .gs-top .tp{margin-top:2px}
+.a1 .gs-top .icon-btn{margin:-10px -10px 0 0}
+.a1 [dir="rtl"] .gs-top .icon-btn{margin:-10px 0 0 -10px}
+.a1 .gs-bar{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}
+.a1 .gs-bar i{height:5px;border-radius:2px;background:var(--sunken)}
+.a1 .gs-bar i.d{background:var(--ok)}
+.a1 .gs-list{display:grid}
+.a1 .gs-item{display:grid;grid-template-columns:24px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line);min-height:56px}
+.a1 .gs-item .tx small{font-size:12.5px}
+.a1 .gs-item.done .tx b{color:var(--ink-2)}
+.a1 .box{width:22px;height:22px;border-radius:5px;border:1.5px solid var(--ink-3);display:grid;place-items:center;background:var(--surface)}
+.a1 .box.on{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.a1 .box svg.i{width:15px;height:15px;stroke-width:2.6}
+/* shared text stack */
+.a1 .tx{display:grid;gap:3px;min-width:0;align-content:center}
+.a1 .tx b{font:600 14.5px/1.3 var(--sans);color:var(--ink)}
+.a1 .tx small{font:400 12.5px/1.4 var(--sans);color:var(--ink-2);overflow-wrap:anywhere}
+.a1 .tx .pill{justify-self:start}
+.a1 .ic{width:36px;height:36px;border-radius:9px;background:var(--sunken);color:var(--ink-2);display:grid;place-items:center;flex:none}
+.a1 .ic.w{color:var(--warn)}
+.a1 .num{font:600 20px/1 var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);min-width:22px;text-align:end}
+.a1 .num.w{color:var(--warn)}
+.a1 svg.chev{width:16px;height:16px;color:var(--ink-3)}
+/* attention panel, phone */
+.a1 .att{background:var(--surface);border:1px solid var(--line);border-radius:12px;display:grid;overflow:hidden}
+.a1 .att a{display:grid;grid-template-columns:36px 1fr auto 16px;gap:12px;align-items:center;padding:10px 12px;min-height:62px;border-top:1px solid var(--line);color:var(--ink);text-decoration:none}
+.a1 .att a:first-child{border-top:0}
+/* photo placeholder */
+.a1 .ph{background:linear-gradient(155deg,var(--surface) -30%,var(--sunken) 55%);border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;color:var(--ink-3);overflow:hidden}
+.a1 .ph svg.i{width:22px;height:22px;stroke-width:1.5}
+.a1 .ph.s48{width:48px;height:48px}
+.a1 .ph.s36{width:36px;height:36px;border-radius:7px}
+.a1 .ph.s36 svg.i{width:18px;height:18px}
+.a1 .ph.s26{width:26px;height:26px;border-radius:5px}
+.a1 .ph.s26 svg.i{width:14px;height:14px}
+/* activity */
+.a1 .act{background:var(--surface);border:1px solid var(--line);border-radius:12px;display:grid}
+.a1 .ar{display:grid;grid-template-columns:48px 1fr;gap:12px;padding:12px;border-top:1px solid var(--line);align-items:start}
+.a1 .ar:first-child{border-top:0}
+.a1 .meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:3px}
+.a1 .when{font:400 12.5px/1.2 var(--sans);color:var(--ink-3);white-space:nowrap}
+/* location cards, phone */
+.a1 .locs{display:grid;gap:10px}
+.a1 .loc{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:grid;color:var(--ink);text-decoration:none}
+.a1 .strip{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2px;height:86px;background:var(--line)}
+.a1 .strip .ph{border-radius:0;border:0;height:100%}
+.a1 .loc-h{display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;padding:10px 12px;min-height:56px}
+.a1 .loc-h .ic{width:32px;height:32px;border-radius:8px}
+.a1 .loc-h .ic svg.i{width:18px;height:18px}
+.a1 .av{display:flex;padding-inline-start:6px}
+.a1 .av i{width:26px;height:26px;border-radius:50%;background:var(--sunken);border:2px solid var(--surface);font:600 11px/22px var(--sans);font-style:normal;text-align:center;color:var(--ink-2);margin-inline-start:-6px}
+/* desktop home */
+.a1 .topbar .btn{display:inline-flex;align-items:center;gap:6px}
+.a1 .topbar .btn svg.i{width:18px;height:18px}
+.a1 .topbar .fchip{min-height:36px}
+.a1 .dk-grid{display:grid;grid-template-columns:minmax(0,1fr) 296px;gap:20px;align-items:start}
+.a1 .dk-col{display:grid;gap:10px;align-content:start;min-width:0}
+.a1 .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.a1 .tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 12px 10px;display:grid;gap:6px;align-content:start}
+.a1 .tile .th{display:flex;align-items:center;gap:10px}
+.a1 .tile .th .ic{width:28px;height:28px;border-radius:7px}
+.a1 .tile .th .ic svg.i{width:16px;height:16px}
+.a1 .tile .th b{flex:1;font:600 14px/1.2 var(--sans)}
+.a1 .tile .num{font-size:21px}
+.a1 .tile ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;font:400 13px/1.35 var(--sans);color:var(--ink-2)}
+.a1 .tile li{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:22px}
+.a1 .tile li .btn{margin-inline-start:auto}
+.a1 .minis{display:flex;gap:3px}
+.a1 .desktop .ar{grid-template-columns:36px 1fr auto;padding:6px 12px;align-items:center;gap:12px}
+.a1 .desktop .ar .tx{grid-auto-flow:row;gap:1px}
+.a1 .desktop .ar .tx b{font-size:13.5px}
+.a1 .desktop .ar .tx b .sid{margin-inline-start:6px;vertical-align:1px}
+.a1 .desktop .gs{padding:12px 14px 2px;gap:10px}
+.a1 .desktop .gs-item{min-height:48px;padding:7px 0}
+.a1 .desktop .gs-item .tx b{font-size:13.5px}
+.a1 .desktop .gs-item .tx small{font-size:12px}
+.a1 .dloc{display:grid;grid-template-columns:62px 1fr;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px;color:var(--ink);text-decoration:none}
+.a1 .mosaic{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:62px;height:62px;border-radius:7px;overflow:hidden;background:var(--line)}
+.a1 .mosaic .ph{border:0;border-radius:0}
+.a1 .mosaic .ph svg.i{width:14px;height:14px}
+.a1 .dloc .tx b{font-size:14px}
+.a1 .dloc .row2{display:flex;align-items:center;justify-content:space-between;gap:8px}
+/* first-run setup */
+.a1 .desktop.solo{grid-template-columns:1fr;place-items:center}
+.a1 .setup{width:860px;display:grid;grid-template-columns:236px 1fr;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.a1 .rail{background:var(--paper);border-inline-end:1px solid var(--line);padding:22px 16px;display:grid;grid-template-rows:auto auto 1fr auto;gap:16px}
+.a1 .rail-t{font:600 15px/1.3 var(--sans);color:var(--ink);padding-inline:8px}
+.a1 .steps{list-style:none;margin:0;padding:0;display:grid;gap:4px;align-content:start}
+.a1 .steps li{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;font:500 14px/1.2 var(--sans);color:var(--ink-3);border:1px solid transparent}
+.a1 .steps li.now{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.a1 .steps li.done{color:var(--ink-2)}
+.a1 .sn{width:24px;height:24px;border-radius:4px;display:grid;place-items:center;font:600 12px/1 var(--mono);background:var(--sunken);color:var(--ink-3);flex:none}
+.a1 .now .sn{background:var(--amber);color:var(--amber-ink)}
+.a1 .done .sn{background:var(--ok);color:var(--surface)}
+.a1 .done .sn svg.i{width:14px;height:14px;stroke-width:2.6}
+.a1 .rail-f{font-size:12px;padding-inline:8px}
+.a1 .pane{padding:28px 32px 24px;display:grid;gap:16px;align-content:start}
+.a1 .pane h2{font-size:24px;margin-top:-6px}
+.a1 .pane p{font-size:14.5px}
+.a1 .where{display:grid;gap:6px;padding:12px 14px;border-radius:10px;background:var(--paper);border:1px solid var(--line)}
+.a1 .where b{font:600 13px/1.2 var(--sans)}
+.a1 .where small{font-size:12.5px;color:var(--ink-3)}
+.a1 .term{font:500 13px/1.5 var(--mono);background:var(--sunken);border-radius:6px;padding:8px 10px;color:var(--ink)}
+.a1 .codein{font:600 21px/1 var(--mono);letter-spacing:.14em;border:2px solid var(--info);min-height:54px;display:flex;align-items:center;max-width:360px;background:var(--surface)}
+.a1 .hint{font:400 12.5px/1.4 var(--sans);color:var(--ink-3)}
+.a1 .pane-f{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding-top:16px;margin-top:2px}
+.a1 .pane-f .btn{min-height:44px;padding-inline:18px}
+.a1 .btns{display:flex;gap:8px;flex:none}
+.a1 .pane .banner svg.i{width:18px;height:18px}
+.a1 .warnbox{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:12px 14px;border:1px solid var(--warn);border-radius:10px;font:400 14px/1.45 var(--sans);color:var(--ink)}
+.a1 .warnbox > svg.i{color:var(--warn)}
+.a1 .warnbox b{color:var(--warn);margin-inline-end:4px}
+.a1 .kit{display:grid;grid-template-columns:56px 1fr;gap:14px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.a1 .kit .ph{width:56px;height:70px;border-radius:4px}
+.a1 .kit .btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;justify-self:start;margin-top:6px}
+.a1 .kit .btn svg.i{width:18px;height:18px}
+.a1 .ack{display:grid;grid-template-columns:24px 1fr;gap:12px;align-items:start;padding:12px 14px;border-radius:10px;background:var(--sunken);font:500 14px/1.45 var(--sans);color:var(--ink);min-height:44px}
+.a1 .ck{width:22px;height:22px;border-radius:5px;border:1.5px solid var(--ink-3);display:grid;place-items:center;background:var(--surface);margin-top:1px}
+.a1 .ck.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.a1 .ck svg.i{width:15px;height:15px;stroke-width:2.6}
+.a1 .code-i{font:500 12.5px/1 var(--mono);background:var(--sunken);padding:2px 5px;border-radius:4px;color:var(--ink)}
+/* new-location wizard */
+.a1 .stepn{font:600 12.5px/1 var(--mono);color:var(--ink-3);white-space:nowrap;padding-inline-end:4px}
+.a1 .wz-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.a1 .wz-bar i{height:4px;border-radius:2px;background:var(--line)}
+.a1 .wz-bar i.d{background:var(--ink)}
+.a1 .wz-h{display:grid;gap:6px}
+.a1 .wz-h h2{font-size:22px}
+.a1 .wz-h p{font-size:14px}
+.a1 .rooms{background:var(--surface);border:1px solid var(--line);border-radius:12px;display:grid}
+.a1 .rm{display:grid;grid-template-columns:24px 1fr auto 44px;align-items:center;gap:8px;padding:3px 2px 3px 10px;border-top:1px solid var(--line);min-height:52px}
+.a1 .rm:first-child{border-top:0}
+.a1 .grip{color:var(--ink-3);display:grid;place-items:center}
+.a1 .grip svg.i{width:18px;height:18px}
+.a1 .rm-n{font:500 15px/1.3 var(--sans);color:var(--ink)}
+.a1 .rm-k{font:500 12px/1 var(--sans);color:var(--ink-3);padding:5px 7px;border-radius:5px;background:var(--sunken)}
+.a1 .rm.edit{padding-block:8px;align-items:start}
+.a1 .rm.edit .grip,.a1 .rm.edit .rm-k{margin-top:12px}
+.a1 .rm.edit .icon-btn{margin-top:2px}
+.a1 .rm-in{display:block;border:2px solid var(--info);border-radius:7px;padding:9px 10px;background:var(--paper);font:500 15px/1.3 var(--sans);color:var(--ink)}
+.a1 .caret{display:inline-block;width:1.5px;height:17px;background:var(--ink);vertical-align:-3px;margin-inline-start:1px}
+.a1 .rm-was{display:block;font:400 12px/1.3 var(--sans);color:var(--ink-3);margin-top:5px}
+.a1 .rm.lock{grid-template-columns:24px 1fr;padding-block:10px;background:var(--paper);border-radius:0 0 12px 12px}
+.a1 .rm.lock small{display:block;font:400 12.5px/1.4 var(--sans);color:var(--ink-3);margin-top:2px}
+.a1 .addrow{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%}
+.a1 .addrow svg.i{width:18px;height:18px}
+.a1 .wz-f{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;padding:12px 14px 26px;border-top:1px solid var(--line);background:var(--surface)}
+.a1 .wz-f .lnk{justify-self:end}
+.a1 .wz-f .btn.primary{padding-inline:22px}
+.a1 .lnk{background:none;border:0;font:600 14px/1 var(--sans);color:var(--ink-2);min-height:44px;padding:0 10px}
+.a1 .pc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:22px 1fr;gap:8px 12px}
+.a1 .pc.on{border:2px solid var(--ink);padding:11px 13px}
+.a1 .rad{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ink-3);margin-top:1px;background:var(--surface)}
+.a1 .pc.on .rad{border:7px solid var(--ink)}
+.a1 .pc b{font:600 16px/1.3 var(--sans);color:var(--ink)}
+.a1 .pc p{font-size:13.5px;line-height:1.4;margin-top:2px}
+.a1 .mods{grid-column:2;display:flex;flex-wrap:wrap;gap:6px}
+.a1 .mod{font:500 12px/1.2 var(--sans);padding:4px 7px;border-radius:4px;border:1px solid var(--line);color:var(--ink-2);background:var(--paper)}
+.a1 .mod.base{background:var(--sunken);border-color:var(--sunken);color:var(--ink-3)}
+.a1 .mod.needs{display:inline-flex;align-items:center;gap:5px}
+.a1 .mod.needs svg.i{width:13px;height:13px;color:var(--info)}
+.a1 .pc .aside{grid-column:2;font:400 12px/1.4 var(--sans);color:var(--ink-3);display:flex;gap:6px;align-items:flex-start}
+.a1 .pc .aside svg.i{width:14px;height:14px;color:var(--info);margin-top:1px}
+/* empty state */
+.a1 .empty{display:grid;justify-items:center;text-align:center;gap:10px;padding:14px 6px 4px}
+.a1 .empty h2{font-size:24px}
+.a1 .empty p{font-size:14.5px}
+.a1 .empty .btn{width:100%;margin-top:6px;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.a1 .alt{background:var(--surface);border:1px solid var(--line);border-radius:12px;display:grid}
+.a1 .alt a{display:grid;grid-template-columns:36px 1fr 16px;gap:12px;align-items:center;padding:10px 12px;min-height:64px;border-top:1px solid var(--line);color:var(--ink);text-decoration:none}
+.a1 .alt a:first-child{border-top:0}
+/* install sheet */
+.a1 .sheet h2{font-size:20px;flex:1}
+.a1 .sh-top{display:flex;align-items:center;gap:8px}
+.a1 .sh-top .icon-btn{margin-inline-end:-8px}
+.a1 .seg{display:grid;grid-template-columns:repeat(3,1fr);padding:3px;background:var(--sunken);border-radius:11px;gap:3px}
+.a1 .seg button{min-height:44px;border:0;border-radius:8px;background:transparent;font:600 13px/1.2 var(--sans);color:var(--ink-2)}
+.a1 .seg button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.a1 .stp{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.a1 .stp li{display:grid;grid-template-columns:26px 1fr;gap:12px;align-items:start;font:400 15px/1.5 var(--sans);color:var(--ink)}
+.a1 .stp .tp{width:26px;height:26px;justify-content:center;padding:0;font-size:13px}
+.a1 .gly{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:7px;background:var(--sunken);vertical-align:middle;color:var(--info);margin-inline:2px}
+.a1 .gly svg.i{width:17px;height:17px}
+.a1 .push{display:grid;grid-template-columns:36px 1fr;gap:12px;padding:12px;border-radius:10px;background:var(--sunken)}
+.a1 .push .ic{background:var(--surface);color:var(--info)}
+.a1 .push .btn{justify-self:start;margin-top:8px;display:inline-flex;align-items:center;gap:8px}
+.a1 .push .btn svg.i{width:17px;height:17px}
+.a1 .note2{font:400 12.5px/1.45 var(--sans);color:var(--ink-3)}
+.a1 .btn.full{width:100%}
+.a1 .appicon.sm{width:40px;height:40px;display:inline-grid;vertical-align:middle;margin-inline-start:4px}
+</style>
+
+<section class="area a1" id="home-onboarding">
+  <header>
+    <span class="eyebrow">Screens · Home &amp; onboarding</span>
+    <h2>Home, first run and getting set up</h2>
+    <p>Home answers "what needs me, and where is everything" at a glance, and the onboarding flows take one household from a fresh server to a labelled, installed Kept without a launch tour.</p>
+  </header>
+
+  <svg class="a1-defs" aria-hidden="true" focusable="false">
+    <symbol id="a1-inbox" viewBox="0 0 24 24"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></symbol>
+    <symbol id="a1-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+    <symbol id="a1-hour" viewBox="0 0 24 24"><path d="M7 3h10M7 21h10M8 3v3l4 5 4-5V3M8 21v-3l4-5 4 5v3"/></symbol>
+    <symbol id="a1-lend" viewBox="0 0 24 24"><path d="M4 12h11M11 8l4 4-4 4M19 5v14"/></symbol>
+    <symbol id="a1-q" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.5V14M12 17v.01"/></symbol>
+    <symbol id="a1-tray" viewBox="0 0 24 24"><path d="M3 9l3-5h12l3 5v10H3Z"/><path d="M3 9h6l1 2h4l1-2h6"/></symbol>
+    <symbol id="a1-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    <symbol id="a1-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
+    <symbol id="a1-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="a1-warn" viewBox="0 0 24 24"><path d="M12 4 21.5 20h-19Z"/><path d="M12 10v4.5M12 17.5v.01"/></symbol>
+    <symbol id="a1-phone" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></symbol>
+    <symbol id="a1-label" viewBox="0 0 24 24"><path d="M3 7h13l5 5-5 5H3Z"/><circle cx="7" cy="12" r="1.3"/></symbol>
+    <symbol id="a1-spark" viewBox="0 0 24 24"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-6.5L8 20v-3.5H5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 14.9v.01"/></symbol>
+    <symbol id="a1-apt" viewBox="0 0 24 24"><path d="M5 20V4h10v16M15 9h4v11M3 20h18M8 7.5h1M11 7.5h1M8 11h1M11 11h1M8 14.5h1M11 14.5h1"/></symbol>
+    <symbol id="a1-house" viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9H4Z"/><path d="M10 20v-5h4v5"/></symbol>
+    <symbol id="a1-garage" viewBox="0 0 24 24"><path d="M3 20V9l9-5 9 5v11"/><path d="M7 20v-8h10v8M7 15h10"/></symbol>
+    <symbol id="a1-storage" viewBox="0 0 24 24"><path d="M4 20V6l8-3 8 3v14"/><path d="M7 20V9h10v11M7 12h10M7 15h10M7 18h10"/></symbol>
+    <symbol id="a1-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="a1-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.4" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="a1-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="a1-share" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4M7 10H5v11h14V10h-2"/></symbol>
+    <symbol id="a1-addsq" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></symbol>
+    <symbol id="a1-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="a1-doc" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6Z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></symbol>
+    <symbol id="a1-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></symbol>
+    <symbol id="a1-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+    <symbol id="a1-down" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></symbol>
+    <symbol id="a1-caret" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+    <symbol id="a1-pin" viewBox="0 0 24 24"><path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11Z"/><circle cx="12" cy="10" r="2"/></symbol>
+    <symbol id="a1-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+    <symbol id="a1-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+    <symbol id="a1-drill" viewBox="0 0 24 24"><path d="M3 8h12v6H3ZM15 10h3M18 10.5h3M6 14l-1 6h5l1-6"/></symbol>
+    <symbol id="a1-tv" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></symbol>
+    <symbol id="a1-cable" viewBox="0 0 24 24"><path d="M8 3h8v5l-2 2h-4L8 8ZM12 10v3c0 3 5 2 5 5v3"/></symbol>
+    <symbol id="a1-car" viewBox="0 0 24 24"><path d="M4 16v-4l2-5h12l2 5v4ZM4 12h16"/><circle cx="7.5" cy="16.5" r="1.8"/><circle cx="16.5" cy="16.5" r="1.8"/></symbol>
+    <symbol id="a1-box" viewBox="0 0 24 24"><path d="M3 8 12 4l9 4v9l-9 4-9-4Z"/><path d="m3 8 9 4 9-4M12 12v9"/></symbol>
+    <symbol id="a1-shelf" viewBox="0 0 24 24"><path d="M5 3v18M19 3v18M5 8h14M5 13h14M5 18h14"/></symbol>
+    <symbol id="a1-filter" viewBox="0 0 24 24"><path d="M8 3h8v4l-1 1v11a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V8L8 7Z"/></symbol>
+    <symbol id="a1-tent" viewBox="0 0 24 24"><path d="M3 20 12 5l9 15ZM9 20l3-5 3 5"/></symbol>
+    <symbol id="a1-gauge" viewBox="0 0 24 24"><path d="M4 16a8 8 0 1 1 16 0"/><path d="m12 16 4-5"/></symbol>
+    <symbol id="a1-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></symbol>
+    <symbol id="a1-keys" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l2 2M14 9l2 2"/></symbol>
+    <symbol id="a1-wallet" viewBox="0 0 24 24"><path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4Z"/><path d="M4 7l11-3v3M15 13h2"/></symbol>
+  </svg>
+
+  <h3 class="grp">First run · the instance</h3>
+  <div class="frames">
+
+<!-- 5a. Setup code -->
+    <figure id="f-setup-code">
+      <div class="frame-scroll">
+        <div class="desktop t-light solo" role="img" aria-label="Desktop: first-run setup, step 1 of 3, setup code, light theme">
+          <div class="setup">
+            <div class="rail">
+              <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+              <p class="rail-t">Set up this Kept</p>
+              <ol class="steps">
+                <li class="now"><span class="sn">1</span>Setup code</li>
+                <li><span class="sn">2</span>First account</li>
+                <li><span class="sn">3</span>Instance options</li>
+              </ol>
+              <div class="rail-f muted">v1.0.0 · Source code</div>
+            </div>
+            <div class="pane">
+              <span class="eyebrow">Step 1 of 3</span>
+              <h2>Enter the setup code</h2>
+              <p>When Kept started for the first time, it printed a one-time setup code in the server's logs. Entering it shows you're the person who installed this server. The code stops working once it's used.</p>
+              <div class="where">
+                <b>Where to find it</b>
+                <div class="term"><span class="muted">$</span> docker logs &lt;your Kept container&gt;</div>
+                <small>It's printed once, on the first start. Other installs: the logs page of your host or app store.</small>
+              </div>
+              <div class="field">
+                <label>Setup code</label>
+                <div class="input codein">K7Q‑2M9<span class="caret"></span></div>
+                <span class="hint">6 characters, printed as <span class="code-i">KEPT SETUP CODE: K7Q2M9</span>. The dash is optional; case doesn't matter.</span>
+              </div>
+              <div class="banner info"><svg class="i"><use href="#a1-info"/></svg>Until setup is finished, anyone who can open this address could try to claim the server. Finish it now.</div>
+              <div class="pane-f">
+                <span class="hint">Lost the logs? Issue a new one with <span class="code-i">kept admin setup-code</span>.</span>
+                <button class="btn primary" type="button">Continue</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">First run · desktop · light · step 1 of 3, the 6-character setup code the web process prints to the logs at boot (D32, D190, screens §8).</figcaption>
+    </figure>
+    <figure id="f-setup-account">
+      <div class="phone t-light k-frame k-bare" role="img" aria-label="Phone: first-run setup, step 2 of 3, create the first account, light theme">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="content">
+          <div class="k-auth-top"><svg width="84" height="28.1" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg><span class="eyebrow">Step 2 of 3</span></div>
+
+          <h2 class="k-h2">Create the first account</h2>
+          <p class="k-p">This account runs the server: users, sign-up and backups. It can't see inside anyone's home unless they invite it.</p>
+          <div class="k-field"><span class="k-lab">Your name</span><span class="k-in">Ibrahim</span></div>
+          <div class="k-field"><span class="k-lab">Email</span><span class="k-in">ibrahim@home.example</span></div>
+          <div class="k-field"><span class="k-lab">Password</span><span class="k-in">••••••••••••</span><span class="k-desc">At least 8 characters. A few unrelated words is easy to remember.</span></div>
+          <div class="k-foot k-sticky"><b class="kb kb-s">Back</b><b class="kb kb-p">Create account</b></div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">First run · phone · light · step 2 of 3, the instance admin's account (routes/setup.tsx). A server already set up answers "This Kept is already set up. Sign in instead." (D32, D190).</figcaption>
+    </figure>
+    <figure id="f-setup-options">
+      <div class="phone t-dark k-frame k-bare" role="img" aria-label="Phone: first-run setup, step 3 of 3, how should this Kept work, dark theme">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="content">
+          <div class="k-auth-top"><svg width="84" height="28.1" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg><span class="eyebrow">Step 3 of 3</span></div>
+
+          <h2 class="k-h2">How should this Kept work?</h2>
+          <p class="k-p">You can change these any time in Settings → Admin.</p>
+          <div class="k-card"><span class="k-sw-row" style="align-items:flex-start"><i class="k-tog"></i><span class="k-rt"><b>Let anyone with the address create an account</b><small>Off is right for a household: people join through an invite, or you add them.</small></span></span></div>
+          <div class="k-notice info"><svg class="k-ic"><use href="#k-info"/></svg><span>AI and barcode lookup can be connected later, from Settings. Kept works without them.</span></div>
+          <div class="k-foot k-sticky"><b class="kb kb-s">Back</b><b class="kb kb-p">Finish setup</b></div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">First run · phone · dark · step 3 of 3, instance options; Finish setup goes to Home. Three steps as built: the recovery kit is no longer a setup step, it is asked before the first secret, AI key or backup (D193).</figcaption>
+    </figure>
+
+<!-- 5b. Recovery kit -->
+
+  </div>
+
+  <h3 class="grp">Home, the first time</h3>
+  <div class="frames">
+
+<!-- 4. Home, phone, empty -->
+    <figure id="f-home-first">
+      <div class="phone t-light" role="img" aria-label="Phone: Home at first run, the Personal location and Create your first home, light theme">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <h1>Home</h1>
+          <button class="icon-btn" aria-label="Scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg></button>
+          <button class="icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button>
+          <button class="icon-btn" aria-label="Assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-6.5L8 20v-3.5H5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 14.9v.01"/></svg></button>
+        </div>
+        <div class="content">
+          <div class="hd"><span class="date">Monday 12 October</span></div>
+          <div class="empty">
+            <svg width="168" height="104" viewBox="0 0 168 118" aria-hidden="true">
+              <path d="M24 44 84 22l60 22v50l-60 22-60-22Z" fill="var(--surface)" stroke="var(--ink-3)" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="m24 44 60 22 60-22M84 66v50" fill="none" stroke="var(--ink-3)" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M24 44 8 30l60-22 16 14M144 44l16-14-60-22-16 14" fill="var(--sunken)" stroke="var(--ink-3)" stroke-width="1.8" stroke-linejoin="round"/>
+              <g transform="rotate(20 60 84)"><rect x="36" y="74" width="48" height="18" rx="2.5" fill="var(--amber)"/><circle cx="42.5" cy="83" r="2.2" fill="var(--surface)"/></g>
+            </svg>
+            <h2>Welcome, Ibrahim</h2>
+            <p>Your Personal location is ready for what's on you: keys, wallet, phone. Now add the place you live. It comes with the usual rooms, and you can change them.</p>
+            <button class="btn primary" type="button"><svg class="i"><use href="#a1-plus"/></svg>Create your first home</button>
+          </div>
+          <div class="sh"><h3>Locations</h3></div>
+          <a class="loc" href="#"><div class="loc-h"><span class="ic"><svg class="i"><use href="#a1-person"/></svg></span><span class="tx"><b>Personal</b><small>Only you · nothing yet · captures with no location land here</small></span><svg class="i chev"><use href="#a1-chev"/></svg></div></a>
+          <div class="sh"><h3>Or</h3></div>
+          <div class="alt">
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-link"/></svg></span><span class="tx"><b>Joining someone's Kept?</b><small>Open the invite link they sent you. It adds you to their location.</small></span><svg class="i chev"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-down"/></svg></span><span class="tx"><b>Bring in an inventory</b><small>Import from Homebox or a CSV file.</small></span><svg class="i chev"><use href="#a1-chev"/></svg></a>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="Main">
+          <a class="on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a>
+          <a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a>
+        </nav>
+      </div>
+      <figcaption class="frame-cap">Home · phone · light · first run: the Personal card plus Create your first home (screens §8, D114). Home is never empty, because Personal always exists; the checklist stays hidden so it doesn't repeat the main button.</figcaption>
+    </figure>
+
+  </div>
+
+  <h3 class="grp">New location · 3 steps: name and kind, rooms, what to track</h3>
+  <div class="frames">
+
+<!-- 6a. Template rooms -->
+    <figure id="f-newloc-name">
+      <div class="phone t-light k-frame" role="img" aria-label="Phone: new location, step 1 of 3, name and kind, light theme">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic"><use href="#k-back"/></svg></button><h1>New location</h1><span class="k-meta" style="font-size:12px">Step 1 of 3</span></div>
+        <div class="content">
+
+          <div class="k-steps"><i class="d"></i><i></i><i></i></div>
+          <h2 class="k-h2">What's this place called?</h2>
+          <div class="k-field"><span class="k-lab">Name</span><span class="k-in">Home</span></div>
+          <div class="k-field"><span class="k-lab">Kind</span><div class="k-kinds"><span class="k-kind"><svg class="k-ic"><use href="#k-home"/></svg>House</span><span class="k-kind on"><svg class="k-ic"><use href="#k-home"/></svg>Apartment</span><span class="k-kind"><svg class="k-ic"><use href="#k-home"/></svg>Garage</span><span class="k-kind"><svg class="k-ic"><use href="#k-home"/></svg>Storage unit</span><span class="k-kind"><svg class="k-ic"><use href="#k-home"/></svg>Office</span><span class="k-kind"><svg class="k-ic"><use href="#k-home"/></svg>Vacation home</span><span class="k-kind"><svg class="k-ic"><use href="#k-home"/></svg>Other</span></div></div>
+          <div class="k-foot k-sticky"><b class="kb kb-p">Next</b></div>
+        </div>
+        <nav class="tabbar" aria-label="Main"><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a><a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a><a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a></nav>
+        
+      </div>
+      <figcaption class="frame-cap">New location · phone · light · step 1 of 3, name and kind (locations.new.tsx). Apartment is the default and fills step 2's rooms from its template; the name is the only required step (D33, D194).</figcaption>
+    </figure>
+    <figure id="f-newloc-rooms">
+      <div class="phone t-light" role="img" aria-label="Phone: new location wizard, step 2 of 3, rooms, light theme">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <button class="icon-btn" aria-label="Close"><svg class="i"><use href="#a1-x"/></svg></button>
+          <h1>New location</h1>
+          <span class="stepn">2 of 3</span>
+        </div>
+        <div class="content">
+          <div class="wz-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i></i></div>
+          <div class="wz-h"><h2>Rooms in Home</h2><p>From the Apartment template. Rename, remove or add; change them any time.</p></div>
+          <div class="rooms">
+            <div class="rm"><span class="grip"><svg class="i"><use href="#a1-grip"/></svg></span><span class="rm-n">Living room</span><span class="rm-k">Room</span><button class="icon-btn" aria-label="Remove Living room"><svg class="i"><use href="#a1-x"/></svg></button></div>
+            <div class="rm"><span class="grip"><svg class="i"><use href="#a1-grip"/></svg></span><span class="rm-n">Kitchen</span><span class="rm-k">Room</span><button class="icon-btn" aria-label="Remove Kitchen"><svg class="i"><use href="#a1-x"/></svg></button></div>
+            <div class="rm"><span class="grip"><svg class="i"><use href="#a1-grip"/></svg></span><span class="rm-n">Bedroom</span><span class="rm-k">Room</span><button class="icon-btn" aria-label="Remove Bedroom"><svg class="i"><use href="#a1-x"/></svg></button></div>
+            <div class="rm edit"><span class="grip"><svg class="i"><use href="#a1-grip"/></svg></span><span><span class="rm-in">Office<span class="caret"></span></span><span class="rm-was">Was "Second bedroom"</span></span><span class="rm-k">Room</span><button class="icon-btn" aria-label="Remove Office"><svg class="i"><use href="#a1-x"/></svg></button></div>
+            <div class="rm"><span class="grip"><svg class="i"><use href="#a1-grip"/></svg></span><span class="rm-n">Bathroom</span><span class="rm-k">Room</span><button class="icon-btn" aria-label="Remove Bathroom"><svg class="i"><use href="#a1-x"/></svg></button></div>
+            <div class="rm"><span class="grip"><svg class="i"><use href="#a1-grip"/></svg></span><span class="rm-n">Balcony</span><span class="rm-k">Zone</span><button class="icon-btn" aria-label="Remove Balcony"><svg class="i"><use href="#a1-x"/></svg></button></div>
+            <div class="rm lock"><span class="grip"><svg class="i"><use href="#a1-lock"/></svg></span><span class="rm-n">Unplaced<small>Always there, for things that don't have a place yet</small></span></div>
+          </div>
+          <button class="btn secondary addrow" type="button"><svg class="i"><use href="#a1-plus"/></svg>Add room or spot</button>
+        </div>
+        <div class="wz-f"><button class="btn secondary" type="button">Back</button><button class="lnk" type="button">Skip</button><button class="btn primary" type="button">Next</button></div>
+      </div>
+      <figcaption class="frame-cap">New location · phone · light · step 2 of 3, rooms from the Apartment template (D33, D194), one being renamed. Skip keeps only Unplaced. Aliases, languages and invites are no longer wizard steps.</figcaption>
+    </figure>
+
+<!-- 6b. Preset -->
+    <figure id="f-newloc-track">
+      <div class="phone t-dark" role="img" aria-label="Phone: new location wizard, step 3 of 3, what to track, dark theme">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <button class="icon-btn" aria-label="Close"><svg class="i"><use href="#a1-x"/></svg></button>
+          <h1>New location</h1>
+          <span class="stepn">3 of 3</span>
+        </div>
+        <div class="content">
+          <div class="wz-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i></div>
+          <div class="wz-h"><h2>What should Home track?</h2></div>
+          <div class="pc" role="radio" aria-checked="false"><span class="rad"></span><div><b>Essentials</b><p>Finding things: rooms, boxes, labels and search.</p></div></div>
+          <div class="pc on" role="radio" aria-checked="true"><span class="rad"></span><div><b>Household</b><p>Adds what a shared home and its car need.</p></div>
+            <div class="mods"><span class="mod base">Everything in Essentials</span><span class="mod">Receipts &amp; warranties</span><span class="mod">Reminders</span><span class="mod">Lending</span><span class="mod">Paperwork</span><span class="mod">Vehicles</span></div></div>
+          <div class="pc" role="radio" aria-checked="false"><span class="rad"></span><div><b>Complete</b><p>Adds fuel, things you run out of, passwords and codes, moving house, and "Connect ChatGPT or Claude".</p></div></div>
+          <div class="where"><small><svg class="i" style="width:14px;height:14px;vertical-align:-2px;color:var(--info)"><use href="#a1-info"/></svg> AI capture and the assistant come on in any preset once an AI provider is connected.</small><small><b>Africa/Cairo · EGP</b> from this phone. Change these and single modules in Location settings.</small></div>
+        </div>
+        <div class="wz-f"><button class="btn secondary" type="button">Back</button><span></span><button class="btn primary" type="button">Create Home</button></div>
+      </div>
+      <figcaption class="frame-cap">New location · phone · dark · step 3 of 3, what to track (D191, D194): the cards describe outcomes; Vehicles is in Household; AI follows the provider in any preset; timezone and currency come from the phone and show here.</figcaption>
+    </figure>
+
+  </div>
+
+  <h3 class="grp">Home · phone</h3>
+  <div class="frames">
+
+<!-- 1. Home, phone, light, checklist 3 of 6 -->
+    <figure id="f-home-owner">
+      <div class="phone t-light tall" role="img" aria-label="Phone: Home with the Get-started checklist, light theme, full length">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <h1>Home</h1>
+          <button class="icon-btn" aria-label="Scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg></button>
+          <button class="icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button>
+          <button class="icon-btn" aria-label="Assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-6.5L8 20v-3.5H5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 14.9v.01"/></svg></button>
+        </div>
+        <div class="content">
+          <div class="hd"><span class="date">Monday 12 October</span></div>
+
+          <div class="gs">
+            <div class="gs-top">
+              <div><h3>Get started</h3><p>Three more steps and Kept is fully set up.</p></div>
+              <span class="tp">3 / 6</span>
+              <button class="icon-btn" aria-label="Hide the checklist"><svg class="i"><use href="#a1-x"/></svg></button>
+            </div>
+            <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i></div>
+            <div class="gs-list">
+              <div class="gs-item done"><span class="box on"><svg class="i"><use href="#a1-check"/></svg></span><span class="tx"><b>Done</b><small>Created Home · captured 3 things · invited Alfred</small></span><span></span></div>
+              <div class="gs-item"><span class="box"></span><span class="tx"><b>Install on your phone</b><small>On iPhone, reminders only reach the installed app.</small></span><button class="btn secondary small" type="button">How</button></div>
+              <div class="gs-item"><span class="box"></span><span class="tx"><b>Print your first label</b><small>Stick it on a box, then scan it to see what's inside.</small></span><button class="btn secondary small" type="button">Print</button></div>
+              <div class="gs-item"><span class="box"></span><span class="tx"><b>Connect an AI provider</b><small>Reads receipts and suggests details for you to confirm.</small></span><button class="btn secondary small" type="button">Set up</button></div>
+            </div>
+          </div>
+
+          <div class="sh"><h3>Needs you</h3></div>
+          <div class="att">
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-inbox"/></svg></span><span class="tx"><b>To review</b><small>From Saturday's capture in Garage</small></span><span class="num">4</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic w"><svg class="i"><use href="#a1-cal"/></svg></span><span class="tx"><b>Overdue &amp; due</b><span class="pill warn"><svg class="i"><use href="#a1-warn"/></svg>1 overdue</span><small>Smoke alarm test, 3 days late · Water filter, due Thu 15 Oct</small></span><span class="num">2</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-hour"/></svg></span><span class="tx"><b>Expiring</b><small>Samsung TV 55″ warranty ends 30 Oct</small></span><span class="num">1</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i flip"><use href="#a1-lend"/></svg></span><span class="tx"><b>Lent out</b><small>Bosch drill, with Murdock until 17 Oct</small></span><span class="num">1</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-q"/></svg></span><span class="tx"><b>Uncertain</b><small>Cable box and tent pegs, marked not here</small></span><span class="num">2</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-tray"/></svg></span><span class="tx"><b>Unplaced</b><small>3 things waiting for a place</small></span><span class="num">3</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+          </div>
+
+          <div class="sh"><h3>Recent activity</h3><a href="#">All activity</a></div>
+          <div class="act">
+            <div class="ar"><span class="ph s48"><svg class="i"><use href="#a1-cable"/></svg></span><div class="tx"><b>Alfred moved HDMI cable × 3</b><small>to Home › Living room › TV unit</small><span class="meta"><span class="sid">3PW‑8JD</span><span class="when">Today 10:24</span></span></div></div>
+            <div class="ar"><span class="ph s48"><svg class="i"><use href="#a1-shelf"/></svg></span><div class="tx"><b>Ibrahim added IKEA shelf</b><small>to Storage unit › Back wall</small><span class="meta"><span class="sid">6NB‑2GE</span><span class="when">Yesterday 18:05</span></span></div></div>
+            <div class="ar"><span class="ph s48"><svg class="i"><use href="#a1-box"/></svg></span><div class="tx"><b>Ibrahim captured 4 things</b><small>into Garage › Shelf A · waiting for review</small><span class="meta"><span class="when">Sat 10 Oct</span></span></div></div>
+          </div>
+
+          <div class="sh"><h3>Locations</h3><a href="#">+ New location</a></div>
+          <div class="locs">
+            <a class="loc" href="#"><div class="strip"><span class="ph"><svg class="i"><use href="#a1-tv"/></svg></span><span class="ph"><svg class="i"><use href="#a1-cable"/></svg></span><span class="ph"><svg class="i"><use href="#a1-box"/></svg></span></div><div class="loc-h"><span class="ic"><svg class="i"><use href="#a1-apt"/></svg></span><span class="tx"><b>Home</b><small>Apartment · 214 things</small></span><span class="av"><i>I</i><i>A</i></span></div></a>
+            <a class="loc" href="#"><div class="strip"><span class="ph"><svg class="i"><use href="#a1-car"/></svg></span><span class="ph"><svg class="i"><use href="#a1-drill"/></svg></span><span class="ph"><svg class="i"><use href="#a1-shelf"/></svg></span></div><div class="loc-h"><span class="ic"><svg class="i"><use href="#a1-garage"/></svg></span><span class="tx"><b>Garage</b><small>Garage · 63 things</small></span><span class="av"><i>I</i><i>A</i></span></div></a>
+            <a class="loc" href="#"><div class="strip"><span class="ph"><svg class="i"><use href="#a1-shelf"/></svg></span><span class="ph"><svg class="i"><use href="#a1-box"/></svg></span><span class="ph"><svg class="i"><use href="#a1-tent"/></svg></span></div><div class="loc-h"><span class="ic"><svg class="i"><use href="#a1-storage"/></svg></span><span class="tx"><b>Storage unit</b><small>Storage unit · 41 things</small></span><span class="av"><i>I</i></span></div></a>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="Main">
+          <a class="on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a>
+          <a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a>
+        </nav>
+      </div>
+      <figcaption class="frame-cap">Home · phone · light · owner view, Get-started 3 of 6 (D138, D139) · full-length scroll. Invited members don't see "Invite" or "Connect an AI provider". Zero-count attention rows are not shown.</figcaption>
+    </figure>
+
+<!-- 8. Install-on-phone help sheet -->
+    <figure id="f-install">
+      <div class="phone t-light" role="img" aria-label="Phone: Install Kept help sheet for iPhone over Home, light theme">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <h1>Home</h1>
+          <button class="icon-btn" aria-label="Scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg></button>
+          <button class="icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button>
+          <button class="icon-btn" aria-label="Assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-6.5L8 20v-3.5H5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 14.9v.01"/></svg></button>
+        </div>
+        <div class="content">
+          <div class="hd"><span class="date">Monday 12 October</span></div>
+          <div class="gs">
+            <div class="gs-top"><div><h3>Get started</h3><p>Three more steps and Kept is fully set up.</p></div><span class="tp">3 / 6</span><span></span></div>
+            <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="Main">
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a>
+          <a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a>
+        </nav>
+        <div class="scrim"></div>
+        <div class="sheet" role="dialog" aria-label="Install Kept on this iPhone">
+          <div class="sh-top"><h2>Install Kept on this iPhone</h2><button class="icon-btn" aria-label="Close"><svg class="i"><use href="#a1-x"/></svg></button></div>
+          <div class="seg" role="tablist"><button type="button" role="tab" aria-selected="true">iPhone, iPad</button><button type="button" role="tab" aria-selected="false">Android</button><button type="button" role="tab" aria-selected="false">Computer</button></div>
+          <ol class="stp">
+            <li><span class="tp">1</span><div>Tap <b>Share</b> <span class="gly"><svg class="i"><use href="#a1-share"/></svg></span> in the browser's toolbar.</div></li>
+            <li><span class="tp">2</span><div>Scroll the list and tap <b>Add to Home Screen</b> <span class="gly"><svg class="i"><use href="#a1-addsq"/></svg></span></div></li>
+            <li><span class="tp">3</span><div>Tap <b>Add</b>, then open Kept from its new icon <span class="appicon sm"><svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><rect x="4" y="4" width="56" height="56" rx="7" fill="#F0B03A"/><circle cx="13" cy="13" r="3" fill="var(--charcoal)"/><text x="34" y="46" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-weight="600" font-size="38" fill="#2E2100">K</text></svg></span></div></li>
+          </ol>
+          <div class="push"><span class="ic"><svg class="i"><use href="#a1-bell"/></svg></span><div class="tx"><b>Reminders need the installed app</b><small>On iPhone, push notifications only reach Kept once it's on your Home Screen. Until then, your reminders can come by email.</small><button class="btn secondary small" type="button"><svg class="i"><use href="#a1-mail"/></svg>Send reminders by email</button></div></div>
+          <p class="note2">This step ticks itself the first time you open Kept from the Home Screen.</p>
+          <button class="btn primary full" type="button">Got it</button>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Install on your phone · phone · light · help sheet over Home, iPhone tab chosen from the device (D139). Android and Computer tabs point to the browser's own install prompt.</figcaption>
+    </figure>
+
+<!-- 2. Home, phone, dark, checklist dismissed -->
+    <figure id="f-home-dark">
+      <div class="phone t-dark" role="img" aria-label="Phone: Home, dark theme, checklist dismissed">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <h1>Home</h1>
+          <button class="icon-btn" aria-label="Scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg></button>
+          <button class="icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button>
+          <button class="icon-btn" aria-label="Assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-6.5L8 20v-3.5H5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 14.9v.01"/></svg></button>
+        </div>
+        <div class="content">
+          <div class="hd"><span class="date">Monday 12 October</span></div>
+          <div class="sh"><h3>Needs you</h3></div>
+          <div class="att">
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-inbox"/></svg></span><span class="tx"><b>To review</b><small>From Saturday's capture in Garage</small></span><span class="num">4</span><svg class="i chev"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic w"><svg class="i"><use href="#a1-cal"/></svg></span><span class="tx"><b>Overdue &amp; due</b><span class="pill warn"><svg class="i"><use href="#a1-warn"/></svg>1 overdue</span><small>Smoke alarm test, 3 days late · Water filter, due Thu 15 Oct</small></span><span class="num">2</span><svg class="i chev"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-hour"/></svg></span><span class="tx"><b>Expiring</b><small>Samsung TV 55″ warranty ends 30 Oct</small></span><span class="num">1</span><svg class="i chev"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-lend"/></svg></span><span class="tx"><b>Lent out</b><small>Bosch drill, with Murdock until 17 Oct</small></span><span class="num">1</span><svg class="i chev"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-q"/></svg></span><span class="tx"><b>Uncertain</b><small>Cable box and tent pegs, marked not here</small></span><span class="num">2</span><svg class="i chev"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-tray"/></svg></span><span class="tx"><b>Unplaced</b><small>3 things waiting for a place</small></span><span class="num">3</span><svg class="i chev"><use href="#a1-chev"/></svg></a>
+          </div>
+          <div class="sh"><h3>Recent activity</h3><a href="#">All activity</a></div>
+          <div class="act">
+            <div class="ar"><span class="ph s48"><svg class="i"><use href="#a1-cable"/></svg></span><div class="tx"><b>Alfred moved HDMI cable × 3</b><small>to Home › Living room › TV unit</small><span class="meta"><span class="sid">3PW‑8JD</span><span class="when">Today 10:24</span></span></div></div>
+            <div class="ar"><span class="ph s48"><svg class="i"><use href="#a1-shelf"/></svg></span><div class="tx"><b>Ibrahim added IKEA shelf</b><small>to Storage unit › Back wall</small><span class="meta"><span class="sid">6NB‑2GE</span><span class="when">Yesterday 18:05</span></span></div></div>
+            <div class="ar"><span class="ph s48"><svg class="i"><use href="#a1-box"/></svg></span><div class="tx"><b>Ibrahim captured 4 things</b><small>into Garage › Shelf A · waiting for review</small><span class="meta"><span class="when">Sat 10 Oct</span></span></div></div>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="Main">
+          <a class="on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a>
+          <a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a>
+        </nav>
+        <div class="toast" role="status">Get started hidden<button type="button">Undo</button><button type="button" aria-label="Close" style="text-decoration:none;min-width:40px;display:grid;place-items:center"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+      </div>
+      <figcaption class="frame-cap">Home · phone · dark · checklist dismissed (undo toast); the attention panel moves to the top, overdue before due. Three recent activities on the phone; locations continue below the fold.</figcaption>
+    </figure>
+
+<!-- 7. Home, phone, Arabic RTL -->
+    <figure id="f-home-ar">
+      <div class="phone t-light tall" dir="rtl" lang="ar" role="img" aria-label="Phone: Home in Arabic, right to left, light theme, full length">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <h1>الرئيسية</h1>
+          <button class="icon-btn" aria-label="مسح"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg></button>
+          <button class="icon-btn" aria-label="الإشعارات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button>
+          <button class="icon-btn" aria-label="المساعد"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-6.5L8 20v-3.5H5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 14.9v.01"/></svg></button>
+        </div>
+        <div class="content">
+          <div class="hd"><span class="date">الاثنين ١٢ أكتوبر</span></div>
+
+          <div class="gs">
+            <div class="gs-top">
+              <div><h3>خطوات البدء</h3><p>ثلاث خطوات أخرى ويكتمل إعداد <span class="ltr">Kept</span>.</p></div>
+              <span class="tp">٣ من ٦</span>
+              <button class="icon-btn" aria-label="إخفاء القائمة"><svg class="i"><use href="#a1-x"/></svg></button>
+            </div>
+            <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i></div>
+            <div class="gs-list">
+              <div class="gs-item done"><span class="box on"><svg class="i"><use href="#a1-check"/></svg></span><span class="tx"><b>تم</b><small>أنشأت «المنزل» · التقطت ٣ أشياء · دعوت ألفريد</small></span><span></span></div>
+              <div class="gs-item"><span class="box"></span><span class="tx"><b>ثبّت <span class="ltr">Kept</span> على هاتفك</b><small>على آيفون، لا تصل التذكيرات إلا إلى التطبيق المثبّت.</small></span><button class="btn secondary small" type="button">كيف؟</button></div>
+              <div class="gs-item"><span class="box"></span><span class="tx"><b>اطبع أول ملصق</b><small>ألصقه على صندوق، ثم امسحه لترى ما بداخله.</small></span><button class="btn secondary small" type="button">اطبع</button></div>
+              <div class="gs-item"><span class="box"></span><span class="tx"><b>اربط مزوّد ذكاء اصطناعي</b><small>يقرأ الإيصالات ويقترح التفاصيل لتؤكدها.</small></span><button class="btn secondary small" type="button">إعداد</button></div>
+            </div>
+          </div>
+
+          <div class="sh"><h3>يحتاج انتباهك</h3></div>
+          <div class="att">
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-inbox"/></svg></span><span class="tx"><b>للمراجعة</b><small>من التقاط السبت في الجراج</small></span><span class="num">٤</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic w"><svg class="i"><use href="#a1-cal"/></svg></span><span class="tx"><b>متأخر ومستحق</b><span class="pill warn"><svg class="i"><use href="#a1-warn"/></svg>متأخر ١</span><small>اختبار إنذار الدخان متأخر ٣ أيام · فلتر المياه مستحق الخميس ١٥ أكتوبر</small></span><span class="num">٢</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-hour"/></svg></span><span class="tx"><b>ينتهي قريبًا</b><small>ضمان تلفزيون سامسونج ٥٥″ ينتهي ٣٠ أكتوبر</small></span><span class="num">١</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i flip"><use href="#a1-lend"/></svg></span><span class="tx"><b>مُعار</b><small>مثقاب بوش مع موردوك حتى ١٧ أكتوبر</small></span><span class="num">١</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-q"/></svg></span><span class="tx"><b>غير مؤكد</b><small>صندوق الكابلات وأوتاد الخيمة، عُلِّما «ليس هنا»</small></span><span class="num">٢</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-tray"/></svg></span><span class="tx"><b>بلا مكان</b><small>٣ أشياء تنتظر مكانًا</small></span><span class="num">٣</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+          </div>
+
+          <div class="sh"><h3>النشاط الأخير</h3><a href="#">كل النشاط</a></div>
+          <div class="act">
+            <div class="ar"><span class="ph s48"><svg class="i"><use href="#a1-cable"/></svg></span><div class="tx"><b>ألفريد نقل كابل <span class="ltr">HDMI</span> × ٣</b><small>إلى المنزل › غرفة المعيشة › وحدة التلفزيون</small><span class="meta"><span class="sid ltr">3PW‑8JD</span><span class="when">اليوم ١٠:٢٤</span></span></div></div>
+            <div class="ar"><span class="ph s48"><svg class="i"><use href="#a1-shelf"/></svg></span><div class="tx"><b>إبراهيم أضاف رف إيكيا</b><small>إلى وحدة التخزين › الجدار الخلفي</small><span class="meta"><span class="sid ltr">6NB‑2GE</span><span class="when">أمس ١٨:٠٥</span></span></div></div>
+            <div class="ar"><span class="ph s48"><svg class="i"><use href="#a1-box"/></svg></span><div class="tx"><b>إبراهيم التقط ٤ أشياء</b><small>في الجراج › الرف أ · بانتظار المراجعة</small><span class="meta"><span class="when">السبت ١٠ أكتوبر</span></span></div></div>
+          </div>
+
+          <div class="sh"><h3>المواقع</h3><a href="#">+ موقع جديد</a></div>
+          <div class="locs">
+            <a class="loc" href="#"><div class="strip"><span class="ph"><svg class="i"><use href="#a1-tv"/></svg></span><span class="ph"><svg class="i"><use href="#a1-cable"/></svg></span><span class="ph"><svg class="i"><use href="#a1-box"/></svg></span></div><div class="loc-h"><span class="ic"><svg class="i"><use href="#a1-apt"/></svg></span><span class="tx"><b>المنزل</b><small>شقة · ٢١٤ شيئًا</small></span><span class="av"><i>إ</i><i>أ</i></span></div></a>
+            <a class="loc" href="#"><div class="strip"><span class="ph"><svg class="i"><use href="#a1-car"/></svg></span><span class="ph"><svg class="i"><use href="#a1-drill"/></svg></span><span class="ph"><svg class="i"><use href="#a1-shelf"/></svg></span></div><div class="loc-h"><span class="ic"><svg class="i"><use href="#a1-garage"/></svg></span><span class="tx"><b>الجراج</b><small>جراج · ٦٣ شيئًا</small></span><span class="av"><i>إ</i><i>أ</i></span></div></a>
+            <a class="loc" href="#"><div class="strip"><span class="ph"><svg class="i"><use href="#a1-shelf"/></svg></span><span class="ph"><svg class="i"><use href="#a1-box"/></svg></span><span class="ph"><svg class="i"><use href="#a1-tent"/></svg></span></div><div class="loc-h"><span class="ic"><svg class="i"><use href="#a1-storage"/></svg></span><span class="tx"><b>وحدة التخزين</b><small>وحدة تخزين · ٤١ شيئًا</small></span><span class="av"><i>إ</i></span></div></a>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="القائمة الرئيسية">
+          <a class="on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>الرئيسية</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>بحث</a>
+          <a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>التقاط</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>الوارد</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>المزيد</a>
+        </nav>
+      </div>
+      <figcaption class="frame-cap">Home · phone · light · Arabic RTL, Eastern Arabic digits (D143) · full-length scroll. Layout, chevrons and the lend arrow mirror; counts and dates use Eastern digits; short IDs and HDMI stay as printed, left to right.</figcaption>
+    </figure>
+
+  </div>
+
+  <h3 class="grp">Home · desktop</h3>
+  <div class="frames">
+
+<figure id="f-home-desk">
+      <div class="frame-scroll">
+        <div class="desktop t-light" role="img" aria-label="Desktop: Home, light theme, assistant closed">
+          <aside class="sidebar">
+        <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+        <nav class="nav">
+          <a class="on" href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+        </nav>
+        <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
+        <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
+      </aside>
+          <section class="main">
+            <div class="topbar">
+              <h1>Home</h1>
+              
+              <div class="palette">Search or jump to… <kbd>⌘K</kbd></div>
+              <button class="icon-btn" aria-label="Notifications"><svg class="i"><use href="#a1-bell"/></svg></button>
+              <button class="icon-btn" aria-label="Open the assistant"><svg class="i"><use href="#a1-spark"/></svg></button>
+              <button class="btn primary" type="button"><svg class="i"><use href="#a1-camera"/></svg>Capture</button>
+            </div>
+            <div class="work">
+              <div class="dk-grid">
+                <div class="dk-col">
+                  <div class="sh"><h3>Needs you</h3><span class="when">13 things across 3 locations</span></div>
+                  <div class="tiles">
+                    <div class="tile">
+                      <div class="th"><span class="ic"><svg class="i"><use href="#a1-inbox"/></svg></span><b>To review</b><span class="num">4</span></div>
+                      <ul>
+                        <li><span class="minis"><span class="ph s26"><svg class="i"><use href="#a1-box"/></svg></span><span class="ph s26"><svg class="i"><use href="#a1-drill"/></svg></span><span class="ph s26"><svg class="i"><use href="#a1-cable"/></svg></span><span class="ph s26"><svg class="i"><use href="#a1-filter"/></svg></span></span>Saturday's capture</li>
+                        <li>Garage › Shelf A<button class="btn secondary small" type="button">Review</button></li>
+                      </ul>
+                    </div>
+                    <div class="tile">
+                      <div class="th"><span class="ic w"><svg class="i"><use href="#a1-cal"/></svg></span><b>Overdue &amp; due</b><span class="num">2</span></div>
+                      <ul>
+                        <li><span class="pill warn"><svg class="i"><use href="#a1-warn"/></svg>Overdue 3 days</span>Smoke alarm test</li>
+                        <li><span class="pill"><svg class="i"><use href="#a1-cal"/></svg>Due Thu 15 Oct</span>Water filter</li>
+                      </ul>
+                    </div>
+                    <div class="tile">
+                      <div class="th"><span class="ic"><svg class="i"><use href="#a1-hour"/></svg></span><b>Expiring</b><span class="num">1</span></div>
+                      <ul><li><span class="sid">5MT‑0QD</span>Samsung TV 55″ · warranty ends 30 Oct</li></ul>
+                    </div>
+                    <div class="tile">
+                      <div class="th"><span class="ic"><svg class="i"><use href="#a1-lend"/></svg></span><b>Lent out</b><span class="num">1</span></div>
+                      <ul><li><span class="sid">2HX‑9RB</span>Bosch drill · with Murdock · due 17 Oct</li></ul>
+                    </div>
+                    <div class="tile">
+                      <div class="th"><span class="ic"><svg class="i"><use href="#a1-q"/></svg></span><b>Uncertain</b><span class="num">2</span></div>
+                      <ul>
+                        <li><span class="sid">7KQ‑4MZ</span>Cable box · not here since 9 Oct</li>
+                        <li><span class="sid">9FJ‑1WA</span>Tent pegs · not here since 2 Oct</li>
+                      </ul>
+                    </div>
+                    <div class="tile">
+                      <div class="th"><span class="ic"><svg class="i"><use href="#a1-tray"/></svg></span><b>Unplaced</b><span class="num">3</span></div>
+                      <ul><li>Home 2 · Garage 1<button class="btn secondary small" type="button">Sort them</button></li></ul>
+                    </div>
+                  </div>
+
+                  <div class="sh"><h3>Recent activity</h3><a href="#">All activity</a></div>
+                  <div class="act">
+                    <div class="ar"><span class="ph s36"><svg class="i"><use href="#a1-cable"/></svg></span><div class="tx"><b>Alfred moved HDMI cable × 3<span class="sid">3PW‑8JD</span></b><small>to Home › Living room › TV unit</small></div><span class="when">Today 10:24</span></div>
+                    <div class="ar"><span class="ph s36"><svg class="i"><use href="#a1-shelf"/></svg></span><div class="tx"><b>Ibrahim added IKEA shelf<span class="sid">6NB‑2GE</span></b><small>to Storage unit › Back wall</small></div><span class="when">Yesterday 18:05</span></div>
+                    <div class="ar"><span class="ph s36"><svg class="i"><use href="#a1-box"/></svg></span><div class="tx"><b>Ibrahim captured 4 things</b><small>into Garage › Shelf A · waiting for review</small></div><span class="when">Sat 10 Oct</span></div>
+                    <div class="ar"><span class="ph s36"><svg class="i"><use href="#a1-box"/></svg></span><div class="tx"><b>Alfred marked Cable box not here<span class="sid">7KQ‑4MZ</span></b><small>was in Home › Office › Desk drawer</small></div><span class="when">Fri 9 Oct</span></div>
+                    <div class="ar"><span class="ph s36"><svg class="i"><use href="#a1-gauge"/></svg></span><div class="tx"><b>Alfred logged a Corolla reading<span class="sid">4VC‑7HD</span></b><small><span class="mono">52,340 km</span> · Garage › Bay 2</small></div><span class="when">Fri 2 Oct</span></div>
+                  </div>
+                </div>
+
+                <div class="dk-col">
+                  <div class="gs">
+                    <div class="gs-top">
+                      <div><h3>Get started</h3></div>
+                      <span class="tp">3 / 6</span>
+                      <button class="icon-btn" aria-label="Hide the checklist"><svg class="i"><use href="#a1-x"/></svg></button>
+                    </div>
+                    <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i></div>
+                    <div class="gs-list">
+                      <div class="gs-item done"><span class="box on"><svg class="i"><use href="#a1-check"/></svg></span><span class="tx"><b>Done</b><small>Location · 3 things · invited Alfred</small></span><span></span></div>
+                      <div class="gs-item"><span class="box"></span><span class="tx"><b>Install on your phone</b><small>Steps for iPhone and Android</small></span><button class="btn secondary small" type="button">How</button></div>
+                      <div class="gs-item"><span class="box"></span><span class="tx"><b>Print your first label</b><small>Any printer, any sheet</small></span><button class="btn secondary small" type="button">Print</button></div>
+                      <div class="gs-item"><span class="box"></span><span class="tx"><b>Connect an AI provider</b><small>For receipts and suggestions</small></span><button class="btn secondary small" type="button">Set up</button></div>
+                    </div>
+                  </div>
+
+                  <div class="sh"><h3>Locations</h3><a href="#">+ New location</a></div>
+                  <a class="dloc" href="#"><span class="mosaic"><span class="ph"><svg class="i"><use href="#a1-tv"/></svg></span><span class="ph"><svg class="i"><use href="#a1-cable"/></svg></span><span class="ph"><svg class="i"><use href="#a1-box"/></svg></span><span class="ph"><svg class="i"><use href="#a1-filter"/></svg></span></span><span class="tx"><b>Home</b><span class="row2"><small>Apartment · 214 things</small><span class="av"><i>I</i><i>A</i></span></span></span></a>
+                  <a class="dloc" href="#"><span class="mosaic"><span class="ph"><svg class="i"><use href="#a1-car"/></svg></span><span class="ph"><svg class="i"><use href="#a1-drill"/></svg></span><span class="ph"><svg class="i"><use href="#a1-shelf"/></svg></span><span class="ph"><svg class="i"><use href="#a1-box"/></svg></span></span><span class="tx"><b>Garage</b><span class="row2"><small>Garage · 63 things</small><span class="av"><i>I</i><i>A</i></span></span></span></a>
+                  <a class="dloc" href="#"><span class="mosaic"><span class="ph"><svg class="i"><use href="#a1-shelf"/></svg></span><span class="ph"><svg class="i"><use href="#a1-box"/></svg></span><span class="ph"><svg class="i"><use href="#a1-tent"/></svg></span><span class="ph"><svg class="i"><use href="#a1-box"/></svg></span></span><span class="tx"><b>Storage unit</b><span class="row2"><small>Storage unit · 41 things</small><span class="av"><i>I</i></span></span></span></a>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Home · desktop · light · assistant closed (its button sits in the top bar) · attention panel as a denser grid, 5 recent activities, locations beside the checklist.</figcaption>
+    </figure>
+
+  </div>
+</section>

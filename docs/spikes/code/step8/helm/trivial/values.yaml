@@ -1,0 +1,6 @@
+image:
+  repository: localhost:5000/kept
+  tag: 0.0.0-h1
+resources:
+  requests: {cpu: 100m, memory: 256Mi}
+  limits: {memory: 512Mi}

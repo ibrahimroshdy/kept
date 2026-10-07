@@ -1,0 +1,18 @@
+# A managed Postgres whose roles the operator made with the documented SQL (roles.create=false):
+# no roles Job, no superuser secret anywhere. Files local, keys from a secret, so the pod holds
+# only the files volume.
+publicUrl: https://kept.example.org
+image:
+  tag: 1.0.0
+postgres:
+  bundled: false
+  external:
+    host: kept.postgres.database.azure.com
+    sslMode: verify-full
+roles:
+  existingSecret: kept-db
+  create: false
+keys:
+  existingSecret: kept-keys
+backup:
+  enabled: false

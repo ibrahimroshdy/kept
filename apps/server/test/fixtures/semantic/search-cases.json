@@ -1,0 +1,502 @@
+{
+  "set": "search-households-2026-10",
+  "about": "The search evaluation (step-6 plan T17, T14; D200, D207; S6.5 measures on it too): queries in English and Arabic on the households seed, each with the things a right answer holds (by the seed's names). `words` cases are found by their words; `meaning` cases by what they are. Recall@10 and MRR are measured for keyword-only search, the provider's embeddings and (when built) the local model. The maintainer's own phrasings belong here: add them.",
+  "cases": [
+    {
+      "id": "w-hdmi",
+      "kind": "words",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "hdmi cable",
+      "expect": ["HDMI cable, 2 m", "HDMI cable, 5 m"]
+    },
+    {
+      "id": "w-drill",
+      "kind": "words",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "drill",
+      "expect": ["Bosch drill, 18 V"]
+    },
+    {
+      "id": "w-router",
+      "kind": "words",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "router",
+      "expect": ["Wi-Fi router"]
+    },
+    {
+      "id": "w-catan",
+      "kind": "words",
+      "user": "louis",
+      "locale": "en",
+      "query": "catan",
+      "expect": ["Catan"]
+    },
+    {
+      "id": "w-batteries",
+      "kind": "words",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "batteries",
+      "expect": ["AA batteries"]
+    },
+    {
+      "id": "w-kettle",
+      "kind": "words",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "kettle",
+      "expect": ["Old kettle"]
+    },
+    {
+      "id": "w-scarves",
+      "kind": "words",
+      "user": "talia",
+      "locale": "en",
+      "query": "winter scarves",
+      "expect": ["Winter scarves"]
+    },
+    {
+      "id": "w-lights",
+      "kind": "words",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "christmas lights",
+      "expect": ["Christmas lights"]
+    },
+    {
+      "id": "w-hammer",
+      "kind": "words",
+      "user": "bruce",
+      "locale": "en",
+      "query": "hammer",
+      "expect": ["Claw hammer"]
+    },
+    {
+      "id": "w-pump",
+      "kind": "words",
+      "user": "bruce",
+      "locale": "en",
+      "query": "tyre pump",
+      "expect": ["Tyre pump"]
+    },
+    {
+      "id": "w-hose",
+      "kind": "words",
+      "user": "bruce",
+      "locale": "en",
+      "query": "garden hose",
+      "expect": ["Garden hose, 15 m"]
+    },
+    {
+      "id": "w-thinkpad",
+      "kind": "words",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "thinkpad",
+      "expect": ["ThinkPad T14"]
+    },
+    {
+      "id": "w-passports",
+      "kind": "words",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "passports",
+      "expect": ["Passports folder"]
+    },
+    {
+      "id": "w-first-aid",
+      "kind": "words",
+      "user": "louis",
+      "locale": "en",
+      "query": "first aid",
+      "expect": ["First aid kit"]
+    },
+    {
+      "id": "w-extension",
+      "kind": "words",
+      "user": "bruce",
+      "locale": "en",
+      "query": "extension cord",
+      "expect": ["Extension cord, 10 m"]
+    },
+    {
+      "id": "w-lego",
+      "kind": "words",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "lego",
+      "expect": ["Lego city set"]
+    },
+    {
+      "id": "w-bike",
+      "kind": "words",
+      "user": "louis",
+      "locale": "en",
+      "query": "bike",
+      "expect": ["City bike"]
+    },
+    {
+      "id": "w-lantern",
+      "kind": "words",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "ramadan lantern",
+      "expect": ["Ramadan lantern"]
+    },
+    {
+      "id": "w-smoke",
+      "kind": "words",
+      "user": "louis",
+      "locale": "en",
+      "query": "smoke alarm",
+      "expect": ["Smoke alarm"]
+    },
+    {
+      "id": "w-roller",
+      "kind": "words",
+      "user": "bruce",
+      "locale": "en",
+      "query": "paint roller",
+      "expect": ["Paint roller set"]
+    },
+    {
+      "id": "w-corolla",
+      "kind": "words",
+      "user": "bruce",
+      "locale": "en",
+      "query": "corolla",
+      "expect": ["Toyota Corolla"]
+    },
+    {
+      "id": "w-jack",
+      "kind": "words",
+      "user": "bruce",
+      "locale": "en",
+      "query": "car jack",
+      "expect": ["Car jack"]
+    },
+    {
+      "id": "w-impact",
+      "kind": "words",
+      "user": "bruce",
+      "locale": "en",
+      "query": "impact driver",
+      "expect": ["Bosch impact driver, 18 V"]
+    },
+    {
+      "id": "w-filter",
+      "kind": "words",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "water filter",
+      "expect": ["Water filter cartridge"]
+    },
+    {
+      "id": "w-dryer",
+      "kind": "words",
+      "user": "louis",
+      "locale": "en",
+      "query": "hair dryer",
+      "expect": ["Hair dryer"]
+    },
+    {
+      "id": "w-ar-hdmi",
+      "kind": "words",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "كابل",
+      "expect": ["كابل HDMI"]
+    },
+    {
+      "id": "w-ar-tv",
+      "kind": "words",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "تلفزيون",
+      "expect": ["تلفزيون توشيبا"]
+    },
+    {
+      "id": "w-ar-fridge",
+      "kind": "words",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "ثلاجة",
+      "expect": ["ثلاجة توشيبا"]
+    },
+    {
+      "id": "w-ar-iron",
+      "kind": "words",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "مكواة",
+      "expect": ["مِكْواة البُخار"]
+    },
+    {
+      "id": "w-ar-toolbox",
+      "kind": "words",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "صندوق العدة",
+      "expect": ["صندوق العدّة"]
+    },
+    {
+      "id": "w-ar-screwdriver",
+      "kind": "words",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "مفك",
+      "expect": ["مِفَكّ براغي"]
+    },
+    {
+      "id": "w-ar-hammer",
+      "kind": "words",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "الشاكوش",
+      "expect": ["الشاكوش"]
+    },
+    {
+      "id": "w-ar-charger",
+      "kind": "words",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "شاحن",
+      "expect": ["شاحن سامسونج"]
+    },
+    {
+      "id": "w-ar-lantern",
+      "kind": "words",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "فانوس",
+      "expect": ["فَانُوس رَمَضَان"]
+    },
+    {
+      "id": "w-ar-kettle",
+      "kind": "words",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "الغلاية",
+      "expect": ["الغلاية الكهربائية"]
+    },
+    {
+      "id": "m-tv-thing",
+      "kind": "meaning",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "the thing for the TV",
+      "expect": ["HDMI cable, 2 m", "Display cable, 1.8 m"]
+    },
+    {
+      "id": "m-holes",
+      "kind": "meaning",
+      "user": "bruce",
+      "locale": "en",
+      "query": "something to make holes in the wall",
+      "expect": ["Bosch drill, 18 V"]
+    },
+    {
+      "id": "m-phone-charge",
+      "kind": "meaning",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "charge my phone",
+      "expect": ["USB-C charger, 65 W"]
+    },
+    {
+      "id": "m-internet",
+      "kind": "meaning",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "the internet box",
+      "expect": ["Wi-Fi router"]
+    },
+    {
+      "id": "m-boil",
+      "kind": "meaning",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "boil water for tea",
+      "expect": ["Old kettle"]
+    },
+    {
+      "id": "m-fire",
+      "kind": "meaning",
+      "user": "louis",
+      "locale": "en",
+      "query": "in case of a kitchen fire",
+      "expect": ["Fire extinguisher, 2 kg"]
+    },
+    {
+      "id": "m-board-games",
+      "kind": "meaning",
+      "user": "louis",
+      "locale": "en",
+      "query": "board games for game night",
+      "expect": ["Catan", "Monopoly"]
+    },
+    {
+      "id": "m-travel-docs",
+      "kind": "meaning",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "travel documents",
+      "expect": ["Passports folder"]
+    },
+    {
+      "id": "m-festive",
+      "kind": "meaning",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "holiday decorations",
+      "expect": ["Christmas lights", "Ramadan lantern"]
+    },
+    {
+      "id": "m-flat-tyre",
+      "kind": "meaning",
+      "user": "bruce",
+      "locale": "en",
+      "query": "fix a flat tire",
+      "expect": ["Tyre pump"]
+    },
+    {
+      "id": "m-watering",
+      "kind": "meaning",
+      "user": "bruce",
+      "locale": "en",
+      "query": "water the plants",
+      "expect": ["Garden hose, 15 m"]
+    },
+    {
+      "id": "m-cold",
+      "kind": "meaning",
+      "user": "talia",
+      "locale": "en",
+      "query": "keep warm when it is cold",
+      "expect": ["Winter scarves"]
+    },
+    {
+      "id": "m-bandage",
+      "kind": "meaning",
+      "user": "louis",
+      "locale": "en",
+      "query": "bandages for a cut",
+      "expect": ["First aid kit"]
+    },
+    {
+      "id": "m-laptop",
+      "kind": "meaning",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "my work computer",
+      "expect": ["ThinkPad T14"]
+    },
+    {
+      "id": "m-paint-wall",
+      "kind": "meaning",
+      "user": "bruce",
+      "locale": "en",
+      "query": "paint the bedroom wall",
+      "expect": ["Paint roller set"]
+    },
+    {
+      "id": "m-power",
+      "kind": "meaning",
+      "user": "bruce",
+      "locale": "en",
+      "query": "plug in far from the socket",
+      "expect": ["Extension cord, 10 m"]
+    },
+    {
+      "id": "m-remote-batteries",
+      "kind": "meaning",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "batteries for the remote",
+      "expect": ["AA batteries"]
+    },
+    {
+      "id": "m-gaming",
+      "kind": "meaning",
+      "user": "ibrahim",
+      "locale": "en",
+      "query": "video game console",
+      "expect": ["PlayStation 5", "Nintendo Switch"]
+    },
+    {
+      "id": "m-cycling",
+      "kind": "meaning",
+      "user": "louis",
+      "locale": "en",
+      "query": "ride to work",
+      "expect": ["City bike"]
+    },
+    {
+      "id": "m-ar-phone-charger",
+      "kind": "meaning",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "شاحن الموبايل",
+      "expect": ["شاحن سامسونج"]
+    },
+    {
+      "id": "m-ar-tv-cable",
+      "kind": "meaning",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "وصلة الشاشة",
+      "expect": ["كابل HDMI"]
+    },
+    {
+      "id": "m-ar-ironing",
+      "kind": "meaning",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "كي الملابس",
+      "expect": ["مِكْواة البُخار"]
+    },
+    {
+      "id": "m-ar-tools",
+      "kind": "meaning",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "أدوات التصليح",
+      "expect": ["صندوق العدّة", "الشاكوش"]
+    },
+    {
+      "id": "m-ar-ramadan",
+      "kind": "meaning",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "زينة رمضان",
+      "expect": ["فَانُوس رَمَضَان"]
+    },
+    {
+      "id": "m-ar-boil",
+      "kind": "meaning",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "تسخين المياه للشاي",
+      "expect": ["الغلاية الكهربائية"]
+    },
+    {
+      "id": "m-ar-cold-food",
+      "kind": "meaning",
+      "user": "alfred",
+      "locale": "ar",
+      "query": "حفظ الأكل باردًا",
+      "expect": ["ثلاجة توشيبا"]
+    },
+    {
+      "id": "m-cross-ar-en",
+      "kind": "meaning",
+      "user": "ibrahim",
+      "locale": "ar",
+      "query": "شاحن موبايل",
+      "expect": ["شاحن سامسونج", "USB-C charger, 65 W"]
+    }
+  ]
+}

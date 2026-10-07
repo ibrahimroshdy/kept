@@ -1,0 +1,38 @@
+# The scaled shape: external Postgres (roles made by the pre-install Job), files in S3, keys and
+# the backup's secrets from secrets, a web Deployment of two and the worker.
+publicUrl: https://kept.example.org
+image:
+  tag: 1.0.0
+postgres:
+  bundled: false
+  superuserSecret: kept-pg-admin
+  external:
+    host: db.example.internal
+    sslMode: require
+roles:
+  existingSecret: kept-db
+keys:
+  existingSecret: kept-keys
+storage:
+  mode: s3
+  s3:
+    existingSecret: kept-s3
+    endpoint: https://s3.eu-central-1.amazonaws.com
+    region: eu-central-1
+    bucket: kept-files
+backup:
+  existingSecret: kept-backup
+  env:
+    KEPT_BACKUP_S3_ENDPOINT: https://s3.eu-central-1.amazonaws.com
+    KEPT_BACKUP_S3_BUCKET: kept-backups
+    KEPT_BACKUP_S3_REGION: eu-central-1
+split:
+  enabled: true
+  web:
+    replicas: 2
+smtp:
+  existingSecret: kept-smtp
+  from: Kept <kept@example.org>
+metrics:
+  tokenSecret: kept-metrics
+trustedProxies: 10.42.0.0/16

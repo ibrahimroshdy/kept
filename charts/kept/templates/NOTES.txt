@@ -1,0 +1,38 @@
+{{- $full := include "kept.fullname" . -}}
+{{- $web := ternary (printf "%s-web" $full) $full .Values.split.enabled -}}
+{{- $jobs := ternary (printf "%s-worker" $full) $full .Values.split.enabled -}}
+Kept {{ .Chart.AppVersion }} is installed as "{{ .Release.Name }}" in namespace "{{ .Release.Namespace }}".
+It answers at {{ .Values.publicUrl }}{{ if not .Values.ingress.enabled }} once you route it there (the Service is {{ $full }}:{{ .Values.service.port }}){{ end }}.
+
+1. The first-run setup code. The first boot prints it once:
+
+     kubectl -n {{ .Release.Namespace }} logs deploy/{{ $web }} | grep 'KEPT SETUP CODE'
+
+   Lost it? Re-issue it while setup is pending. `kept admin` commands need the owner login,
+   which the {{ $jobs }} pod holds only while backup.enabled is true{{ if not .Values.backup.enabled }} (it is false here){{ end }}:
+
+     kubectl -n {{ .Release.Namespace }} exec deploy/{{ $jobs }} -- kept admin setup-code
+
+2. The recovery kit: the keys, the backup repository and its password, the restore steps. Keep it
+   off this cluster, the day you set Kept up and after every key or backup change:
+
+     kubectl -n {{ .Release.Namespace }} exec deploy/{{ $jobs }} -- kept admin recovery-kit > kept-recovery-kit.txt
+{{- if not .Values.keys.existingSecret }}
+
+   The keys were generated into the {{ $full }}-config volume (D193). Without them, or the kit,
+   every stored secret is unreadable.
+{{- end }}
+{{- if and (not .Values.postgres.bundled) (not .Values.roles.create) }}
+
+Postgres: roles.create is false, so Kept's four logins and its extensions must already exist.
+Run the SQL in the docs' "Managed Postgres" page (install/managed-postgres in the docs site) as
+the server's admin before Kept can migrate.
+{{- end }}
+
+{{- if .Values.backup.enabled }}
+Backups run in the {{ ternary "worker" "server" .Values.split.enabled }} pod, configured in Admin → Backups{{ if or .Values.backup.existingSecret .Values.backup.env }} or locked by this release's backup settings{{ end }}.
+{{- else }}
+Backups are off (backup.enabled=false): no pod holds the owner login, so nothing backs Kept up.
+{{- end }}
+`helm test {{ .Release.Name }} -n {{ .Release.Namespace }}` asks the running Kept for /readyz and /version.
+Volumes are kept on `helm uninstall`; delete their PVCs yourself to remove the data.

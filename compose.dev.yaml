@@ -1,0 +1,40 @@
+name: kept-dev
+services:
+  db:
+    image: pgvector/pgvector:0.8.6-pg18-bookworm
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kept
+      TZ: UTC
+    ports: ["5452:5432"]
+    volumes:
+      - kept-dev-db:/var/lib/postgresql
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d kept"]
+      interval: 2s
+      retries: 30
+  mail:
+    image: axllent/mailpit:v1.31.2
+    ports: ["8025:8025", "1025:1025"]
+  # S3-compatible storage for the S3 driver (T18, Q18). Only with `--profile s3`, so a plain
+  # `docker compose up` stays Postgres + Mailpit. Path-style only (no RUSTFS_SERVER_DOMAINS), so
+  # clients set KEPT_S3_FORCE_PATH_STYLE=true. Dev credentials, never used anywhere else. The
+  # tests create their own bucket (storage/s3.test.ts).
+  s3:
+    profiles: ["s3"]
+    image: rustfs/rustfs:1.0.0@sha256:8cc9801755448b71a786705ce76692c77e14936cccd87cf2fc31842e58f4d1ff
+    environment:
+      RUSTFS_ACCESS_KEY: kept-dev
+      RUSTFS_SECRET_KEY: kept-dev-secret
+    ports: ["9452:9000"]
+    volumes:
+      - kept-dev-s3:/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:9000/health"]
+      interval: 2s
+      retries: 30
+volumes:
+  kept-dev-db: {}
+  kept-dev-s3: {}

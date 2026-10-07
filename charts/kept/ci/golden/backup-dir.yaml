@@ -1,0 +1,678 @@
+---
+# Source: kept/templates/postgres.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kept-db-init
+  labels:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/version: "0.0.0-dev"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: kept-0.0.0-dev
+data:
+  roles.sh: |
+    #!/usr/bin/env bash
+    # Kept's four logins and its extensions (D186), for the chart. The same statements as the
+    # managed-Postgres page's SQL (apps/docs/src/content/docs/install/managed-postgres.md), so they run
+    # as a superuser (the bundled Postgres, at its first start, from /docker-entrypoint-initdb.d) or
+    # as a provider's admin (the roles Job, external Postgres with roles.create). Unlike
+    # docker/initdb-prod/01-roles.sh it is idempotent: a login that exists gets its password reset to
+    # the secret's, so a re-install over a kept database converges instead of failing.
+    #
+    # Connection: libpq's PG* variables (the Job sets PGHOST, PGPORT, PGPASSWORD, PGSSLMODE); unset,
+    # the local socket (initdb). Passwords reach psql as variables (:'name' quotes them as literals),
+    # never spliced into SQL text.
+    set -euo pipefail
+    
+    : "${KEPT_DB_OWNER_PASSWORD:?KEPT_DB_OWNER_PASSWORD is required}"
+    : "${KEPT_DB_APP_PASSWORD:?KEPT_DB_APP_PASSWORD is required}"
+    : "${KEPT_DB_AUTH_PASSWORD:?KEPT_DB_AUTH_PASSWORD is required}"
+    : "${KEPT_DB_SYSTEM_PASSWORD:?KEPT_DB_SYSTEM_PASSWORD is required}"
+    
+    db=${POSTGRES_DB:-kept}
+    
+    psql -v ON_ERROR_STOP=1 --no-psqlrc --username "${POSTGRES_USER:-postgres}" --dbname "$db" \
+      -v owner_pw="$KEPT_DB_OWNER_PASSWORD" \
+      -v app_pw="$KEPT_DB_APP_PASSWORD" \
+      -v auth_pw="$KEPT_DB_AUTH_PASSWORD" \
+      -v system_pw="$KEPT_DB_SYSTEM_PASSWORD" \
+      -v db="$db" <<'SQL'
+    SELECT NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'kept_owner')  AS make_owner,
+           NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'kept_app')    AS make_app,
+           NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'kept_auth')   AS make_auth,
+           NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'kept_system') AS make_system
+    \gset
+    \if :make_owner
+    CREATE ROLE kept_owner  LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB NOBYPASSRLS;
+    \endif
+    \if :make_app
+    CREATE ROLE kept_app    LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB NOBYPASSRLS;
+    \endif
+    \if :make_auth
+    CREATE ROLE kept_auth   LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB NOBYPASSRLS;
+    \endif
+    \if :make_system
+    CREATE ROLE kept_system LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB NOBYPASSRLS;
+    \endif
+    ALTER ROLE kept_owner  PASSWORD :'owner_pw';
+    ALTER ROLE kept_app    PASSWORD :'app_pw';
+    ALTER ROLE kept_auth   PASSWORD :'auth_pw';
+    ALTER ROLE kept_system PASSWORD :'system_pw';
+    -- A request can't run away or sit idle inside a transaction.
+    ALTER ROLE kept_app SET statement_timeout = '15s';
+    ALTER ROLE kept_app SET idle_in_transaction_session_timeout = '30s';
+    CREATE EXTENSION IF NOT EXISTS pg_trgm  WITH SCHEMA public;
+    CREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;
+    CREATE EXTENSION IF NOT EXISTS vector   WITH SCHEMA public;
+    -- A non-superuser admin may hand ownership to a role only while it is a member of that role.
+    GRANT kept_owner TO CURRENT_USER;
+    ALTER DATABASE :"db" OWNER TO kept_owner;
+    ALTER SCHEMA public OWNER TO kept_owner;
+    REVOKE kept_owner FROM CURRENT_USER;
+    SQL
+    echo "kept: the four logins and the extensions are in place in $db"
+    
+
+---
+# Source: kept/templates/pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kept-data
+  labels:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/version: "0.0.0-dev"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: kept-0.0.0-dev
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+# Source: kept/templates/pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kept-config
+  labels:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/version: "0.0.0-dev"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: kept-0.0.0-dev
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 64Mi
+
+---
+# Source: kept/templates/pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kept-backups
+  labels:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/version: "0.0.0-dev"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: kept-0.0.0-dev
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: "local-path"
+  resources:
+    requests:
+      storage: 50Gi
+
+---
+# Source: kept/templates/postgres.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kept-postgres
+  labels:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/version: "0.0.0-dev"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: kept-0.0.0-dev
+    app.kubernetes.io/component: postgres
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/component: postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres
+
+---
+# Source: kept/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kept
+  labels:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/version: "0.0.0-dev"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: kept-0.0.0-dev
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/component: server
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+
+---
+# Source: kept/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kept
+  labels:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/version: "0.0.0-dev"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: kept-0.0.0-dev
+    app.kubernetes.io/component: server
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kept
+      app.kubernetes.io/instance: kept
+      app.kubernetes.io/component: server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kept
+        app.kubernetes.io/instance: kept
+        app.kubernetes.io/version: "0.0.0-dev"
+        app.kubernetes.io/managed-by: Helm
+        helm.sh/chart: kept-0.0.0-dev
+        app.kubernetes.io/component: server
+    spec:
+      # Kubernetes would otherwise inject KEPT_PORT=tcp://… for a Service named `kept`, which Kept
+      # reads as its listening port.
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: wait-for-db
+          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - until pg_isready -q -h "$DB_HOST" -p "$DB_PORT" -t 5; do echo "waiting for $DB_HOST:$DB_PORT"; sleep 2; done
+          env:
+            - name: DB_HOST
+              value: "kept-postgres"
+            - name: DB_PORT
+              value: "5432"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+      containers:
+        - name: kept
+          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: KEPT_ROLE
+              value: all
+            - name: KEPT_DB_APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kept-db
+                  key: KEPT_DB_APP_PASSWORD
+            - name: KEPT_DATABASE_URL
+              value: "postgres://kept_app:$(KEPT_DB_APP_PASSWORD)@kept-postgres:5432/kept"
+            - name: KEPT_DB_AUTH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kept-db
+                  key: KEPT_DB_AUTH_PASSWORD
+            - name: KEPT_AUTH_DATABASE_URL
+              value: "postgres://kept_auth:$(KEPT_DB_AUTH_PASSWORD)@kept-postgres:5432/kept"
+            - name: KEPT_DB_SYSTEM_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kept-db
+                  key: KEPT_DB_SYSTEM_PASSWORD
+            - name: KEPT_SYSTEM_DATABASE_URL
+              value: "postgres://kept_system:$(KEPT_DB_SYSTEM_PASSWORD)@kept-postgres:5432/kept"
+            - name: KEPT_DB_OWNER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kept-db
+                  key: KEPT_DB_OWNER_PASSWORD
+            - name: KEPT_OWNER_DATABASE_URL
+              value: "postgres://kept_owner:$(KEPT_DB_OWNER_PASSWORD)@kept-postgres:5432/kept"
+            - name: KEPT_PUBLIC_URL
+              value: "http://kept.lan:8080"
+            - name: KEPT_STORAGE
+              value: "local"
+            - name: KEPT_BACKUP_DIR
+              value: /backups
+            - name: KEPT_BACKUP_KEEP_DAILY
+              value: "14"
+            - name: KEPT_BACKUP_TIME
+              value: "03:15"
+          envFrom:
+            - secretRef:
+                name: kept-backup
+          ports:
+            - name: http
+              containerPort: 8080
+          startupProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          lifecycle:
+            # Let the Service drop this pod before it stops answering (L97).
+            preStop:
+              exec:
+                command: ["sleep", "5"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 384Mi
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /config
+            - name: backups
+              mountPath: /backups
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: data
+          persistentVolumeClaim:
+            claimName: kept-data
+        - name: config
+          persistentVolumeClaim:
+            claimName: kept-config
+        - name: backups
+          persistentVolumeClaim:
+            claimName: kept-backups
+
+---
+# Source: kept/templates/postgres.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kept-postgres
+  labels:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/version: "0.0.0-dev"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: kept-0.0.0-dev
+    app.kubernetes.io/component: postgres
+spec:
+  serviceName: kept-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kept
+      app.kubernetes.io/instance: kept
+      app.kubernetes.io/component: postgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kept
+        app.kubernetes.io/instance: kept
+        app.kubernetes.io/version: "0.0.0-dev"
+        app.kubernetes.io/managed-by: Helm
+        helm.sh/chart: kept-0.0.0-dev
+        app.kubernetes.io/component: postgres
+    spec:
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      # The image's postgres user (uid 999). PGDATA lives under the volume's root
+      # (/var/lib/postgresql/18/docker), which the entrypoint creates as that user.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: postgres
+          image: pgvector/pgvector:0.8.6-pg18-bookworm@sha256:2ba9ca5f2e7daa0f0e7723cba1ee9167bab54efd3640516a44ac1a928dd67e7a
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kept-postgres
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              value: "kept"
+            - name: TZ
+              value: UTC
+            - name: KEPT_DB_OWNER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kept-db
+                  key: KEPT_DB_OWNER_PASSWORD
+            - name: KEPT_DB_APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kept-db
+                  key: KEPT_DB_APP_PASSWORD
+            - name: KEPT_DB_AUTH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kept-db
+                  key: KEPT_DB_AUTH_PASSWORD
+            - name: KEPT_DB_SYSTEM_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kept-db
+                  key: KEPT_DB_SYSTEM_PASSWORD
+          ports:
+            - name: postgres
+              containerPort: 5432
+          readinessProbe:
+            # Over TCP: during init the server listens on the socket only.
+            exec:
+              command: ["pg_isready", "-h", "127.0.0.1", "-U", "postgres", "-d", "kept"]
+            periodSeconds: 5
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-h", "127.0.0.1", "-U", "postgres", "-d", "kept"]
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 6
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql
+            - name: run
+              mountPath: /var/run/postgresql
+            - name: tmp
+              mountPath: /tmp
+            - name: init
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+      volumes:
+        - name: run
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}
+        - name: init
+          configMap:
+            name: kept-db-init
+            defaultMode: 0555
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app.kubernetes.io/name: kept
+          app.kubernetes.io/instance: kept
+          app.kubernetes.io/component: postgres
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 8Gi
+---
+# Source: kept/templates/tests/test-version.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kept-test
+  labels:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/version: "0.0.0-dev"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: kept-0.0.0-dev
+    app.kubernetes.io/component: test
+  annotations:
+    helm.sh/hook: test
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  restartPolicy: Never
+  enableServiceLinks: false
+  automountServiceAccountToken: false
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+    fsGroupChangePolicy: OnRootMismatch
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: version
+      image: ghcr.io/ibrahimroshdy/kept:1.0.0
+      imagePullPolicy: IfNotPresent
+      command:
+        - node
+        - --input-type=module
+        - -e
+        - |
+          const base = process.env.KEPT_TEST_URL;
+          const ready = await fetch(`${base}/readyz`);
+          if (ready.status !== 200) throw new Error(`/readyz answered ${ready.status}`);
+          const res = await fetch(`${base}/version`);
+          const body = await res.json();
+          if (res.status !== 200 || typeof body.version !== 'string' || !body.version) {
+            throw new Error(`/version answered ${res.status}: ${JSON.stringify(body)}`);
+          }
+          console.log(`kept ${body.version} (${body.revision ?? 'no revision'}) is ready`);
+      env:
+        - name: KEPT_TEST_URL
+          value: http://kept:8080
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: [ALL]
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
+
+---
+# Source: kept/templates/jobs.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kept-migrate
+  labels:
+    app.kubernetes.io/name: kept
+    app.kubernetes.io/instance: kept
+    app.kubernetes.io/version: "0.0.0-dev"
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: kept-0.0.0-dev
+    app.kubernetes.io/component: migrate
+  annotations:
+    helm.sh/hook: post-install,pre-upgrade
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  # A failed migration is not retried blindly: its log says why (`kubectl logs job/…`).
+  backoffLimit: 0
+  activeDeadlineSeconds: 1800
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kept
+        app.kubernetes.io/instance: kept
+        app.kubernetes.io/component: migrate
+    spec:
+      restartPolicy: Never
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: wait-for-db
+          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - until pg_isready -q -h "$DB_HOST" -p "$DB_PORT" -t 5; do echo "waiting for $DB_HOST:$DB_PORT"; sleep 2; done
+          env:
+            - name: DB_HOST
+              value: "kept-postgres"
+            - name: DB_PORT
+              value: "5432"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+      containers:
+        - name: migrate
+          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          imagePullPolicy: IfNotPresent
+          command: ["kept"]
+          args: ["migrate"]
+          env:
+            - name: KEPT_DB_OWNER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kept-db
+                  key: KEPT_DB_OWNER_PASSWORD
+            - name: KEPT_OWNER_DATABASE_URL
+              value: "postgres://kept_owner:$(KEPT_DB_OWNER_PASSWORD)@kept-postgres:5432/kept"
+            # restic's cache, never on a volume the running pod holds.
+            - name: KEPT_RESTIC_CACHE_DIR
+              value: /tmp/restic-cache
+            - name: KEPT_PUBLIC_URL
+              value: "http://kept.lan:8080"
+            - name: KEPT_STORAGE
+              value: "local"
+            - name: KEPT_BACKUP_DIR
+              value: /backups
+            - name: KEPT_BACKUP_KEEP_DAILY
+              value: "14"
+            - name: KEPT_BACKUP_TIME
+              value: "03:15"
+          envFrom:
+            - secretRef:
+                name: kept-backup
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            limits:
+              memory: 512Mi
+            requests:
+              cpu: 50m
+              memory: 256Mi
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /config
+              readOnly: true
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: data
+          emptyDir: {}
+        - name: config
+          emptyDir: {}
+

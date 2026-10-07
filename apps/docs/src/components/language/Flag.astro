@@ -1,0 +1,68 @@
+---
+/**
+ * A small flag beside a language's name in the language menu (LanguageSelect.astro). Inline SVG,
+ * not an emoji: Windows draws flag emoji as two letters. Decorative only (aria-hidden): the
+ * language's own name next to it is what a screen reader reads. Every flag is drawn in the same
+ * 3:2 box; the United Kingdom's 2:1 flag is cropped to it at the sides.
+ */
+interface Props {
+  code: string;
+}
+const { code } = Astro.props;
+// Each render gets its own clip-path ids: the menu appears twice on a page (header and mobile menu).
+const id = `kd-flag-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<svg class="kd-flag" viewBox="0 0 30 20" width="20" height="14" aria-hidden="true" focusable="false">
+  {
+    code === 'root' && (
+      <svg viewBox="0 0 60 30" width="30" height="20" preserveAspectRatio="xMidYMid slice">
+        <clipPath id={`${id}-t`}>
+          <path d="M30 15h30v15zv15H0zH0V0zV0h30z" />
+        </clipPath>
+        <rect width="60" height="30" fill="#012169" />
+        <path d="M0 0l60 30M60 0L0 30" stroke="#fff" stroke-width="6" />
+        <path d="M0 0l60 30M60 0L0 30" clip-path={`url(#${id}-t)`} stroke="#C8102E" stroke-width="4" />
+        <path d="M30 0v30M0 15h60" stroke="#fff" stroke-width="10" />
+        <path d="M30 0v30M0 15h60" stroke="#C8102E" stroke-width="6" />
+      </svg>
+    )
+  }
+  {
+    code === 'ar' && (
+      <>
+        <rect width="30" height="20" fill="#fff" />
+        <rect width="30" height="6.667" fill="#CE1126" />
+        <rect y="13.333" width="30" height="6.667" fill="#000" />
+        <path d="M15 7.3l-1.9 1.5.6 3.2-1.4.6h5.4l-1.4-.6.6-3.2z" fill="#C09300" />
+      </>
+    )
+  }
+  {
+    code === 'fr' && (
+      <>
+        <rect width="30" height="20" fill="#fff" />
+        <rect width="10" height="20" fill="#002654" />
+        <rect x="20" width="10" height="20" fill="#CE1126" />
+      </>
+    )
+  }
+  {
+    code === 'de' && (
+      <>
+        <rect width="30" height="6.667" fill="#000" />
+        <rect y="6.667" width="30" height="6.667" fill="#DD0000" />
+        <rect y="13.333" width="30" height="6.667" fill="#FFCE00" />
+      </>
+    )
+  }
+  {
+    code === 'it' && (
+      <>
+        <rect width="30" height="20" fill="#fff" />
+        <rect width="10" height="20" fill="#009246" />
+        <rect x="20" width="10" height="20" fill="#CE2B37" />
+      </>
+    )
+  }
+</svg>

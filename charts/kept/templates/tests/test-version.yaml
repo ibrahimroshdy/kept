@@ -1,0 +1,46 @@
+{{- /* `helm test`: the running Kept answers /readyz 200 and /version with a version. */ -}}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "kept.fullname" . }}-test
+  labels:
+    {{- include "kept.labels" . | nindent 4 }}
+    app.kubernetes.io/component: test
+  annotations:
+    helm.sh/hook: test
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  restartPolicy: Never
+  enableServiceLinks: false
+  automountServiceAccountToken: false
+  securityContext:
+    {{- include "kept.podSecurityContext" . | nindent 4 }}
+  containers:
+    - name: version
+      image: {{ include "kept.image" . }}
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
+      command:
+        - node
+        - --input-type=module
+        - -e
+        - |
+          const base = process.env.KEPT_TEST_URL;
+          const ready = await fetch(`${base}/readyz`);
+          if (ready.status !== 200) throw new Error(`/readyz answered ${ready.status}`);
+          const res = await fetch(`${base}/version`);
+          const body = await res.json();
+          if (res.status !== 200 || typeof body.version !== 'string' || !body.version) {
+            throw new Error(`/version answered ${res.status}: ${JSON.stringify(body)}`);
+          }
+          console.log(`kept ${body.version} (${body.revision ?? 'no revision'}) is ready`);
+      env:
+        - name: KEPT_TEST_URL
+          value: http://{{ include "kept.fullname" . }}:{{ .Values.service.port }}
+      securityContext:
+        {{- include "kept.securityContext" . | nindent 8 }}
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi

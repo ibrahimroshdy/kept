@@ -1,0 +1,46 @@
+---
+/**
+ * A screenshot of the app in the page's theme and language: the light capture under the light
+ * theme and the dark one under dark (.kd-only-light and .kd-only-dark in kept.css), and on an
+ * Arabic page the Arabic capture (`<name>-ar-<theme>.webp`: the app in Arabic, right to left,
+ * with the Arabic household's data and Eastern digits). An Arabic page never falls back to an
+ * English capture; a missing one fails the build.
+ *
+ * The captures are the demo build of apps/web (`?demo=owner`, fixture data and the sample cast),
+ * taken headless at twice the pixel density and stored small: 1344px wide for a desktop capture
+ * (twice the widest it is shown), 420px for a phone. Astro serves each at the widths below, lazily
+ * unless `eager` (the hero, above the fold). A phone capture is `phone` or ends in `-phone`
+ * (scripts/capture-screens.mjs names them so).
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  /** A capture's base name in src/assets/screens/: `home`, `thing`, `phone`, `inbox`, … */
+  name: string;
+  alt: string;
+  /** The `sizes` attribute: how wide the image is shown, so the browser picks the right file. */
+  sizes: string;
+  eager?: boolean;
+  class?: string;
+}
+const { name, alt, sizes, eager = false, class: className } = Astro.props;
+const ar = Astro.locals.starlightRoute.lang === 'ar';
+const files = import.meta.glob<{ default: ImageMetadata }>('../../assets/screens/*.webp', {
+  eager: true,
+});
+const pick = (theme: 'light' | 'dark') => {
+  const file = `${name}${ar ? '-ar' : ''}-${theme}.webp`;
+  const found = files[`../../assets/screens/${file}`];
+  if (!found) throw new Error(`missing screenshot ${file}`);
+  return found.default;
+};
+const phone = name === 'phone' || name.endsWith('-phone');
+const widths = phone ? [192, 288, 420] : [480, 672, 960, 1344];
+const loading = eager ? 'eager' : 'lazy';
+---
+
+<span class:list={['kd-shot', phone ? 'kd-shot-phone' : 'kd-shot-desktop', className]}>
+  <Image src={pick('light')} {alt} {widths} {sizes} {loading} decoding="async" format="webp" quality={78} class="kd-only-light" />
+  <Image src={pick('dark')} {alt} {widths} {sizes} {loading} decoding="async" format="webp" quality={78} class="kd-only-dark" />
+</span>

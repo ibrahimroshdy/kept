@@ -1,0 +1,386 @@
+{
+  "receipt-en": {
+    "usage": {
+      "input": 2000,
+      "output": 500
+    },
+    "output": {
+      "vendor": {
+        "name": {
+          "value": "CAIRO HOME STORE",
+          "confidence": 0.95
+        }
+      },
+      "date": {
+        "value": "2026-09-14",
+        "confidence": 0.9
+      },
+      "currency": {
+        "value": "EGP",
+        "confidence": 0.9
+      },
+      "total": {
+        "value": 300,
+        "confidence": 0.95
+      },
+      "lines": [
+        {
+          "description": {
+            "value": "LED Bulb 9W",
+            "confidence": 0.9
+          },
+          "quantity": {
+            "value": 2,
+            "confidence": 0.9
+          },
+          "unit_price": {
+            "value": 45,
+            "confidence": 0.9
+          },
+          "line_total": {
+            "value": 90,
+            "confidence": 0.9
+          }
+        },
+        {
+          "description": {
+            "value": "Extension Cord 3m",
+            "confidence": 0.9
+          },
+          "quantity": {
+            "value": 1,
+            "confidence": 0.9
+          },
+          "unit_price": {
+            "value": 210,
+            "confidence": 0.9
+          },
+          "line_total": {
+            "value": 210,
+            "confidence": 0.9
+          }
+        }
+      ],
+      "warranty_terms_printed": {
+        "value": "NO WARRANTY TERMS",
+        "confidence": 0
+      },
+      "document_bbox": [0, 0, 0.7, 0.6]
+    }
+  },
+  "receipt-ar": {
+    "usage": {
+      "input": 2000,
+      "output": 500
+    },
+    "output": {
+      "vendor": {
+        "name": {
+          "value": "سوبر ماركت النيل",
+          "confidence": 0.95
+        }
+      },
+      "date": {
+        "value": "2026-09-15",
+        "confidence": 0.9
+      },
+      "currency": {
+        "value": "ج.م",
+        "confidence": 0.9
+      },
+      "total": {
+        "value": 160,
+        "confidence": 0.95
+      },
+      "lines": [
+        {
+          "description": {
+            "value": "أرز مصري ١ كجم",
+            "confidence": 0.9
+          },
+          "quantity": {
+            "value": 2,
+            "confidence": 0.9
+          },
+          "unit_price": {
+            "value": 32.5,
+            "confidence": 0.9
+          },
+          "line_total": {
+            "value": 65,
+            "confidence": 0.9
+          }
+        },
+        {
+          "description": {
+            "value": "زيت عباد الشمس",
+            "confidence": 0.9
+          },
+          "quantity": {
+            "value": 1,
+            "confidence": 0.9
+          },
+          "unit_price": {
+            "value": 95,
+            "confidence": 0.9
+          },
+          "line_total": {
+            "value": 95,
+            "confidence": 0.9
+          }
+        }
+      ],
+      "document_bbox": [0, 0, 1, 1]
+    }
+  },
+  "receipt-table": {
+    "usage": {
+      "input": 2000,
+      "output": 500
+    },
+    "output": {
+      "vendor": {
+        "name": {
+          "value": "SUNRISE HARDWARE",
+          "confidence": 0.95
+        }
+      },
+      "date": {
+        "value": "2026-09-20",
+        "confidence": 0.9
+      },
+      "currency": {
+        "value": "USD",
+        "confidence": 0.9
+      },
+      "total": {
+        "value": 42.5,
+        "confidence": 0.95
+      },
+      "lines": [
+        {
+          "description": {
+            "value": "Hammer 16oz",
+            "confidence": 0.9
+          },
+          "quantity": {
+            "value": 1,
+            "confidence": 0.9
+          },
+          "unit_price": {
+            "value": 18,
+            "confidence": 0.9
+          },
+          "line_total": {
+            "value": 18,
+            "confidence": 0.9
+          }
+        },
+        {
+          "description": {
+            "value": "Tape Measure 25ft",
+            "confidence": 0.9
+          },
+          "quantity": {
+            "value": 1,
+            "confidence": 0.9
+          },
+          "unit_price": {
+            "value": 12.5,
+            "confidence": 0.9
+          },
+          "line_total": {
+            "value": 12.5,
+            "confidence": 0.9
+          }
+        },
+        {
+          "description": {
+            "value": "Wood Screws (100)",
+            "confidence": 0.9
+          },
+          "quantity": {
+            "value": 2,
+            "confidence": 0.9
+          },
+          "unit_price": {
+            "value": 6,
+            "confidence": 0.9
+          },
+          "line_total": {
+            "value": 12,
+            "confidence": 0.9
+          }
+        }
+      ],
+      "warranty_terms_printed": {
+        "value": "Tools carry a 1-year limited warranty.",
+        "confidence": 0.9
+      },
+      "document_bbox": [0.29, 0.09, 0.42, 0.82]
+    }
+  },
+  "label-nameplate": {
+    "usage": {
+      "input": 2000,
+      "output": 500
+    },
+    "output": {
+      "brand": {
+        "value": "Samsung",
+        "confidence": 0.99
+      },
+      "model": {
+        "value": "QN55QN90DAFXZA",
+        "confidence": 0.95
+      },
+      "serial": {
+        "value": "0B7H3CAW500123K",
+        "confidence": 0.95
+      },
+      "vin": {
+        "value": "QN55QN90DAFXZA",
+        "confidence": 0.99
+      }
+    }
+  },
+  "label-registration-ar": {
+    "usage": {
+      "input": 2000,
+      "output": 500
+    },
+    "output": {
+      "brand": {
+        "value": "هيونداي",
+        "confidence": 0.9
+      },
+      "model": {
+        "value": "النترا",
+        "confidence": 0.9
+      },
+      "vin": {
+        "value": "KMHD741CBMU123456",
+        "confidence": 0.95
+      },
+      "plate": {
+        "value": "ق ط ر 1234",
+        "confidence": 0.9
+      },
+      "document_kind": {
+        "value": "registration",
+        "confidence": 0.9
+      },
+      "expires_on": {
+        "value": "2028-03-15",
+        "confidence": 0.9
+      }
+    }
+  },
+  "reading-odometer": {
+    "usage": {
+      "input": 2000,
+      "output": 500
+    },
+    "output": {
+      "value": {
+        "value": 0.04340057,
+        "confidence": 0.98
+      },
+      "unit": {
+        "value": "km",
+        "confidence": 0.9
+      },
+      "display": "digital"
+    }
+  },
+  "thing-drill-box": {
+    "usage": {
+      "input": 2000,
+      "output": 500
+    },
+    "output": {
+      "objects": [
+        {
+          "name": {
+            "value": "Cordless drill",
+            "confidence": 0.95
+          },
+          "brand": {
+            "value": "VOLTA",
+            "confidence": 0.9
+          },
+          "model": {
+            "value": "VD-18X",
+            "confidence": 0.9
+          },
+          "type_hint": {
+            "value": "power tool",
+            "confidence": 0.9
+          },
+          "aliases": {
+            "en": ["drill", "power tool"],
+            "ar": ["مثقاب"]
+          }
+        }
+      ]
+    }
+  },
+  "thing-mug": {
+    "usage": {
+      "input": 2000,
+      "output": 500
+    },
+    "output": {
+      "objects": [
+        {
+          "name": {
+            "value": "Mug",
+            "confidence": 0.95
+          },
+          "colour": {
+            "value": "red",
+            "confidence": 0.9
+          },
+          "brand": {
+            "value": "ACME",
+            "confidence": 0.3
+          },
+          "aliases": {
+            "en": ["cup"],
+            "ar": ["كوب"]
+          }
+        }
+      ]
+    }
+  },
+  "multi-shelf": {
+    "usage": {
+      "input": 2000,
+      "output": 500
+    },
+    "output": {
+      "objects": [
+        {
+          "name": "Mug",
+          "confidence": 0.9,
+          "bbox": [0.12, 0.49, 0.17, 0.21]
+        },
+        {
+          "name": "Book",
+          "confidence": 0.9,
+          "bbox": [0.37, 0.31, 0.08, 0.39]
+        },
+        {
+          "name": "Plant",
+          "confidence": 0.8,
+          "bbox": [0.1, 0.05, 0.2, 0.2]
+        },
+        {
+          "name": "Shelf",
+          "confidence": 0.6,
+          "bbox": [0.05, 0.7, 0.9, 0.05]
+        }
+      ]
+    }
+  }
+}

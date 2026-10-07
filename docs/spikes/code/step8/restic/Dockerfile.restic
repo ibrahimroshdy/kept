@@ -1,0 +1,40 @@
+# syntax=docker/dockerfile:1
+#
+# Step-8 spike R1: how the runtime image gets restic (checksum-pinned per architecture) and the
+# OpenSSH client restic's SFTP backend runs. Throwaway; T15 folds the pattern into the Dockerfile.
+#
+#   docker buildx build --platform linux/arm64 --load -t kept-spike8-restic:tmp \
+#     -f docs/spikes/code/step8/restic/Dockerfile.restic docs/spikes/code/step8/restic
+#
+# restic 0.19.1, read from github.com/restic/restic/releases (2026-10-06). The SHA-256s are the
+# release's own SHA256SUMS, whose signature verified against restic's key CF8F 18F2 8445 7597 3F79
+# D4E1 91A6 868B D3F7 A907 (restic.net/gpg-key-alex.asc).
+ARG NODE_IMAGE=node:24.21.0-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6
+
+# One stage per architecture, each with its literal checksum; TARGETARCH picks one.
+FROM ${NODE_IMAGE} AS restic-amd64
+ADD --checksum=sha256:f415415624dcc452f2a02b8c33641791a8c6d6d3b65bbb3543fcf9a25151585c \
+    https://github.com/restic/restic/releases/download/v0.19.1/restic_0.19.1_linux_amd64.bz2 /restic.bz2
+
+FROM ${NODE_IMAGE} AS restic-arm64
+ADD --checksum=sha256:a5f64aaab53d51e311fa3829124c5b703f2d14cf187d8640b6be3b2b49376465 \
+    https://github.com/restic/restic/releases/download/v0.19.1/restic_0.19.1_linux_arm64.bz2 /restic.bz2
+
+FROM restic-${TARGETARCH} AS restic
+# bzip2 only in this build stage; the runtime image never gets it.
+RUN apt-get update && apt-get install -y --no-install-recommends bzip2 \
+ && bunzip2 /restic.bz2 && chmod 0755 /restic && /restic version
+ADD https://raw.githubusercontent.com/restic/restic/v0.19.1/LICENSE /restic-LICENSE
+
+FROM ${NODE_IMAGE} AS runtime
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends openssh-client=1:9.2p1-2+deb12u10 \
+ && rm -rf /var/lib/apt/lists/*
+COPY --from=restic /restic /usr/local/bin/restic
+COPY --from=restic /restic-LICENSE /usr/share/doc/restic/LICENSE
+# ssh refuses to start for a uid with no passwd entry ("No user exists for uid 10001"), so the
+# runtime user needs one. Found by this spike; the image had none before.
+RUN groupadd --gid 10001 kept \
+ && useradd --uid 10001 --gid 10001 --home-dir /tmp --no-create-home --shell /usr/sbin/nologin kept
+ENV HOME=/tmp
+USER 10001:10001

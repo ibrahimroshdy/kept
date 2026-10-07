@@ -1,0 +1,9 @@
+{
+  "name": "kept-spike-s65-local-embeddings",
+  "private": true,
+  "type": "module",
+  "description": "S6.5 (D207): the runtime T14's local embeddings source would add, installed on top of Kept's image. Throwaway; never part of the workspace.",
+  "dependencies": {
+    "@huggingface/transformers": "4.3.0"
+  }
+}

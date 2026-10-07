@@ -1,0 +1,425 @@
+<title>Kept Design Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Arabic:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F2F1EC; --surface:#FBFAF7; --sunken:#ECEAE4; --line:#DEDBD3;
+  --ink:#1C1B19; --ink-2:#55524C; --ink-3:#6B675F;
+  --amber:#F0B03A; --amber-ink:#2E2100; --amber-text:#8A5700;
+  --violet:#5B3CC4; --violet-soft:#EEEAFD;
+  --ok:#1E7B3C; --warn:#A6480A; --danger:#B42318; --info:#2459A8;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s-other:#A8A399;
+  --charcoal:#1E1C19;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --arabic:"IBM Plex Sans Arabic","Noto Sans Arabic",Tahoma,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#151412; --surface:#1E1C19; --sunken:#26231F; --line:#34302A;
+    --ink:#F2EFE9; --ink-2:#BDB7AC; --ink-3:#9A948A;
+    --amber:#F0B03A; --amber-ink:#2E2100; --amber-text:#F4C165;
+    --violet:#A898FA; --violet-soft:#2A2447;
+    --ok:#5CC27F; --warn:#F28A4E; --danger:#F97066; --info:#7FA8EE;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s-other:#6E695F;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#151412; --surface:#1E1C19; --sunken:#26231F; --line:#34302A;
+  --ink:#F2EFE9; --ink-2:#BDB7AC; --ink-3:#9A948A;
+  --amber:#F0B03A; --amber-ink:#2E2100; --amber-text:#F4C165;
+  --violet:#A898FA; --violet-soft:#2A2447;
+  --ok:#5CC27F; --warn:#F28A4E; --danger:#F97066; --info:#7FA8EE;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s-other:#6E695F;
+}
+/* forced theme panels, for showing both themes side by side */
+.t-light{
+  color-scheme:light;
+  --paper:#F2F1EC; --surface:#FBFAF7; --sunken:#ECEAE4; --line:#DEDBD3;
+  --ink:#1C1B19; --ink-2:#55524C; --ink-3:#6B675F;
+  --amber-text:#8A5700; --violet:#5B3CC4; --violet-soft:#EEEAFD;
+  --ok:#1E7B3C; --warn:#A6480A; --danger:#B42318; --info:#2459A8;
+}
+.t-dark{
+  color-scheme:dark;
+  --paper:#151412; --surface:#1E1C19; --sunken:#26231F; --line:#34302A;
+  --ink:#F2EFE9; --ink-2:#BDB7AC; --ink-3:#9A948A;
+  --amber-text:#F4C165; --violet:#A898FA; --violet-soft:#2A2447;
+  --ok:#5CC27F; --warn:#F28A4E; --danger:#F97066; --info:#7FA8EE;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:28px 72px}
+h1,h2,h3{text-wrap:balance;margin:0;font-weight:600;letter-spacing:-0.01em}
+h2{font-size:22px;line-height:1.25}
+h3{font-size:15px;line-height:1.3}
+p{margin:0;max-width:66ch;color:var(--ink-2)}
+.eyebrow{font:600 11.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.mono{font-family:var(--mono)}
+code{font:500 12.5px/1 var(--mono);background:var(--sunken);padding:2px 5px;border-radius:4px}
+section{display:grid;gap:18px;padding-block:36px;border-top:1px solid var(--line)}
+section:first-of-type{border-top:0;padding-top:8px}
+.sec-head{display:grid;gap:6px}
+.dec{font:500 12px/1 var(--mono);color:var(--amber-text)}
+
+/* masthead */
+.mast{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-bottom:20px}
+.mast .lock{display:flex;align-items:center;gap:14px}
+.mast h1{font-size:30px;line-height:1}
+.mast p{font-size:14px}
+.tape{display:inline-flex;align-items:center;background:var(--amber);color:var(--amber-ink);font:600 13px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;padding:7px 10px 6px;border-radius:3px;box-shadow:inset 0 -1px 0 rgba(0,0,0,.12)}
+
+/* logo concepts */
+.concepts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.concept{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:grid}
+.concept.pick{outline:2px solid var(--amber);outline-offset:-1px}
+.stage{display:grid;grid-template-columns:1fr 1fr;min-height:150px}
+.stage > div{display:grid;place-items:center;padding:18px}
+.stage .on-light{background:#FBFAF7}
+.stage .on-dark{background:#1E1C19}
+.concept .body{display:grid;gap:10px;padding:16px;border-top:1px solid var(--line)}
+.sizes{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.sizes figure{margin:0;display:grid;gap:4px;justify-items:center;font:500 11px/1 var(--mono);color:var(--ink-3)}
+.appicon{border-radius:22%;background:#1E1C19;display:grid;place-items:center}
+.badge{display:inline-block;font:600 11px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:5px 7px;border-radius:4px;background:var(--amber);color:var(--amber-ink)}
+
+/* swatches */
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.panel{background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px}
+.panel > .eyebrow{color:var(--ink-3)}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+.sw{display:grid;gap:6px}
+.chip{height:44px;border-radius:6px;border:1px solid var(--line)}
+.sw b{font:600 12.5px/1.2 var(--sans)}
+.sw span{font:500 11.5px/1.3 var(--mono);color:var(--ink-3)}
+
+/* type */
+.type-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.spec{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:14px}
+.row{display:grid;grid-template-columns:92px 1fr;gap:12px;align-items:baseline}
+.row .meta{font:500 11px/1.3 var(--mono);color:var(--ink-3)}
+
+/* components */
+.ui{background:var(--surface);border:1px solid var(--line);border-radius:10px;display:grid}
+.thing{display:grid;grid-template-columns:48px 1fr;gap:12px;padding:12px 14px;border-top:1px solid var(--line);align-items:start}
+.thing:first-child{border-top:0}
+.thumb{width:48px;height:48px;border-radius:8px;background:var(--sunken);display:grid;place-items:center;color:var(--ink-3)}
+.t-name{font:600 15px/1.3 var(--sans);color:var(--ink)}
+.t-path{font:400 13px/1.4 var(--sans);color:var(--ink-2);overflow-wrap:anywhere}
+.t-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.sid{font:600 11.5px/1 var(--mono);letter-spacing:.08em;background:var(--amber);color:var(--amber-ink);padding:4px 6px 3px;border-radius:3px}
+.pill{display:inline-flex;align-items:center;gap:5px;font:500 12px/1 var(--sans);padding:4px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);background:var(--surface)}
+.pill svg{width:12px;height:12px}
+.pill.ok{color:var(--ok)} .pill.warn{color:var(--warn)} .pill.danger{color:var(--danger)} .pill.info{color:var(--info)}
+.sugg{display:grid;gap:4px;padding:10px 12px;border-radius:8px;background:var(--violet-soft);border:1px dashed var(--violet)}
+.sugg .lbl{display:flex;align-items:center;gap:6px;font:600 11.5px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--violet)}
+.sugg .val{font:500 15px/1.3 var(--sans);color:var(--ink)}
+.sugg .act{display:flex;gap:8px;margin-top:4px}
+.btn{font:600 13.5px/1 var(--sans);border-radius:7px;padding:10px 14px;border:1px solid transparent;cursor:pointer;min-height:40px}
+.btn.primary{background:var(--amber);color:var(--amber-ink)}
+.btn.secondary{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.small{padding:7px 10px;min-height:32px;font-size:12.5px}
+.btn:focus-visible,.bar:focus-visible{outline:2px solid var(--info);outline-offset:2px}
+.attn{display:grid;gap:8px;padding:14px}
+.attn .item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-radius:8px;background:var(--paper)}
+.attn .n{font:600 20px/1 var(--sans);font-variant-numeric:tabular-nums}
+.attn .k{font:500 13.5px/1.3 var(--sans);color:var(--ink-2)}
+.modes{display:flex;gap:6px;padding:10px;border-radius:10px;background:#141311;overflow-x:auto}
+.modes button{font:600 11.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;padding:9px 12px;border-radius:6px;border:0;background:transparent;color:#BDB7AC;cursor:pointer;min-height:36px}
+.modes button[aria-checked="true"]{background:var(--amber);color:var(--amber-ink)}
+.label-preview{width:227px;height:170px;max-width:100%;background:#fff;color:#111;border-radius:6px;border:1px solid #d8d5ce;display:grid;grid-template-columns:auto 1fr;gap:10px;padding:12px;align-items:center}
+.label-preview .code{font:600 22px/1 "IBM Plex Mono",monospace;letter-spacing:.06em}
+.label-preview .nm{font:600 13px/1.25 "IBM Plex Sans",sans-serif;margin-top:6px}
+.label-preview .sm{font:500 10px/1.3 "IBM Plex Mono",monospace;color:#555;margin-top:6px}
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+[dir="rtl"] .t-name,[dir="rtl"] .t-path{font-family:var(--arabic)}
+.ltr{direction:ltr;unicode-bidi:isolate}
+
+/* chart */
+.chart-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px;position:relative}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font:500 12.5px/1 var(--sans);color:var(--ink-2)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-inline-end:6px;vertical-align:-1px}
+.chart-wrap{overflow-x:auto}
+svg.chart{display:block;width:100%;min-width:520px;height:auto}
+svg.chart text{font:500 11px var(--sans);fill:var(--ink-3)}
+svg.chart .grid{stroke:var(--line);stroke-width:1}
+svg.chart .axis{stroke:var(--ink-3);stroke-width:1}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--paper);font:500 12.5px/1.45 var(--sans);padding:8px 10px;border-radius:6px;min-width:150px;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.tip b{font-weight:600}
+.tip .r{display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums}
+details{font-size:13.5px;color:var(--ink-2)}
+details summary{cursor:pointer;font-weight:600;color:var(--ink)}
+table{border-collapse:collapse;margin-top:8px;font-variant-numeric:tabular-nums;font-size:13px}
+th,td{padding:5px 12px 5px 0;text-align:end;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:start}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:6px}
+.fact p{font-size:13.5px}
+.note{font-size:12.5px;color:var(--ink-3)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+/* chosen, 2026-09-30 */
+a{color:var(--ink);text-underline-offset:2px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--info);outline-offset:2px}
+.golink{text-decoration:none}
+.jump{display:flex;flex-wrap:wrap;gap:8px;padding-block:0 12px}
+.jump a{font:500 13px/1 var(--sans);color:var(--ink-2);text-decoration:none;padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+.jump a:hover{color:var(--ink)}
+section[id]{scroll-margin-top:12px}
+.final{display:grid;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;outline:2px solid var(--amber);outline-offset:-1px}
+.stage.big > div{padding:28px 18px}
+.stage.big svg{max-width:100%;height:auto}
+.dark-sizes .sizes figure{color:#BDB7AC}
+.considered{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.considered summary{min-height:28px;display:flex;align-items:center}
+.cons{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;padding-top:12px}
+.cons > div{display:flex;gap:12px;align-items:flex-start}
+.cons svg{flex:none}
+.cons p{font-size:13.5px}
+.decisions{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:10px}
+.decisions li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.decisions b{font:600 14.5px/1.35 var(--sans);color:var(--ink)}
+.decisions p{font-size:13.5px;margin-top:2px}
+.sw span + span{color:var(--ink-3)}
+@media (max-width:520px){.stage{grid-template-columns:1fr}}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <div class="lock">
+    <svg width="120" height="40.2" viewBox="0 0 191 64" role="img" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
+    <div>
+      <h1 class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Kept design board</h1>
+      <p>Design board: what was chosen for Kept's look, and the decisions that shape its screens.</p>
+    </div>
+  </div>
+  <a class="tape golink" href="kept-screens.html">Screens board →</a>
+</header>
+<nav class="jump" aria-label="On this board"><a href="#logo">Logo</a><a href="#colour">Colour</a><a href="#type">Type</a><a href="#motifs">Component motifs</a><a href="#charts">Charts</a><a href="#decisions">Decisions that shape the UI</a></nav>
+
+<section id="logo">
+  <div class="sec-head">
+    <span class="dec">D135 · final · mark B, 5d41691</span>
+    <h2>Logo: B · Label tape <span class="badge">Final</span></h2>
+    <p>A square of label-maker tape, the same object people stick on boxes, with a heavy Plex Mono K and the tape's punched hole at the top start. That pierced mark is the logo everywhere, at every size: favicon, app icons, the rail, the docs site and the README. The lockup is the mark with KEPT beside it in the same Plex Mono SemiBold, in the text colour. The tape is also the short-ID chip on every thing and on every printed label, so the brand and the label are one object.</p>
+  </div>
+  <div class="final">
+    <div class="stage big">
+      <div class="on-light"><svg width="240" height="80.4" viewBox="0 0 191 64" role="img" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="#1C1B19"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg></div>
+      <div class="on-dark"><svg width="240" height="80.4" viewBox="0 0 191 64" role="img" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="#F2EFE9"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg></div>
+    </div>
+    <div class="stage">
+      <div class="on-light"><div class="sizes"><figure><svg width="16" height="16" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/></svg>16 px</figure><figure><svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/></svg>32 px</figure><figure><svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/></svg>64 px</figure><figure><svg width="192" height="192" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/></svg>192 px</figure></div></div>
+      <div class="on-dark dark-sizes"><div class="sizes"><figure><svg width="16" height="16" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/></svg>16 px</figure><figure><svg width="32" height="32" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/></svg>32 px</figure><figure><svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/></svg>64 px</figure><figure><svg width="192" height="192" viewBox="0 0 64 64" aria-hidden="true"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/></svg>192 px</figure></div></div>
+    </div>
+  </div>
+  <p class="note">The mark and the lockup are drawn from the font's own outlines (components/brand.tsx, scripts/render-icons.mjs), so they need no font at any size. The hole is cut out of the tape, so it shows whatever the mark sits on; amber and its ink keep their colours in both themes, and the wordmark takes the text colour.</p>
+  <details class="considered">
+    <summary>Considered: A · Box K and C · Tag</summary>
+    <div class="cons">
+      <div><svg width="48" height="48" viewBox="0 0 64 64" role="img" aria-label="Box K mark on light"><rect x="4" y="4" width="56" height="56" rx="13" fill="#F0B03A"/><g stroke="#2E2100" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M23 17v30"/><path d="M42 17 26 32l17 15"/></g></svg><p><b>A · Box K.</b> A K from one continuous stroke in an amber box, like a lid opening. Recommended for small-size legibility, and not chosen.</p></div>
+      <div><svg width="48" height="48" viewBox="0 0 64 64" role="img" aria-label="Tag mark on light"><path d="M18 10h36a6 6 0 0 1 6 6v32a6 6 0 0 1-6 6H18L4 32Z" fill="#F0B03A"/><circle cx="16" cy="32" r="3.5" fill="#FBFAF7"/><g stroke="#2E2100" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M30 20v24"/><path d="M47 20 33 32l15 12"/></g></svg><p><b>C · Tag.</b> A luggage tag with a punched hole: the strongest story, but it lost its hole below 32 px and read as a generic arrow at favicon size.</p></div>
+    </div>
+  </details>
+</section>
+
+<section id="colour">
+  <div class="sec-head">
+    <span class="dec">D131 · final · styles/tokens.css</span>
+    <h2>Colour</h2>
+    <p>These are the app's tokens, copied verbatim into apps/web/src/styles/tokens.css. Warm stone neutrals, one amber accent used as a fill with dark text, violet reserved for AI-suggested values, and status colours that always travel with an icon and a word. Every text colour below measures at least 4.5:1 on both surfaces in its theme.</p>
+  </div>
+  <div class="pair">
+    <div class="panel t-light"><span class="eyebrow">Light</span><div class="swatches"><div class="sw"><div class="chip" style="background:#F2F1EC"></div><b>Paper</b><span>--paper · #F2F1EC</span><span>ground</span></div><div class="sw"><div class="chip" style="background:#FBFAF7"></div><b>Surface</b><span>--surface · #FBFAF7</span><span>cards</span></div><div class="sw"><div class="chip" style="background:#ECEAE4"></div><b>Sunken</b><span>--sunken · #ECEAE4</span><span>wells, hover</span></div><div class="sw"><div class="chip" style="background:#DEDBD3"></div><b>Line</b><span>--line · #DEDBD3</span><span>borders</span></div><div class="sw"><div class="chip" style="background:#1C1B19"></div><b>Ink</b><span>--ink · #1C1B19</span><span>16.5:1</span></div><div class="sw"><div class="chip" style="background:#55524C"></div><b>Ink 2</b><span>--ink-2 · #55524C</span><span>7.5:1</span></div><div class="sw"><div class="chip" style="background:#6B675F"></div><b>Ink 3</b><span>--ink-3 · #6B675F</span><span>5.4:1</span></div><div class="sw"><div class="chip" style="background:#F0B03A"></div><b>Amber</b><span>--amber · #F0B03A</span><span>fill only</span></div><div class="sw"><div class="chip" style="background:#2E2100"></div><b>Amber ink</b><span>--amber-ink · #2E2100</span><span>on amber, 8.2:1</span></div><div class="sw"><div class="chip" style="background:#8A5700"></div><b>Amber text</b><span>--amber-text · #8A5700</span><span>5.8:1</span></div><div class="sw"><div class="chip" style="background:#5B3CC4"></div><b>AI violet</b><span>--violet · #5B3CC4</span><span>7.0:1</span></div><div class="sw"><div class="chip" style="background:#EEEAFD"></div><b>AI violet soft</b><span>--violet-soft · #EEEAFD</span><span>Suggested ground</span></div><div class="sw"><div class="chip" style="background:#1E7B3C"></div><b>OK</b><span>--ok · #1E7B3C</span><span>5.1:1</span></div><div class="sw"><div class="chip" style="background:#A6480A"></div><b>Warning</b><span>--warn · #A6480A</span><span>5.7:1</span></div><div class="sw"><div class="chip" style="background:#B42318"></div><b>Danger</b><span>--danger · #B42318</span><span>6.3:1</span></div><div class="sw"><div class="chip" style="background:#2459A8"></div><b>Info, focus</b><span>--info · #2459A8</span><span>6.6:1</span></div><div class="sw"><div class="chip" style="background:#2a78d6"></div><b>Series 1</b><span>--s1 · #2a78d6</span><span>charts</span></div><div class="sw"><div class="chip" style="background:#eb6834"></div><b>Series 2</b><span>--s2 · #eb6834</span><span>charts</span></div><div class="sw"><div class="chip" style="background:#1baf7a"></div><b>Series 3</b><span>--s3 · #1baf7a</span><span>charts</span></div><div class="sw"><div class="chip" style="background:#A8A399"></div><b>Other</b><span>--s-other · #A8A399</span><span>charts</span></div></div></div>
+    <div class="panel t-dark"><span class="eyebrow">Dark</span><div class="swatches"><div class="sw"><div class="chip" style="background:#151412"></div><b>Paper</b><span>--paper · #151412</span><span>ground</span></div><div class="sw"><div class="chip" style="background:#1E1C19"></div><b>Surface</b><span>--surface · #1E1C19</span><span>cards</span></div><div class="sw"><div class="chip" style="background:#26231F"></div><b>Sunken</b><span>--sunken · #26231F</span><span>wells, hover</span></div><div class="sw"><div class="chip" style="background:#34302A"></div><b>Line</b><span>--line · #34302A</span><span>borders</span></div><div class="sw"><div class="chip" style="background:#F2EFE9"></div><b>Ink</b><span>--ink · #F2EFE9</span><span>14.8:1</span></div><div class="sw"><div class="chip" style="background:#BDB7AC"></div><b>Ink 2</b><span>--ink-2 · #BDB7AC</span><span>8.5:1</span></div><div class="sw"><div class="chip" style="background:#9A948A"></div><b>Ink 3</b><span>--ink-3 · #9A948A</span><span>5.7:1</span></div><div class="sw"><div class="chip" style="background:#F0B03A"></div><b>Amber</b><span>--amber · #F0B03A</span><span>fill only</span></div><div class="sw"><div class="chip" style="background:#2E2100"></div><b>Amber ink</b><span>--amber-ink · #2E2100</span><span>on amber, 8.2:1</span></div><div class="sw"><div class="chip" style="background:#F4C165"></div><b>Amber text</b><span>--amber-text · #F4C165</span><span>10.3:1</span></div><div class="sw"><div class="chip" style="background:#A898FA"></div><b>AI violet</b><span>--violet · #A898FA</span><span>6.9:1</span></div><div class="sw"><div class="chip" style="background:#2A2447"></div><b>AI violet soft</b><span>--violet-soft · #2A2447</span><span>Suggested ground</span></div><div class="sw"><div class="chip" style="background:#5CC27F"></div><b>OK</b><span>--ok · #5CC27F</span><span>7.7:1</span></div><div class="sw"><div class="chip" style="background:#F28A4E"></div><b>Warning</b><span>--warn · #F28A4E</span><span>6.9:1</span></div><div class="sw"><div class="chip" style="background:#F97066"></div><b>Danger</b><span>--danger · #F97066</span><span>6.1:1</span></div><div class="sw"><div class="chip" style="background:#7FA8EE"></div><b>Info, focus</b><span>--info · #7FA8EE</span><span>7.1:1</span></div><div class="sw"><div class="chip" style="background:#3987e5"></div><b>Series 1</b><span>--s1 · #3987e5</span><span>charts</span></div><div class="sw"><div class="chip" style="background:#d95926"></div><b>Series 2</b><span>--s2 · #d95926</span><span>charts</span></div><div class="sw"><div class="chip" style="background:#199e70"></div><b>Series 3</b><span>--s3 · #199e70</span><span>charts</span></div><div class="sw"><div class="chip" style="background:#6E695F"></div><b>Other</b><span>--s-other · #6E695F</span><span>charts</span></div></div></div>
+  </div>
+  <p class="note">Ratios are WCAG contrast against each theme's surface. Warning is orange-red, deliberately away from the amber accent, so "needs attention" never looks like "brand".</p>
+</section>
+
+<section id="type">
+  <div class="sec-head">
+    <span class="dec">D132 · final · the type scale in index.css</span>
+    <h2>Type</h2>
+    <p>One family in three voices: IBM Plex Sans for the interface, Plex Sans Arabic drawn to match it, and Plex Mono for the things a person copies or checks against a label: short IDs, serials, VINs, readings. All three are open-licensed (OFL).</p>
+  </div>
+  <div class="type-grid">
+    <div class="spec">
+      <div class="row"><span class="meta">Display<br>28/34 · 600</span><span style="font:600 28px/34px var(--sans);letter-spacing:-.015em">Garage, shelf A</span></div>
+      <div class="row"><span class="meta">Title<br>20/26 · 600</span><span style="font:600 20px/26px var(--sans)">Bosch drill, 18 V</span></div>
+      <div class="row"><span class="meta">Body<br>15/23 · 400</span><span style="font:400 15px/23px var(--sans)">Bought from Ace Hardware on 3 March for 4,500 EGP. Warranty until 3 March 2028.</span></div>
+      <div class="row"><span class="meta">Small<br>13/18 · 400</span><span style="font:400 13px/18px var(--sans);color:var(--ink-2)">Garage › Tool wall · last seen 12 days ago</span></div>
+      <div class="row"><span class="meta">Label<br>11.5 · 600 caps</span><span class="eyebrow" style="color:var(--ink-2)">Due this week</span></div>
+    </div>
+    <div class="spec">
+      <div class="row"><span class="meta">Mono<br>short ID</span><span class="sid" style="justify-self:start;font-size:14px">7KQ‑4MZ</span></div>
+      <div class="row"><span class="meta">Mono<br>serial / VIN</span><span class="mono" style="font-size:15px;font-weight:500">JTDBR32E720123456</span></div>
+      <div class="row"><span class="meta">Mono<br>reading</span><span class="mono" style="font-size:22px;font-weight:600;font-variant-numeric:tabular-nums">52,340 km</span></div>
+      <div class="row" dir="rtl"><span class="meta" dir="ltr">Arabic<br>title / body</span><span><span style="display:block;font:600 20px/30px var(--arabic)">مثقاب بوش، ١٨ فولت</span><span style="display:block;font:400 15px/25px var(--arabic);color:var(--ink-2)">اشتُري من إيس هاردوير في ٣ مارس بسعر ٤٬٥٠٠ ج.م.. الضمان حتى ٣ مارس ٢٠٢٨.</span></span></div>
+    </div>
+  </div>
+</section>
+
+<section id="motifs">
+  <div class="sec-head">
+    <span class="dec">D134 · final</span>
+    <h2>Component motifs, both themes</h2>
+    <p>The short-ID chip, mono on amber tape, is the one visual motif: it matches the printed label on the box. State pills always pair colour with an icon and a word; AI-suggested values are violet and dashed with the word "Suggested"; the capture mode strip sits on dark chrome in both themes. Every other component, in every state, is in the kit on the <a href="kept-screens.html#kit">screens board</a>.</p>
+  </div>
+  <div class="pair">
+    <div class="panel t-light" aria-label="Components in light theme">
+      <span class="eyebrow">Light</span>
+      <div class="ui">
+        <div class="thing"><div class="thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v10H3z"/><path d="M7 7V5h10v2"/></svg></div><div><div class="t-name">HDMI cable, 2 m</div><div class="t-path">Home › Office › Desk drawer › Cable box</div><div class="t-meta"><span class="sid">7KQ‑4MZ</span><span class="pill">× 3</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 12h9l3-3h4v6h-4l-3-3"/><path d="M7 12v5"/></svg></div><div><div class="t-name">Bosch drill, 18 V</div><div class="t-path">With Murdock since 3 Oct · due 17 Oct</div><div class="t-meta"><span class="sid">2HX‑9RB</span><span class="pill warn"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1.5 11 10.5H1Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 5v2.4M6 8.8v.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Overdue 2 days</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="1.5"/><path d="M8 20h8"/></svg></div><div><div class="t-name">Samsung TV, 55″</div><div class="t-path">At Samsung Service Centre · claim open</div><div class="t-meta"><span class="sid">5MT‑0QD</span><span class="pill ok"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.2 5 8.5l4.5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Covered to Jan 2027</span></div></div></div>
+      </div>
+      <div class="sugg"><span class="lbl"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1v3M6 8v3M1 6h3M8 6h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Suggested · warranty end</span><span class="val">3 March 2028 (read from receipt)</span><div class="act"><button class="btn primary small" type="button">Confirm</button><button class="btn secondary small" type="button">Edit</button></div></div>
+      <div class="ui attn">
+        <span class="eyebrow">Needs you</span>
+        <div class="item"><span class="n">4</span><span class="k">things to review from Saturday's capture</span><button class="btn secondary small" type="button">Review</button></div>
+        <div class="item"><span class="n">1</span><span class="k">Corolla oil change, estimated ~14 Nov</span><button class="btn secondary small" type="button">Open</button></div>
+      </div>
+    </div>
+    <div class="panel t-dark" aria-label="Components in dark theme">
+      <span class="eyebrow">Dark</span>
+      <div class="ui">
+        <div class="thing"><div class="thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v10H3z"/><path d="M7 7V5h10v2"/></svg></div><div><div class="t-name">HDMI cable, 2 m</div><div class="t-path">Home › Office › Desk drawer › Cable box</div><div class="t-meta"><span class="sid">7KQ‑4MZ</span><span class="pill">× 3</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 12h9l3-3h4v6h-4l-3-3"/><path d="M7 12v5"/></svg></div><div><div class="t-name">Bosch drill, 18 V</div><div class="t-path">With Murdock since 3 Oct · due 17 Oct</div><div class="t-meta"><span class="sid">2HX‑9RB</span><span class="pill warn"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1.5 11 10.5H1Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 5v2.4M6 8.8v.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Overdue 2 days</span></div></div></div>
+        <div class="thing"><div class="thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="1.5"/><path d="M8 20h8"/></svg></div><div><div class="t-name">Samsung TV, 55″</div><div class="t-path">At Samsung Service Centre · claim open</div><div class="t-meta"><span class="sid">5MT‑0QD</span><span class="pill ok"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.2 5 8.5l4.5-5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Covered to Jan 2027</span></div></div></div>
+      </div>
+      <div class="sugg"><span class="lbl"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1v3M6 8v3M1 6h3M8 6h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Suggested · warranty end</span><span class="val">3 March 2028 (read from receipt)</span><div class="act"><button class="btn primary small" type="button">Confirm</button><button class="btn secondary small" type="button">Edit</button></div></div>
+      <div class="ui attn">
+        <span class="eyebrow">Needs you</span>
+        <div class="item"><span class="n">4</span><span class="k">things to review from Saturday's capture</span><button class="btn secondary small" type="button">Review</button></div>
+        <div class="item"><span class="n">1</span><span class="k">Corolla oil change, estimated ~14 Nov</span><button class="btn secondary small" type="button">Open</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="comp-grid">
+    <div class="fact">
+      <span class="eyebrow">Capture mode strip · D34</span>
+      <div class="modes" role="radiogroup" aria-label="Capture mode">
+        <button type="button" role="radio" aria-checked="true">Thing</button>
+        <button type="button" role="radio" aria-checked="false">Receipt</button>
+        <button type="button" role="radio" aria-checked="false">Label</button>
+        <button type="button" role="radio" aria-checked="false">Reading</button>
+      </div>
+      <p>Always on the dark camera chrome, whatever the theme. The mode is a labelled radio group for screen readers.</p>
+    </div>
+    <div class="fact">
+      <span class="eyebrow">Printed label, 40 × 30 mm · D120</span>
+      <div class="label-preview" role="img" aria-label="Label preview with QR code and short ID 3CB-8WN">
+        <svg width="96" height="96" viewBox="0 0 21 21" shape-rendering="crispEdges" aria-hidden="true"><rect width="21" height="21" fill="#fff"/><g fill="#111"><rect x="0" y="0" width="7" height="7"/><rect x="14" y="0" width="7" height="7"/><rect x="0" y="14" width="7" height="7"/></g><g fill="#fff"><rect x="1" y="1" width="5" height="5"/><rect x="15" y="1" width="5" height="5"/><rect x="1" y="15" width="5" height="5"/></g><g fill="#111"><rect x="2" y="2" width="3" height="3"/><rect x="16" y="2" width="3" height="3"/><rect x="2" y="16" width="3" height="3"/><rect x="9" y="1" width="1" height="2"/><rect x="11" y="2" width="2" height="1"/><rect x="8" y="4" width="2" height="2"/><rect x="12" y="5" width="1" height="3"/><rect x="9" y="8" width="3" height="1"/><rect x="1" y="9" width="2" height="1"/><rect x="4" y="8" width="1" height="3"/><rect x="6" y="10" width="2" height="1"/><rect x="14" y="9" width="2" height="2"/><rect x="17" y="8" width="1" height="3"/><rect x="19" y="10" width="1" height="2"/><rect x="9" y="11" width="1" height="3"/><rect x="11" y="12" width="3" height="1"/><rect x="15" y="13" width="2" height="1"/><rect x="18" y="14" width="2" height="2"/><rect x="9" y="16" width="2" height="1"/><rect x="12" y="15" width="1" height="3"/><rect x="14" y="17" width="3" height="1"/><rect x="10" y="19" width="2" height="1"/><rect x="16" y="19" width="3" height="1"/><rect x="19" y="17" width="1" height="1"/></g></svg>
+        <div><div class="code">3CB‑8WN</div><div class="nm">Cable box</div><div class="sm">Office · Desk drawer</div></div>
+      </div>
+      <p>Illustrative QR pattern only. Real labels encode <code>&lt;public-url&gt;/l/3CB8WN</code>.</p>
+    </div>
+    <div class="fact" dir="rtl">
+      <span class="eyebrow" dir="ltr" style="text-align:left">Right-to-left · D78</span>
+      <div class="ui">
+        <div class="thing"><div class="thumb"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v10H3z"/><path d="M7 7V5h10v2"/></svg></div><div><div class="t-name">كابل HDMI، ٢ متر</div><div class="t-path">المنزل › المكتب › درج المكتب › صندوق الكابلات</div><div class="t-meta"><span class="sid ltr">7KQ‑4MZ</span><span class="pill">× ٣</span></div></div></div>
+      </div>
+      <p>Layout mirrors; the short ID, serials and readings stay left-to-right.</p>
+    </div>
+  </div>
+</section>
+
+<section id="charts">
+  <div class="sec-head">
+    <span class="dec">D133 · final</span>
+    <h2>Charts</h2>
+    <p>Charts are drawn with visx. Kept writes the SVG itself with visx's scales and shapes, so colours come straight from the theme tokens, every mark carries an ARIA label, and right-to-left is a mirrored scale.</p>
+  </div>
+  <div class="facts">
+    <div class="fact"><h3>Why visx</h3><p>MIT, v4.0.0 (June 2026). Owning the markup makes the three D80 criteria true by construction: CSS-variable theming, accessibility, RTL. Recharts is more popular but passes colours as SVG attributes, where CSS variables don't reliably resolve.</p></div>
+    <div class="fact"><h3>Three series, then "Other"</h3><p>On Kept's warm dark surface, only three-colour palettes pass every colourblind and contrast check in both themes. Charts show at most three coloured series; the rest fold into grey "Other" or split into small multiples.</p></div>
+    <div class="fact"><h3>Colours with jobs</h3><p>Blue, orange, aqua for series. Amber stays brand, violet stays AI, status colours stay status, so a series is never mistaken for a warning.</p></div>
+  </div>
+
+  <div class="chart-card" id="cost-card">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:baseline">
+      <h3>Corolla · running cost per month, EGP</h3>
+      <span class="note">Sample data</span>
+    </div>
+    <div class="legend" aria-hidden="true"><span><i style="background:var(--s1)"></i>Fuel</span><span><i style="background:var(--s2)"></i>Service &amp; parts</span><span><i style="background:var(--s3)"></i>Fees &amp; insurance</span></div>
+    <div class="chart-wrap"><svg class="chart" id="cost-chart" viewBox="0 0 640 260" role="group" aria-label="Stacked bar chart of Corolla running cost per month, April to September 2026"></svg></div>
+    <details><summary>Show as table</summary>
+      <table id="cost-table"><thead><tr><th>Month</th><th>Fuel</th><th>Service &amp; parts</th><th>Fees &amp; insurance</th><th>Total</th></tr></thead><tbody></tbody></table>
+    </details>
+    <div class="tip" id="tip" hidden></div>
+  </div>
+</section>
+
+<section id="decisions">
+  <div class="sec-head">
+    <span class="dec">From docs/specs/2026-09-25-kept-product-design.md</span>
+    <h2>Decisions that shape the UI</h2>
+    <p>What every screen follows. The frames, flows and kit that apply them are on the <a href="kept-screens.html">screens board</a>.</p>
+  </div>
+  <ol class="decisions"><li><span class="dec">D131</span><div><b>Colour tokens</b><p>Both themes designed and measured: warm stone neutrals, amber as a fill with dark ink (8.2:1), violet only for AI-suggested values, status colours that always travel with an icon and a word. Every text token is at least 4.5:1.</p></div></li><li><span class="dec">D132</span><div><b>Type scale</b><p>IBM Plex in three voices: display 28/34, title 20/26, body 15/23, small 13/18, label 11.5 caps. Plex Sans Arabic at the same scale, taller lines; Plex Mono for anything checked against a label.</p></div></li><li><span class="dec">D133</span><div><b>Charts</b><p>visx, drawn by Kept. Three series colours, then grey "Other"; a legend from two series, direct labels on notable marks, a tooltip and a table view.</p></div></li><li><span class="dec">D134</span><div><b>Component motifs</b><p>The amber-tape short-ID chip is the one motif. Pills pair colour with icon and word; the capture mode strip is on dark chrome; the assistant is a speech bubble with a question mark.</p></div></li><li><span class="dec">D135</span><div><b>Logo</b><p>B · Label tape: the mark is a square of tape with its punched hole and a mono K, at every size; the lockup is that mark with KEPT beside it. Chosen over A (Box K) and C (Tag).</p></div></li><li><span class="dec">D174</span><div><b>Screens specified, navigation global</b><p>Every screen has a spec; views span all your locations with a location filter; routes use IDs. A control you can't use is hidden for your role, "Off in this location" for a module, or disabled with the reason when offline or out of budget.</p></div></li><li><span class="dec">D175</span><div><b>Interaction rules</b><p>The camera stays open with a counter; the Inbox is Mine by default and grouped by capture batch; sections on phones, tabs on desktops; a secret shows for 30 s; assistant cards are drawn from the arguments; conflicts merge field by field; the carrying tray, box check and a label start cell.</p></div></li><li><span class="dec">D198</span><div><b>The icon rail</b><p>From 768 px the sidebar folds to a 64 px rail with tooltips; ⌘\ toggles it, the choice is remembered per device, and 768–1023 px starts on the rail.</p></div></li><li><span class="dec">D203</span><div><b>Content width</b><p>Centered or Full width, per device, applied before first paint. Lists and tables use the room; running text and forms keep their measure. Phones are unaffected.</p></div></li><li><span class="dec">D204</span><div><b>Languages, theme, digits</b><p>Five languages (Arabic is right to left), a custom language menu with flags, theme System, Light or Dark, and Eastern Arabic digits offered only in Arabic.</p></div></li><li><span class="dec">D205</span><div><b>The filter strip</b><p>One filtering component on every list: a search box, a dark chip per filter in use, + Filter (Filters (n) on phones), saved views as tabs, all in the URL.</p></div></li><li><span class="dec">D208</span><div><b>Short-ID addresses and your own codes</b><p>A thing lives at /t/2HX9RB. Your own codes (HOME-0042) sit beside the short ID, never replacing it; the 6-character code itself is fixed because it is printed.</p></div></li><li><span class="dec">D211</span><div><b>The Display button</b><p>Sort, direction, grouping and layout sit behind one button at the end of the strip's row; no second toolbar, nothing wraps.</p></div></li><li><span class="dec">D212</span><div><b>Pull to refresh</b><p>Phones only. It arms after 16 px of pull at the top of the page, so it never costs a tap; off on desktops and under sheets.</p></div></li><li><span class="dec">D213</span><div><b>Speak a list, add it all at once</b><p>The assistant turns "a drill, a ladder and two paint cans" into one confirmation card; one Confirm creates them all, one Undo takes them back.</p></div></li><li><span class="dec">iOS</span><div><b>The status strip</b><p>In the installed iPhone app an opaque strip the height of the safe area sits at the top (paper) and, with the tab bar, at the bottom (surface), so iOS 26 tints the edges instead of blurring them (styles/index.css; no D number).</p></div></li></ol>
+</section>
+
+</div>
+
+<script>
+(function(){
+  var data=[
+    {m:"Apr",fuel:3200,service:0,fees:450},
+    {m:"May",fuel:3450,service:2800,fees:450},
+    {m:"Jun",fuel:3100,service:0,fees:450},
+    {m:"Jul",fuel:3600,service:0,fees:1950},
+    {m:"Aug",fuel:3300,service:5400,fees:450},
+    {m:"Sep",fuel:3500,service:0,fees:450}
+  ];
+  var keys=[["fuel","Fuel","var(--s1)"],["service","Service & parts","var(--s2)"],["fees","Fees & insurance","var(--s3)"]];
+  var svg=document.getElementById("cost-chart"),NS="http://www.w3.org/2000/svg";
+  var W=640,H=260,L=56,R=16,T=14,B=34,max=10000,ticks=[0,2500,5000,7500,10000];
+  var ph=H-T-B,pw=W-L-R,slot=pw/data.length,bw=Math.min(44,slot*0.5);
+  function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);return e}
+  function y(v){return T+ph-(v/max)*ph}
+  var fmt=new Intl.NumberFormat("en-US");
+  ticks.forEach(function(t){
+    svg.appendChild(el("line",{x1:L,x2:W-R,y1:y(t),y2:y(t),"class":t===0?"axis":"grid"}));
+    var tx=el("text",{x:L-8,y:y(t)+4,"text-anchor":"end"});tx.textContent=t===0?"0":(t/1000)+"k";svg.appendChild(tx);
+  });
+  var tip=document.getElementById("tip"),card=document.getElementById("cost-card");
+  data.forEach(function(d,i){
+    var cx=L+slot*i+slot/2,x=cx-bw/2,acc=0,total=d.fuel+d.service+d.fees;
+    var g=el("g",{"class":"bar",tabindex:"0",role:"img","aria-label":d.m+" 2026: fuel "+fmt.format(d.fuel)+", service and parts "+fmt.format(d.service)+", fees and insurance "+fmt.format(d.fees)+", total "+fmt.format(total)+" EGP"});
+    var segs=keys.filter(function(k){return d[k[0]]>0});
+    segs.forEach(function(k,si){
+      var v=d[k[0]],y0=y(acc),y1=y(acc+v),h=y0-y1-(si<segs.length-1?2:0);
+      var top=si===segs.length-1;
+      if(top){
+        var r=Math.min(4,h),p="M"+x+","+(y1+h)+"V"+(y1+r)+"q0,-"+r+" "+r+",-"+r+"H"+(x+bw-r)+"q"+r+",0 "+r+","+r+"V"+(y1+h)+"Z";
+        g.appendChild(el("path",{d:p,fill:k[2]}));
+      } else {
+        g.appendChild(el("rect",{x:x,y:y1,width:bw,height:Math.max(h,0),fill:k[2]}));
+      }
+      acc+=v;
+    });
+    g.appendChild(el("rect",{x:cx-slot/2,y:T,width:slot,height:ph,fill:"transparent"}));
+    var lt=el("text",{x:cx,y:H-B+18,"text-anchor":"middle"});lt.textContent=d.m;svg.appendChild(lt);
+    if(d.service>0){var vt=el("text",{x:cx,y:y(total)-6,"text-anchor":"middle",style:"fill:var(--ink-2);font-weight:600"});vt.textContent=fmt.format(total);svg.appendChild(vt)}
+    function show(){
+      tip.innerHTML="<b>"+d.m+" 2026</b>"+keys.map(function(k){return '<div class="r"><span>'+k[1]+'</span><span>'+fmt.format(d[k[0]])+'</span></div>'}).join("")+'<div class="r" style="margin-top:4px;font-weight:600"><span>Total</span><span>'+fmt.format(total)+' EGP</span></div>';
+      tip.hidden=false;
+      var cr=card.getBoundingClientRect(),br=g.getBoundingClientRect();
+      var left=br.left-cr.left+br.width/2-tip.offsetWidth/2;
+      left=Math.max(8,Math.min(left,cr.width-tip.offsetWidth-8));
+      tip.style.left=left+"px";tip.style.top=(br.top-cr.top-tip.offsetHeight+18)+"px";
+    }
+    function hide(){tip.hidden=true}
+    g.addEventListener("mouseenter",show);g.addEventListener("mouseleave",hide);
+    g.addEventListener("focus",show);g.addEventListener("blur",hide);
+    svg.appendChild(g);
+  });
+  var tb=document.querySelector("#cost-table tbody");
+  data.forEach(function(d){var t=d.fuel+d.service+d.fees;var tr=document.createElement("tr");tr.innerHTML="<td>"+d.m+" 2026</td><td>"+fmt.format(d.fuel)+"</td><td>"+fmt.format(d.service)+"</td><td>"+fmt.format(d.fees)+"</td><td>"+fmt.format(t)+"</td>";tb.appendChild(tr)});
+  document.querySelectorAll('.modes button').forEach(function(b){b.addEventListener('click',function(){b.parentNode.querySelectorAll('button').forEach(function(o){o.setAttribute('aria-checked',o===b?'true':'false')})})});
+})();
+</script>

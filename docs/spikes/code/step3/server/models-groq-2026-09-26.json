@@ -1,0 +1,242 @@
+{
+ "_note": "GET https://api.groq.com/openai/v1/models on 2026-09-26 (Kept step-3 spike, L50/D202). All 11 models; dropped fields: object, created, public_apps, hugging_face_id, name, context_length (= context_window), max_output_length (= max_completion_tokens), supported_sampling_parameters.",
+ "fetched": "2026-09-26",
+ "endpoint": "GET https://api.groq.com/openai/v1/models",
+ "data": [
+  {
+   "id": "openai/gpt-oss-20b",
+   "owned_by": "OpenAI",
+   "active": true,
+   "context_window": 131072,
+   "max_completion_tokens": 65536,
+   "input_modalities": [
+    "text"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_features": [
+    "tools",
+    "json_mode",
+    "structured_outputs",
+    "reasoning"
+   ],
+   "pricing": {
+    "prompt": "0.000000075",
+    "completion": "0.0000003",
+    "image": "0",
+    "request": "0",
+    "input_cache_read": "0.0000000375"
+   }
+  },
+  {
+   "id": "meta-llama/llama-prompt-guard-2-86m",
+   "owned_by": "Meta",
+   "active": true,
+   "context_window": 512,
+   "max_completion_tokens": 512,
+   "input_modalities": [
+    "text"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_features": [
+    "json_mode"
+   ],
+   "pricing": {
+    "prompt": "0.00000004",
+    "completion": "0.00000004",
+    "image": "0",
+    "request": "0",
+    "input_cache_read": "0.00000002"
+   }
+  },
+  {
+   "id": "allam-2-7b",
+   "owned_by": "SDAIA",
+   "active": true,
+   "context_window": 4096,
+   "max_completion_tokens": 4096,
+   "input_modalities": [
+    "text"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_features": [
+    "json_mode"
+   ],
+   "pricing": null
+  },
+  {
+   "id": "whisper-large-v3-turbo",
+   "owned_by": "OpenAI",
+   "active": true,
+   "context_window": 448,
+   "max_completion_tokens": 448,
+   "input_modalities": [
+    "audio"
+   ],
+   "output_modalities": [
+    "transcription"
+   ],
+   "supported_features": null,
+   "pricing": null
+  },
+  {
+   "id": "canopylabs/orpheus-v1-english",
+   "owned_by": "Canopy Labs",
+   "active": true,
+   "context_window": 4000,
+   "max_completion_tokens": 50000,
+   "input_modalities": [
+    "text"
+   ],
+   "output_modalities": [
+    "speech"
+   ],
+   "supported_features": null,
+   "pricing": {
+    "prompt": "0.000022",
+    "image": "0",
+    "request": "0",
+    "input_cache_read": "0.000011"
+   }
+  },
+  {
+   "id": "openai/gpt-oss-safeguard-20b",
+   "owned_by": "OpenAI",
+   "active": true,
+   "context_window": 131072,
+   "max_completion_tokens": 65536,
+   "input_modalities": [
+    "text"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_features": [
+    "tools",
+    "json_mode",
+    "structured_outputs",
+    "reasoning"
+   ],
+   "pricing": {
+    "prompt": "0.000000075",
+    "completion": "0.0000003",
+    "image": "0",
+    "request": "0",
+    "input_cache_read": "0.0000000375"
+   }
+  },
+  {
+   "id": "whisper-large-v3",
+   "owned_by": "OpenAI",
+   "active": true,
+   "context_window": 448,
+   "max_completion_tokens": 448,
+   "input_modalities": [
+    "audio"
+   ],
+   "output_modalities": [
+    "transcription"
+   ],
+   "supported_features": null,
+   "pricing": null
+  },
+  {
+   "id": "canopylabs/orpheus-arabic-saudi",
+   "owned_by": "Canopy Labs",
+   "active": true,
+   "context_window": 4000,
+   "max_completion_tokens": 50000,
+   "input_modalities": [
+    "text"
+   ],
+   "output_modalities": [
+    "speech"
+   ],
+   "supported_features": null,
+   "pricing": {
+    "prompt": "0.00004",
+    "image": "0",
+    "request": "0",
+    "input_cache_read": "0.00002"
+   }
+  },
+  {
+   "id": "qwen/qwen3.8-27b",
+   "owned_by": "Alibaba Cloud",
+   "active": true,
+   "context_window": 131072,
+   "max_completion_tokens": 16384,
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_features": [
+    "tools",
+    "json_mode",
+    "reasoning"
+   ],
+   "pricing": {
+    "prompt": "0.0000008",
+    "completion": "0.000004",
+    "image": "0",
+    "request": "0",
+    "input_cache_read": "0.0000004"
+   }
+  },
+  {
+   "id": "meta-llama/llama-prompt-guard-2-22m",
+   "owned_by": "Meta",
+   "active": true,
+   "context_window": 512,
+   "max_completion_tokens": 512,
+   "input_modalities": [
+    "text"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_features": null,
+   "pricing": {
+    "prompt": "0.00000003",
+    "completion": "0.00000003",
+    "image": "0",
+    "request": "0",
+    "input_cache_read": "0.000000015"
+   }
+  },
+  {
+   "id": "openai/gpt-oss-120b",
+   "owned_by": "OpenAI",
+   "active": true,
+   "context_window": 131072,
+   "max_completion_tokens": 65536,
+   "input_modalities": [
+    "text"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "supported_features": [
+    "tools",
+    "json_mode",
+    "structured_outputs",
+    "reasoning"
+   ],
+   "pricing": {
+    "prompt": "0.00000015",
+    "completion": "0.0000006",
+    "image": "0",
+    "request": "0",
+    "input_cache_read": "0.000000075"
+   }
+  }
+ ]
+}

@@ -1,0 +1,105 @@
+---
+title: Everything you own, and where it is.
+description: Kept is a self-hosted, open-source inventory of everything you own and where it is. Built-in AI assistant and MCP server.
+template: splash
+hero:
+  title: Everything you own, and where it is.
+  tagline: Kept is a self-hosted, open-source inventory of your homes, garages and storage, with every thing's paperwork and its history. It runs on your own machine, and nothing leaves it unless you turn it on.
+  actions:
+    - text: Install with Docker Compose
+      link: /install/compose/
+      variant: primary
+    - text: Read the developer guide
+      link: /developers/architecture/
+      variant: secondary
+---
+
+import Section from '../../components/landing/Section.astro';
+import Cards from '../../components/landing/Cards.astro';
+import Shot from '../../components/landing/Shot.astro';
+import Gallery from '../../components/landing/Gallery.astro';
+
+<Section eyebrow="What Kept is" title="An inventory that knows where things are, and what came with them.">
+  <Fragment slot="lede">Homes, garages and storage units; the rooms, shelves, boxes and safes inside them; and the things inside those, from furniture to a single cable. Each thing keeps its receipts, manuals and warranties, and its life: lent, in repair, sold.</Fragment>
+  <Cards
+    items={[
+      { icon: 'places', title: 'Places inside places', body: 'A tree of locations, rooms, shelves and boxes. Move a box and everything in it moves too.' },
+      { icon: 'label', title: 'Labels you can scan', body: 'Every thing and place gets a short ID on a printable label with a QR code. Scan it to see what is inside.' },
+      { icon: 'paperwork', title: 'The paperwork, attached', body: 'Receipts, invoices, manuals, warranties and serials live on the thing they belong to, with expiries that remind you.' },
+      { icon: 'vehicle', title: 'Vehicles and machines', body: 'Meter readings, services, fuel and schedules, for the car and for anything else that needs looking after.' },
+      { icon: 'people', title: 'Shared with the household', body: 'A location is shared with the people who live there, each with a role, from admin to viewer.' },
+      { icon: 'ai', title: 'AI assistant and MCP', body: 'Your provider or a local model fills things in from photos and receipts. Claude and other AI agents connect over MCP. All optional.' },
+    ]}
+  />
+</Section>
+
+<Section eyebrow="On a phone" title="Built for the moment you are standing in the garage.">
+  <Fragment slot="lede">Kept installs to a phone's home screen. Capture with the camera, scan a label, find the spare HDMI cable, and keep working without a connection: changes made offline sync when the phone is back online.</Fragment>
+  <div class="kd-screens">
+    <figure class="kd-screen-desktop">
+      <Shot name="thing" alt="A thing's page in Kept: its short ID label, where it is, and its details" sizes="(min-width: 50rem) 40rem, calc(100vw - 2rem)" />
+      <figcaption>A thing's page: its label, the path to where it is, and its details.</figcaption>
+    </figure>
+    <figure class="kd-screen-phone">
+      <Shot name="phone" alt="Kept's home screen on a phone" sizes="12rem" />
+      <figcaption>The home screen on a phone.</figcaption>
+    </figure>
+  </div>
+</Section>
+
+<Section eyebrow="A look around" title="The screens, one at a time." id="screens">
+  <Fragment slot="lede">Taken from Kept's demo build and its sample household, in this page's theme. Scroll sideways, or use the arrows.</Fragment>
+  <Gallery
+    label="Screens of Kept"
+    items={[
+      { name: 'claude-mcp', title: 'Claude, over MCP', caption: 'Ask Claude to add a thing; it lands in the right room with its brand, model and serial.', alt: 'Claude Code: "Add my TV to the Living room: Samsung QE55Q80C, serial number 0B7H3CJT500123", and its reply that the TV is in Kept under Home › Living room' },
+      { name: 'place', title: 'A room', caption: 'What is in the kitchen, what has ended, and its paperwork.', alt: 'The Kitchen in Kept: AA batteries, a fire extinguisher and an old kettle marked ended' },
+      { name: 'search-phone', title: 'Search', caption: 'Type part of a name and see where each match is, down to the box.', alt: 'Searching for cable on a phone: the cable box and the HDMI cable, each with its path and label' },
+      { name: 'capture-phone', title: 'Capture', caption: 'One photo per thing, straight into the place you picked. Naming can wait for the Inbox.', alt: 'The capture screen on a phone, its camera on a labelled box on the garage shelves' },
+      { name: 'inbox', title: 'Inbox', caption: 'What needs a decision: drafts to name, a receipt without a currency, a meter reading that does not fit.', alt: "Kept's Inbox: a car's meter reading lower than the last one, with ways to resolve it" },
+      { name: 'labels', title: 'Labels', caption: 'The things with no printed label, on the label stock you choose, previewed before you print.', alt: 'Printing labels: six things on an A4 sheet of 24, with the sheet preview' },
+      { name: 'expiring', title: 'Expiring', caption: 'Warranties, insurance, a lease and a fire extinguisher, in the order they run out.', alt: 'The Expiring list: home insurance runs out soon, then warranties, an extinguisher and a lease' },
+      { name: 'vehicles', title: 'Vehicles', caption: 'The last meter reading, the next service, the licence date and fuel use.', alt: 'Vehicles: a car, a generator and a second car, with meter readings and what is due' },
+      { name: 'lending', title: 'Lending', caption: 'What you lent and to whom, what you borrowed, and what is overdue.', alt: 'Lending: a drill lent out and two days overdue, and a borrowed ladder' },
+      { name: 'assistant', title: 'Assistant', caption: 'Ask where something is and the answer cites what it found. A change it suggests waits for you to confirm it.', alt: 'The assistant answering where the HDMI cable is, citing the cable and its box, with a move to confirm' },
+      { name: 'connections', title: 'Connections', caption: 'Tokens for AI apps and your own scripts, each limited to the locations you choose, and webhooks.', alt: 'Connections settings: two personal tokens, one connected app and the webhooks' },
+      { name: 'track', title: 'What to track', caption: 'Each location turns on what it needs: essentials, household or complete, then each module on its own.', alt: "A location's What to track settings: the household preset chosen, with its modules switched on" },
+    ]}
+  />
+</Section>
+
+<Section eyebrow="Who it is for" title="People who would rather know than guess.">
+  <Cards
+    columns={2}
+    items={[
+      { icon: 'places', title: 'Households', body: 'Everyone who lives in a place sees what is there and where it went, and the paperwork is at hand on claim day.' },
+      { icon: 'server', title: 'Self-hosters', body: 'One container and Postgres, on any machine with 2 GB of RAM and 2 cores. Docker Compose or Kubernetes, amd64 or arm64.' },
+      { icon: 'private', title: 'The privacy-minded', body: 'No telemetry of any kind. The update check is off until an admin turns it on, and the AI provider is yours to choose.' },
+      { icon: 'code', title: 'Developers', body: 'A documented HTTP API, an MCP server for AI clients with scoped tokens, and a codebase you can read end to end.' },
+    ]}
+  />
+</Section>
+
+<Section eyebrow="Your data outlives the server" title="A backup you can read without Kept.">
+  <Fragment slot="lede">Each nightly backup holds a readable copy of every location: web pages, spreadsheets, thumbnails and receipts that open in any browser, with no Kept and no network. If the house burns down with the server in it, restic, the backup's password and a laptop are enough to see what you owned.</Fragment>
+  <Cards
+    items={[
+      { icon: 'backup', title: 'Back it up', body: 'Nightly encrypted restic snapshots to another disk, an S3 bucket or an SFTP server, and a recovery kit to keep somewhere else.', href: '/admin/backups/' },
+      { icon: 'book', title: 'Read it with restic alone', body: 'Open the readable copy straight from the repository, if the server is ever gone.', href: '/admin/read-with-restic/' },
+      { icon: 'tool', title: 'Restore it', body: 'Bring a whole instance back, on the same machine or a new one.', href: '/admin/restore/' },
+    ]}
+  />
+</Section>
+
+<Section eyebrow="Find your way" title="Where to start.">
+  <Cards
+    columns={2}
+    items={[
+      { icon: 'people', title: 'Use Kept', body: 'Install it, sign in for the first time, and learn the everyday: places, things, labels, the phone and AI.', href: '/users/first-run/' },
+      { icon: 'server', title: 'Run Kept', body: 'Configuration, upgrades, monitoring, the recovery kit, the security model and troubleshooting.', href: '/reference/configuration/' },
+      { icon: 'code', title: 'Build on Kept', body: 'Architecture, local setup, the data model and row-level security, the API, sync, AI and MCP.', href: '/developers/architecture/' },
+      { icon: 'tool', title: 'Maintain Kept', body: 'Releases and signing, the changelog, triage, security reports, the DCO and the decision log.', href: '/maintainers/releasing/' },
+    ]}
+  />
+</Section>
+

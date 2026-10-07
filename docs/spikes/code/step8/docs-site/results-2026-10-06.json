@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-06",
+  "machine": "Apple M1 Pro (8P+2E), 16 GB, macOS 26.5.1, Node 24.21.0, npm 11.19.0; load average 21-46 from other agents throughout",
+  "versions": {
+    "astro": "7.3.5",
+    "@astrojs/starlight": "0.42.5",
+    "@astrojs/markdown-remark": "7.3.1",
+    "@astrojs/markdown-satteri": "0.4.2",
+    "starlight-links-validator": "0.26.0",
+    "starlight-openapi": "0.26.3",
+    "pagefind (resolved)": "1.5.2",
+    "vite (resolved under astro)": "8.3.2",
+    "@astrojs/telemetry (resolved)": "3.3.3"
+  },
+  "install": { "npmInstallWallSeconds": 181, "nodeModules": "237 MB", "packages": 434 },
+  "openapiDump": {
+    "method": "buildApp() + app.inject, pools pointing at 127.0.0.1:1",
+    "status": 200, "openapi": "3.1.0", "paths": 254, "operations": 333,
+    "compactBytes": 1235976, "prettyBytes": 3610875,
+    "dbConnectionAttempts": 0, "dbConnectionAttemptsWithDefaultInjectHost": 1, "ms": "523-1599"
+  },
+  "builds": [
+    { "case": "broken link + full API", "network": "log", "exit": 1, "wallSeconds": 42, "htmlPages": 350, "linkErrors": ["/api/ (injected route)", "/guides/restore/ (deliberate)"] },
+    { "case": "fixed + full API", "network": "blocked", "exit": 0, "wallSeconds": 56, "astroSeconds": 46.4, "htmlPages": 350, "loadavg1m": "~25" },
+    { "case": "fixed + full API (repeat)", "network": "blocked", "exit": 0, "wallSeconds": 182, "astroSeconds": 152, "loadavg1m": "36" },
+    { "case": "prose only (SPIKE_NO_API=1)", "network": "blocked", "exit": 0, "wallSeconds": 81, "astroSeconds": 47.1, "htmlPages": 16, "loadavg1m": "36" },
+    { "case": "prose only, telemetry on", "network": "log", "exit": 0, "wallSeconds": 34, "attempts": ["fetch https://telemetry.astro.build/api/v1/record"] },
+    { "case": "prose only, telemetry on", "network": "blocked", "exit": 0, "wallSeconds": 10, "astroSeconds": 3.2 }
+  ],
+  "output": {
+    "full": { "kb": 44556, "files": 749, "api": "40 MB (334 pages)", "pagefind": "2.5 MB", "_astro": "228 KB" },
+    "proseOnly": { "total": "1.6 MB", "pagefind": "1.0 MB", "pagefindLanguages": { "en": 3, "ar": 3, "fr": 3, "de": 3, "it": 3 } }
+  },
+  "arabic": {
+    "htmlTag": "<html lang=\"ar\" dir=\"rtl\" ...>",
+    "uiStrings": ["تخطَّ إلى المحتوى", "ابحث", "إلغاء", "القائمة", "اختر سمة", "داكن", "فاتح", "تلقائي", "اختر لغة", "على هذه الصفحة", "نظرة عامة", "التالي"]
+  },
+  "fallbackNotices": {
+    "fr": "Ce contenu n’est pas encore disponible dans votre langue.",
+    "de": "Dieser Inhalt ist noch nicht in deiner Sprache verfügbar.",
+    "it": "Questi contenuti non sono ancora disponibili nella tua lingua."
+  }
+}
