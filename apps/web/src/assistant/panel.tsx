@@ -39,6 +39,9 @@ export function AssistantPanel() {
         // Below 1280 px it floats over the page's end (lib/media.ts DOCKED), so the page keeps
         // its layout instead of squeezing under it.
         'max-xl:fixed max-xl:inset-y-0 max-xl:end-0 max-xl:z-40 max-xl:shadow-[0_0_24px_rgba(0,0,0,.18)]',
+        // From 1280 px it docks, unless the person expanded the sidebar: then it floats there too.
+        ui.floating &&
+          'xl:fixed xl:inset-y-0 xl:end-0 xl:z-40 xl:shadow-[0_0_24px_rgba(0,0,0,.18)]',
       )}
     >
       <div className="flex min-h-16 shrink-0 items-center gap-1 border-line border-b px-3">

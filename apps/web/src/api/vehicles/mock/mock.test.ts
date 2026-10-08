@@ -197,7 +197,8 @@ describe('the vehicles mock', () => {
       COROLLA.thing,
       {
         id: 'f2',
-        takenAt: '2026-10-02T08:00:00.000Z',
+        // After every seeded reading: the fixtures' latest manual one is six days before now.
+        takenAt: new Date(Date.now() - 86_400_000).toISOString(),
         amount: '10',
         unit: 'L',
         cost: '250',

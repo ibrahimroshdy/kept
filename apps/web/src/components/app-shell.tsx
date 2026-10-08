@@ -25,7 +25,7 @@ import { Focusable } from 'react-aria-components';
 import { useLocations, useVersion } from '@/api/queries';
 import type { LocationSummary } from '@/api/types';
 import { AssistantHost } from '@/assistant/host';
-import { useAssistantUi } from '@/assistant/store';
+import { setAssistantFloating, useAssistantUi } from '@/assistant/store';
 import { AppMark, BrandLockup } from '@/components/brand';
 import { SoonBadge } from '@/components/coming-later';
 import { HintsProvider } from '@/components/hints/hints-provider';
@@ -62,7 +62,7 @@ import { Tip } from '@/components/ui/tooltip';
 import { sep } from '@/lib/format';
 import { useLocationName } from '@/lib/labels';
 import { DOCKED, useMediaQuery, WIDE } from '@/lib/media';
-import { toggleSidebar, usePrefs, watchSidebarWidth } from '@/lib/prefs';
+import { setSidebarPref, toggleSidebar, usePrefs, watchSidebarWidth } from '@/lib/prefs';
 import { cn } from '@/lib/utils';
 import { OfflineProvider } from '@/offline/provider';
 
@@ -307,10 +307,12 @@ function Sidebar({ locations, counts }: { locations: LocationSummary[]; counts: 
   const { sidebarCollapsed } = usePrefs();
   // While the assistant's panel docks beside the page (from 1280 px), the sidebar is its icon
   // rail, so the page keeps the width its layouts expect (UI review steps 6–8, H1). Not stored:
-  // closing the panel brings back the person's own choice.
+  // closing the panel brings back the person's own choice. Expanding the sidebar then floats the
+  // panel over the page's end, as below 1280 px; collapsing it docks the panel again.
   const dockable = useMediaQuery(DOCKED);
   const assistant = useAssistantUi();
-  const docked = dockable && assistant.open;
+  const panelBeside = dockable && assistant.open;
+  const docked = panelBeside && !assistant.floating;
   const rail = sidebarCollapsed || docked;
   const tips = useMediaQuery(WIDE) && rail;
   const asideRef = useRef<HTMLElement>(null);
@@ -323,8 +325,14 @@ function Sidebar({ locations, counts }: { locations: LocationSummary[]; counts: 
     refocus.current = asideRef.current?.contains(active)
       ? (active?.closest('[data-nav]')?.getAttribute('data-nav') ?? '')
       : null;
+    if (docked) {
+      setAssistantFloating(true);
+      setSidebarPref('expanded');
+      return;
+    }
+    if (panelBeside && !sidebarCollapsed) setAssistantFloating(false);
     toggleSidebar();
-  }, []);
+  }, [docked, panelBeside, sidebarCollapsed]);
 
   // Without a stored choice, follow the width across 1024 px.
   useEffect(() => watchSidebarWidth(), []);

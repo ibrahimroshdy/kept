@@ -24,6 +24,11 @@ export type AssistantUi = {
    * `context: none`; another page brings its own chip back.
    */
   removedContext: string | null;
+  /**
+   * Where the panel docks (from 1280 px) it makes the sidebar its icon rail; expanding the sidebar
+   * then floats the panel over the page's end instead (D216). Reset each time the panel opens.
+   */
+  floating: boolean;
 };
 
 const INITIAL: AssistantUi = {
@@ -33,6 +38,7 @@ const INITIAL: AssistantUi = {
   draft: '',
   handoff: 0,
   removedContext: null,
+  floating: false,
 };
 
 let state: AssistantUi = INITIAL;
@@ -78,6 +84,7 @@ export function openAssistant(question?: string): void {
   set({
     open: true,
     view: 'thread',
+    ...(state.open ? {} : { floating: false }),
     ...(q ? { threadId: null, draft: q, handoff: state.handoff + 1 } : {}),
   });
 }
@@ -96,9 +103,14 @@ export function toggleAssistant(): void {
   else openAssistant();
 }
 
+/** Float the docked panel over the page (true), or dock it beside the page again (false). */
+export function setAssistantFloating(floating: boolean): void {
+  if (floating !== state.floating) set({ floating });
+}
+
 /** Show a thread (or, with null, a new one). */
 export function showThread(threadId: string | null): void {
-  set({ open: true, threadId, view: 'thread' });
+  set({ open: true, threadId, view: 'thread', ...(state.open ? {} : { floating: false }) });
 }
 
 export function showThreads(): void {
