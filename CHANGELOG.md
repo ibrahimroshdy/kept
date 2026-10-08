@@ -3,6 +3,19 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.0.1 (2026-10-08)
+
+### Features
+
+- **web:** Get started asks the instance admin to set up email while mail is off (993698f)
+- **contributing:** a CLA beside the DCO, signed once on a contributor's first pull request (74a625a)
+
+### Fixes
+
+- **capture:** photos named after AI is connected show their names without a reload (#4) (a364a83)
+- **assistant:** fit a free-tier plan's per-minute limit, and say so when a question doesn't (#3) (7ae1cde)
+- **web:** the sidebar expands while the assistant's panel is docked (#2) (ec414e7)
+
 ## 1.0.0 (2026-10-07)
 
 The first release.
