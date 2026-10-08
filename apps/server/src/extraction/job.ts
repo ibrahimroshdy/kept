@@ -251,6 +251,20 @@ async function claim(
       (ex.status === 'running' && ex.stale);
     if (!runnable) return { status: 'skipped', why: 'not_runnable' } as const;
 
+    // A capture undone into the trash before its photo was read (a waiting one, sent when a key
+    // is saved) isn't read: the name would have nowhere to go. It ends as a plain draft, which
+    // the inbox's "Name N unnamed photos" offers to name if the thing is restored.
+    if (ex.thing_id) {
+      const { rows: t } = await client.query<{ trashed: boolean }>(
+        'SELECT deleted_at IS NOT NULL AS trashed FROM public.things WHERE id = $1',
+        [ex.thing_id],
+      );
+      if (t[0]?.trashed) {
+        await setStatus(client, ex.id, { status: 'no_provider' });
+        return { status: 'no_provider' } as const;
+      }
+    }
+
     const role = await roleIn(client, ex.location_id);
     const state =
       role !== null && can(role, 'ai.capture') && deps.ai !== null

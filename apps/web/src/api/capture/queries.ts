@@ -322,6 +322,16 @@ export const useExtractions = (thingId: string) =>
     enabled: !!thingId,
   });
 
+/** How often the inbox looks again while a photo on it is being named. */
+export const INBOX_NAMING_POLL_MS = 3000;
+
+/** Whether any item on these pages is being read now, so its name is about to arrive. */
+export function inboxIsNaming(pages: readonly InboxPage[] | undefined): boolean {
+  return (pages ?? []).some((pg) =>
+    pg.items.some((i) => i.extraction?.status === 'queued' || i.extraction?.status === 'running'),
+  );
+}
+
 export const useInbox = (params: InboxParams = {}) =>
   useInfiniteQuery({
     queryKey: k.inbox.list(params),
@@ -329,6 +339,9 @@ export const useInbox = (params: InboxParams = {}) =>
       captureApi.inbox({ ...params, ...(pageParam ? { cursor: pageParam } : {}) }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: nextCursor,
+    // "Naming…" turns into the name without leaving the page (the maintainer's phone, 2026-10-07:
+    // photos named on the server still read "Unnamed" until the inbox was opened again).
+    refetchInterval: (q) => (inboxIsNaming(q.state.data?.pages) ? INBOX_NAMING_POLL_MS : false),
   });
 /** A receipt's candidates, ranked for one of its lines when `line` is given. */
 export const useInboxCandidates = (
