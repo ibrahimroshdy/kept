@@ -350,7 +350,10 @@ async function steps(
       images: [],
       output: null,
       conversation: { messages: prepared.messages },
-      tools: { defs: names.map(toolSpecOf), choice: last ? 'none' : 'auto' },
+      tools: {
+        defs: names.map((n) => toolSpecOf(n, { oneLocation: candidates.length === 1 })),
+        choice: last ? 'none' : 'auto',
+      },
       maxOutputTokens:
         ASSISTANT_OUTPUT.maxTokens +
         REASONING_ALLOWANCE[allowanceLevel(resolved.provider.reasoning)],

@@ -21168,3 +21168,7 @@ msgstr "Funziona solo finché la configurazione non è completata. Sostituisce i
 #: src/components/setup-code-help.tsx
 msgid "CLI guide"
 msgstr "Guida alla CLI"
+
+#: src/assistant/thread.tsx
+msgid "This question is more than your AI plan allows in one minute. Choose a model with a higher limit in Settings → AI, or a paid plan."
+msgstr "Questa domanda supera quanto il tuo piano di IA consente in un minuto. Scegli un modello con un limite più alto in Impostazioni → IA, oppure un piano a pagamento."

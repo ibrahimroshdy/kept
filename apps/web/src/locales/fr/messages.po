@@ -21168,3 +21168,7 @@ msgstr "Ne fonctionne que tant que la configuration n’est pas terminée. Rempl
 #: src/components/setup-code-help.tsx
 msgid "CLI guide"
 msgstr "Guide de la CLI"
+
+#: src/assistant/thread.tsx
+msgid "This question is more than your AI plan allows in one minute. Choose a model with a higher limit in Settings → AI, or a paid plan."
+msgstr "Cette question dépasse ce que votre offre d’IA permet en une minute. Choisissez un modèle avec une limite plus haute dans Paramètres → IA, ou une offre payante."

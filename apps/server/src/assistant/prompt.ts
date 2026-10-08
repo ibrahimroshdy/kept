@@ -69,14 +69,46 @@ export function instructionsFor(p: PromptInput): string {
   return lines.join('\n');
 }
 
-/** The model's tool for one TOOL_DEFS entry: its description, its input as JSON Schema, and the
- * same zod input as the validator (spike S6.3 finding 2; runTool validates again). */
-export function toolSpecOf(name: ToolName): ToolSpec {
+/** A `pattern` longer than this (a UUID's, an ISO date's) is left out of what the model sees. */
+const MAX_PATTERN_CHARS = 40;
+
+/**
+ * The JSON Schema as sent to the provider, without what costs tokens and tells the model nothing
+ * its `format` and description don't: `$schema`, and long regular expressions. Every request
+ * carries every tool, and a free-tier plan's tokens-per-minute limit counts them (Groq's 8,000
+ * for `openai/gpt-oss-120b`, the maintainer's instance, 2026-10-07). The zod validator still
+ * checks the full contract.
+ */
+export function compactSchema(v: unknown): unknown {
+  if (Array.isArray(v)) return v.map(compactSchema);
+  if (!v || typeof v !== 'object') return v;
+  const out: Record<string, unknown> = {};
+  for (const [k, x] of Object.entries(v)) {
+    if (k === '$schema') continue;
+    if (k === 'pattern' && typeof x === 'string' && x.length > MAX_PATTERN_CHARS) continue;
+    out[k] = compactSchema(x);
+  }
+  return out;
+}
+
+/** The model's tool for one TOOL_DEFS entry: its description, its input as JSON Schema (compact),
+ * and the same zod input as the validator (spike S6.3 finding 2; runTool validates again). */
+export function toolSpecOf(name: ToolName, opts: { oneLocation?: boolean } = {}): ToolSpec {
   const def = TOOL_DEFS[name];
+  const schema = compactSchema(z.toJSONSchema(def.input, { io: 'input' })) as {
+    properties?: Record<string, unknown>;
+    required?: string[];
+  };
+  // With one location the optional `location_id` ("leave it out when you have access to one
+  // location only") is noise on every tool: it isn't offered. A required one stays.
+  if (opts.oneLocation && schema.properties && !schema.required?.includes('location_id')) {
+    const { location_id: _, ...rest } = schema.properties;
+    schema.properties = rest;
+  }
   return {
     name,
     description: def.description,
-    inputSchema: z.toJSONSchema(def.input, { io: 'input' }) as ToolSpec['inputSchema'],
+    inputSchema: schema as ToolSpec['inputSchema'],
     validate: (value) => {
       const r = def.input.safeParse(value);
       return r.success ? { success: true, value: r.data } : { success: false, error: r.error };

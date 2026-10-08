@@ -84,7 +84,17 @@ function TurnLine({
       line = turn?.pausedUntil ? pausedUntil(turn.pausedUntil) : t`AI paused`;
       break;
     case 'failed':
-      line = <Trans>The assistant couldn't finish this answer. Ask again.</Trans>;
+      // `too_large`: the provider refused the request's size against the plan's per-minute limit
+      // (ai/errors.ts); asking again would send the same request.
+      line =
+        turn?.statusReason === 'too_large' ? (
+          <Trans>
+            This question is more than your AI plan allows in one minute. Choose a model with a
+            higher limit in Settings → AI, or a paid plan.
+          </Trans>
+        ) : (
+          <Trans>The assistant couldn't finish this answer. Ask again.</Trans>
+        );
       break;
     case 'cancelled':
       line = <Trans>Stopped</Trans>;

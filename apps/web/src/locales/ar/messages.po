@@ -21168,3 +21168,7 @@ msgstr "يعمل فقط إلى أن يكتمل الإعداد. يستبدل ال
 #: src/components/setup-code-help.tsx
 msgid "CLI guide"
 msgstr "دليل سطر الأوامر"
+
+#: src/assistant/thread.tsx
+msgid "This question is more than your AI plan allows in one minute. Choose a model with a higher limit in Settings → AI, or a paid plan."
+msgstr "هذا السؤال أكبر مما تسمح به خطة الذكاء الاصطناعي لديك في الدقيقة الواحدة. اختر نموذجًا بحدّ أعلى من الإعدادات ← الذكاء الاصطناعي، أو خطة مدفوعة."

@@ -21168,3 +21168,7 @@ msgstr "Works only until setup is finished. It replaces the old code and lifts t
 #: src/components/setup-code-help.tsx
 msgid "CLI guide"
 msgstr "CLI guide"
+
+#: src/assistant/thread.tsx
+msgid "This question is more than your AI plan allows in one minute. Choose a model with a higher limit in Settings → AI, or a paid plan."
+msgstr "This question is more than your AI plan allows in one minute. Choose a model with a higher limit in Settings → AI, or a paid plan."

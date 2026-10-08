@@ -56,6 +56,15 @@ describe('classifyError', () => {
       'http_429',
       { kind: 'rate_limited', retryAfterMs: null },
     ],
+    [
+      apiError(
+        413,
+        '{"error":{"message":"Request too large for model `openai/gpt-oss-120b` in organization `org_x` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Requested 9571, please reduce your message size and try again.","type":"tokens","code":"rate_limit_exceeded"}}',
+      ),
+      'provider_error',
+      'too_large',
+      { kind: 'ok' },
+    ],
     [apiError(401), 'provider_error', 'auth', { kind: 'auth' }],
     [apiError(403, 'forbidden'), 'provider_error', 'auth', { kind: 'auth' }],
     [apiError(503), 'provider_error', 'http_5xx', { kind: 'transient' }],
