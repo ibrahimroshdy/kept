@@ -92,6 +92,21 @@ export function classifyError(e: unknown, now: Date): Classified {
         retryAfterMs,
       };
     }
+    if (status === 413) {
+      // The request itself is over what the plan allows at once: Groq answers 413 "Request too
+      // large … on tokens per minute (TPM): Limit 8000, Requested 9571" (the maintainer's
+      // instance, 2026-10-07). Asking again sends the same request, so it fails with a reason
+      // the person can act on: a model or plan with a higher limit.
+      return {
+        outcome: 'provider_error',
+        errorCode: 'too_large',
+        httpStatus: status,
+        retryable: false,
+        signal: { kind: 'ok' },
+        pauses: false,
+        headers,
+      };
+    }
     if (status === 401 || status === 403) {
       return {
         outcome: 'provider_error',

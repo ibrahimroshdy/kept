@@ -117,6 +117,32 @@ describe('the assistant sheet (phone)', () => {
     });
   });
 
+  it('says when a question is more than the AI plan allows in a minute, instead of "Ask again"', async () => {
+    // The maintainer's instance, 2026-10-07: Groq's free tier refused the request's size (413).
+    const { user } = await renderApp(GARAGE, {
+      setup: (m) =>
+        m.on('GET', assistantPaths.turn(':id'), () =>
+          reply(200, {
+            status: 'failed',
+            statusReason: 'too_large',
+            pausedUntil: null,
+            steps: 1,
+            messages: [],
+            proposals: [],
+          }),
+        ),
+    });
+    await user.click(await assistantButton());
+    const s = await sheet();
+    await user.type(composer(s), 'How many things do I have?{Enter}');
+    expect(
+      await within(s).findByText(/more than your AI plan allows in one minute/, undefined, {
+        timeout: 4000,
+      }),
+    ).toBeInTheDocument();
+    expect(within(s).queryByText(/Ask again/)).toBeNull();
+  });
+
   it('says why a question from a page with no location is refused, and waits for an edit (UI review L1)', async () => {
     // No location in the context: the status can't say whose AI would answer, so Send is on,
     // and the server's 400 ai_unavailable is said under the field.
