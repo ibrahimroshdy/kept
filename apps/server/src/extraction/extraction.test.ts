@@ -814,6 +814,41 @@ describe('pauses, retries and failures', () => {
     expect((await run(louis, id)).status).toBe('succeeded');
   });
 
+  it('a capture trashed before its photo is read is not sent; restored, it can be named', async () => {
+    // The maintainer's phone, 2026-10-07: two photos captured with no provider were undone into
+    // the trash; connecting Groq then read them anyway, and their names had nowhere to go.
+    const keyOff = (off: boolean) =>
+      own(
+        db,
+        `UPDATE public.ai_providers SET disabled_at = ${off ? 'now()' : 'NULL'}
+          WHERE owner_account_id = $1`,
+        [home.accountId],
+      );
+    await keyOff(true);
+    let out: Awaited<ReturnType<typeof capture>>;
+    let fileId: string;
+    try {
+      fileId = await up(louis);
+      out = await capture(louis, { files: [{ fileId, role: 'photo' }] });
+      expect(out.extraction).toMatchObject({ status: 'waiting_provider' });
+    } finally {
+      await keyOff(false);
+    }
+    const { key } = await keyOf(fileId, 'thing');
+    answers[key] = { output: thingAnswer() };
+    await own(db, 'UPDATE public.things SET deleted_at = now() WHERE id = $1', [out.thing?.id]);
+    // What a key's save does to the waiting row (ai/api.ts resendWaiting).
+    await own(
+      db,
+      `UPDATE public.extractions SET status = 'queued', status_reason = NULL WHERE id = $1`,
+      [out.extraction.id],
+    );
+
+    expect((await run(louis, out.extraction.id)).status).toBe('no_provider');
+    expect(await calls(out.extraction.id)).toEqual([]);
+    expect(await extraction(out.extraction.id)).toMatchObject({ status: 'no_provider' });
+  });
+
   it('retries a 5xx through pg-boss, then succeeds on the next attempt', async () => {
     const { id, key } = await queued();
     answers[key] = { error: { status: 500 } };

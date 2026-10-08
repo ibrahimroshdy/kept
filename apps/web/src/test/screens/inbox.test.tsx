@@ -9,6 +9,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CAPTURE_IDS } from '@/api/capture/mock/state';
 import { capturePaths } from '@/api/capture/paths';
+import { INBOX_NAMING_POLL_MS } from '@/api/capture/queries';
 import { INV_IDS } from '@/api/inventory/mock/fixtures';
 import { ownerScenario } from '@/api/mock/fixtures';
 import { resetKeyboardSeen } from '@/lib/key-hints';
@@ -279,6 +280,18 @@ describe('the inbox', () => {
     await waitFor(() =>
       expect(mock.lastCall('POST', capturePaths.thingExtract(S.failed))).toBeDefined(),
     );
+  });
+
+  it('looks again while a photo is being named, so its name arrives without leaving the page', async () => {
+    const { mock } = await renderApp('/inbox?f.kind=draft');
+    const list = await inboxList();
+    expect(list.textContent).toMatch(/Naming…/);
+    const gets = () =>
+      mock.calls.filter((c) => c.method === 'GET' && c.path === capturePaths.inbox).length;
+    const first = gets();
+    await waitFor(() => expect(gets()).toBeGreaterThan(first), {
+      timeout: INBOX_NAMING_POLL_MS + 2000,
+    });
   });
 
   it('on a phone: Accept, Edit and More in one row; More holds Move, Set type and Discard', async () => {

@@ -64,7 +64,13 @@ export function PasteKey({
 
   const test = useMutation({
     mutationFn: (id: string) => captureApi.testAiProvider(id),
-    onSettled: () => qc.invalidateQueries({ queryKey: captureKeys.ai.all }),
+    // Saving or testing a key sends the photos that waited for one (ai/api.ts): the inbox shows
+    // them as "Naming…", then polls until their names arrive.
+    onSettled: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: captureKeys.ai.all }),
+        qc.invalidateQueries({ queryKey: captureKeys.inbox.all }),
+      ]),
   });
   const save = useMutation({
     mutationFn: () => {
@@ -79,7 +85,10 @@ export function PasteKey({
       setKey('');
       setReplacing(false);
       setError(null);
-      await qc.invalidateQueries({ queryKey: captureKeys.ai.all });
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: captureKeys.ai.all }),
+        qc.invalidateQueries({ queryKey: captureKeys.inbox.all }),
+      ]);
       toast({ tone: 'ok', title: t`Key saved` });
       onSaved(saved, !provider);
       test.mutate(saved.id);
