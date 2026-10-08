@@ -14,6 +14,7 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ownerScenario } from '@/api/mock/fixtures';
 import { createMockApi } from '@/api/mock/server';
+import { closeAssistant, openAssistant } from '@/assistant/store';
 import { isSidebarShortcut, MainShell } from '@/components/app-shell';
 import { SIDEBAR_KEY, setSidebarPref } from '@/lib/prefs';
 import { findHeading, renderApp } from '@/test/app';
@@ -23,6 +24,8 @@ vi.setConfig({ testTimeout: 15_000 });
 
 const TABLET = ['(min-width: 768px)'];
 const DESKTOP = ['(min-width: 768px)', '(min-width: 1024px)'];
+/** Where the assistant's panel docks beside the page (lib/media.ts DOCKED). */
+const WIDEST = [...DESKTOP, '(min-width: 1280px)'];
 
 /** jsdom has no matchMedia: list the queries that match. */
 function media(matching: string[]) {
@@ -251,6 +254,73 @@ describe('the rail', () => {
     const toggle = screen.getByRole('button', { name: 'توسيع الشريط الجانبي' });
     expect(toggle).toHaveAttribute('aria-expanded', 'false');
     expectLogicalOnly(document.getElementById('kept-sidebar') as HTMLElement);
+  });
+});
+
+describe('with the assistant docked (1280 px and up, D216)', () => {
+  const panel = () => screen.findByRole('complementary', { name: 'Assistant' }, { timeout: 4000 });
+  const sidebar = () => document.getElementById('kept-sidebar') as HTMLElement;
+
+  it('the panel puts the sidebar on its rail, and Expand still expands it: the panel floats', async () => {
+    media(WIDEST);
+    const { user } = await renderApp('/');
+    await findHeading('Home');
+    expect(screen.getByRole('button', { name: 'Collapse sidebar' })).toBeInTheDocument();
+
+    act(() => openAssistant());
+    const docked = await panel();
+    // Docked beside the page, with the sidebar as its rail; the stored choice is untouched.
+    expect(docked).not.toHaveClass('xl:fixed');
+    expect(sidebar()).toHaveClass('w-16');
+    const expand = screen.getByRole('button', { name: 'Expand sidebar' });
+    expect(stored()).toBeNull();
+
+    await user.click(expand);
+    expect(screen.getByRole('button', { name: 'Collapse sidebar' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
+    expect(sidebar()).not.toHaveClass('w-16');
+    expect(stored()).toBe('expanded');
+    // The assistant stays open, floating over the page's end as it does below 1280 px.
+    expect(await panel()).toHaveClass('xl:fixed');
+
+    // Collapsing docks it again.
+    await user.click(screen.getByRole('button', { name: 'Collapse sidebar' }));
+    expect(screen.getByRole('button', { name: 'Expand sidebar' })).toBeInTheDocument();
+    expect(stored()).toBe('collapsed');
+    expect(await panel()).not.toHaveClass('xl:fixed');
+  });
+
+  it('⌘\\ expands a stored rail while docked; reopening the panel docks it on the rail again', async () => {
+    media(WIDEST);
+    localStorage.setItem(SIDEBAR_KEY, 'collapsed');
+    const { user } = await renderApp('/');
+    await findHeading('Home');
+    act(() => openAssistant());
+    await panel();
+    expect(screen.getByRole('button', { name: 'Expand sidebar' })).toBeInTheDocument();
+
+    // Opening the panel focuses its composer (after 60 ms), where the shortcut is ignored: wait
+    // for that, then leave the field.
+    const composer = screen.getByRole('textbox', { name: 'Ask about your things' });
+    await waitFor(() => expect(composer).toHaveFocus());
+    composer.blur();
+    await user.keyboard('{Meta>}\\{/Meta}');
+    expect(screen.getByRole('button', { name: 'Collapse sidebar' })).toBeInTheDocument();
+    expect(stored()).toBe('expanded');
+    expect(await panel()).toHaveClass('xl:fixed');
+
+    // Closed, the sidebar is the person's choice; opened again, the panel docks on the rail.
+    act(() => closeAssistant());
+    await waitFor(() =>
+      expect(screen.queryByRole('complementary', { name: 'Assistant' })).toBeNull(),
+    );
+    expect(screen.getByRole('button', { name: 'Collapse sidebar' })).toBeInTheDocument();
+    act(() => openAssistant());
+    expect(await panel()).not.toHaveClass('xl:fixed');
+    expect(screen.getByRole('button', { name: 'Expand sidebar' })).toBeInTheDocument();
+    expect(stored()).toBe('expanded');
   });
 });
 
