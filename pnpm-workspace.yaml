@@ -16,3 +16,10 @@ minimumReleaseAgeExclude:
   - '@aws-sdk/client-s3@3.1141.0'
   - '@aws-sdk/s3-request-presigner@3.1141.0'
   - '@ai-sdk/openai@4.0.78'
+# Security fixes in transitive dependencies (Dependabot, issue #1): the first patched release of
+# each advisory, for the versions that need it.
+overrides:
+  'form-data@>=4.0.0 <4.0.6': 4.0.6
+  'source-map-js@>=1.0.0 <1.2.2': 1.2.2
+  'postcss-selector-parser@<7.1.6': 7.1.6
+  'esbuild@<0.25.0': 0.25.12
