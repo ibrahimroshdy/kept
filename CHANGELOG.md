@@ -16,6 +16,11 @@ subjects when a release is cut (`scripts/release.sh`).
 - **assistant:** fit a free-tier plan's per-minute limit, and say so when a question doesn't (#3) (7ae1cde)
 - **web:** the sidebar expands while the assistant's panel is docked (#2) (ec414e7)
 
+### Security
+
+- **deps:** sharp 0.35.5, whose bundled librsvg renders uploaded brand logos; patched form-data,
+  source-map-js, postcss-selector-parser and esbuild in the build tools (#6) (ef7d70c)
+
 ## 1.0.0 (2026-10-07)
 
 The first release.
