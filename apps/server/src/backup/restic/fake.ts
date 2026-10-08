@@ -143,7 +143,9 @@ export class FakeRestic implements Restic {
       tags: [...opts.tags],
       tree,
     };
-    r.snaps.push(snap);
+    // Newest first. Two backups in the same millisecond keep the later one first (the sort is
+    // stable), as restic's own order by time does for them in practice.
+    r.snaps.unshift(snap);
     r.snaps.sort((a, b) => b.time.getTime() - a.time.getTime());
     return {
       snapshotId: snap.id,
