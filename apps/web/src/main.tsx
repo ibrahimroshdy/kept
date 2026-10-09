@@ -10,6 +10,17 @@ import { registerServiceWorker } from '@/pwa/register';
 import { routeTree } from './routeTree.gen';
 import './styles/index.css';
 
+// The start guard in index.html reloads once when this never runs; it ran, so clear its flag.
+declare global {
+  interface Window {
+    __keptStarted?: boolean;
+  }
+}
+window.__keptStarted = true;
+try {
+  sessionStorage.removeItem('kept.bootRetry');
+} catch {}
+
 const queryClient = createQueryClient();
 const router = createRouter({ routeTree, context: { queryClient } });
 
