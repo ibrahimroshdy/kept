@@ -324,13 +324,14 @@ test('a reading on the vehicle page fits, saves, and moves the estimate', async 
   await sheet.getByRole('button', { name: 'Save reading' }).click();
   await expect(page.getByText('Reading logged').first()).toBeVisible();
 
-  // 2,400 km over the 30 days since the first: about 79 a day now (the first was read at 09:00).
+  // 2,400 km since the first reading, taken at 09:00 Cairo 30 days ago: about 78 a day late in the
+  // evening, about 81 just after midnight (a little under 30 days have passed by then).
   await expect
     .poll(async () => Number((await thing(page, car.id)).meters[0]?.estimate.perDay))
     .toBeGreaterThan(75);
   await page.reload();
   await expect(
-    page.getByRole('region', { name: 'Odometer' }).getByText(/About (7[5-9]|80) km a day/),
+    page.getByRole('region', { name: 'Odometer' }).getByText(/About (7[5-9]|8[0-2]) km a day/),
   ).toBeVisible();
   await context.close();
 });

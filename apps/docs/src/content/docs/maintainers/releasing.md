@@ -1,6 +1,6 @@
 ---
 title: Releasing
-description: How a Kept release is cut - the local gate, a pushed tag, the release workflow, what gets published, the laptop fallback and the dry run.
+description: How a Kept release is cut - CI on main as the gate, a pushed tag, the release workflow, what gets published, the laptop fallback and the dry run.
 ---
 
 A release is a pushed tag. The gate runs on the maintainer's machine first; the tag starts
@@ -63,17 +63,13 @@ The short version of the runbook's "Each release":
    git commit -m "chore(release): X.Y.Z" -- CHANGELOG.md
    ```
 
-2. Run the gate in a clean worktree of that exact commit. It runs `scripts/ci-local.sh` and records
-   `.tmp/release/X.Y.Z/gate.txt`:
+2. Wait for the `ci` workflow to pass on that commit on main. It is the gate (D222): every
+   step of `scripts/ci-local.sh` except perf, as required jobs. The release workflow's preflight
+   refuses a tag whose commit hasn't passed it.
+
+3. Push the tag. The tag push starts the workflow:
 
    ```sh
-   bash scripts/release.sh X.Y.Z --run-gate
-   ```
-
-3. Push `main`, then the tag. The tag push starts the workflow:
-
-   ```sh
-   git push origin main
    git tag -a vX.Y.Z -m "Kept X.Y.Z" && git push origin vX.Y.Z
    ```
 
@@ -89,14 +85,15 @@ request, so Actions minutes go to releases only. It is one job, `release`, on th
 
 - **Preflight**, before any build: the tag is a release version; signing is either fully set up or
   fully absent (half is refused); an unsigned `1.0.0` or later is refused; the GitHub release
-  doesn't exist yet.
+  doesn't exist yet; the tagged commit has a successful `ci` run on main.
 - **`scripts/release.sh --ci`**: the stages above. It also refuses a tagged commit that isn't on
   `origin/main` and a version or chart version the registry already holds.
 - **The GitHub release**, after checking the notes for AI attribution (D173).
 - **Cleanup**, always: the key file and the registry logins are removed.
 
 The layer cache is Actions' cache, scoped by ref: it helps a re-run of the same tag, not the next
-release. The gate is deliberately not in the workflow; it runs on the laptop before the tag.
+release. The gate is `ci.yml`, run on every pull request and on main; the release only checks
+that it passed for the tagged commit.
 
 ## The laptop fallback
 

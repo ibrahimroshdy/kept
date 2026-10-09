@@ -11,7 +11,7 @@ look it up.
 
 | Prefix | What it is | Where it lives |
 |---|---|---|
-| `D<n>` | a **decision**: what was decided and why (D1–D220 on 2026-10-07) | the decision log in the [product design, §4](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md); the question it answered in the [master plan](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/00-master-plan.md) |
+| `D<n>` | a **decision**: what was decided and why (D1–D222 on 2026-10-09) | the decision log in the [product design, §4](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md); the question it answered in the [master plan](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/00-master-plan.md) |
 | `V<n>` | an **assumption**: something inferred rather than verified, with how and when it gets checked | the product design's §19, the register of assumptions (D145) |
 | `L<n>` | a **lesson** carried from the maintainer's earlier self-hosted apps | [lessons](https://github.com/ibrahimroshdy/kept/blob/main/docs/research/2026-09-25-lessons-from-our-apps.md) |
 | `Q<n>` | a question raised **inside one build step's plan**, answered there | that step's plan in [`docs/plans/`](https://github.com/ibrahimroshdy/kept/tree/main/docs/plans) |

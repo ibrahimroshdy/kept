@@ -9,8 +9,8 @@
 #   bash scripts/release.sh <X.Y.Z[-pre]> --dry-run       the same against a throwaway local registry
 #                                                         with a throwaway key; removes both after
 #   bash scripts/release.sh <X.Y.Z[-pre]> --ci            the release, from release.yml only: HEAD is
-#                                                         the pushed tag vX.Y.Z, on main; the gate ran
-#                                                         on the laptop before the tag; step 9 hands
+#                                                         the pushed tag vX.Y.Z, on main; the gate is
+#                                                         ci.yml, passed on main (D222); step 9 hands
 #                                                         the workflow its outputs instead of printing
 #   … --ci --arch <amd64|arm64>                           release.yml's build jobs, one per runner of
 #                                                         that architecture: stages 1–2, then 3 and 4
@@ -228,7 +228,7 @@ if [[ -f $gate_file ]] && grep -qx "commit=$commit" "$gate_file" && grep -qx 'ex
 elif [[ -n $dry ]]; then
   warn "gate: no passing ci-local record for ${commit:0:12}; optional in a dry run"
 elif [[ -n $ci ]]; then
-  note "gate: ci-local ran on the laptop before the tag was pushed (docs/runbooks/release.md); not re-run here"
+  note "gate: ci.yml passed on main for this commit (release.yml's preflight checks it, D222); not re-run here"
 elif [[ -f $gate_file ]]; then
   die "the gate record $gate_file is not a pass for ${commit:0:12}: run release.sh $version --run-gate"
 else

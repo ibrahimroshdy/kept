@@ -76,6 +76,15 @@ export function ReceiptReview({ item, location, current, blocked }: ItemProps) {
   useEffect(() => {
     if (answeredTax) setTax((v) => v || answeredTax);
   }, [answeredTax]);
+  // The review can show before the receipt is read (the inbox polls while it is): the shop and
+  // the date fill in when the read arrives, unless the person has typed or chosen their own.
+  const readDate = r?.purchasedOn ?? null;
+  useEffect(() => {
+    if (seen) setNewVendor((v) => v || seen);
+  }, [seen]);
+  useEffect(() => {
+    if (readDate) setPurchasedOn((d) => d ?? readDate);
+  }, [readDate]);
 
   // A new shop whose name is close to one you have: offer that one instead (D11).
   const typed = normalize(newVendor.trim());

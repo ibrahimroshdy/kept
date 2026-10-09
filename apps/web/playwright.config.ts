@@ -55,8 +55,14 @@ function chromeInstalled(): boolean {
   return false;
 }
 
-/** The installed Chrome outside CI; the bundled Chromium in CI or wherever Chrome is missing. */
-const browser = !process.env.CI && chromeInstalled() ? { channel: 'chrome' } : {};
+/**
+ * The installed Chrome outside CI; elsewhere Playwright's bundled Chromium through the `chromium`
+ * channel: the real browser in its new headless mode, not the default headless shell, which
+ * lacks features the push spec needs (notifications from a service worker; Playwright's
+ * "Browsers" guide, read 2026-10-09).
+ */
+const browser =
+  !process.env.CI && chromeInstalled() ? { channel: 'chrome' } : { channel: 'chromium' };
 
 type Served = Instance & { aiMock?: boolean; https?: boolean; owner?: boolean };
 

@@ -46,7 +46,11 @@ import { FuelSummaryCard } from './fuel-summary';
 import { FuelIcon, useFuelAmount, useFuelUnitNames, useFuelUnitShort } from './labels';
 import { LogFuelSheet, odometerOf } from './log-fuel-sheet';
 
-const FuelTrends = lazy(() => import('./fuel-trends'));
+const FuelTrends = lazy(() =>
+  // Offline before its first load the chunk can't be fetched: like the other lazy charts
+  // (components/charts/lazy.tsx), show nothing instead of crashing the route (D222).
+  import('./fuel-trends').catch(() => ({ default: () => null })),
+);
 
 export { FuelSummaryCard } from './fuel-summary';
 export { LogFuelSheet } from './log-fuel-sheet';

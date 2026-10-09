@@ -136,22 +136,33 @@ pnpm exec vitest run --project @kept/web                  # or @kept/shared, @ke
   pnpm --filter @kept/web e2e        # KEPT_E2E_INSTANCES=capture,vehicles runs only those
   ```
 
-## The gate: `scripts/ci-local.sh`
+## The gate: GitHub Actions, and `scripts/ci-local.sh` on your machine
 
-**`bash scripts/ci-local.sh` is the gate.** It stops at the first failure and gates on exit codes,
-never on a printed summary. `--list` names the steps, `--from <step>` resumes at one.
+**Every pull request runs the whole gate on GitHub Actions** (`.github/workflows/ci.yml`, D222),
+in parallel jobs that are required to merge:
 
-- **Before a pull request:** `bash scripts/ci-local.sh --fast` (lint, the catalogues, typecheck,
-  the unit tests and the mock evaluations; no Docker, no database), plus the tests for what you
-  touched.
-- **Before a release, or a change to the database, the image or the release:** the full run (the
-  database tests, migration drift, licences, attribution, the docs, the Helm chart, a production
-  boot, portability, backup, performance, end to end, the images and a release dry run). Run the
-  performance step on a quiet machine.
+| Check | What it runs |
+|---|---|
+| `fast` | lint, the catalogues, typecheck, the unit tests, the mock evaluations, the licence allowlist |
+| `db` | the server's tests on Postgres with pgvector and RustFS, migration drift, a production boot, portability, backup |
+| `e2e` | Playwright against the built server |
+| `images-amd64`, `images-arm64` | the image built natively on each architecture and smoked |
+| `helm` | the chart's lint, render and schema check |
+| `attribution`, `dco` | no AI attribution; every commit signed off |
+| `build` (`docs.yml`) | the docs site, with its link check |
 
-On a pull request, GitHub Actions runs the `--fast` half and the licence allowlist (`ci.yml`'s
-`fast` job), the attribution and sign-off checks (`attribution`, `dco`), and the docs build
-(`docs.yml`'s `build`). The steps that need Docker and the database run on your machine.
+Performance runs nightly (`perf.yml`) as a report, not a gate: timings on a shared runner are
+noisy.
+
+Each job runs a slice of **`bash scripts/ci-local.sh`**, the same script you run, so a failure
+reproduces on your machine: `--only <steps>` runs the job's slice, `--list` names the steps and
+`--from <step>` resumes at one. It stops at the first failure and gates on
+exit codes, never on a printed summary.
+
+- **Before a pull request:** `bash scripts/ci-local.sh --fast` (no Docker, no database), plus the
+  tests for what you touched. GitHub runs the rest.
+- **When a check fails:** run its slice locally, e.g.
+  `bash scripts/ci-local.sh --only compose,test` or `--only compose,e2e`.
 
 ## Rules the codebase enforces
 

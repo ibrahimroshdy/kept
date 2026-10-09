@@ -594,7 +594,7 @@ roughly 10–14 weeks:
 | 5 | Arabic and multi-currency AI extraction quality | Start collecting real receipts now |
 | 6 | MCP and CIMD churn | Pin the SDK; contract tests (D86) |
 | 7 | Young libraries: the aria base, Drizzle 1.0, Serwist | Spikes S0 and S4; V16, V17 |
-| 8 | CI on a private repo, given the Actions billing history | The local CI mirror is the gate; run the arm64 smoke test on the Apple Silicon laptop |
+| 8 | CI on a private repo, given the Actions billing history | The local CI mirror was the gate while private; since the repository is public, GitHub Actions is (D222), free on standard runners |
 | 9 | The test matrix growing | Cap visual regression at about 10 screens |
 | 10 | Spec drift | Check the spec delta at the start of each step |
 

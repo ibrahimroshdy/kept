@@ -94,6 +94,37 @@
     <div class="status-strip" aria-hidden="true"></div>
     <div class="status-strip status-strip-bottom" aria-hidden="true"></div>
     <div id="root"></div>
+    <!--
+      The start guard. If the app's entry module never runs (a module of its graph failed to load:
+      seen on CI as a load cut short with net::ERR_ABORTED, leaving a blank page with no request
+      to the API), reload once. main.tsx sets __keptStarted as its first statement and clears the
+      flag below, so a failure much later in the same tab may retry again; a second failure in a
+      row leaves the page as it is rather than loop. Module scripts run before `load`, so at
+      `load` an unset __keptStarted means the entry never ran.
+    -->
+    <script>
+      (() => {
+        const key = 'kept.bootRetry';
+        const retry = () => {
+          if (window.__keptStarted) return;
+          try {
+            if (sessionStorage.getItem(key)) return;
+            sessionStorage.setItem(key, '1');
+          } catch {
+            return;
+          }
+          location.reload();
+        };
+        window.addEventListener(
+          'error',
+          (e) => {
+            if (e.target instanceof HTMLScriptElement && e.target.type === 'module') retry();
+          },
+          true,
+        );
+        window.addEventListener('load', retry);
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
