@@ -191,6 +191,43 @@ describe('the inbox', () => {
     expect(within(receipt).queryByText('Choose the currency.')).toBeNull();
   });
 
+  it('a receipt shown before its read fills the shop and the date when the read arrives', async () => {
+    // The inbox polls while a photo is read, so the review can appear before the extraction has
+    // filled the purchase (CI, 2026-10-09: Shop and Date stayed empty and Accept stayed off).
+    const state = ownerScenario();
+    const ace = state.capture.inbox.find((i) => i.id === I.aceReceipt)?.receipt;
+    if (!ace) throw new Error('no Ace Hardware receipt in the fixtures');
+    const { vendorSeen, purchasedOn } = ace;
+    if (!vendorSeen || !purchasedOn) throw new Error('the fixture has no shop or date');
+    delete ace.vendorSeen;
+    delete ace.purchasedOn;
+    const { queryClient } = await renderApp('/inbox?f.kind=receipt', { state });
+    const receipt = await card('Receipt');
+    const shop = within(receipt).getByRole('textbox', { name: 'Shop (new)' });
+    expect(shop).toHaveValue('');
+    Object.assign(ace, { vendorSeen, purchasedOn });
+    await queryClient.invalidateQueries();
+    await waitFor(() => expect(shop).toHaveValue(vendorSeen));
+    expect(within(receipt).queryByText('Choose the date on the receipt.')).toBeNull();
+    expect(within(receipt).queryByText("Type the shop's name.")).toBeNull();
+  });
+
+  it('a shop typed before the read arrives is kept', async () => {
+    const state = ownerScenario();
+    const ace = state.capture.inbox.find((i) => i.id === I.aceReceipt)?.receipt;
+    if (!ace) throw new Error('no Ace Hardware receipt in the fixtures');
+    const { vendorSeen } = ace;
+    delete ace.vendorSeen;
+    const { user, queryClient } = await renderApp('/inbox?f.kind=receipt', { state });
+    const receipt = await card('Receipt');
+    const shop = within(receipt).getByRole('textbox', { name: 'Shop (new)' });
+    await user.type(shop, 'Corner shop');
+    Object.assign(ace, { vendorSeen });
+    await queryClient.invalidateQueries();
+    await card(`${vendorSeen} receipt`);
+    expect(shop).toHaveValue('Corner shop');
+  });
+
   it('accepts the names of a selection, and one Undo reverts them all (D150)', async () => {
     const { user, mock } = await renderApp('/inbox?f.kind=draft');
     await card('Extension cord, 5 m');
