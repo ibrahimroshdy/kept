@@ -101,6 +101,13 @@ async function serious(page: Page) {
 
 async function settle(page: Page) {
   await page.waitForLoadState('networkidle').catch(() => undefined);
+  // A screen that loads on demand renders after its chunk arrives: wait for its heading, or axe
+  // judges the empty shell (no main landmark, no h1) on a slow runner.
+  await page
+    .getByRole('heading', { level: 1 })
+    .first()
+    .waitFor({ timeout: 10_000 })
+    .catch(() => undefined);
   // Skeletons give way to content, and dialogs finish opening.
   await page.waitForTimeout(300);
 }
