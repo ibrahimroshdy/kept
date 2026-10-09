@@ -46,19 +46,27 @@ checklist:
 
 ### Checks that run on a pull request
 
-Every job below is gated on `github.event.repository.private == false`, so **none of them runs
-while the repository is private**. The gate that counts until then is the local one,
-`bash scripts/ci-local.sh` ([runbooks and scripts](/maintainers/runbooks/#ci-local-step-by-step)).
+These jobs are the gate (D222): each is a required check on `main`, and a release is refused for
+a commit that hasn't passed `ci`. Each `ci` job runs a slice of
+`bash scripts/ci-local.sh` ([runbooks and scripts](/maintainers/runbooks/#ci-local-step-by-step)),
+so a failure reproduces locally with the same `--only` list. Every job is gated on
+`github.event.repository.private == false`: nothing runs while the repository is private.
 
 | Workflow | Job | What it checks |
 |---|---|---|
 | [`ci`](https://github.com/ibrahimroshdy/kept/blob/main/.github/workflows/ci.yml) | `fast` | `pnpm install --frozen-lockfile`, `bash scripts/ci-local.sh --fast` (lint, catalogues, typecheck, unit tests, the mock evaluation), then `node scripts/check-licences.mjs` |
+| `ci` | `db` | `ci-local.sh --only compose,test,drift,prod-boot,portability,backup`: the server's tests on Postgres with pgvector and RustFS, migration drift, a production boot, portability and backup |
+| `ci` | `e2e` | `ci-local.sh --only compose,e2e`: Playwright against the built server; the results are an artifact when it fails |
+| `ci` | `images-amd64`, `images-arm64` | `ci-local.sh --only images`: the image built natively on that architecture's runner and smoked in full |
+| `ci` | `helm` | the pinned Helm and kubeconform, then `ci-local.sh --only helm` |
 | `ci` | `attribution` | `scripts/check-attribution.sh` over the pull request's commits and its description |
 | `ci` | `dco` | `scripts/check-dco.sh` over the pull request's commits |
 | [`docs`](https://github.com/ibrahimroshdy/kept/blob/main/.github/workflows/docs.yml) | `build` | the configuration reference is current, then the docs site builds; a broken link fails it |
 
 `ci` also runs on pushes to `main`; `docs` also deploys to GitHub Pages from `main`. `release.yml`
 never runs on a pull request.
+`perf.yml` runs ci-local's `perf` step nightly and on demand, as a report (its numbers are an
+artifact); it is not a required check.
 
 What a hosted runner can't do (the database tests, the leak test, e2e, the image builds) is in the
 full local gate only, so a reviewer should expect the contributor's `ci-local` result in the

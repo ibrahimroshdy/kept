@@ -79,9 +79,11 @@ reason, and the summary warns that the run isn't the full gate. From the script:
 | `release-dry-run` | `release.sh --dry-run`; opt-in with `KEPT_RELEASE_DRY_RUN=1`, otherwise skipped |
 
 The `--fast` run adds one step the full list doesn't name, `unit`: every vitest project except the
-server's, which needs the database. The hosted `ci` workflow runs `--fast` only
-([triage](/maintainers/triage/#checks-that-run-on-a-pull-request)); the full gate runs on the
-maintainer's machine, and `release.sh --run-gate` records it for the exact commit a release builds.
+server's, which needs the database. The hosted `ci` workflow runs every step except `perf`, as
+parallel jobs that each run an `--only` slice
+([triage](/maintainers/triage/#checks-that-run-on-a-pull-request)); `perf` runs nightly. That is
+the gate (D222). `release.sh --run-gate` still records a local run for a release cut from the
+laptop.
 
 Useful settings: `KEPT_TEST_WORKERS=<n>` caps vitest's workers on a busy machine;
 `DOCKER_CONFIG` overrides the Docker config copy the script makes in `/tmp/kept-docker-config`.

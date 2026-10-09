@@ -3,9 +3,10 @@
 # docs.yml) and ONLY when a release tag is pushed, or by hand for an existing tag. Never on a branch
 # push or a pull request: Actions minutes are billed, so one run is one release.
 #
-# The gate is NOT here: `bash scripts/release.sh X.Y.Z --run-gate` (ci-local in a clean worktree)
-# passes on the laptop before the tag is pushed (docs/runbooks/release.md). Re-running a slice of
-# it on a 2-vCPU runner would cost minutes and prove less.
+# The gate is ci.yml (D222): every job of it runs on each pull request and on the push to main,
+# and its jobs are main's required checks. The preflight below refuses a tag whose commit has no
+# successful `ci` run on main, so nothing is released that CI didn't pass. No laptop run is needed
+# (`release.sh --run-gate` stays for a release cut from the laptop, the fallback).
 #
 # Three jobs, no emulation (docs/runbooks/release.md has the timings):
 #   preflight  everything that can refuse in seconds, before a build minute is spent;
@@ -69,6 +70,9 @@ jobs:
   preflight:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read # the tagged commit's `ci` run on main
     outputs:
       version: ${{ steps.preflight.outputs.version }}
       unsigned: ${{ steps.preflight.outputs.unsigned }}
@@ -107,6 +111,14 @@ jobs:
           if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo "::error::the GitHub release $TAG already exists"; exit 1
           fi
+          # The gate (D222): the tagged commit passed ci.yml on main (every job of it is required).
+          sha=$(git rev-parse HEAD)
+          ci=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$sha&branch=main&event=push" \
+            --jq '[.workflow_runs[] | select(.conclusion == "success")] | length')
+          [[ $ci -gt 0 ]] || {
+            echo "::error::$TAG's commit ${sha:0:12} has no successful ci run on main: wait for it to pass (or fix it), then run this again"
+            exit 1
+          }
           echo "version=$version" >>"$GITHUB_OUTPUT"
 
   build:

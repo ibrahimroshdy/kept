@@ -119,15 +119,19 @@ Numbers taken on a busy machine are not evidence.
 bash scripts/ci-local.sh            # every step in ALL_STEPS
 bash scripts/ci-local.sh --fast     # FAST_STEPS: lint catalogues typecheck unit eval
 bash scripts/ci-local.sh --from e2e # start at a step and run the rest
+bash scripts/ci-local.sh --only compose,test  # only these steps (what a GitHub job runs)
 bash scripts/ci-local.sh --list     # print the step names
 ```
+
+On GitHub every pull request runs it all, except `perf`, as parallel required jobs
+(`.github/workflows/ci.yml`, D222); `perf` runs nightly as a report (`perf.yml`). Locally, run
+`--fast` before a pull request, and a job's `--only` slice to reproduce its failure.
 
 It needs Node 24, stops at the first failure, and gates on exit codes, never on a printed
 summary. A step that can't run yet reports **SKIPPED** loudly, and the summary says the run is
 not the full gate. Each step runs in a subshell that cleans up what it created.
 
-There is no flag for one step alone: `--from` runs that step and everything after it. To repeat
-one step, run its command from the table.
+`--only a,b` runs just those steps, in that order; `--from` runs a step and everything after it.
 
 | Step | What it runs |
 |---|---|

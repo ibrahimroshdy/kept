@@ -4,8 +4,11 @@
 `scripts/release.sh` split across three jobs on GitHub-hosted runners and creates the GitHub
 release. `0.9.0` went out through it in one job (run 37606305438, 18 minutes); the split below is
 new and the next release measures it. `scripts/release.sh` from the laptop is the fallback, and
-`--dry-run` still rehearses the whole pipeline locally. The gate stays local:
-`bash scripts/ci-local.sh`, run by `release.sh --run-gate` before the tag is pushed. `main` takes
+`--dry-run` still rehearses the whole pipeline locally. **The gate is GitHub Actions (D222,
+2026-10-09):** `ci.yml` runs every step of `scripts/ci-local.sh` except perf on each pull request
+and on the push to main, its jobs are main's required checks, and `release.yml`'s preflight
+refuses a tag whose commit has no successful `ci` run on main. No laptop run is needed;
+`release.sh --run-gate` stays for a release cut from the laptop. `main` takes
 changes only through pull requests once the repository is public (`docs/runbooks/repo-settings.md`),
 so a release never pushes `main`: the changelog section and the record go in through pull requests,
 and only the tag is pushed.
@@ -151,13 +154,13 @@ pull request.
    gh pr merge --squash --delete-branch      # once the checks are green
    ```
 
-2. The gate, on the merged commit, in a clean worktree of it (records
-   `.tmp/release/X.Y.Z/gate.txt`):
+2. Wait for `ci` on the merged commit to pass on main (the gate, D222):
 
    ```sh
-   git switch main && git pull --ff-only
-   bash scripts/release.sh X.Y.Z --run-gate
+   gh run watch "$(gh run list -R ibrahimroshdy/kept --workflow ci.yml --branch main --limit 1 --json databaseId --jq '.[0].databaseId')" -R ibrahimroshdy/kept --exit-status
    ```
+
+   The release workflow's preflight checks it again and refuses the tag if it hasn't passed.
 
 3. Push the tag, and only the tag. It starts the release, and `docs.yml` deploys the docs site
    from the same tag (a final release only), so the site follows the release, not `main`:

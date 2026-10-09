@@ -1,9 +1,22 @@
-# Kept's CI on GitHub Actions (D87, D187, Q20). INERT until the repository is public: every job is
-# gated on `github.event.repository.private == false`, so while it is private nothing runs (and
-# Actions' billing is never touched). The gate that counts is local: `bash scripts/ci-local.sh`
-# (CONTRIBUTING.md). This mirrors the steps a hosted runner can do: ci-local's --fast run, the
-# licence allowlist, the no-AI-attribution check on a pull request's commits and description, and
-# the DCO sign-off on its commits.
+# Kept's CI on GitHub Actions (D87, D187, Q20, D222). This IS the gate: every pull request and every
+# push to main runs all of scripts/ci-local.sh except perf, as parallel jobs on GitHub-hosted
+# runners, free on a public repository (D222). The jobs below are the required checks on main
+# (scripts/repo-settings.sh), so main is always releasable and a release needs no laptop run.
+#   fast           lint, catalogues, typecheck, the unit tests, the mock evaluation; licences
+#   db             the server's tests on the dev Postgres (pgvector) and RustFS, migration drift,
+#                  a production boot, portability and backup
+#   e2e            Playwright against the built server, on scratch databases
+#   images-amd64,  the image built natively on each architecture's runner and smoked in full
+#   images-arm64   (scripts/smoke-image.sh)
+#   helm           the chart's lint, render and schema check at the pinned Helm and kubeconform
+#   attribution,   on a pull request: no AI attribution (D173), every commit signed off (DCO)
+#   dco
+# docs.yml's `build` builds the docs site (its link check included). perf runs nightly in
+# perf.yml: timing limits on a shared runner are a report, not a gate. Each job runs its slice of
+# the same script a developer runs (`ci-local.sh --only …`), so a failure reproduces locally.
+#
+# Every job is gated on `github.event.repository.private == false`: on a private repository
+# Actions minutes are billed, and nothing here runs.
 #
 # Every action is pinned by commit SHA with its tag in a comment (spike W1,
 # docs/spikes/2026-10-06-step8-workflows.md); Renovate keeps both current once it is enabled.
@@ -40,6 +53,85 @@ jobs:
       # lint, catalogues, typecheck, the unit tests (no database) and the mock evaluation.
       - run: bash scripts/ci-local.sh --fast
       - run: node scripts/check-licences.mjs
+
+  db:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: bash scripts/ci-local.sh --only compose,test,drift,prod-boot,portability,backup
+
+  e2e:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: bash scripts/ci-local.sh --only compose,e2e
+      # Playwright's report and traces when a spec fails, kept for a week.
+      - if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-results
+          path: .tmp/e2e/results
+          retention-days: 7
+
+  images-amd64:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - run: bash scripts/ci-local.sh --only images
+
+  images-arm64:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - run: bash scripts/ci-local.sh --only images
+
+  helm:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - run: bash scripts/tools.sh fetch helm kubeconform
+      - run: bash scripts/ci-local.sh --only helm
 
   attribution:
     if: github.event.repository.private == false && github.event_name == 'pull_request'

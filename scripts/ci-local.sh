@@ -9,6 +9,8 @@
 #   bash scripts/ci-local.sh --fast           lint, typecheck, unit, the extraction eval (no
 #                                             Docker, no database)
 #   bash scripts/ci-local.sh --from <step>    start at <step>; earlier steps are not run
+#   bash scripts/ci-local.sh --only a,b,c     only these steps, in this order (the GitHub jobs in
+#                                             .github/workflows/ci.yml each run a slice this way)
 #   bash scripts/ci-local.sh --list           print the step names
 #
 # Steps: install lint catalogues typecheck compose test drift licences attribution docs helm
@@ -57,12 +59,18 @@ usage() { awk 'NR > 1 && /^#/ { sub(/^# ?/, ""); print; next } NR > 1 { exit }' 
 
 mode=all
 from=
+only=
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --fast) mode=fast ;;
     --from)
       [[ $# -ge 2 ]] || { echo "ci-local: --from needs a step name" >&2; exit 2; }
       from=$2
+      shift
+      ;;
+    --only)
+      [[ $# -ge 2 ]] || { echo "ci-local: --only needs a comma-separated list of steps" >&2; exit 2; }
+      only=$2
       shift
       ;;
     --list) printf '%s\n' "${ALL_STEPS[@]}"; exit 0 ;;
@@ -73,6 +81,18 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ $mode == fast ]]; then steps=("${FAST_STEPS[@]}"); else steps=("${ALL_STEPS[@]}"); fi
+if [[ -n $only ]]; then
+  [[ -z $from ]] || { echo "ci-local: --only and --from don't combine" >&2; exit 2; }
+  IFS=, read -ra wanted <<<"$only"
+  for w in "${wanted[@]}"; do
+    [[ " ${ALL_STEPS[*]} unit " == *" $w "* ]] || {
+      echo "ci-local: no step '$w'; steps: ${ALL_STEPS[*]} unit" >&2
+      exit 2
+    }
+  done
+  steps=("${wanted[@]}")
+  mode=only
+fi
 if [[ -n $from ]]; then
   found=
   for i in "${!steps[@]}"; do
@@ -98,6 +118,8 @@ fi
 
 ensure_docker_config() {
   if [[ -n ${DOCKER_CONFIG:-} ]]; then return; fi
+  # A CI runner has no Docker Desktop credential helper: its own config is the right one.
+  if [[ -n ${CI:-} ]]; then return; fi
   export DOCKER_CONFIG=/tmp/kept-docker-config
   if [[ -f $DOCKER_CONFIG/config.json ]]; then return; fi
   echo "ci-local: creating $DOCKER_CONFIG (~/.docker without credsStore)"
@@ -554,7 +576,12 @@ step_e2e() {
   if uses_installed_chrome; then
     echo "e2e: using the installed Google Chrome"
   else
-    pnpm --filter @kept/web exec playwright install chromium
+    # A fresh CI runner also needs Chromium's system libraries (--with-deps uses apt).
+    if [[ -n ${CI:-} && $(uname -s) == Linux ]]; then
+      pnpm --filter @kept/web exec playwright install --with-deps chromium
+    else
+      pnpm --filter @kept/web exec playwright install chromium
+    fi
   fi
   local y4m
   for y4m in camera-qr camera-thing; do
@@ -588,6 +615,13 @@ step_images() {
   ensure_docker_config
   local revision
   revision=$(git rev-parse HEAD)
+  # On GitHub each architecture has its own native runner (ci.yml's images-amd64 and
+  # images-arm64): build and smoke in full the runner's own platform, with no emulation.
+  if [[ -n ${CI:-} ]]; then
+    docker buildx build --build-arg "REVISION=$revision" -t kept:ci --load .
+    bash scripts/smoke-image.sh kept:ci
+    return 0
+  fi
   docker buildx build --platform linux/amd64 --build-arg "REVISION=$revision" -t kept:ci-amd64 .
   docker buildx build --platform linux/arm64 --build-arg "REVISION=$revision" -t kept:ci-arm64 --load .
   if [[ ! -f scripts/smoke-image.sh ]]; then
@@ -661,7 +695,7 @@ run_step() {
 }
 
 summary() {
-  printf '\n\033[1mci-local summary (%s)\033[0m\n' "$mode${from:+, from $from}"
+  printf '\n\033[1mci-local summary (%s)\033[0m\n' "$mode${from:+, from $from}${only:+: $only}"
   printf '  %s\n' "${results[@]}"
 }
 

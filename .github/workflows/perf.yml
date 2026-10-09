@@ -1,0 +1,43 @@
+# Kept's performance run (engineering spec §3.1; D222): ci-local's `perf` step, nightly on main and
+# by hand. It is a report, not a gate: timing limits measured on a shared runner are noisy, so a
+# slow night never blocks a pull request or a release (they failed the laptop gate on load alone,
+# 2026-10-08). A failed run shows on the Actions page; its numbers are kept as an artifact for a
+# month, so a trend can be read. Gated on a public repository, like ci.yml.
+#
+# Actions pinned by commit SHA with their tag in a comment (spike W1).
+name: perf
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: perf
+  cancel-in-progress: true
+
+jobs:
+  perf:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: bash scripts/ci-local.sh --only compose,perf
+      - if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: perf-${{ github.run_id }}
+          path: .tmp/perf
+          retention-days: 30
