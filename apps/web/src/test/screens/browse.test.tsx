@@ -783,3 +783,45 @@ describe('ContentsList for a container (task 26 hosts it)', () => {
     ).toBeInTheDocument();
   });
 });
+
+describe('inside a location (D39)', () => {
+  it('a place page links back to its parent and outlines the location around it', async () => {
+    await renderApp(`/p/${P.deskDrawer}`);
+    await findHeading('Desk drawer');
+    // Explicit, labelled, at every width: the phone's arrow is icon-only.
+    expect(screen.getByRole('link', { name: /Back to/ })).toHaveAttribute('href', '/p/R00M4K');
+    const tree = (
+      await screen.findByText(
+        (_, el) => el?.tagName === 'SUMMARY' && el.textContent === 'All places',
+      )
+    ).closest('details') as HTMLElement;
+    expect(within(tree).getByRole('link', { current: 'page' })).toHaveTextContent('Desk drawer');
+  });
+
+  it('a top-level place links back to the location', async () => {
+    await renderApp(`/p/${P.office}`);
+    await findHeading('Office');
+    expect(screen.getByRole('link', { name: /Back to/ })).toHaveAttribute(
+      'href',
+      `/loc/${IDS.home}`,
+    );
+  });
+
+  it('a thing page links back to its container, outlines the location, and paths places by code', async () => {
+    await renderApp('/t/7KQ4MZ');
+    await findHeading('HDMI cable, 2 m');
+    // Back to the container it is in (containers keep their id; places use codes).
+    expect(screen.getByRole('link', { name: /Back to/ })).toHaveAttribute(
+      'href',
+      `/t/${T.cableBox}`,
+    );
+    const tree = (
+      await screen.findByText(
+        (_, el) => el?.tagName === 'SUMMARY' && el.textContent === 'All places',
+      )
+    ).closest('details') as HTMLElement;
+    expect(tree).toBeInTheDocument();
+    const path = screen.getByRole('navigation', { name: /Where it is/ });
+    expect(within(path).getByRole('link', { name: 'Office' })).toHaveAttribute('href', '/p/R00M4K');
+  });
+});

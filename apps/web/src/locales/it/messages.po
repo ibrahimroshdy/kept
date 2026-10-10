@@ -21196,3 +21196,8 @@ msgstr "Le date in questo luogo vengono lette in questo fuso orario."
 #: src/routes/_app/settings.location.$id.general.tsx
 msgid "New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates."
 msgstr "I nuovi importi usano questa valuta per impostazione predefinita. Gli importi esistenti mantengono la propria valuta; i totali convertiti richiedono Account → Tassi di cambio."
+
+#: src/routes/_app/p.$id.tsx
+#: src/components/things/thing-screen.tsx
+msgid "Back to {0}"
+msgstr "Torna a {0}"

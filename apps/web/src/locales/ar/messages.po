@@ -21196,3 +21196,8 @@ msgstr "تُقرأ التواريخ في هذا الموقع وفقًا لهذه
 #: src/routes/_app/settings.location.$id.general.tsx
 msgid "New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates."
 msgstr "تستخدم هذه العملة افتراضيًا للمبالغ الجديدة. تحتفظ المبالغ الحالية بعملتها؛ وتتطلب الإجماليات المحوّلة الحساب ← أسعار الصرف."
+
+#: src/routes/_app/p.$id.tsx
+#: src/components/things/thing-screen.tsx
+msgid "Back to {0}"
+msgstr "رجوع إلى {0}"

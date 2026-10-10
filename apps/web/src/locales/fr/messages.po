@@ -21196,3 +21196,8 @@ msgstr "Les dates de ce lieu sont lues dans ce fuseau horaire."
 #: src/routes/_app/settings.location.$id.general.tsx
 msgid "New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates."
 msgstr "Les nouveaux montants utilisent cette devise par défaut. Les montants existants gardent la leur ; les totaux convertis nécessitent Compte → Taux de change."
+
+#: src/routes/_app/p.$id.tsx
+#: src/components/things/thing-screen.tsx
+msgid "Back to {0}"
+msgstr "Retour à {0}"

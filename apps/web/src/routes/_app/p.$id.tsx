@@ -22,6 +22,7 @@ import { useOfferUndo } from '@/components/history/undo';
 import {
   BoxIcon,
   ChevronEndIcon,
+  ChevronStartIcon,
   DocumentIcon,
   LinkIcon,
   PencilIcon,
@@ -34,6 +35,7 @@ import { IdChip } from '@/components/id-chip';
 import {
   EmptyState,
   ErrorState,
+  LinkButton,
   List,
   LoadingRows,
   Notice,
@@ -63,6 +65,7 @@ import { PlaceFields } from '@/components/places/place-fields';
 import { PlaceCounts } from '@/components/places/rows';
 import { Sheet } from '@/components/places/sheet';
 import { TrashPlaceDialog } from '@/components/places/trash-contents-dialog';
+import { PlaceTree } from '@/components/places/tree';
 import { SortUnplaced } from '@/components/places/unplaced-sort';
 import { useOriginalFile } from '@/components/things/original-file';
 import { TypeIcon } from '@/components/type-icon';
@@ -71,7 +74,8 @@ import { DialogFooter } from '@/components/ui/dialog';
 import { Segmented } from '@/components/ui/segmented';
 import { TextField } from '@/components/ui/text-field';
 import { toast } from '@/components/ui/toast';
-import { useAddress, useCanonicalAddress } from '@/lib/address';
+import { addressOf, useAddress, useCanonicalAddress } from '@/lib/address';
+import { isolate } from '@/lib/bidi';
 import { sep } from '@/lib/format';
 import { useLocationName } from '@/lib/labels';
 
@@ -144,8 +148,10 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
   const name = nameOf(place);
   const parentStep = place.path.at(-2);
   const back = parentStep
-    ? { to: '/p/$id' as const, params: { id: parentStep.id } }
+    ? { to: '/p/$id' as const, params: { id: addressOf(parentStep) } }
     : { to: '/loc/$id' as const, params: { id: location.id } };
+  const backName = parentStep ? parentStep.name : locationName;
+  const tree = usePlaceTree(location.id);
   const close = () => setOpen(null);
   const toParent = () => void navigate(back);
   const invalidateBrowse = useInvalidateBrowse();
@@ -156,6 +162,12 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
   return (
     <Page title={name} back={back} eyebrow={<bdi>{locationName}</bdi>} wide>
       <div className="grid gap-2">
+        <div className="hidden md:block">
+          <LinkButton size="small" variant="ghost" {...back}>
+            <ChevronStartIcon className="size-4" />
+            <Trans>Back to {isolate(backName)}</Trans>
+          </LinkButton>
+        </div>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
           <IdChip code={place.shortCode} size="large" />
           <Breadcrumb
@@ -179,6 +191,8 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
           )}
         </div>
       </div>
+
+      {tree.data?.places ? <PlaceTree places={tree.data.places} currentId={place.id} /> : null}
 
       {canEdit ? (
         <AddHere

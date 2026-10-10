@@ -20,8 +20,10 @@ import { useInvalidateThing } from '@/api/inventory/thing-api';
 import type { ThingView } from '@/api/inventory/types';
 import { useLocation, useMe } from '@/api/queries';
 import { HistoryTimeline } from '@/components/history/timeline';
-import { LinkIcon, PencilIcon } from '@/components/icons';
-import { ErrorState, LoadingRows, Page, Pill } from '@/components/page';
+import { ChevronStartIcon, LinkIcon, PencilIcon } from '@/components/icons';
+import { ErrorState, LinkButton, LoadingRows, Page, Pill } from '@/components/page';
+import { usePlaceTree } from '@/components/places/api';
+import { PlaceTree } from '@/components/places/tree';
 import { SaveAsTemplateSheet } from '@/components/templates/template-sheet';
 import { Button } from '@/components/ui/button';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
@@ -35,7 +37,10 @@ import {
   vehiclePanel,
   vehicleTabOrder,
 } from '@/components/vehicles/vehicle-tabs';
+import { addressOf } from '@/lib/address';
+import { isolate } from '@/lib/bidi';
 import { useFormat } from '@/lib/format';
+import { useLocationName } from '@/lib/labels';
 import { cn } from '@/lib/utils';
 import { ActionMenu, type SheetName, useCopyLink, useRunAction } from './action-menu';
 import { ContentsSection } from './contents';
@@ -298,9 +303,14 @@ function Loaded({ tab, sheet }: { tab: ThingTab | undefined; sheet: SheetName | 
   const back = parent
     ? {
         to: parent.kind === 'container' ? ('/t/$id' as const) : ('/p/$id' as const),
-        params: { id: parent.id },
+        params: {
+          id: parent.kind === 'container' ? parent.id : addressOf(parent),
+        },
       }
     : { to: '/loc/$id' as const, params: { id: location.id } };
+  const locationName = useLocationName();
+  const backName = parent ? parent.name : locationName(location);
+  const tree = usePlaceTree(location.id);
 
   return (
     <VehicleNavProvider value={{ go: goVehicleTab }}>
@@ -338,6 +348,18 @@ function Loaded({ tab, sheet }: { tab: ThingTab | undefined; sheet: SheetName | 
         }
       >
         <ThingHeader />
+        <div className="hidden md:block">
+          <LinkButton size="small" variant="ghost" {...back}>
+            <ChevronStartIcon className="size-4" />
+            <Trans>Back to {isolate(backName)}</Trans>
+          </LinkButton>
+        </div>
+        {tree.data?.places ? (
+          <PlaceTree
+            places={tree.data.places}
+            currentId={parent?.kind === 'place' ? parent.id : undefined}
+          />
+        ) : null}
         {viewer ? (
           <div className="grid gap-2">
             <Pill className="justify-self-start">
