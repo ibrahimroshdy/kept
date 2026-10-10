@@ -272,3 +272,39 @@ describe('accept invite (D190)', () => {
     expectLogicalOnly();
   });
 });
+
+describe('location settings → General (timezone, currency)', () => {
+  const section = async (title: string) =>
+    (await screen.findByRole('heading', { name: title })).closest('section')
+      ?.parentElement as HTMLElement;
+
+  it('saves a timezone picked from the IANA list, with If-Match', async () => {
+    const { user, mock } = await renderApp(`/settings/location/${IDS.home}/general`);
+    const root = await section('Timezone');
+    const box = within(root).getByRole('combobox', { name: 'Timezone' });
+    expect(box).toHaveValue('Africa/Cairo');
+    await user.click(box);
+    await user.clear(box);
+    await user.type(box, 'berlin');
+    await user.click(await screen.findByRole('option', { name: 'Europe/Berlin' }));
+    await user.click(within(root).getByRole('button', { name: 'Save' }));
+    await waitFor(() =>
+      expect(mock.lastCall('PATCH', paths.location(IDS.home))?.body).toEqual({
+        timezone: 'Europe/Berlin',
+      }),
+    );
+  });
+
+  it('saves a currency picked from the enabled list, uppercased', async () => {
+    const { user, mock } = await renderApp(`/settings/location/${IDS.home}/general`);
+    const root = await section('Currency');
+    await user.click(within(root).getByRole('button', { name: /Currency/ }));
+    await user.click(await screen.findByRole('option', { name: /US dollar/ }));
+    await user.click(within(root).getByRole('button', { name: 'Save' }));
+    await waitFor(() =>
+      expect(mock.lastCall('PATCH', paths.location(IDS.home))?.body).toEqual({
+        currency: 'USD',
+      }),
+    );
+  });
+});

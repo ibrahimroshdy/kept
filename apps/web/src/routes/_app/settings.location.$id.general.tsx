@@ -1,14 +1,17 @@
 /**
  * Location settings → General (screens §5, D41, D204). Its name first (an owner or admin renames
  * it; the server checks). Its languages: the ones AI writes search aliases in when it fills in a
- * thing here, chosen in a multi-select with flags. Then the location's own codes: numbering and
+ * thing here, chosen in a multi-select with flags. Its timezone: dates here read in it. Its
+ * currency: new amounts default to it (existing amounts keep theirs; converted totals need
+ * Account → Exchange rates). Then the location's own codes: numbering and
  * the format rule (D208, T17a). Last, for the owner, Delete with "Export first" (D149, step-7
- * T21). Timezone and currency join this page later.
+ * T21).
  */
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useCurrencies } from '@/api/inventory/queries';
 import { updateLocation } from '@/api/locations';
 import { keys } from '@/api/queries';
 import type { LocationDetail } from '@/api/types';
@@ -19,6 +22,8 @@ import { LocationSettingsPage } from '@/components/location-settings';
 import { SettingsRouteError } from '@/components/on-demand-route-error';
 import { Section, useErrorText } from '@/components/page';
 import { Button } from '@/components/ui/button';
+import { Combobox } from '@/components/ui/combobox';
+import { Select, SelectItem } from '@/components/ui/select';
 import { TextField } from '@/components/ui/text-field';
 import { toast } from '@/components/ui/toast';
 
@@ -36,6 +41,8 @@ function GeneralPage() {
         <div className="grid gap-8">
           <NameForm key={`${loc.id}:${loc.name}`} location={loc} />
           <LanguagesForm key={`${loc.id}:${(loc.languages ?? []).join()}`} location={loc} />
+          <TimezoneForm key={`${loc.id}:${loc.timezone}`} location={loc} />
+          <CurrencyForm key={`${loc.id}:${loc.currency}`} location={loc} />
           <OwnCodeSettingsSection locationId={loc.id} />
           <DeleteLocationSection location={loc} />
         </div>
@@ -120,6 +127,125 @@ function LanguagesForm({ location }: { location: LocationDetail }) {
             value={languages}
             onChange={setLanguages}
           />
+        </div>
+      </Section>
+      <Button
+        className="w-full md:w-auto md:justify-self-start"
+        isDisabled={!dirty}
+        isPending={save.isPending}
+        onPress={() => save.mutate()}
+      >
+        <Trans>Save</Trans>
+      </Button>
+    </div>
+  );
+}
+
+/** The zone dates here read in. Type to filter the IANA list; the server canonicalises. */
+function TimezoneForm({ location }: { location: LocationDetail }) {
+  const { t } = useLingui();
+  const qc = useQueryClient();
+  const errorText = useErrorText();
+  const zones = useMemo(() => {
+    try {
+      return Intl.supportedValuesOf('timeZone');
+    } catch {
+      return [];
+    }
+  }, []);
+  const [zone, setZone] = useState(location.timezone);
+  const dirty = zone !== location.timezone;
+
+  const save = useMutation({
+    mutationFn: () => updateLocation(location.id, { timezone: zone }, location.rowVersion),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: keys.location(location.id) });
+      await qc.invalidateQueries({ queryKey: keys.locations });
+      toast({ title: t`Saved`, tone: 'ok' });
+    },
+    onError: (e) => toast({ title: errorText(e), tone: 'danger' }),
+  });
+
+  return (
+    <div className="grid gap-5">
+      <Section title={<Trans>Timezone</Trans>}>
+        <div className="grid gap-3 rounded-[10px] border border-line bg-surface p-3.5">
+          <Combobox
+            label={t`Timezone`}
+            description={t`Dates in this location read in this zone.`}
+            items={
+              zones.includes(zone)
+                ? zones.map((z) => ({ id: z, label: z }))
+                : [{ id: zone, label: zone }, ...zones.map((z) => ({ id: z, label: z }))]
+            }
+            selectedKey={zone}
+            onSelectionChange={(k) => {
+              if (typeof k === 'string') setZone(k);
+            }}
+          />
+        </div>
+      </Section>
+      <Button
+        className="w-full md:w-auto md:justify-self-start"
+        isDisabled={!dirty || zone === ''}
+        isPending={save.isPending}
+        onPress={() => save.mutate()}
+      >
+        <Trans>Save</Trans>
+      </Button>
+    </div>
+  );
+}
+
+/** What new amounts default to. Existing amounts keep their currency. */
+function CurrencyForm({ location }: { location: LocationDetail }) {
+  const { t } = useLingui();
+  const qc = useQueryClient();
+  const errorText = useErrorText();
+  const currencies = useCurrencies();
+  const enabled = (currencies.data?.currencies ?? []).filter((c) => c.enabled);
+  const [code, setCode] = useState(location.currency);
+  const dirty = code.toUpperCase() !== location.currency.toUpperCase();
+
+  const save = useMutation({
+    mutationFn: () =>
+      updateLocation(location.id, { currency: code.toUpperCase() }, location.rowVersion),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: keys.location(location.id) });
+      await qc.invalidateQueries({ queryKey: keys.locations });
+      toast({ title: t`Saved`, tone: 'ok' });
+    },
+    onError: (e) => toast({ title: errorText(e), tone: 'danger' }),
+  });
+
+  return (
+    <div className="grid gap-5">
+      <Section title={<Trans>Currency</Trans>}>
+        <div className="grid gap-3 rounded-[10px] border border-line bg-surface p-3.5">
+          <Select<{ id: string; label: string }>
+            label={t`Currency`}
+            description={t`New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates.`}
+            items={enabled.map((c) => ({ id: c.code, label: c.name }))}
+            value={code.toUpperCase()}
+            onChange={(k) => {
+              if (k) setCode(String(k));
+            }}
+            renderValue={([item]) =>
+              item ? (
+                <span dir="ltr">
+                  {item.id} · {item.label}
+                </span>
+              ) : null
+            }
+          >
+            {(item) => (
+              <SelectItem id={item.id} textValue={item.label}>
+                <span dir="ltr">
+                  {item.id} · {item.label}
+                </span>
+              </SelectItem>
+            )}
+          </Select>
         </div>
       </Section>
       <Button

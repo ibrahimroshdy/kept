@@ -188,6 +188,10 @@ export type UpdateLocationBody = {
   name?: string;
   /** BCP 47 tags, at most 10 (D41): the languages AI writes search aliases in. */
   languages?: string[];
+  /** IANA zone, canonicalised by the server: dates here read in it. */
+  timezone?: string;
+  /** Enabled currency code, uppercased by the server: new amounts default to it. */
+  currency?: string;
 };
 
 /**
