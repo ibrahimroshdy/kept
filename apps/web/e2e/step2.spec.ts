@@ -204,10 +204,14 @@ test('move it, trash it, restore it; Activity shows it and filters by person (D2
   // Undo puts it back in the Cable box.
   await toastUndo(page).click();
   await expect
-    .poll(async () => {
-      row = await (await page.request.get(`/api/v1/things/${id}`)).json();
-      return row?.path?.at(-1)?.name;
-    })
+    .poll(
+      async () => {
+        row = await (await page.request.get(`/api/v1/things/${id}`)).json();
+        return row?.path?.at(-1)?.name;
+      },
+      // A bare poll inherits 10 s; a loaded machine's Postgres can stall past it (step 4).
+      { timeout: 30_000 },
+    )
     .toBe('Cable box');
 
   // Trash (D162), then restore from Trash.

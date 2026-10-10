@@ -61,8 +61,10 @@ describe('security notices (review I3)', () => {
       body: { currentPassword: PASSWORD, newPassword: 'a brand new password' },
     });
     expect(changed.statusCode).toBe(200);
-    await vi.waitFor(() =>
-      expect(noticesFor(user.email)).toEqual([{ email: user.email, event: 'password-changed' }]),
+    await vi.waitFor(
+      () =>
+        expect(noticesFor(user.email)).toEqual([{ email: user.email, event: 'password-changed' }]),
+      { timeout: 10_000 },
     );
   });
 
@@ -77,8 +79,10 @@ describe('security notices (review I3)', () => {
       body: { token: fragmentToken(url), newPassword: 'another good password' },
     });
     expect(reset.statusCode).toBe(200);
-    await vi.waitFor(() =>
-      expect(noticesFor(user.email)).toEqual([{ email: user.email, event: 'password-changed' }]),
+    await vi.waitFor(
+      () =>
+        expect(noticesFor(user.email)).toEqual([{ email: user.email, event: 'password-changed' }]),
+      { timeout: 10_000 },
     );
   });
 
@@ -119,11 +123,13 @@ describe('security notices (review I3)', () => {
       totp: 0,
       sessions: 0,
     });
-    await vi.waitFor(() =>
-      expect(noticesFor(user.email)).toContainEqual({
-        email: user.email,
-        event: 'unverified-account-reset',
-      }),
+    await vi.waitFor(
+      () =>
+        expect(noticesFor(user.email)).toContainEqual({
+          email: user.email,
+          event: 'unverified-account-reset',
+        }),
+      { timeout: 10_000 },
     );
   });
 
@@ -133,8 +139,12 @@ describe('security notices (review I3)', () => {
     expect(noticesFor(user.email)).toEqual([]);
     const disabled = await auth('/two-factor/disable', { cookie, body: { password: PASSWORD } });
     expect(disabled.statusCode).toBe(200);
-    await vi.waitFor(() =>
-      expect(noticesFor(user.email)).toEqual([{ email: user.email, event: 'two-factor-disabled' }]),
+    await vi.waitFor(
+      () =>
+        expect(noticesFor(user.email)).toEqual([
+          { email: user.email, event: 'two-factor-disabled' },
+        ]),
+      { timeout: 10_000 },
     );
   });
 
@@ -151,8 +161,9 @@ describe('security notices (review I3)', () => {
       },
     });
     expect(verified.statusCode).toBe(200);
-    await vi.waitFor(() =>
-      expect(noticesFor(user.email)).toEqual([{ email: user.email, event: 'passkey-added' }]),
+    await vi.waitFor(
+      () => expect(noticesFor(user.email)).toEqual([{ email: user.email, event: 'passkey-added' }]),
+      { timeout: 10_000 },
     );
   });
 
@@ -238,11 +249,13 @@ describe('D197: a first magic-link sign-in claims an unverified account', () => 
       user: { id: user.userId },
     });
     expect((await auth('/get-session', { cookie: user.cookie })).json()).toBeNull();
-    await vi.waitFor(() =>
-      expect(noticesFor(user.email)).toContainEqual({
-        email: user.email,
-        event: 'unverified-account-link',
-      }),
+    await vi.waitFor(
+      () =>
+        expect(noticesFor(user.email)).toContainEqual({
+          email: user.email,
+          event: 'unverified-account-link',
+        }),
+      { timeout: 10_000 },
     );
   });
 

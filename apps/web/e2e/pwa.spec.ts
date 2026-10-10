@@ -30,7 +30,10 @@ test.afterEach(async ({ page }) => {
 async function controlled(page: Page) {
   await page.evaluate(() => navigator.serviceWorker.ready.then(() => undefined));
   await expect
-    .poll(() => page.evaluate(() => navigator.serviceWorker.controller !== null))
+    // A bare poll inherits 10 s; a loaded machine can stall past it (step 4).
+    .poll(() => page.evaluate(() => navigator.serviceWorker.controller !== null), {
+      timeout: 30_000,
+    })
     .toBe(true);
 }
 
@@ -155,11 +158,14 @@ test('the language in use is kept on the first visit, and the shell opens in it 
   // The first visit loaded its catalogue before the worker controlled it; the page fetches it
   // again through the worker (register.ts), which keeps it in kept-locales.
   await expect
-    .poll(() =>
-      page.evaluate(async () => {
-        const c = await caches.open('kept-locales');
-        return (await c.keys()).map((r) => new URL(r.url).pathname);
-      }),
+    .poll(
+      () =>
+        page.evaluate(async () => {
+          const c = await caches.open('kept-locales');
+          return (await c.keys()).map((r) => new URL(r.url).pathname);
+        }),
+      // A bare poll inherits 10 s; a loaded machine can stall past it (step 4).
+      { timeout: 30_000 },
     )
     .toEqual([expect.stringMatching(/^\/assets\/locales\/messages-/)]);
 

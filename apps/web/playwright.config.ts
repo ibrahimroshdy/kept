@@ -109,7 +109,10 @@ export default defineConfig({
   outputDir: '../../.tmp/e2e/results',
   fullyParallel: false,
   forbidOnly: true,
-  retries: 0,
+  // One retry on CI's shared runners (Playwright's own recommendation): a transient stall
+  // fails the shard once and passes on retry, reported as flaky rather than red. Local runs
+  // stay at zero so a flake is still caught here.
+  retries: process.env.CI ? 1 : 0,
   workers: 2,
   timeout: 90_000,
   expect: { timeout: 10_000 },

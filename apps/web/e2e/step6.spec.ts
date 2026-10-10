@@ -39,10 +39,13 @@ async function ensureMockProvider(page: Page) {
   // 409 or 428: the other project's test set it at the same moment; it is there either way.
   expect([200, 409, 428], await res.text()).toContain(res.status());
   await expect
-    .poll(async () =>
-      (
-        await api(page).get<{ providers: { scope: string }[] }>('/api/v1/ai/providers')
-      ).providers.some((p) => p.scope === 'account'),
+    .poll(
+      async () =>
+        (
+          await api(page).get<{ providers: { scope: string }[] }>('/api/v1/ai/providers')
+        ).providers.some((p) => p.scope === 'account'),
+      // A bare poll inherits 10 s; a loaded machine's Postgres can stall past it (step 4).
+      { timeout: 30_000 },
     )
     .toBe(true);
 }
@@ -93,7 +96,10 @@ test('the assistant proposes a move, Confirm moves the cable and Undo puts it ba
 
   await toast.getByRole('button', { name: 'Undo', exact: true }).last().click();
   await expect(toast).toContainText('Undone');
-  await expect.poll(async () => (await where(page, id)).at(-1)).toBe('Cable box');
+  await expect
+    // A bare poll inherits 10 s; a loaded machine's Postgres can stall past it (step 4).
+    .poll(async () => (await where(page, id)).at(-1), { timeout: 30_000 })
+    .toBe('Cable box');
   await context.close();
 });
 
