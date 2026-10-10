@@ -91,14 +91,32 @@ export const addThing: Handler<'add_thing'> = {
     const until = undoableUntil();
     const newPlaces = new Map<string, string>();
     const places: PlaceRef[] = [];
+    const placeIndex = new Map<string, number>();
     const thingIds: string[] = [];
+    const placed: {
+      item: number;
+      status: 'found' | 'created' | 'unplaced';
+      place: number | null;
+    }[] = [];
     const notSet: NonNullable<ToolOutput<'add_thing'>['not_set']> = [];
     let unplaced: string | null = null;
+
+    // Every distinct place involved, first use first, so a `new_place` that matched an
+    // existing place still carries its id. Unplaced items point nowhere: their bucket is the
+    // location's default, not a place they named.
+    const rememberPlace = async (placeId: string) => {
+      const at = placeIndex.get(placeId);
+      if (at !== undefined) return at;
+      places.push(await placeRefOf(op.client, placeId));
+      placeIndex.set(placeId, places.length - 1);
+      return places.length - 1;
+    };
 
     for (const [i, item] of input.items.entries()) {
       let target: { placeId: string } | { containerId: string };
       if (item.place_id) {
         target = await targetIn(op.client, loc.id, item.place_id);
+        placed.push({ item: i, status: 'found', place: await rememberPlace(item.place_id) });
       } else if (item.new_place) {
         const np = item.new_place;
         const parentId = np.parent_id ? await placeIn(op.client, loc.id, np.parent_id) : null;
@@ -112,13 +130,16 @@ export const addThing: Handler<'add_thing'> = {
             { undoable: true },
           );
           placeId = created.id;
-          places.push(await placeRefOf(op.client, placeId));
+          placed.push({ item: i, status: 'created', place: await rememberPlace(placeId) });
+        } else {
+          placed.push({ item: i, status: 'found', place: await rememberPlace(placeId) });
         }
         newPlaces.set(key, placeId);
         target = { placeId };
       } else {
         unplaced ??= await unplacedOf(op.client, loc.id);
         target = { placeId: unplaced };
+        placed.push({ item: i, status: 'unplaced', place: null });
       }
       const typeId = item.type ? await typeNamed(op.client, loc.id, item.type) : null;
       if (item.type && !typeId)
@@ -154,6 +175,7 @@ export const addThing: Handler<'add_thing'> = {
         audit_event_ids: ids,
         things,
         places,
+        placed,
         ...(notSet.length > 0 ? { not_set: notSet } : {}),
       },
     };

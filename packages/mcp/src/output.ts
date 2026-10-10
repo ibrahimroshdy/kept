@@ -96,9 +96,10 @@ export type FitOptions = {
 
 /**
  * Keys that are never removed, nor any field holding one: without them a result can't be cited
- * or followed. `items` is the list itself.
+ * or followed. `items` is the list itself; `placed` is add_thing's per-item answer, required by
+ * its contract, so under pressure fit() sheds audit ids and paths around it instead.
  */
-const PROTECTED = new Set(['id', 'short_code', 'kind', 'role', 'name', 'items']);
+const PROTECTED = new Set(['id', 'short_code', 'kind', 'role', 'name', 'items', 'placed']);
 const isProtected = (key: string) => PROTECTED.has(key) || key.endsWith('_id');
 
 function holdsProtected(value: unknown): boolean {

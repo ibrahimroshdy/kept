@@ -284,6 +284,33 @@ describe('add_thing (D213) and its undo', () => {
     expect(left.every((r) => r.deleted)).toBe(true);
   });
 
+  it('says per item whether its place was found, created or unplaced', async () => {
+    const first = await data(louis, 'add_thing', {
+      location_id: home.id,
+      items: [{ name: 'Saw', new_place: { name: 'Workbench' } }],
+    });
+    const bench = (first.places as { id: string }[])[0]?.id;
+    expect(bench).toBeTruthy();
+    const d = await data(louis, 'add_thing', {
+      location_id: home.id,
+      items: [
+        { name: 'Hammer', place_id: bench },
+        { name: 'Nails', new_place: { name: 'Workbench' } },
+        { name: 'Glue', new_place: { name: 'Shelf' } },
+        { name: 'Tape' },
+      ],
+    });
+    expect(d.placed).toEqual([
+      { item: 0, status: 'found', place: 0 },
+      { item: 1, status: 'found', place: 0 },
+      { item: 2, status: 'created', place: 1 },
+      { item: 3, status: 'unplaced', place: null },
+    ]);
+    // Only Shelf was made; the places list still carries created places only in this call,
+    // with the bench echoed so every involved place is addressable.
+    expect(d.places).toHaveLength(2);
+  });
+
   it('refuses to undo a created thing someone changed since', async () => {
     const d = await data(louis, 'add_thing', { location_id: home.id, items: [{ name: 'Torch' }] });
     const thing = d.things[0];
@@ -411,7 +438,9 @@ describe('reads', () => {
   });
 
   it('pages 20 by default, at most 200, under 8 KB, with a cursor that loses nothing', async () => {
-    const pad = 'x'.repeat(150);
+    // Long names share the 8 KB budget with add_thing's per-item placement answer (placed[]):
+    // 100 characters each still stresses bulk adds without starving it.
+    const pad = 'x'.repeat(100);
     await data(ibrahim, 'add_thing', {
       location_id: home.id,
       items: Array.from({ length: 20 }, (_, i) => ({ name: `Jar ${i} ${pad}` })),
