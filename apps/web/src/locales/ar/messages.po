@@ -21184,3 +21184,15 @@ msgstr "أُعيد {0} إلى {1}"
 #: src/components/notifications/notification-row.tsx
 msgid "Mark {0} returned"
 msgstr "سجّل إعادة {0}"
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "Timezone"
+msgstr "المنطقة الزمنية"
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "Dates in this location read in this zone."
+msgstr "تُقرأ التواريخ في هذا الموقع وفقًا لهذه المنطقة الزمنية."
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates."
+msgstr "تستخدم هذه العملة افتراضيًا للمبالغ الجديدة. تحتفظ المبالغ الحالية بعملتها؛ وتتطلب الإجماليات المحوّلة الحساب ← أسعار الصرف."
