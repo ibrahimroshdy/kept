@@ -21184,3 +21184,15 @@ msgstr "{0} è tornato a {1}"
 #: src/components/notifications/notification-row.tsx
 msgid "Mark {0} returned"
 msgstr "Segna {0} come restituito"
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "Timezone"
+msgstr "Fuso orario"
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "Dates in this location read in this zone."
+msgstr "Le date in questo luogo vengono lette in questo fuso orario."
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates."
+msgstr "I nuovi importi usano questa valuta per impostazione predefinita. Gli importi esistenti mantengono la propria valuta; i totali convertiti richiedono Account → Tassi di cambio."

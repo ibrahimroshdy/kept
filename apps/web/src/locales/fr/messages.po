@@ -21184,3 +21184,15 @@ msgstr "{0} a été rendu à {1}"
 #: src/components/notifications/notification-row.tsx
 msgid "Mark {0} returned"
 msgstr "Marquer {0} comme rendu"
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "Timezone"
+msgstr "Fuseau horaire"
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "Dates in this location read in this zone."
+msgstr "Les dates de ce lieu sont lues dans ce fuseau horaire."
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates."
+msgstr "Les nouveaux montants utilisent cette devise par défaut. Les montants existants gardent la leur ; les totaux convertis nécessitent Compte → Taux de change."

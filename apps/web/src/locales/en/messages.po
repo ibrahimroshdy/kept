@@ -21184,3 +21184,15 @@ msgstr "{0} went back to {1}"
 #: src/components/notifications/notification-row.tsx
 msgid "Mark {0} returned"
 msgstr "Mark {0} returned"
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "Timezone"
+msgstr "Timezone"
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "Dates in this location read in this zone."
+msgstr "Dates in this location read in this zone."
+
+#: src/routes/_app/settings.location.$id.general.tsx
+msgid "New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates."
+msgstr "New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates."
