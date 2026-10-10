@@ -3,6 +3,28 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.0.2 (2026-10-10)
+
+### Features
+
+- **web:** "Show me around" tours seven stops, not four (#19) (6e97d1c)
+- **web:** navigate inside a location — back link, outline, readable URLs (#18) (389ff57)
+- **mcp:** add_thing says per item whether its place was found or made (#17) (2131dec)
+- **web:** location settings General gains timezone and currency (#16) (ce82015)
+
+### Fixes
+
+- **web:** isolate subject names in notification headings and loan texts (#14) (09a2d0b)
+- **web:** a sheet closing must not traverse history while a navigation is in flight (#10) (8d3d1ec)
+
+### Documentation
+
+- **release:** the 1.0.1 record, and the missing 1.0.0 one (#9) (58dcf50)
+
+### Other
+
+- release: retry creating the GitHub release on server errors (#13) (954cc33)
+
 ## 1.0.1 (2026-10-08)
 
 ### Features
