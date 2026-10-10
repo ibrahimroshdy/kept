@@ -21201,3 +21201,15 @@ msgstr "تستخدم هذه العملة افتراضيًا للمبالغ ال�
 #: src/components/things/thing-screen.tsx
 msgid "Back to {0}"
 msgstr "رجوع إلى {0}"
+
+#: src/components/hints/hint-copy.ts
+msgid "Your locations and everything else: vehicles, paperwork, settings and help."
+msgstr "مواقعك وكل شيء آخر: المركبات والأوراق والإعدادات والمساعدة."
+
+#: src/components/hints/hint-copy.ts
+msgid "Print QR labels for boxes and shelves. Scan one and its place opens."
+msgstr "اطبع ملصقات QR للصناديق والأرفف. امسح واحدًا وسيُفتح مكانه."
+
+#: src/components/hints/hint-copy.ts
+msgid "Locations, members, AI providers and backups live here."
+msgstr "المواقع والأعضاء ومزودو الذكاء الاصطناعي والنسخ الاحتياطية هنا."

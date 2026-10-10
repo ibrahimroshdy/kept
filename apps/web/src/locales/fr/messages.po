@@ -21201,3 +21201,15 @@ msgstr "Les nouveaux montants utilisent cette devise par défaut. Les montants e
 #: src/components/things/thing-screen.tsx
 msgid "Back to {0}"
 msgstr "Retour à {0}"
+
+#: src/components/hints/hint-copy.ts
+msgid "Your locations and everything else: vehicles, paperwork, settings and help."
+msgstr "Vos lieux et tout le reste : véhicules, paperasse, paramètres et aide."
+
+#: src/components/hints/hint-copy.ts
+msgid "Print QR labels for boxes and shelves. Scan one and its place opens."
+msgstr "Imprimez des étiquettes QR pour les boîtes et les étagères. Scannez-en une et son lieu s'ouvre."
+
+#: src/components/hints/hint-copy.ts
+msgid "Locations, members, AI providers and backups live here."
+msgstr "Les lieux, les membres, les fournisseurs d'IA et les sauvegardes sont ici."
