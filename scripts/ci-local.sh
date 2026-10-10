@@ -182,8 +182,16 @@ step_compose() {
   "${DEV_COMPOSE[@]}" --profile s3 up -d --wait
 }
 
-# KEPT_TEST_S3_URL makes storage/s3.test.ts fail, not skip, when RustFS isn't answering.
-step_test() { KEPT_TEST_S3_URL=http://localhost:9452 pnpm test; }
+# The server's tests on Postgres with pgvector and RustFS (the fast job's unit step covers
+# every other project, so this one doesn't repeat them). CI_VITEST_SHARD=k/n runs one slice
+# (CI's db-test matrix); locally the whole suite.
+step_test() {
+  if [[ -n ${CI_VITEST_SHARD:-} ]]; then
+    KEPT_TEST_S3_URL=http://localhost:9452 pnpm test --project @kept/server --shard "$CI_VITEST_SHARD"
+  else
+    KEPT_TEST_S3_URL=http://localhost:9452 pnpm test --project @kept/server
+  fi
+}
 
 # drizzle-kit generate must find nothing to write, into a copy of the migrations, and
 # drizzle-kit check must pass. The copy lives under .tmp/ (gitignored) and is relative to
