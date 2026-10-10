@@ -55,8 +55,12 @@ so a failure reproduces locally with the same `--only` list. Every job is gated 
 | Workflow | Job | What it checks |
 |---|---|---|
 | [`ci`](https://github.com/ibrahimroshdy/kept/blob/main/.github/workflows/ci.yml) | `fast` | `pnpm install --frozen-lockfile`, `bash scripts/ci-local.sh --fast` (lint, catalogues, typecheck, unit tests, the mock evaluation), then `node scripts/check-licences.mjs` |
-| `ci` | `db` | `ci-local.sh --only compose,test,drift,prod-boot,portability,backup`: the server's tests on Postgres with pgvector and RustFS, migration drift, a production boot, portability and backup |
-| `ci` | `e2e` | `ci-local.sh --only compose,e2e`: Playwright against the built server; the results are an artifact when it fails |
+| `ci` | `db-test` | `ci-local.sh --only compose,test`: the server's tests on Postgres with pgvector and RustFS |
+| `ci` | `db-ops` | `ci-local.sh --only compose,drift,prod-boot,portability,backup`: migration drift, a production boot, portability and backup |
+| `ci` | `db` | the required check: green exactly when both halves are |
+| `ci` | `e2e-shard` | `ci-local.sh --only compose,e2e` with `CI_E2E_SHARD=k/4`: a quarter of the Playwright suite against the built server; the results are a per-shard artifact when it fails |
+| `ci` | `e2e-update` | `ci-local.sh --only compose,e2e-update`: the step-3 update migration spec on its own |
+| `ci` | `e2e` | the required check: green exactly when every shard and the update spec are |
 | `ci` | `images-amd64`, `images-arm64` | `ci-local.sh --only images`: the image built natively on that architecture's runner and smoked in full |
 | `ci` | `helm` | the pinned Helm and kubeconform, then `ci-local.sh --only helm` |
 | `ci` | `attribution` | `scripts/check-attribution.sh` over the pull request's commits and its description |

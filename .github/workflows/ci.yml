@@ -3,9 +3,12 @@
 # runners, free on a public repository (D222). The jobs below are the required checks on main
 # (scripts/repo-settings.sh), so main is always releasable and a release needs no laptop run.
 #   fast           lint, catalogues, typecheck, the unit tests, the mock evaluation; licences
-#   db             the server's tests on the dev Postgres (pgvector) and RustFS, migration drift,
-#                  a production boot, portability and backup
-#   e2e            Playwright against the built server, on scratch databases
+#   db-test        the server's tests on the dev Postgres (pgvector) and RustFS
+#   db-ops         migration drift, a production boot, portability and backup
+#   db             the required check: green exactly when both halves are
+#   e2e-shard      Playwright against the built server in four shards, on scratch databases
+#   e2e-update     the step-3 update migration spec on its own, so it runs exactly once
+#   e2e            the required check: green exactly when every shard and the update spec are
 #   images-amd64,  the image built natively on each architecture's runner and smoked in full
 #   images-arm64   (scripts/smoke-image.sh)
 #   helm           the chart's lint, render and schema check at the pinned Helm and kubeconform
@@ -54,7 +57,7 @@ jobs:
       - run: bash scripts/ci-local.sh --fast
       - run: node scripts/check-licences.mjs
 
-  db:
+  db-test:
     if: github.event.repository.private == false
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -68,12 +71,47 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: bash scripts/ci-local.sh --only compose,test,drift,prod-boot,portability,backup
+      - run: bash scripts/ci-local.sh --only compose,test
 
-  e2e:
+  db-ops:
     if: github.event.repository.private == false
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: bash scripts/ci-local.sh --only compose,drift,prod-boot,portability,backup
+
+  # The required check: green exactly when both halves are (skipped only while private,
+  # when nothing here runs or is required).
+  db:
+    if: ${{ always() && github.event.repository.private == false }}
+    needs: [db-test, db-ops]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: |
+          for r in $(echo '${{ toJSON(needs.*.result) }}' | jq -r '.[]'); do
+            [ "$r" = success ] || [ "$r" = skipped ] || exit 1
+          done
+
+  e2e-shard:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    env:
+      CI_E2E_SHARD: ${{ matrix.shard }}/4
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -89,9 +127,45 @@ jobs:
       - if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: e2e-results
+          name: e2e-results-shard-${{ matrix.shard }}
           path: .tmp/e2e/results
           retention-days: 7
+
+  e2e-update:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: bash scripts/ci-local.sh --only compose,e2e-update
+      # Playwright's report and traces when a spec fails, kept for a week.
+      - if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-results-update
+          path: .tmp/e2e/results
+          retention-days: 7
+
+  # The required check: green exactly when every shard and the update spec are (skipped
+  # only while private, when nothing here runs or is required).
+  e2e:
+    if: ${{ always() && github.event.repository.private == false }}
+    needs: [e2e-shard, e2e-update]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: |
+          for r in $(echo '${{ toJSON(needs.*.result) }}' | jq -r '.[]'); do
+            [ "$r" = success ] || [ "$r" = skipped ] || exit 1
+          done
 
   images-amd64:
     if: github.event.repository.private == false
