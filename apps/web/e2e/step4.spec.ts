@@ -499,14 +499,16 @@ test('lending: an overdue loan reaches the centre, is marked returned there and 
   expect(before.unread).toBeGreaterThan(0);
   await page.goto('/notifications');
   await expect(page.getByRole('heading', { name: 'Notifications', level: 1 })).toBeVisible();
-  const markReturned = page.getByRole('button', { name: `Mark ${CATAN} returned` });
+  // Subject names render isolated (bidi FSI…PDI), so UI text carries the marks.
+  const isolated = (s: string) => `\u2068${s}\u2069`;
+  const markReturned = page.getByRole('button', { name: `Mark ${isolated(CATAN)} returned` });
   await expect(markReturned).toBeVisible();
   await expect(page.getByText(/^Was due back /).first()).toBeVisible();
   await axe(page, 'Notifications');
 
   // Mark returned from the centre: the loan closes, and the row is read.
   await markReturned.click();
-  await expect(page.getByText(`${CATAN} is back`).first()).toBeVisible();
+  await expect(page.getByText(`${isolated(CATAN)} is back`).first()).toBeVisible();
   await expect.poll(async () => (await openLoan())?.id ?? null).toBeNull();
   await expect
     .poll(

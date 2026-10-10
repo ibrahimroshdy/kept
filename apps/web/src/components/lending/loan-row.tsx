@@ -59,13 +59,14 @@ export function LoanRowView({
   const late = loan.overdue && loan.dueOn ? daysBetween(loan.dueOn, access.today) : 0;
 
   const markReturned = async () => {
-    // The person's name isolated in the toast's sentence (UI step-4 review L9).
-    const person = isolate(loan.person.name);
     try {
       const { auditEvents } = await householdApi.returnLoan(loan.id, {}, loan.rowVersion);
       offerUndo(
         {
-          title: loan.direction === 'out' ? t`${name} is back` : t`${name} went back to ${person}`,
+          title:
+            loan.direction === 'out'
+              ? t`${isolate(name)} is back`
+              : t`${isolate(name)} went back to ${isolate(loan.person.name)}`,
         },
         auditEvents,
         { thingId: loan.thingId },
@@ -175,7 +176,7 @@ export function LoanRowView({
             variant="secondary"
             isDisabled={!online}
             onPress={() => void markReturned()}
-            aria-label={t`Mark ${name} returned`}
+            aria-label={t`Mark ${isolate(name)} returned`}
           >
             <Trans>Mark returned</Trans>
           </Button>

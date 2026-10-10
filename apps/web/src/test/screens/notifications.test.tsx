@@ -14,8 +14,8 @@ import { needsConnection } from '@/components/notifications/route-error';
 import { findHeading, renderApp } from '../app';
 
 const H = HOUSEHOLD_IDS;
-const DRILL = 'Bosch drill, 18 V';
-const BOILER = 'Boiler service · Kitchen';
+const DRILL = '\u2068Bosch drill, 18 V\u2069';
+const BOILER = 'Boiler service · \u2068Kitchen\u2069';
 
 const row = (name: string) => screen.findByRole('article', { name }, { timeout: 3000 });
 const centre = () => screen.findByRole('list', { name: 'Notifications' }, { timeout: 3000 });
@@ -48,7 +48,7 @@ describe('the notification centre', () => {
       BOILER,
       DRILL,
       'Home insurance',
-      'Warranty · Samsung TV, 55″',
+      'Warranty · \u2068Samsung TV, 55″\u2069',
       'Louis joined Home',
       'Talia no longer has access to Garage',
       "AI used 80% of this month's cap",
@@ -250,6 +250,14 @@ describe('the variants', () => {
     await renderApp('/notifications', { locale: 'ar' });
     await row(DRILL);
     expect(document.documentElement.dir).toBe('rtl');
+  });
+
+  it('in Arabic, a Latin subject name keeps its own direction: isolated, so a trailing ″ cannot jump sides', async () => {
+    await renderApp('/notifications', { locale: 'ar' });
+    // The TV warranty's heading ends in the subject's name; the ⁨…⁩ marks keep the ″ with 55.
+    const articles = await screen.findAllByRole('article');
+    const tv = articles.find((a) => (a.textContent ?? '').includes('Samsung TV'));
+    expect(tv?.getAttribute('aria-label')).toContain('\u2068Samsung TV, 55″\u2069');
   });
 });
 
