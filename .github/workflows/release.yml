@@ -262,8 +262,21 @@ jobs:
           cat "$body"
           flags=()
           [[ $PRERELEASE == true ]] && flags+=(--prerelease)
-          gh release create "$TAG" -R "$GITHUB_REPOSITORY" --verify-tag --title "Kept $VERSION" \
-            --notes-file "$body" ${flags[@]+"${flags[@]}"} "$NOTICES" "$NOTES"
+          # The release is the last stage of a published release: GitHub answering a server
+          # error must not fail it. Retried a few times with backoff; before each retry a
+          # re-check finds a release an earlier attempt managed to create, so a lost response
+          # stops retrying instead of failing on "already exists".
+          tries=0
+          until gh release create "$TAG" -R "$GITHUB_REPOSITORY" --verify-tag --title "Kept $VERSION" \
+            --notes-file "$body" ${flags[@]+"${flags[@]}"} "$NOTICES" "$NOTES"; do
+            tries=$((tries + 1))
+            if gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              echo "release $TAG exists; an earlier attempt went through"
+              break
+            fi
+            [ "$tries" -ge 4 ] && exit 1
+            sleep $((tries * 15))
+          done
 
       - name: Remove the key and the logins
         if: always()
