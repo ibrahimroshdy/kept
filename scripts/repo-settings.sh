@@ -383,7 +383,7 @@ if want main-ruleset; then
     # The required checks: the job ids of ci.yml and docs.yml (a job without `name:` reports its
     # id), from the GitHub Actions app. Each is checked against the workflow file, so a renamed
     # job fails here rather than leaving a check that never reports.
-    required=(ci.yml:fast ci.yml:db ci.yml:e2e ci.yml:images-amd64 ci.yml:images-arm64 ci.yml:helm ci.yml:attribution ci.yml:dco docs.yml:build)
+    required=(ci.yml:fast ci.yml:db ci.yml:e2e ci.yml:e2e-update ci.yml:images-amd64 ci.yml:images-arm64 ci.yml:helm ci.yml:attribution ci.yml:dco docs.yml:build)
     use_checks=$checks
     [[ $use_checks == auto ]] && { [[ $private == true ]] && use_checks=off || use_checks=on; }
     actions_app=$(gh api apps/github-actions -q .id)

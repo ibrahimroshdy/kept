@@ -45,7 +45,7 @@ set -euo pipefail
 repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 cd "$repo"
 
-ALL_STEPS=(install lint catalogues typecheck compose test drift licences attribution docs helm prod-boot eval portability backup perf e2e images release-dry-run)
+ALL_STEPS=(install lint catalogues typecheck compose test drift licences attribution docs helm prod-boot eval portability backup perf e2e e2e-update images release-dry-run)
 FAST_STEPS=(lint catalogues typecheck unit eval)
 
 DEV_COMPOSE=(docker compose -f compose.dev.yaml)
@@ -599,7 +599,31 @@ step_e2e() {
     echo "e2e: playwright.config.ts doesn't launch Chromium with fakeCameraArgs()" >&2
     return 1
   }
-  pnpm --filter @kept/web exec playwright test
+  # On CI each matrix shard runs a slice (CI_E2E_SHARD=k/n); locally the whole suite.
+  if [[ -n ${CI_E2E_SHARD:-} ]]; then
+    pnpm --filter @kept/web exec playwright test --shard "$CI_E2E_SHARD"
+  else
+    pnpm --filter @kept/web exec playwright test
+    KEPT_E2E_UPDATE=1 KEPT_E2E_INSTANCES=capture \
+      pnpm --filter @kept/web exec playwright test step3-update.spec.ts --project phone
+  fi
+}
+
+# The step-3 update migration spec on its own (CI's e2e-update job; the sharded e2e job skips
+# it, so it runs exactly once). Same build the e2e job uses.
+step_e2e-update() {
+  pnpm --filter '@kept/server...' build
+  pnpm --filter @kept/web build
+  if uses_installed_chrome; then
+    echo "e2e: using the installed Google Chrome"
+  else
+    # A fresh CI runner also needs Chromium's system libraries (--with-deps uses apt).
+    if [[ -n ${CI:-} && $(uname -s) == Linux ]]; then
+      pnpm --filter @kept/web exec playwright install --with-deps chromium
+    else
+      pnpm --filter @kept/web exec playwright install chromium
+    fi
+  fi
   KEPT_E2E_UPDATE=1 KEPT_E2E_INSTANCES=capture \
     pnpm --filter @kept/web exec playwright test step3-update.spec.ts --project phone
 }
