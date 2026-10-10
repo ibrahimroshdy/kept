@@ -21172,3 +21172,15 @@ msgstr "CLI-Anleitung"
 #: src/assistant/thread.tsx
 msgid "This question is more than your AI plan allows in one minute. Choose a model with a higher limit in Settings → AI, or a paid plan."
 msgstr "Diese Frage ist mehr, als dein KI-Tarif in einer Minute erlaubt. Wähle unter Einstellungen → KI ein Modell mit einem höheren Limit oder einen kostenpflichtigen Tarif."
+
+#: src/components/notifications/notification-row.tsx
+msgid "{0} is back"
+msgstr "{0} ist zurück"
+
+#: src/components/notifications/notification-row.tsx
+msgid "{0} went back to {1}"
+msgstr "{0} ging an {1} zurück"
+
+#: src/components/notifications/notification-row.tsx
+msgid "Mark {0} returned"
+msgstr "{0} als zurückgegeben markieren"

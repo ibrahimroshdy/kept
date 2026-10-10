@@ -21172,3 +21172,15 @@ msgstr "دليل سطر الأوامر"
 #: src/assistant/thread.tsx
 msgid "This question is more than your AI plan allows in one minute. Choose a model with a higher limit in Settings → AI, or a paid plan."
 msgstr "هذا السؤال أكبر مما تسمح به خطة الذكاء الاصطناعي لديك في الدقيقة الواحدة. اختر نموذجًا بحدّ أعلى من الإعدادات ← الذكاء الاصطناعي، أو خطة مدفوعة."
+
+#: src/components/notifications/notification-row.tsx
+msgid "{0} is back"
+msgstr "عاد {0}"
+
+#: src/components/notifications/notification-row.tsx
+msgid "{0} went back to {1}"
+msgstr "أُعيد {0} إلى {1}"
+
+#: src/components/notifications/notification-row.tsx
+msgid "Mark {0} returned"
+msgstr "سجّل إعادة {0}"
