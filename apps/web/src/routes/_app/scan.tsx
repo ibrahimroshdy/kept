@@ -34,11 +34,12 @@ function ScanPage() {
   }, [router, navigate]);
   const open = useCallback(
     (target: ScanTarget) => {
-      if (target.kind === 'place') void navigate({ to: '/p/$id', params: { id: target.id } });
-      else
-        void openSearch(target, store, qc).then((search) =>
-          navigate({ to: '/t/$id', params: { id: target.id }, search }),
-        );
+      // Returned, so the scan screen can close up when the navigation commits rather than
+      // before it starts (scan-screen.tsx: a sheet's history entry must not pop mid-resolve).
+      if (target.kind === 'place') return navigate({ to: '/p/$id', params: { id: target.id } });
+      return openSearch(target, store, qc).then((search) =>
+        navigate({ to: '/t/$id', params: { id: target.id }, search }),
+      );
     },
     [navigate, store, qc],
   );

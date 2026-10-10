@@ -56,8 +56,8 @@ export type ScanScreenProps = {
   /** Looking for where the tray's things go (`?tray=1`). */
   tray?: boolean;
   onExit: () => void;
-  /** Go to what a scan opened (the route navigates; marking seen is done here). */
-  onOpen: (target: ScanTarget) => void;
+  /** Go to what a scan opened (the route navigates; marking seen is done here). Settles when the navigation does, so the caller can close up after it commits. */
+  onOpen: (target: ScanTarget) => void | Promise<void>;
   /** After an op was queued: the sync engine's kick (T24). */
   onQueued?: () => void;
   // ----- the device, injectable -----
@@ -121,8 +121,8 @@ export function ScanScreen({
   );
 
   const openTarget = useCallback(
-    (target: ScanTarget, alreadySeen = false) => {
-      onOpen(target);
+    async (target: ScanTarget, alreadySeen = false) => {
+      await onOpen(target);
       if (!alreadySeen)
         void markSeen(target, { store, online }).then((r) => {
           if (r === 'queued') onQueued?.();
@@ -148,10 +148,15 @@ export function ScanScreen({
             described: await describeTarget(res.target, { store, online }),
             forTray: true,
           });
+          setManual(false);
           return;
         }
         if (res.outcome === 'open' && !res.legacy) {
-          openTarget(res.target);
+          // The sheet closes when the navigation commits, never before: closing first lets the
+          // sheet's history entry pop while the resolve is still running, and that pop lands
+          // after the navigation and derails it (the URL ends back at /scan).
+          await openTarget(res.target);
+          setManual(false);
           return;
         }
         if (res.outcome === 'open') {
@@ -161,9 +166,11 @@ export function ScanScreen({
           ]);
           if (seen === 'queued') onQueued?.();
           setAnswer({ res, described, seen: seen !== 'skipped' });
+          setManual(false);
           return;
         }
         setAnswer({ res });
+        setManual(false);
       } catch {
         toast({ title: t`Couldn't look that up. Try again.`, tone: 'danger' });
       } finally {
@@ -348,7 +355,6 @@ export function ScanScreen({
         <ManualCode
           onCancel={() => setManual(false)}
           onCode={(code) => {
-            setManual(false);
             void handle({ text: code });
           }}
         />
@@ -395,7 +401,7 @@ function TrayAnswer({
   onPickUp: (id: string) => Promise<void>;
   onTakeOut: (id: string) => Promise<void>;
   onMove: (d: Described) => Promise<void>;
-  onOpen: (target: ScanTarget) => void;
+  onOpen: (target: ScanTarget) => void | Promise<void>;
 }) {
   const { t } = useLingui();
   const placeName = usePlaceName();

@@ -235,6 +235,33 @@ describe('scan outcomes, online', () => {
     );
   });
 
+  it('Type the code keeps the sheet open until the lookup answers: closing first lets its history entry pop mid-navigation and derail it', async () => {
+    const { user, onOpen } = await renderScan();
+    // A slow server resolve, so the lookup is still in flight after Find.
+    const realFetch = mock.fetch;
+    vi.stubGlobal('fetch', (async (...args: [RequestInfo | URL, RequestInit?]) => {
+      const raw = args[0];
+      const url = new URL(
+        typeof raw === 'string' ? raw : raw instanceof URL ? raw.href : raw.url,
+        'http://kept.test',
+      );
+      if (url.pathname === '/api/v1/scan/resolve') await new Promise((r) => setTimeout(r, 250));
+      return (realFetch as typeof fetch)(...args);
+    }) as typeof fetch);
+    await user.click(screen.getByRole('button', { name: 'Type the code' }));
+    await user.type(screen.getByRole('textbox', { name: 'Code on the label' }), 'B0X3QF');
+    await user.click(screen.getByRole('button', { name: 'Find' }));
+    // Still looking: the sheet stays open.
+    expect(screen.getByRole('textbox', { name: 'Code on the label' })).toBeInTheDocument();
+    await waitFor(() =>
+      expect(onOpen).toHaveBeenCalledWith({ kind: 'thing', id: T.cableBox, locationId: L.home }),
+    );
+    // Answered: the sheet is gone.
+    await waitFor(() =>
+      expect(screen.queryByRole('textbox', { name: 'Code on the label' })).toBeNull(),
+    );
+  });
+
   it('"Not in your Kept" answers a code the server will not show, and never says why', async () => {
     const { user, onExit } = await renderScan();
     await scan('https://kept.example/l/ZZZZZZ');
