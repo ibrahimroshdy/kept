@@ -51,6 +51,7 @@ import {
 } from '@/components/schedules/access';
 import { Button, buttonClass } from '@/components/ui/button';
 import { toast } from '@/components/ui/toast';
+import { isolate } from '@/lib/bidi';
 import { sep, useFormat } from '@/lib/format';
 import { useLocationName, useRoleLabels } from '@/lib/labels';
 import { useOnline } from '@/lib/online';
@@ -92,8 +93,10 @@ export type RowActions = {
 function useReminderTitle() {
   const { t } = useLingui();
   const docs = useDocumentKindLabels();
+  // The subject's name is isolated: in one bdi with the translated title, a Latin name ending
+  // in a neutral (Samsung TV, 55″) takes the line's RTL direction and the ″ jumps sides.
   return (r: Reminder): string => {
-    const on = r.subject.name;
+    const on = isolate(r.subject.name);
     switch (r.sourceType) {
       case 'warranty':
         return t`Warranty · ${on}`;
@@ -402,7 +405,9 @@ function LoanActions({
       offerUndo(
         {
           title:
-            current.direction === 'out' ? t`${name} is back` : t`${name} went back to ${person}`,
+            current.direction === 'out'
+              ? t`${isolate(name)} is back`
+              : t`${isolate(name)} went back to ${isolate(person)}`,
         },
         auditEvents,
         { thingId: current.thingId },
@@ -439,7 +444,7 @@ function LoanActions({
         size="small"
         variant="secondary"
         isDisabled={!online}
-        aria-label={t`Mark ${name} returned`}
+        aria-label={t`Mark ${isolate(name)} returned`}
         onPress={() => void markReturned()}
       >
         <HandoffIcon />
