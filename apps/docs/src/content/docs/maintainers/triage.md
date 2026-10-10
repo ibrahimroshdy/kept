@@ -55,7 +55,7 @@ so a failure reproduces locally with the same `--only` list. Every job is gated 
 | Workflow | Job | What it checks |
 |---|---|---|
 | [`ci`](https://github.com/ibrahimroshdy/kept/blob/main/.github/workflows/ci.yml) | `fast` | `pnpm install --frozen-lockfile`, `bash scripts/ci-local.sh --fast` (lint, catalogues, typecheck, unit tests, the mock evaluation), then `node scripts/check-licences.mjs` |
-| `ci` | `db-test` | `ci-local.sh --only compose,test`: the server's tests on Postgres with pgvector and RustFS |
+| `ci` | `db-test` | `ci-local.sh --only compose,test`: the server's tests on Postgres with pgvector and RustFS, in three shards |
 | `ci` | `db-ops` | `ci-local.sh --only compose,drift,prod-boot,portability,backup`: migration drift, a production boot, portability and backup |
 | `ci` | `db` | the required check: green exactly when both halves are |
 | `ci` | `e2e-shard` | `ci-local.sh --only compose,e2e` with `CI_E2E_SHARD=k/4`: a quarter of the Playwright suite against the built server; the results are a per-shard artifact when it fails |
