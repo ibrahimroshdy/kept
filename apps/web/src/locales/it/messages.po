@@ -21201,3 +21201,15 @@ msgstr "I nuovi importi usano questa valuta per impostazione predefinita. Gli im
 #: src/components/things/thing-screen.tsx
 msgid "Back to {0}"
 msgstr "Torna a {0}"
+
+#: src/components/hints/hint-copy.ts
+msgid "Your locations and everything else: vehicles, paperwork, settings and help."
+msgstr "I tuoi luoghi e tutto il resto: veicoli, documenti, impostazioni e aiuto."
+
+#: src/components/hints/hint-copy.ts
+msgid "Print QR labels for boxes and shelves. Scan one and its place opens."
+msgstr "Stampa etichette QR per scatole e scaffali. Scansionane una e si aprirà il suo posto."
+
+#: src/components/hints/hint-copy.ts
+msgid "Locations, members, AI providers and backups live here."
+msgstr "Luoghi, membri, fornitori di IA e backup sono qui."

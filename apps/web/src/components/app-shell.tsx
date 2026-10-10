@@ -196,7 +196,7 @@ export type NavCounts = Partial<Record<string, number>>;
 
 const SIDEBAR_ID = 'kept-sidebar';
 /** The sidebar entries "Show me around" stops at (components/hints/tour.ts). */
-const TOURED: ReadonlySet<string> = new Set(['home', 'inbox']);
+const TOURED: ReadonlySet<string> = new Set(['home', 'inbox', 'labels', 'settings']);
 /**
  * The sidebar's width: the full sidebar, or the icon rail (D198). `rail:` follows the attribute
  * the pre-paint script sets, so the loading frame and the first paint already have the right width.
@@ -575,7 +575,7 @@ function TabBar() {
           <Trans>Inbox</Trans>
         </Link>
       ) : null}
-      <Link to="/more" className={tab}>
+      <Link to="/more" data-tour="more" className={tab}>
         <MenuIcon />
         <Trans>More</Trans>
       </Link>

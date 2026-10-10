@@ -1,5 +1,6 @@
 /**
- * Help (plan T31; D138): "Show me around" is a tour over Home → Capture → Inbox → Search that a
+ * Help (plan T31; D138): "Show me around" is a tour over Home → Capture → Inbox → Search →
+ * More → Labels → Settings that a
  * keyboard can drive (arrows by reading direction, Escape), replayable and recorded as
  * `help.tour_seen`; the Get-started checklist comes back from here; install and share-into notes
  * per platform (iPhone has no share target, V9); the diagnostics link.
@@ -36,21 +37,21 @@ describe('Help', () => {
     expect(within(screen.getByRole('main')).queryByText('Coming soon')).toBeNull();
   });
 
-  it('"Show me around" runs Home → Capture → Inbox → Search from the keyboard', async () => {
+  it('"Show me around" runs Home → Capture → Inbox → Search → More → Labels → Settings from the keyboard', async () => {
     const { user, mock } = await renderApp('/help');
     await findHeading('Help');
     const start = screen.getByRole('button', { name: 'Start' });
     await user.click(start);
 
     const tour = await screen.findByRole('dialog', { name: 'Home' });
-    expect(tour).toHaveTextContent('1 of 4');
+    expect(tour).toHaveTextContent('1 of 7');
     // The highlighted stop is the navigation entry itself.
     expect(document.querySelector('.driver-active-element')?.getAttribute('data-tour')).toBe(
       'home',
     );
 
     act(() => key('ArrowRight'));
-    expect(await screen.findByRole('dialog', { name: 'Capture' })).toHaveTextContent('2 of 4');
+    expect(await screen.findByRole('dialog', { name: 'Capture' })).toHaveTextContent('2 of 7');
     act(() => key('ArrowLeft'));
     expect(await screen.findByRole('dialog', { name: 'Home' })).toBeInTheDocument();
     // Back from the first stop stays there.
@@ -65,8 +66,26 @@ describe('Help', () => {
     );
     await screen.findByRole('dialog', { name: 'Inbox' });
     act(() => key('ArrowRight'));
-    const last = await screen.findByRole('dialog', { name: 'Search' });
-    expect(last).toHaveTextContent('4 of 4');
+    expect(await screen.findByRole('dialog', { name: 'Search' })).toHaveTextContent('4 of 7');
+    await user.click(
+      within(await screen.findByRole('dialog', { name: 'Search' })).getByRole('button', {
+        name: 'Next',
+      }),
+    );
+    expect(await screen.findByRole('dialog', { name: 'More' })).toHaveTextContent('5 of 7');
+    await user.click(
+      within(await screen.findByRole('dialog', { name: 'More' })).getByRole('button', {
+        name: 'Next',
+      }),
+    );
+    expect(await screen.findByRole('dialog', { name: 'Labels' })).toHaveTextContent('6 of 7');
+    await user.click(
+      within(await screen.findByRole('dialog', { name: 'Labels' })).getByRole('button', {
+        name: 'Next',
+      }),
+    );
+    const last = await screen.findByRole('dialog', { name: 'Settings' });
+    expect(last).toHaveTextContent('7 of 7');
     expect(within(last).getByRole('button', { name: 'Close' })).toBeInTheDocument();
 
     act(() => key('Escape'));
@@ -88,10 +107,10 @@ describe('Help', () => {
     await findHeading('المساعدة');
     await user.click(screen.getByRole('button', { name: 'ابدأ' }));
     const home = await screen.findByRole('dialog', { name: 'الرئيسية' });
-    expect(home).toHaveTextContent('١ من ٤');
+    expect(home).toHaveTextContent('١ من ٧');
     // Forward is to the left in Arabic.
     act(() => key('ArrowLeft'));
-    expect(await screen.findByRole('dialog', { name: 'التقاط' })).toHaveTextContent('٢ من ٤');
+    expect(await screen.findByRole('dialog', { name: 'التقاط' })).toHaveTextContent('٢ من ٧');
     act(() => key('ArrowRight'));
     expect(await screen.findByRole('dialog', { name: 'الرئيسية' })).toBeInTheDocument();
     expectLogicalOnly();

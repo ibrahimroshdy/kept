@@ -1,10 +1,11 @@
 /**
- * "Show me around" (D138): a short driver.js tour over Home → Capture → Inbox → Search, started
- * from Help and replayable there. It never starts on launch.
+ * "Show me around" (D138): a short driver.js tour over Home → Capture → Inbox → Search, then
+ * More, Labels and Settings, started from Help and replayable there. It never starts on launch.
  *
  * Each stop is the navigation element that leads there, marked `data-tour="<stop>"`: the tab bar
  * on a phone, the sidebar and the top bar from 768 px (components/app-shell.tsx, page.tsx). The
- * first one on screen is used; a stop with none (no Inbox for a viewer everywhere) is skipped.
+ * first one on screen is used; a stop with none (no Inbox for a viewer everywhere, no Labels
+ * tab on a phone, no More entry on desktop) is skipped.
  * Finishing or closing it records `help.tour_seen`. While it runs no hint shows.
  */
 import { useCallback, useState } from 'react';
@@ -13,7 +14,15 @@ import { type TourStop, useTourCopy } from './hint-copy';
 import { pageIsRtl, prefersReducedMotion } from './placement';
 import { hintSlot, useMarkHint } from './use-hint';
 
-export const TOUR_STOPS: readonly TourStop[] = ['home', 'capture', 'inbox', 'search'];
+export const TOUR_STOPS: readonly TourStop[] = [
+  'home',
+  'capture',
+  'inbox',
+  'search',
+  'more',
+  'labels',
+  'settings',
+];
 
 /** The stop's element on screen: the first `[data-tour]` match that has a box. */
 export function findStop(stop: TourStop, root: ParentNode = document): Element | null {

@@ -39,7 +39,7 @@ export function useHintCopy(): Record<FirstUseHint, HintCopy> & { gotIt: string 
   };
 }
 
-export type TourStop = 'home' | 'capture' | 'inbox' | 'search';
+export type TourStop = 'home' | 'capture' | 'inbox' | 'search' | 'more' | 'labels' | 'settings';
 
 export function useTourCopy() {
   const { t } = useLingui();
@@ -60,6 +60,18 @@ export function useTourCopy() {
     search: {
       title: t`Search`,
       description: t`Find anything by its name, its place, or what else it's called. On a phone it also works offline.`,
+    },
+    more: {
+      title: t`More`,
+      description: t`Your locations and everything else: vehicles, paperwork, settings and help.`,
+    },
+    labels: {
+      title: t`Labels`,
+      description: t`Print QR labels for boxes and shelves. Scan one and its place opens.`,
+    },
+    settings: {
+      title: t`Settings`,
+      description: t`Locations, members, AI providers and backups live here.`,
     },
   };
   return {
