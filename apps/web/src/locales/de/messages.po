@@ -21196,3 +21196,8 @@ msgstr "Daten an diesem Ort werden in dieser Zeitzone gelesen."
 #: src/routes/_app/settings.location.$id.general.tsx
 msgid "New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates."
 msgstr "Neue Beträge verwenden standardmäßig diese Währung. Bestehende Beträge behalten ihre Währung; umgerechnete Summen benötigen Konto → Wechselkurse."
+
+#: src/routes/_app/p.$id.tsx
+#: src/components/things/thing-screen.tsx
+msgid "Back to {0}"
+msgstr "Zurück zu {0}"

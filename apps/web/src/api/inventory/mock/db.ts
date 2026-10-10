@@ -118,7 +118,13 @@ export function placePath(inv: InventoryState, placeId: string | null): PathStep
   const seen = new Set<string>();
   while (cur && !seen.has(cur.id)) {
     seen.add(cur.id);
-    out.unshift({ id: cur.id, name: cur.name, kind: 'place', isUnplaced: cur.isUnplaced });
+    out.unshift({
+      id: cur.id,
+      name: cur.name,
+      kind: 'place',
+      isUnplaced: cur.isUnplaced,
+      shortCode: cur.shortCode,
+    });
     cur = inv.places.find((p) => p.id === cur?.parentId);
   }
   return out;

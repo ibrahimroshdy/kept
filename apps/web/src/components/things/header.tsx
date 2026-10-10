@@ -16,6 +16,7 @@ import { Pill } from '@/components/page';
 import { usePlaceName } from '@/components/places/labels';
 import { StatusPill } from '@/components/status-pill';
 import { TypeIcon } from '@/components/type-icon';
+import { addressOf } from '@/lib/address';
 import { sep, useFormat } from '@/lib/format';
 import { useLocationName } from '@/lib/labels';
 import { cn } from '@/lib/utils';
@@ -59,7 +60,12 @@ export function ThingPath({ path, usually = false }: { path: PathStep[]; usually
             <li>
               <Link
                 to={step.kind === 'container' ? '/t/$id' : '/p/$id'}
-                params={{ id: step.id }}
+                params={{
+                  id:
+                    step.kind === 'container'
+                      ? step.id
+                      : addressOf({ id: step.id, shortCode: step.shortCode }),
+                }}
                 className="underline-offset-2 hover:underline"
               >
                 <bdi>{placeName(step)}</bdi>

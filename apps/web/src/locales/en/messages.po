@@ -21196,3 +21196,8 @@ msgstr "Dates in this location read in this zone."
 #: src/routes/_app/settings.location.$id.general.tsx
 msgid "New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates."
 msgstr "New amounts default to this. Existing amounts keep theirs; converted totals need Account → Exchange rates."
+
+#: src/routes/_app/p.$id.tsx
+#: src/components/things/thing-screen.tsx
+msgid "Back to {0}"
+msgstr "Back to {0}"
