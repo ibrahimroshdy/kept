@@ -12,8 +12,9 @@ export default defineConfig({
     // Hooks clone a database from the run's template and open pools (test/db.ts), and some tests
     // run the CLI in a subprocess (a full migration). Alone each is well under vitest's defaults
     // (10 s hooks, 5 s tests); with other runs on the same machine and Postgres they passed them.
-    // A real hang still fails.
-    hookTimeout: 30_000,
+    // A loaded machine stalls hooks too, so they get the same headroom as the tests. A real hang
+    // still fails.
+    hookTimeout: 60_000,
     testTimeout: 20_000,
   },
 });

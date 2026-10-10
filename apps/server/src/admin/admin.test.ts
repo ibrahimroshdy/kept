@@ -143,8 +143,10 @@ describe('actions on an account (D165), each audited and mailed (D180)', () => {
     expect(res.statusCode).toBe(204);
     expect((await call(t, '/api/v1/me', { as: bob })).statusCode).toBe(401);
     expect((await signIn(bob.email)).statusCode).toBe(403);
-    await vi.waitFor(() =>
-      expect(adminMail()).toEqual([{ kind: 'admin-action', to: bob.email, action: 'disabled' }]),
+    await vi.waitFor(
+      () =>
+        expect(adminMail()).toEqual([{ kind: 'admin-action', to: bob.email, action: 'disabled' }]),
+      { timeout: 10_000 },
     );
     expect(await instanceAudit()).toEqual([
       { action: 'admin.user_disable', actor_id: admin.userId, entity_id: bob.userId },
@@ -196,10 +198,12 @@ describe('actions on an account (D165), each audited and mailed (D180)', () => {
     // A plain password sign-in works again, with no challenge.
     const back = await signIn(bob.email);
     expect(back.json()).not.toHaveProperty('twoFactorRedirect');
-    await vi.waitFor(() =>
-      expect(adminMail()).toEqual([
-        { kind: 'admin-action', to: bob.email, action: 'two-factor-reset' },
-      ]),
+    await vi.waitFor(
+      () =>
+        expect(adminMail()).toEqual([
+          { kind: 'admin-action', to: bob.email, action: 'two-factor-reset' },
+        ]),
+      { timeout: 10_000 },
     );
     expect(await instanceAudit()).toEqual([
       { action: 'admin.user_reset_2fa', actor_id: admin.userId, entity_id: bob.userId },
@@ -220,7 +224,7 @@ describe('actions on an account (D165), each audited and mailed (D180)', () => {
     });
     expect(self.statusCode).toBe(204);
     expect((await call(t, '/api/v1/me', { as: admin })).statusCode).toBe(401);
-    await vi.waitFor(() => expect(adminMail()).toHaveLength(1));
+    await vi.waitFor(() => expect(adminMail()).toHaveLength(1), { timeout: 10_000 });
     expect(adminMail()[0]).toMatchObject({ to: bob.email, action: 'signed-out-everywhere' });
     expect((await instanceAudit()).map((e) => e.action)).toEqual([
       'admin.user_sign_out_everywhere',
@@ -371,11 +375,13 @@ describe('instance admins', () => {
       ).statusCode,
     ).toBe(404);
 
-    await vi.waitFor(() =>
-      expect(adminMail()).toEqual([
-        { kind: 'admin-action', to: bob.email, action: 'instance-admin-granted' },
-        { kind: 'admin-action', to: admin.email, action: 'instance-admin-revoked' },
-      ]),
+    await vi.waitFor(
+      () =>
+        expect(adminMail()).toEqual([
+          { kind: 'admin-action', to: bob.email, action: 'instance-admin-granted' },
+          { kind: 'admin-action', to: admin.email, action: 'instance-admin-revoked' },
+        ]),
+      { timeout: 10_000 },
     );
     expect((await instanceAudit()).map((e) => e.action)).toEqual([
       'admin.instance_admin_grant',
