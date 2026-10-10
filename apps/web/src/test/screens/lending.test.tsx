@@ -40,8 +40,8 @@ describe('the lending list', () => {
   it('marks the drill returned in one tap, with Undo', async () => {
     const { user, mock } = await renderApp('/lending');
     const drill = within(await screen.findByRole('article', { name: DRILL }));
-    await user.click(drill.getByRole('button', { name: `Mark ${DRILL} returned` }));
-    expect(await screen.findByText(`${DRILL} is back`)).toBeInTheDocument();
+    await user.click(drill.getByRole('button', { name: `Mark \u2068${DRILL}\u2069 returned` }));
+    expect(await screen.findByText(`\u2068${DRILL}\u2069 is back`)).toBeInTheDocument();
     const loan = mock.state.household.loans.find((l) => l.id === H.loan.drill);
     await waitFor(() => expect(loan?.returnedAt).toBeTruthy());
     await user.click(screen.getByRole('button', { name: 'Undo' }));
@@ -69,7 +69,9 @@ describe('the lending list', () => {
   it('a borrowed thing has no reminder to copy', async () => {
     await renderApp('/lending');
     const ladder = within(await screen.findByRole('article', { name: LADDER }));
-    expect(ladder.getByRole('button', { name: `Mark ${LADDER} returned` })).toBeInTheDocument();
+    expect(
+      ladder.getByRole('button', { name: `Mark \u2068${LADDER}\u2069 returned` }),
+    ).toBeInTheDocument();
     expect(ladder.queryByRole('button', { name: 'More' })).toBeNull();
   });
 
