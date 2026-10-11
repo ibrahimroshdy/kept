@@ -34,7 +34,9 @@ function VehiclesPage() {
           </Trans>
         </EmptyState>
       ) : (
-        <VehiclesList />
+        <div data-tour="vehicles">
+          <VehiclesList />
+        </div>
       )}
     </Page>
   );

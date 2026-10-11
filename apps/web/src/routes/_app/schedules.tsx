@@ -189,54 +189,56 @@ function SchedulesPage() {
               </Trans>
             </p>
           ) : null}
-          <ListSurface<Schedule>
-            label={t`Schedules`}
-            search={{ label: t`Search schedules`, placeholder: t`Search by name or thing` }}
-            filters={filters}
-            surface="schedules"
-            sorts={[
-              { value: 'due', label: t`Due`, kind: 'due' },
-              { value: 'name', label: t`Name` },
-            ]}
-            groups={[
-              { value: 'none', label: t`None` },
-              { value: 'location', label: t`Location`, short: t`by location` },
-              { value: 'subject', label: t`Thing or place`, short: t`by thing or place` },
-            ]}
-            query={ordered}
-            getKey={(s) => s.id}
-            groupOf={(s, by) =>
-              by === 'location'
-                ? { key: s.locationId, label: <bdi>{nameOf(s.locationId)}</bdi> }
-                : by === 'subject'
-                  ? {
-                      key: `${s.subject.type}:${s.subject.id}`,
-                      label: (
-                        <bdi>
-                          {s.subject.path
-                            ? `${s.subject.path} › ${s.subject.name}`
-                            : s.subject.name}
-                        </bdi>
-                      ),
-                    }
-                  : null
-            }
-            renderRow={(s) => (
-              <ScheduleRowView
-                schedule={s}
-                onOpen={(action, schedule) => setOpen({ action, schedule })}
-                showLocation={withModule.length > 1 ? nameOf(s.locationId) : undefined}
-              />
-            )}
-            empty={
-              <EmptyState icon={<ScheduleIcon />} title={<Trans>Nothing scheduled</Trans>}>
-                <Trans>
-                  Add a service or a check that comes round, like the boiler every year or the car
-                  every 10,000 km, and Kept reminds you before it's due.
-                </Trans>
-              </EmptyState>
-            }
-          />
+          <div data-tour="schedules">
+            <ListSurface<Schedule>
+              label={t`Schedules`}
+              search={{ label: t`Search schedules`, placeholder: t`Search by name or thing` }}
+              filters={filters}
+              surface="schedules"
+              sorts={[
+                { value: 'due', label: t`Due`, kind: 'due' },
+                { value: 'name', label: t`Name` },
+              ]}
+              groups={[
+                { value: 'none', label: t`None` },
+                { value: 'location', label: t`Location`, short: t`by location` },
+                { value: 'subject', label: t`Thing or place`, short: t`by thing or place` },
+              ]}
+              query={ordered}
+              getKey={(s) => s.id}
+              groupOf={(s, by) =>
+                by === 'location'
+                  ? { key: s.locationId, label: <bdi>{nameOf(s.locationId)}</bdi> }
+                  : by === 'subject'
+                    ? {
+                        key: `${s.subject.type}:${s.subject.id}`,
+                        label: (
+                          <bdi>
+                            {s.subject.path
+                              ? `${s.subject.path} › ${s.subject.name}`
+                              : s.subject.name}
+                          </bdi>
+                        ),
+                      }
+                    : null
+              }
+              renderRow={(s) => (
+                <ScheduleRowView
+                  schedule={s}
+                  onOpen={(action, schedule) => setOpen({ action, schedule })}
+                  showLocation={withModule.length > 1 ? nameOf(s.locationId) : undefined}
+                />
+              )}
+              empty={
+                <EmptyState icon={<ScheduleIcon />} title={<Trans>Nothing scheduled</Trans>}>
+                  <Trans>
+                    Add a service or a check that comes round, like the boiler every year or the car
+                    every 10,000 km, and Kept reminds you before it's due.
+                  </Trans>
+                </EmptyState>
+              }
+            />
+          </div>
         </>
       )}
 

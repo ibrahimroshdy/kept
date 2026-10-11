@@ -69,36 +69,39 @@ function ActivityPage() {
 
   return (
     <Page title={t`Activity`} wide>
-      <ListSurface<HistoryEvent>
-        label={t`Activity`}
-        search={{ label: t`Search activity`, placeholder: t`Search activity` }}
-        filters={filters}
-        surface="activity"
-        query={query}
-        getKey={(e) => e.id}
-        renderRow={(e: HistoryEvent) => (
-          <>
-            {dayOf.get(e.id) ? <DayHeading>{dayOf.get(e.id)}</DayHeading> : null}
-            <EventRow
-              event={e}
-              linkEntity
-              locationName={oneLocation || all.length < 2 ? null : locationName(e.location_id)}
-            />
-          </>
-        )}
-        empty={
-          <EmptyState icon={<ActivityIcon />} title={<Trans>Nothing has happened yet</Trans>}>
-            <Trans>
-              Every addition, move and edit in the locations you belong to shows here, newest first.
-            </Trans>
-          </EmptyState>
-        }
-        noMatch={
-          <EmptyState icon={<ActivityIcon />} title={<Trans>No activity matches</Trans>}>
-            <Trans>Try other words, another person, kind or date, or clear a filter.</Trans>
-          </EmptyState>
-        }
-      />
+      <div data-tour="activity">
+        <ListSurface<HistoryEvent>
+          label={t`Activity`}
+          search={{ label: t`Search activity`, placeholder: t`Search activity` }}
+          filters={filters}
+          surface="activity"
+          query={query}
+          getKey={(e) => e.id}
+          renderRow={(e: HistoryEvent) => (
+            <>
+              {dayOf.get(e.id) ? <DayHeading>{dayOf.get(e.id)}</DayHeading> : null}
+              <EventRow
+                event={e}
+                linkEntity
+                locationName={oneLocation || all.length < 2 ? null : locationName(e.location_id)}
+              />
+            </>
+          )}
+          empty={
+            <EmptyState icon={<ActivityIcon />} title={<Trans>Nothing has happened yet</Trans>}>
+              <Trans>
+                Every addition, move and edit in the locations you belong to shows here, newest
+                first.
+              </Trans>
+            </EmptyState>
+          }
+          noMatch={
+            <EmptyState icon={<ActivityIcon />} title={<Trans>No activity matches</Trans>}>
+              <Trans>Try other words, another person, kind or date, or clear a filter.</Trans>
+            </EmptyState>
+          }
+        />
+      </div>
     </Page>
   );
 }

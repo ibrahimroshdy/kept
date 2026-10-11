@@ -136,7 +136,7 @@ function Home() {
               </Link>
             }
           >
-            <div className="grid gap-2.5">
+            <div className="grid gap-2.5" data-tour="home-locations">
               {all.map((l) => (
                 <LocationCard key={l.id} location={l} counts={counts.get(l.id)} />
               ))}
@@ -218,9 +218,11 @@ function FirstRun({
         </LinkButton>
       </div>
       <Section title={<Trans>Locations</Trans>}>
-        {locations.map((l) => (
-          <LocationCard key={l.id} location={l} counts={counts.get(l.id)} />
-        ))}
+        <div data-tour="home-locations" className="grid gap-2">
+          {locations.map((l) => (
+            <LocationCard key={l.id} location={l} counts={counts.get(l.id)} />
+          ))}
+        </div>
       </Section>
       <Section title={<Trans>Or</Trans>}>
         <div className="flex items-start gap-3 rounded-[10px] border border-line bg-surface p-3.5">

@@ -21213,3 +21213,92 @@ msgstr "اطبع ملصقات QR للصناديق والأرفف. امسح وا�
 #: src/components/hints/hint-copy.ts
 msgid "Locations, members, AI providers and backups live here."
 msgstr "المواقع والأعضاء ومزودو الذكاء الاصطناعي والنسخ الاحتياطية هنا."
+
+#. placeholder {0}: ids.length
+#: src/components/hints/tour-keep.tsx
+msgid "{0, plural, one {The tour added # item to your library.} other {The tour added # items to your library.}}"
+msgstr "{0, plural, zero {لم تضف الجولة أي عنصر إلى مكتبتك.} one {أضافت الجولة عنصرًا واحدًا إلى مكتبتك.} two {أضافت الجولة عنصرين إلى مكتبتك.} few {أضافت الجولة # عناصر إلى مكتبتك.} many {أضافت الجولة # عنصرًا إلى مكتبتك.} other {أضافت الجولة # عنصر إلى مكتبتك.}}"
+
+#: src/components/hints/tour-keep.tsx
+msgid "{failures, plural, one {# added item couldn't be removed. Check your connection and try Discard again, or Keep it.} other {# added items couldn't be removed. Check your connection and try Discard again, or Keep them.}}"
+msgstr "{failures, plural, zero {تعذرت إزالة العناصر المضافة. تحقق من اتصالك وحاول التجاهل مجددًا، أو أبق عليها.} one {تعذرت إزالة العنصر المضاف. تحقق من اتصالك وحاول التجاهل مجددًا، أو أبق عليه.} two {تعذرت إزالة العنصرين المضافين. تحقق من اتصالك وحاول التجاهل مجددًا، أو أبق عليهما.} few {تعذرت إزالة # عناصر مضافة. تحقق من اتصالك وحاول التجاهل مجددًا، أو أبق عليها.} many {تعذرت إزالة # عنصرًا مضافًا. تحقق من اتصالك وحاول التجاهل مجددًا، أو أبق عليها.} other {تعذرت إزالة # عنصر مضاف. تحقق من اتصالك وحاول التجاهل مجددًا، أو أبق عليها.}}"
+
+#: src/components/hints/hint-copy.ts
+msgid "Every addition, move and edit, newest first. Search it when you want history."
+msgstr "كل إضافة ونقل وتعديل، الأحدث أولًا. ابحث فيه عندما تريد السجل."
+
+#: src/routes/_app/help.tsx
+msgid "Every section, one small thing in each, then keep or discard what you added. Replay it any time."
+msgstr "كل قسم، وشيء صغير في كل واحد، ثم أبق ما أضفت أو تجاهله. أعدها في أي وقت."
+
+#: src/components/hints/tour-keep.tsx
+msgid "Keep leaves everything where it is. Discard moves only what the tour added to Trash, where it waits 30 days before it's gone for good. Your activity history stays either way."
+msgstr "الإبقاء يترك كل شيء في مكانه. التجاهل ينقل فقط ما أضافته الجولة إلى المهملات، حيث يبقى 30 يومًا قبل حذفه نهائيًا. سجل نشاطك يبقى في الحالتين."
+
+#: src/components/hints/tour-keep.tsx
+msgid "Keep what you added?"
+msgstr "الاحتفاظ بما أضفته؟"
+
+#: src/components/hints/hint-copy.ts
+msgid "Locations, members, AI and backups live here. Look around: nothing changes unless you change it."
+msgstr "المواقع والأعضاء والذكاء الاصطناعي والنسخ الاحتياطية هنا. تفقّدها: لا يتغير شيء ما لم تغيّره بنفسك."
+
+#: src/components/hints/hint-copy.ts
+msgid "Name it and create it. At the end you keep it, or discard it."
+msgstr "سمّه وأنشئه. في النهاية تُبقيه أو تتجاهله."
+
+#: src/components/hints/hint-copy.ts
+msgid "Open \"Label everything unprinted\" to see its label. Print it only if you want to stick one on now."
+msgstr "افتح «اطبع ملصقات كل ما لم يُطبع له ملصق» لرؤية ملصقه. اطبعه فقط إذا أردت لصق واحد الآن."
+
+#: src/components/hints/hint-copy.ts
+msgid "Open a document to read it. The ones running out are one tap away."
+msgstr "افتح مستندًا لقراءته. التي توشك على الانتهاء على بُعد نقرة."
+
+#: src/components/hints/hint-copy.ts
+msgid "Open a loan to see what's out, who has it, and what's overdue."
+msgstr "افتح إعارة لرؤية ما هو مُعار، ومن لديه، وما تأخر."
+
+#: src/components/hints/hint-copy.ts
+msgid "Open a schedule to see what's due next. A new one starts here too."
+msgstr "افتح جدولًا لرؤية ما يستحق تاليًا. جدول جديد يبدأ من هنا أيضًا."
+
+#: src/components/hints/hint-copy.ts
+msgid "Open a vehicle to see its odometer, what's due next, and its documents."
+msgstr "افتح مركبة لرؤية عدّاد المسافات وما يستحق تاليًا ومستنداتها."
+
+#: src/components/hints/hint-copy.ts
+msgid "Open something low and adjust its stock after you use some."
+msgstr "افتح شيئًا منخفض المخزون وعدّل مخزونه بعد استخدام بعضه."
+
+#: src/components/hints/hint-copy.ts
+msgid "Open the item, check what Kept suggests, and confirm it. Confirming files it into its place."
+msgstr "افتح العنصر، وراجع ما يقترحه Kept، وأكّده. التأكيد يحفظه في مكانه."
+
+#: src/components/hints/hint-copy.ts
+msgid "Reminders land here. Open one to act on it, or change what you're told about."
+msgstr "التذكيرات تصل هنا. افتح واحدًا للتصرف بشأنه، أو غيّر ما تُبلَّغ به."
+
+#: src/components/hints/hint-copy.ts
+msgid "Take a photo of one thing, or add it from your gallery instead. It lands in your Inbox."
+msgstr "التقط صورة لشيء واحد، أو أضفه من معرض الصور بدلًا من ذلك. سيصل إلى الوارد."
+
+#: src/components/hints/hint-copy.ts
+msgid "That's every section. Anything you added along the way, you can keep or discard."
+msgstr "هذه كل الأقسام. أي شيء أضفته في الطريق، يمكنك إبقاؤه أو تجاهله."
+
+#: src/components/hints/hint-copy.ts
+msgid "This is where it landed. Open one of its places to see what's inside it."
+msgstr "هنا استقر. افتح أحد أماكنه لرؤية ما بداخله."
+
+#: src/components/hints/hint-copy.ts
+msgid "Trashed things wait here for 30 days. Restore one to put it back."
+msgstr "المهملات تبقى هنا 30 يومًا. استعد واحدًا لإرجاعه."
+
+#: src/components/hints/hint-copy.ts
+msgid "Type the thing's name in the box above and open it from the results."
+msgstr "اكتب اسم الشيء في المربع أعلاه وافتحه من النتائج."
+
+#: src/components/hints/hint-copy.ts
+msgid "What needs you is at the top. Open one of your locations to see its places and things."
+msgstr "ما يحتاجك في الأعلى. افتح أحد مواقعك لرؤية أماكنه وأشيائه."

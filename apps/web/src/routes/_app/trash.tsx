@@ -72,24 +72,26 @@ function TrashPage() {
           trashed by mistake.
         </Trans>
       </Notice>
-      <ListSurface<TrashItem>
-        label={t`Trash`}
-        search={{ label: t`Search the trash`, placeholder: t`Search by name` }}
-        filters={filters}
-        surface="trash"
-        query={query}
-        getKey={(item) => `${item.kind}:${item.id}`}
-        renderRow={(item) => (
-          <TrashRow item={item} location={all.find((l) => l.id === item.locationId)} />
-        )}
-        empty={
-          <EmptyState icon={<TrashIcon />} title={<Trans>The trash is empty</Trans>}>
-            <Trans>
-              What you trash waits here for 30 days, so a slip of the finger is never final.
-            </Trans>
-          </EmptyState>
-        }
-      />
+      <div data-tour="trash">
+        <ListSurface<TrashItem>
+          label={t`Trash`}
+          search={{ label: t`Search the trash`, placeholder: t`Search by name` }}
+          filters={filters}
+          surface="trash"
+          query={query}
+          getKey={(item) => `${item.kind}:${item.id}`}
+          renderRow={(item) => (
+            <TrashRow item={item} location={all.find((l) => l.id === item.locationId)} />
+          )}
+          empty={
+            <EmptyState icon={<TrashIcon />} title={<Trans>The trash is empty</Trans>}>
+              <Trans>
+                What you trash waits here for 30 days, so a slip of the finger is never final.
+              </Trans>
+            </EmptyState>
+          }
+        />
+      </div>
     </Page>
   );
 }

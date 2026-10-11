@@ -21,7 +21,9 @@ function InboxPage() {
   const offline = useOffline();
   return (
     <Page title={t`Inbox`} wide>
-      <InboxList local={offline?.store ?? null} />
+      <div data-tour="inbox-items">
+        <InboxList local={offline?.store ?? null} />
+      </div>
     </Page>
   );
 }

@@ -180,7 +180,9 @@ function LocationBody({ location }: { location: LocationDetail }) {
         canEdit={canEdit}
       />
 
-      <PlaceTree places={places} />
+      <div data-tour="location-places">
+        <PlaceTree places={places} />
+      </div>
 
       {/* D155: the whole home's documents (the lease, the insurance), while Paperwork is on. */}
       {(location.effectiveModules ?? location.modules).includes('paperwork') ? (

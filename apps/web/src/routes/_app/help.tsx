@@ -9,7 +9,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { type ReactNode, useRef, useState } from 'react';
 import { useHome } from '@/api/inventory/queries';
 import { ShortcutRecipeSheet } from '@/components/connections/shortcut-recipe';
-import { useShowMeAround } from '@/components/hints/tour';
+import { useGuidedTour } from '@/components/hints/tour';
 import { useChecklistDismissed } from '@/components/home/checklist';
 import { InstallSheet } from '@/components/home/install-sheet';
 import {
@@ -29,7 +29,7 @@ export const Route = createFileRoute('/_app/help')({ component: HelpPage });
 
 function HelpPage() {
   const { t } = useLingui();
-  const tour = useShowMeAround();
+  const tour = useGuidedTour();
   const startRef = useRef<HTMLButtonElement>(null);
   const [install, setInstall] = useState(false);
   const [recipe, setRecipe] = useState(false);
@@ -37,7 +37,7 @@ function HelpPage() {
     <Page title={t`Help`}>
       <Section title={<Trans>Find your way around</Trans>}>
         <List>
-          <li>
+          <li data-tour="help-tour">
             <Row
               leading={
                 <IconTile>
@@ -46,7 +46,10 @@ function HelpPage() {
               }
               title={<Trans>Show me around</Trans>}
               subtitle={
-                <Trans>A short look at Home, Capture, Inbox and Search. Replay it any time.</Trans>
+                <Trans>
+                  Every section, one small thing in each, then keep or discard what you added.
+                  Replay it any time.
+                </Trans>
               }
               trailing={
                 <Button
