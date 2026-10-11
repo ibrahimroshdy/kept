@@ -100,6 +100,14 @@
   border-color: transparent;
 }
 
+/* Primary hover darkens like the app's own buttons (brightness-95): without this the generic
+ * footer-btn hover above (higher specificity) flips Next/Got it to sunken gray on hover. */
+.kept-hint .driver-popover-footer-btn:last-child:hover,
+.kept-tour .driver-popover-next-btn:hover {
+  background-color: var(--amber);
+  filter: brightness(0.95);
+}
+
 .kept-tour .driver-popover-navigation-btns {
   gap: 8px;
 }
