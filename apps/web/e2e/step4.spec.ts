@@ -1023,7 +1023,9 @@ test('email and push: Louis turns on warranties by email, the digest reaches Mai
     .toBe(true);
   await page.getByRole('button', { name: /Daily digest/ }).click();
   await page.getByRole('option', { name: '23:30' }).click();
-  await expect(page.getByRole('button', { name: 'Save', exact: true })).toBeEnabled({ timeout: 5000 });
+  await expect(page.getByRole('button', { name: 'Save', exact: true })).toBeEnabled({
+    timeout: 5000,
+  });
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await expect(page.getByText('Saved', { exact: true }).first()).toBeVisible();
   await axe(page, 'Notifications settings, saved');
