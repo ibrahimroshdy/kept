@@ -20,7 +20,7 @@
   <a href="https://github.com/ibrahimroshdy/kept/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/ibrahimroshdy/kept?sort=semver&display_name=tag&style=flat-square&label=release&labelColor=55524C&color=F0B03A"></a>
   <a href="https://github.com/ibrahimroshdy/kept/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/ibrahimroshdy/kept/ci.yml?branch=main&style=flat-square&label=ci&labelColor=55524C"></a>
   <a href="LICENSE"><img alt="Licence: AGPL-3.0" src="https://img.shields.io/badge/licence-AGPL--3.0-F0B03A?style=flat-square&labelColor=55524C"></a>
-  <a href="https://ibrahimroshdy.com/kept/"><img alt="Documentation" src="https://img.shields.io/badge/docs-ibrahimroshdy.com%2Fkept-F0B03A?style=flat-square&labelColor=55524C"></a>
+  <a href="https://keptinventory.info/"><img alt="Documentation" src="https://img.shields.io/badge/docs-keptinventory.info-F0B03A?style=flat-square&labelColor=55524C&label=docs"></a>
   <a href="https://github.com/users/ibrahimroshdy/packages/container/package/kept"><img alt="Container image: ghcr.io/ibrahimroshdy/kept" src="https://img.shields.io/badge/image-ghcr.io%2Fibrahimroshdy%2Fkept-F0B03A?style=flat-square&labelColor=55524C"></a>
   <a href="CONTRIBUTING.md#sign-the-cla-once-and-sign-off-every-commit"><img alt="CLA and DCO sign-off" src="https://img.shields.io/badge/CLA%20%2B%20DCO-sign--off-F0B03A?style=flat-square&labelColor=55524C"></a>
 </p>
@@ -49,7 +49,7 @@ default, and the AI provider is yours to choose.
   insurance report; reminders in the app, by mail, by push and in a calendar feed.
 - **Vehicles and machines.** Readings, services, fuel and running costs.
 - **AI assistant and MCP server.** Ask in plain words; changes wait for your OK. Claude and other
-  AI agents connect at `/mcp` ([how](https://ibrahimroshdy.com/kept/users/mcp-clients/)).
+  AI agents connect at `/mcp` ([how](https://keptinventory.info/users/mcp-clients/)).
 - **Backups you can read.** Nightly restic backups to a directory, S3 or SFTP, each with a copy
   that opens in a browser without Kept; imports from Homebox and CSV, full exports.
 - **Five languages:** English, Arabic (right to left), French, German and Italian. Installs on a
@@ -78,18 +78,18 @@ docker compose logs kept | grep "KEPT SETUP CODE"
 Open `KEPT_PUBLIC_URL`, enter the setup code and create the first account: it becomes the instance
 admin. The camera, installing the app, push and location need HTTPS:
 `docker compose --profile https up -d` adds Caddy with a certificate for `KEPT_DOMAIN`. The
-[install guide](https://ibrahimroshdy.com/kept/install/compose/) covers each step and keeping the
-keys; [verify the image's signature](https://ibrahimroshdy.com/kept/admin/verify-release/) before
+[install guide](https://keptinventory.info/install/compose/) covers each step and keeping the
+keys; [verify the image's signature](https://keptinventory.info/admin/verify-release/) before
 you run it.
 
 ## Links
 
 | | |
 |---|---|
-| Documentation | [ibrahimroshdy.com/kept](https://ibrahimroshdy.com/kept/) |
-| Install | [Docker Compose](https://ibrahimroshdy.com/kept/install/compose/), [HTTPS](https://ibrahimroshdy.com/kept/install/https/), [Kubernetes](https://ibrahimroshdy.com/kept/install/kubernetes/) (Helm chart in [`charts/kept`](charts/kept/)), [configuration](https://ibrahimroshdy.com/kept/reference/configuration/) |
-| API | [HTTP API reference](https://ibrahimroshdy.com/kept/api/), generated from the OpenAPI document |
-| MCP | [Connect an AI client](https://ibrahimroshdy.com/kept/users/mcp-clients/) |
+| Documentation | [keptinventory.info](https://keptinventory.info/) |
+| Install | [Docker Compose](https://keptinventory.info/install/compose/), [HTTPS](https://keptinventory.info/install/https/), [Kubernetes](https://keptinventory.info/install/kubernetes/) (Helm chart in [`charts/kept`](charts/kept/)), [configuration](https://keptinventory.info/reference/configuration/) |
+| API | [HTTP API reference](https://keptinventory.info/api/), generated from the OpenAPI document |
+| MCP | [Connect an AI client](https://keptinventory.info/users/mcp-clients/) |
 | Contributing | [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Security | [SECURITY.md](SECURITY.md): report privately, never in a public issue |
 | Changelog | [CHANGELOG.md](CHANGELOG.md) |
