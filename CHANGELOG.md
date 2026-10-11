@@ -3,6 +3,12 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.0.3 (2026-10-11)
+
+### Features
+
+- **web:** full interactive guided tour with Keep/Discard (#21) (74d9fca)
+
 ## 1.0.2 (2026-10-10)
 
 ### Features
