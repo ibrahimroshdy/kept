@@ -237,7 +237,7 @@ function LocationLabels({ location, name }: { location: LocationDetail; name: st
   const s = fmt.num(sheetCount);
   return (
     <Section title={<bdi>{name}</bdi>}>
-      <List>
+      <List data-tour="labels-print">
         <LinkRow
           icon={<PrinterIcon />}
           title={<Trans>Label everything unprinted</Trans>}

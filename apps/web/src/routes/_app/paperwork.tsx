@@ -135,37 +135,39 @@ function PaperworkPage() {
         </LinkButton>
       }
     >
-      <ListSurface<PaperworkRow>
-        label={t`Paperwork`}
-        search={{
-          label: t`Search your paperwork`,
-          placeholder: t`A word inside, or what it's for`,
-        }}
-        filters={filters}
-        surface="paperwork"
-        layouts={[
-          { value: 'list', label: t`List` },
-          { value: 'grid', label: t`Grid`, short: t`grid` },
-        ]}
-        tiles={grid}
-        query={query}
-        getKey={(r) => `${r.attachment.id}:${r.expiring?.id ?? ''}`}
-        renderRow={(r) => (grid ? <PaperworkTile row={r} /> : <PaperworkListRow row={r} />)}
-        empty={
-          <EmptyState icon={<DocumentIcon />} title={<Trans>No paperwork yet</Trans>}>
-            {withPaperwork.length === 0 ? (
-              <Trans>
-                Paperwork is off in every location. An admin turns it on in What to track.
-              </Trans>
-            ) : (
-              <Trans>
-                Receipts, manuals and warranty cards added to things, and the lease or insurance
-                added to a location or a room, all show here.
-              </Trans>
-            )}
-          </EmptyState>
-        }
-      />
+      <div data-tour="paperwork">
+        <ListSurface<PaperworkRow>
+          label={t`Paperwork`}
+          search={{
+            label: t`Search your paperwork`,
+            placeholder: t`A word inside, or what it's for`,
+          }}
+          filters={filters}
+          surface="paperwork"
+          layouts={[
+            { value: 'list', label: t`List` },
+            { value: 'grid', label: t`Grid`, short: t`grid` },
+          ]}
+          tiles={grid}
+          query={query}
+          getKey={(r) => `${r.attachment.id}:${r.expiring?.id ?? ''}`}
+          renderRow={(r) => (grid ? <PaperworkTile row={r} /> : <PaperworkListRow row={r} />)}
+          empty={
+            <EmptyState icon={<DocumentIcon />} title={<Trans>No paperwork yet</Trans>}>
+              {withPaperwork.length === 0 ? (
+                <Trans>
+                  Paperwork is off in every location. An admin turns it on in What to track.
+                </Trans>
+              ) : (
+                <Trans>
+                  Receipts, manuals and warranty cards added to things, and the lease or insurance
+                  added to a location or a room, all show here.
+                </Trans>
+              )}
+            </EmptyState>
+          }
+        />
+      </div>
     </Page>
   );
 }

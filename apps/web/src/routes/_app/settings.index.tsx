@@ -52,7 +52,10 @@ function MePage() {
     <Page title={t`Settings`}>
       <SettingsTabs />
       {user ? (
-        <div className="flex items-center gap-3 rounded-[10px] border border-line bg-surface p-3.5">
+        <div
+          data-tour="settings-main"
+          className="flex items-center gap-3 rounded-[10px] border border-line bg-surface p-3.5"
+        >
           <Avatar name={user.displayName} />
           <div className="grid min-w-0 flex-1 gap-0.5">
             <div className="font-semibold text-[16px]">{user.displayName}</div>

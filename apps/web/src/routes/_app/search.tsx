@@ -57,17 +57,19 @@ function SearchPage() {
 
   return (
     <Page title={t`Search`} fill>
-      <FilterStrip
-        filters={filters}
-        surface="search"
-        search={{
-          label: t`Search everything`,
-          placeholder: t`Name, brand, serial or ID`,
-          large: true,
-          autoFocus: true,
-          onCommit: (q) => remember(q),
-        }}
-      />
+      <div data-tour="search-field">
+        <FilterStrip
+          filters={filters}
+          surface="search"
+          search={{
+            label: t`Search everything`,
+            placeholder: t`Name, brand, serial or ID`,
+            large: true,
+            autoFocus: true,
+            onCommit: (q) => remember(q),
+          }}
+        />
+      </div>
 
       {!list.q && recent.length ? (
         // biome-ignore lint/a11y/useSemanticElements: a row of shortcut buttons

@@ -173,43 +173,45 @@ function LendingPage() {
               </Trans>
             </p>
           ) : null}
-          <ListSurface<LoanRow>
-            label={t`Loans`}
-            search={{ label: t`Search loans`, placeholder: t`Search by thing or person` }}
-            filters={filters}
-            surface="lending"
-            sorts={[
-              { value: 'due', label: t`Due`, kind: 'due' },
-              { value: 'since', label: t`Since`, kind: 'date' },
-              { value: 'name', label: t`Name` },
-            ]}
-            groups={[
-              { value: 'none', label: t`None` },
-              { value: 'person', label: t`Person`, short: t`by person` },
-              { value: 'location', label: t`Location`, short: t`by location` },
-            ]}
-            query={ordered}
-            getKey={(l) => l.id}
-            groupOf={(l, by) =>
-              by === 'person'
-                ? { key: l.person.id, label: <bdi>{l.person.name}</bdi> }
-                : by === 'location'
-                  ? {
-                      key: l.thing.locationId,
-                      label: <bdi>{names.get(l.thing.locationId) ?? ''}</bdi>,
-                    }
-                  : null
-            }
-            renderRow={(l) => <LoanRowView loan={l} />}
-            empty={
-              <EmptyState icon={<HandoffIcon />} title={<Trans>Nothing lent or borrowed</Trans>}>
-                <Trans>
-                  Lend a thing from its page, and it shows here with who has it and when it's due
-                  back.
-                </Trans>
-              </EmptyState>
-            }
-          />
+          <div data-tour="lending">
+            <ListSurface<LoanRow>
+              label={t`Loans`}
+              search={{ label: t`Search loans`, placeholder: t`Search by thing or person` }}
+              filters={filters}
+              surface="lending"
+              sorts={[
+                { value: 'due', label: t`Due`, kind: 'due' },
+                { value: 'since', label: t`Since`, kind: 'date' },
+                { value: 'name', label: t`Name` },
+              ]}
+              groups={[
+                { value: 'none', label: t`None` },
+                { value: 'person', label: t`Person`, short: t`by person` },
+                { value: 'location', label: t`Location`, short: t`by location` },
+              ]}
+              query={ordered}
+              getKey={(l) => l.id}
+              groupOf={(l, by) =>
+                by === 'person'
+                  ? { key: l.person.id, label: <bdi>{l.person.name}</bdi> }
+                  : by === 'location'
+                    ? {
+                        key: l.thing.locationId,
+                        label: <bdi>{names.get(l.thing.locationId) ?? ''}</bdi>,
+                      }
+                    : null
+              }
+              renderRow={(l) => <LoanRowView loan={l} />}
+              empty={
+                <EmptyState icon={<HandoffIcon />} title={<Trans>Nothing lent or borrowed</Trans>}>
+                  <Trans>
+                    Lend a thing from its page, and it shows here with who has it and when it's due
+                    back.
+                  </Trans>
+                </EmptyState>
+              }
+            />
+          </div>
         </>
       )}
     </Page>

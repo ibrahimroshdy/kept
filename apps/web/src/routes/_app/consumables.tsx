@@ -22,7 +22,9 @@ function ConsumablesPage() {
   const { t } = useLingui();
   return (
     <Page title={t`Consumables`} wide>
-      <StockList />
+      <div data-tour="consumables">
+        <StockList />
+      </div>
     </Page>
   );
 }

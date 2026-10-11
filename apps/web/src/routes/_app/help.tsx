@@ -37,7 +37,7 @@ function HelpPage() {
     <Page title={t`Help`}>
       <Section title={<Trans>Find your way around</Trans>}>
         <List>
-          <li>
+          <li data-tour="help-tour">
             <Row
               leading={
                 <IconTile>
