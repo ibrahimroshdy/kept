@@ -263,7 +263,11 @@ describe('GET /api/v1/things/:id/history: redaction per viewer (D110)', () => {
       class: 'secret',
       label: 'Parental PIN',
     });
-    expect(JSON.stringify(e)).not.toMatch(/350|12000|14500/);
+    // Exact stored key-plus-value pairs: a bare /350/ also matches random hex ids (an actor
+    // id ending ...1350f6 tripped this), so only a real leak can fail these.
+    expect(JSON.stringify(e)).not.toContain('"after":"350');
+    expect(JSON.stringify(e)).not.toContain('"before":"12000"');
+    expect(JSON.stringify(e)).not.toContain('"after":"14500"');
 
     await own('UPDATE public.locations SET money_visible_to_viewers = true WHERE id = $1', [
       home.id,
