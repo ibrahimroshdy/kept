@@ -1,17 +1,13 @@
 /**
- * "Show me around" (D138): a short driver.js tour over Home → Capture → Inbox → Search, then
- * More, Labels and Settings, started from Help and replayable there. It never starts on launch.
+ * The full guided tour (D138): started from Help ("Show me around") and replayable there, it
+ * navigates for real through every section — Home, Capture, Inbox, one location's detail,
+ * Search, Labels, every More entry that exists for this person, Settings — and finishes on
+ * Help, asking Keep or Discard when the run added anything. It never starts on launch.
  *
- * Each stop is the navigation element that leads there, marked `data-tour="<stop>"`: the tab bar
- * on a phone, the sidebar and the top bar from 768 px (components/app-shell.tsx, page.tsx). The
- * first one on screen is used; a stop with none (no Inbox for a viewer everywhere, no Labels
- * tab on a phone, no More entry on desktop) is skipped.
+ * Each section is the destination control to point at, marked `data-tour="<anchor>"` (More
+ * rows carry their section's destination anchor so the phone resolves them). The first anchor
+ * on screen is used; a section with none (module off, viewer with no Inbox) is skipped.
  * Finishing or closing it records `help.tour_seen`. While it runs no hint shows.
- *
- * The full guided tour below (GUIDED_SECTIONS) replaces nav keys with sections: an id, the route
- * to navigate to, and the `data-tour` anchor of the destination control (one per section, added
- * where missing). The navigate-then-highlight engine lands in a later task; until then the
- * short tour above still runs. A section with no anchor on screen skips via the `findStop` rule.
  */
 
 import type { ModuleId } from '@kept/shared';
@@ -25,21 +21,11 @@ import { inventoryApi } from '@/api/inventory/queries';
 import { deleteLocation, listLocations } from '@/api/locations';
 import { keys, useLocations } from '@/api/queries';
 import type { Shown } from './driver-kit';
-import { type TourStop, useGuidedTourCopy, useTourCopy } from './hint-copy';
+import { useGuidedTourCopy, useTourCopy } from './hint-copy';
 import { pageIsRtl, prefersReducedMotion } from './placement';
 import { TourKeepHost } from './tour-keep';
 import { type TourDeleter, tourLedger } from './tour-ledger';
 import { hintSlot, useMarkHint } from './use-hint';
-
-export const TOUR_STOPS: readonly TourStop[] = [
-  'home',
-  'capture',
-  'inbox',
-  'search',
-  'more',
-  'labels',
-  'settings',
-];
 
 /**
  * One section of the full guided tour: the route to navigate to and the destination control to
@@ -114,59 +100,6 @@ const SECTION_BY_NAV_KEY: Readonly<Record<string, string>> = { help: 'finish' };
 export function guidedAnchorForNavKey(navKey: string): string | undefined {
   const id = SECTION_BY_NAV_KEY[navKey] ?? navKey;
   return GUIDED_SECTIONS.find((s) => s.id === id)?.anchor;
-}
-
-/** The stop's element on screen: the first `[data-tour]` match that has a box. */
-export function findStop(stop: TourStop, root: ParentNode = document): Element | null {
-  const all = [...root.querySelectorAll(`[data-tour="${stop}"]`)];
-  const shown = all.find((el) => el.getClientRects().length > 0);
-  if (shown) return shown;
-  // A document without layout (jsdom) has no boxes at all: take the first match.
-  return document.body.getClientRects().length === 0 ? (all[0] ?? null) : null;
-}
-
-let current: Shown | null = null;
-
-/** `start()` runs the tour; `running` is true until it ends. */
-export function useShowMeAround() {
-  const copy = useTourCopy();
-  const mark = useMarkHint();
-  const [running, setRunning] = useState(false);
-  const start = useCallback(
-    async (returnFocus?: HTMLElement | null): Promise<boolean> => {
-      const steps = TOUR_STOPS.flatMap((stop) => {
-        const element = findStop(stop);
-        return element ? [{ element, ...copy.stops[stop] }] : [];
-      });
-      if (steps.length === 0) return false;
-      current?.destroy();
-      hintSlot.take('tour');
-      setRunning(true);
-      try {
-        const kit = await import('./driver-kit');
-        current = kit.runTour({
-          steps,
-          rtl: pageIsRtl(),
-          reducedMotion: prefersReducedMotion(),
-          labels: copy.labels,
-          returnFocus: returnFocus ?? null,
-          onEnd: () => {
-            current = null;
-            hintSlot.release('tour');
-            setRunning(false);
-            void mark('help.tour_seen', { seen: true });
-          },
-        });
-        return true;
-      } catch {
-        hintSlot.release('tour');
-        setRunning(false);
-        return false;
-      }
-    },
-    [copy, mark],
-  );
-  return { start, running };
 }
 
 // ----- the full guided tour's navigate-then-highlight engine -----
@@ -575,7 +508,6 @@ export function useGuidedTour() {
         if (!run.alive || run.dialogOpen) return;
         if (run.expectPath !== null && toLocation.pathname !== run.expectPath) endTour(run);
       });
-      current?.destroy();
       hintSlot.take('tour');
       tourLedger.clear();
       setRunning(true);

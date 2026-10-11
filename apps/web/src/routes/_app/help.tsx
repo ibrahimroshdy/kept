@@ -46,7 +46,10 @@ function HelpPage() {
               }
               title={<Trans>Show me around</Trans>}
               subtitle={
-                <Trans>A short look at Home, Capture, Inbox and Search. Replay it any time.</Trans>
+                <Trans>
+                  Every section, one small thing in each, then keep or discard what you added.
+                  Replay it any time.
+                </Trans>
               }
               trailing={
                 <Button

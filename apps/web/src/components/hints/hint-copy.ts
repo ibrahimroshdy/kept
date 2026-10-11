@@ -1,5 +1,5 @@
 /**
- * The words of every first-use hint and of "Show me around" (D138), in one place. driver.js
+ * The words of every first-use hint and of the full guided tour (D138), in one place. driver.js
  * writes them with `innerHTML` (spike V18), so they are Kept's own translated constants only:
  * no name, place or anything a person typed ever goes into a hint. A caller names the hint by
  * its key; it can't pass text.
@@ -38,8 +38,6 @@ export function useHintCopy(): Record<FirstUseHint, HintCopy> & { gotIt: string 
     },
   };
 }
-
-export type TourStop = 'home' | 'capture' | 'inbox' | 'search' | 'more' | 'labels' | 'settings';
 
 /**
  * The full guided tour's instruction copy (one entry per GUIDED_SECTIONS id in
@@ -122,41 +120,11 @@ export function useGuidedTourCopy(): Record<string, HintCopy> {
   };
 }
 
+/** The tour popover's own buttons and progress, shared by the guided engine. */
 export function useTourCopy() {
   const { t } = useLingui();
   const f = useFormat();
-  const stops: Record<TourStop, HintCopy> = {
-    home: {
-      title: t`Home`,
-      description: t`What needs you comes first, then your locations and what's in them.`,
-    },
-    capture: {
-      title: t`Capture`,
-      description: t`Photograph things, receipts, labels and meter readings, one after another. It works without a connection too.`,
-    },
-    inbox: {
-      title: t`Inbox`,
-      description: t`Captures that need a decision wait here: a name to check, a receipt to link, a possible duplicate.`,
-    },
-    search: {
-      title: t`Search`,
-      description: t`Find anything by its name, its place, or what else it's called. On a phone it also works offline.`,
-    },
-    more: {
-      title: t`More`,
-      description: t`Your locations and everything else: vehicles, paperwork, settings and help.`,
-    },
-    labels: {
-      title: t`Labels`,
-      description: t`Print QR labels for boxes and shelves. Scan one and its place opens.`,
-    },
-    settings: {
-      title: t`Settings`,
-      description: t`Locations, members, AI providers and backups live here.`,
-    },
-  };
   return {
-    stops,
     labels: {
       next: t`Next`,
       previous: t`Previous`,
