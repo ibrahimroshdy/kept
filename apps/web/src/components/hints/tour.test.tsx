@@ -587,6 +587,33 @@ describe('useGuidedTour', () => {
   );
 
   it(
+    'goes back over a runtime-skipped section without re-waiting',
+    async () => {
+      const { user } = await renderTour({ anchors: { schedules: null } });
+      const copy = await guidedCopyOf('en');
+      await startTour();
+      for (const section of GUIDED_SECTIONS.slice(0, 7)) {
+        const dialog = await screen.findByRole('dialog', { name: titleOf(copy, section.id) });
+        await user.click(within(dialog).getByRole('button', { name: 'Next' }));
+      }
+      // Schedules has no anchor: skipped after its wait; the tour shows Lending.
+      const lending = await screen.findByRole(
+        'dialog',
+        { name: titleOf(copy, 'lending') },
+        { timeout: 8000 },
+      );
+      expect(lending).toHaveTextContent('8 of 16');
+      await user.click(within(lending).getByRole('button', { name: 'Back' }));
+      // Back jumps the known-skipped Schedules: Vehicles shows without another 3 s wait
+      // (a regressed Back would still be waiting out the anchor bound past this timeout).
+      expect(
+        await screen.findByRole('dialog', { name: titleOf(copy, 'vehicles') }, { timeout: 2500 }),
+      ).toHaveTextContent('7 of 16');
+    },
+    ENGINE_TIMEOUT,
+  );
+
+  it(
     'skips the write sections for a viewer everywhere, with consistent progress',
     async () => {
       const { user, router } = await renderTour({

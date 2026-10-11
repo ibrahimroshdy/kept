@@ -218,6 +218,8 @@ type GuidedRun = {
   /** Shown at least once, for progress that counts shown sections. */
   shown: boolean[];
   shownAny: boolean;
+  /** Skipped for a missing anchor on an earlier pass: Back/Skip jump over these. */
+  skipped: Set<number>;
   highlight: Shown | null;
   /** A programmatic destroy is coming: its onEnd is the engine's own echo, not the person. */
   muteOnEnd: boolean;
@@ -227,8 +229,35 @@ type GuidedRun = {
   expectPath: string | null;
   stopWatching: (() => void) | null;
   stopArrows: (() => void) | null;
+  /** The step-button watcher while the popover animates in: dropped on every move. */
+  stepObserver: MutationObserver | null;
+  stepTimer: number | null;
   returnFocus: HTMLElement | null;
 };
+
+/** Drop the step-button watcher: its popover is gone on every move and at teardown. */
+function clearStepWatcher(run: GuidedRun): void {
+  run.stepObserver?.disconnect();
+  run.stepObserver = null;
+  if (run.stepTimer !== null) {
+    window.clearTimeout(run.stepTimer);
+    run.stepTimer = null;
+  }
+}
+
+/** The nearest section before `i` that wasn't skipped for a missing anchor. */
+function backTo(run: GuidedRun, i: number): number {
+  let j = i - 1;
+  while (j > 0 && run.skipped.has(j)) j -= 1;
+  return j;
+}
+
+/** The nearest section after `i` that wasn't skipped for a missing anchor. */
+function forwardTo(run: GuidedRun, i: number): number {
+  let j = i + 1;
+  while (j < run.sections.length && run.skipped.has(j)) j += 1;
+  return j;
+}
 
 /**
  * The step's Back and Skip-section buttons. driver.js only knows Next/Previous/Close, and a
@@ -281,13 +310,28 @@ function injectStepButtons(
     }
     return true;
   };
+  // The last step's watcher, if it never placed, dies with this move.
+  clearStepWatcher(run);
   if (place()) return;
   // The popover animates in: watch for it briefly, then give up (Done/Close still work).
+  // Stashed on the run so a fast Back/Skip/close drops it with the stale popover.
   const mo = new MutationObserver(() => {
-    if (place()) mo.disconnect();
+    if (!place()) return;
+    mo.disconnect();
+    if (run.stepObserver !== mo) return;
+    run.stepObserver = null;
+    if (run.stepTimer !== null) {
+      window.clearTimeout(run.stepTimer);
+      run.stepTimer = null;
+    }
   });
+  run.stepObserver = mo;
   mo.observe(document.body, { childList: true, subtree: true });
-  window.setTimeout(() => mo.disconnect(), 1500);
+  run.stepTimer = window.setTimeout(() => {
+    run.stepTimer = null;
+    mo.disconnect();
+    if (run.stepObserver === mo) run.stepObserver = null;
+  }, 1500);
 }
 
 /** `start()` runs the full guided tour; `running` is true until it ends. */
@@ -304,6 +348,7 @@ export function useGuidedTour() {
   const runRef = useRef<GuidedRun | null>(null);
 
   const destroyHighlight = (run: GuidedRun) => {
+    clearStepWatcher(run);
     if (!run.highlight) return;
     run.muteOnEnd = true;
     try {
@@ -387,6 +432,8 @@ export function useGuidedTour() {
       endTour(run);
       return 'ended';
     }
+    // Known-unshown from an earlier pass: jump it without another navigate and anchor wait.
+    if (run.skipped.has(i)) return step(run, i + 1);
     const section = run.sections[i];
     // Unreachable (callers stay in range), but a skip beats a crash.
     if (!section) return step(run, i + 1);
@@ -395,12 +442,18 @@ export function useGuidedTour() {
     try {
       await navigate({ to: section.to as never, params: section.params as never });
     } catch {
-      if (live()) return step(run, i + 1);
+      if (live()) {
+        run.skipped.add(i);
+        return step(run, i + 1);
+      }
       return 'ended';
     }
     const el = await waitForSectionAnchor(section.anchor);
     if (!live()) return 'ended';
-    if (!el) return step(run, i + 1);
+    if (!el) {
+      run.skipped.add(i);
+      return step(run, i + 1);
+    }
     run.shown[i] = true;
     run.shownAny = true;
     // Progress counts shown sections: everything displayed up to and including this one.
@@ -434,10 +487,10 @@ export function useGuidedTour() {
     injectStepButtons(run, seq, {
       back: i > 0,
       onBack: () => {
-        if (run.alive) void step(run, i - 1);
+        if (run.alive) void step(run, backTo(run, i));
       },
       onSkip: () => {
-        if (run.alive) void step(run, i + 1);
+        if (run.alive) void step(run, forwardTo(run, i));
       },
       backLabel: t`Back`,
       skipLabel: t`Skip`,
@@ -455,7 +508,7 @@ export function useGuidedTour() {
         const forward = (e.key === 'ArrowRight') !== pageIsRtl();
         if (!forward && i === 0) return;
         e.preventDefault();
-        void step(run, forward ? i + 1 : i - 1);
+        void step(run, forward ? forwardTo(run, i) : backTo(run, i));
       };
       window.addEventListener('keydown', onKey);
       run.stopArrows = () => window.removeEventListener('keydown', onKey);
@@ -492,6 +545,7 @@ export function useGuidedTour() {
         sections,
         shown: sections.map(() => false),
         shownAny: false,
+        skipped: new Set<number>(),
         highlight: null,
         muteOnEnd: false,
         dialog: null,
@@ -499,6 +553,8 @@ export function useGuidedTour() {
         expectPath: router.state.location.pathname,
         stopWatching: null,
         stopArrows: null,
+        stepObserver: null,
+        stepTimer: null,
         returnFocus: returnFocus ?? null,
       };
       runRef.current = run;

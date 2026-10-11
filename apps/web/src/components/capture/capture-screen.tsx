@@ -988,7 +988,6 @@ export function CaptureScreen({
         data-tour="capture-shutter"
         className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3.5 pt-3 pb-[max(1.125rem,env(safe-area-inset-bottom))]"
       >
-        {' '}
         <GalleryImport icon={<GalleryIcon />} onFiles={(f) => takeFiles(f, false)} />
         {cam.state === 'problem' ? (
           <FilePick
