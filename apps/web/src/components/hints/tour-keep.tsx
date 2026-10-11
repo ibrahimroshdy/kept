@@ -7,10 +7,14 @@
  * behind instead of claiming cleanup it didn't do. A full Discard finishes through `onKeep`,
  * so the engine marks `help.tour_seen`, clears the ledger and closes on one path.
  */
+
+import { I18nProvider } from '@lingui/react';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
+import { I18nProvider as AriaI18nProvider } from 'react-aria-components';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogFooter, Modal } from '@/components/ui/dialog';
+import { i18n } from '@/i18n/i18n';
 import { discardLedger, type TourDeleter, type TourLedgerEntry } from './tour-ledger';
 
 export function TourKeepDialog({
@@ -28,9 +32,15 @@ export function TourKeepDialog({
   const { t } = useLingui();
   const [discarding, setDiscarding] = useState(false);
   const [failures, setFailures] = useState(0);
-  // What this dialog already removed: a retry after a partial failure skips these instead of
-  // deleting them twice (the second delete would fail — they're already gone).
+  // What this dialog already removed, by kind and id: a retry after a partial failure skips
+  // these instead of deleting them twice (the second delete would fail — they're already
+  // gone). A new run brings a new `ids` array and starts over (see below).
   const gone = useRef<Set<string>>(new Set());
+  const prevIds = useRef(ids);
+  if (prevIds.current !== ids) {
+    prevIds.current = ids;
+    gone.current = new Set();
+  }
 
   if (ids.length === 0) return null;
 
@@ -39,10 +49,11 @@ export function TourKeepDialog({
     setFailures(0);
     try {
       const result = await discardLedger(async (kind, id) => {
-        if (gone.current.has(id)) return;
+        const key = `${kind}:${id}`;
+        if (gone.current.has(key)) return;
         await onDiscard(kind, id);
+        gone.current.add(key);
       });
-      for (const id of result.discarded) gone.current.add(id);
       if (result.kept.length === 0) onKeep();
       else setFailures(result.kept.length);
     } finally {
@@ -86,5 +97,28 @@ export function TourKeepDialog({
         </DialogFooter>
       </Dialog>
     </Modal>
+  );
+}
+
+/**
+ * The Keep/Discard dialog with its own providers, for the tour engine's detached mount. The
+ * engine shows it at the end of a run from wherever the tour happens to be, so it cannot rely
+ * on the page above it: Lingui reads the app's shared `i18n` (already on this run's locale).
+ */
+export function TourKeepHost({
+  ids,
+  onKeep,
+  onDiscard,
+}: {
+  ids: readonly TourLedgerEntry[];
+  onKeep: () => void;
+  onDiscard: TourDeleter;
+}) {
+  return (
+    <I18nProvider i18n={i18n}>
+      <AriaI18nProvider locale={i18n.locale}>
+        <TourKeepDialog ids={ids} onKeep={onKeep} onDiscard={onDiscard} />
+      </AriaI18nProvider>
+    </I18nProvider>
   );
 }

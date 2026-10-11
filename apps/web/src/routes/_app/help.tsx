@@ -9,7 +9,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { type ReactNode, useRef, useState } from 'react';
 import { useHome } from '@/api/inventory/queries';
 import { ShortcutRecipeSheet } from '@/components/connections/shortcut-recipe';
-import { useShowMeAround } from '@/components/hints/tour';
+import { useGuidedTour } from '@/components/hints/tour';
 import { useChecklistDismissed } from '@/components/home/checklist';
 import { InstallSheet } from '@/components/home/install-sheet';
 import {
@@ -29,7 +29,7 @@ export const Route = createFileRoute('/_app/help')({ component: HelpPage });
 
 function HelpPage() {
   const { t } = useLingui();
-  const tour = useShowMeAround();
+  const tour = useGuidedTour();
   const startRef = useRef<HTMLButtonElement>(null);
   const [install, setInstall] = useState(false);
   const [recipe, setRecipe] = useState(false);

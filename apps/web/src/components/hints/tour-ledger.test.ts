@@ -31,13 +31,22 @@ describe('tourLedger', () => {
     expect(tourLedger.list()).toEqual([]);
   });
 
+  it('hands out copies: touching the list never reaches the ledger', () => {
+    tourLedger.record('thing', 't1');
+    const listed = tourLedger.list();
+    for (const entry of listed) entry.id = 'changed';
+    (listed as unknown[]).push({ kind: 'thing', id: 'ghost' });
+    expect(tourLedger.list()).toEqual([{ kind: 'thing', id: 't1' }]);
+  });
+
   it('discards in reverse order and reports the failure', async () => {
     tourLedger.record('capture', 'c1');
     tourLedger.record('thing', 't1');
     const calls: string[] = [];
-    const result = await discardLedger(async (_kind, id) => {
+    const failing = failOn('t1');
+    const result = await discardLedger(async (kind, id) => {
       calls.push(id);
-      if (id === 't1') throw new Error('offline');
+      return failing(kind, id);
     });
     expect(calls).toEqual(['t1', 'c1']);
     expect(result.discarded).toEqual(['c1']);
@@ -54,10 +63,17 @@ describe('tourLedger', () => {
 
   it('never deletes ids outside the ledger', async () => {
     tourLedger.record('thing', 't1');
-    const deleter = vi.fn(async (_kind: TourLedgerKind, _id: string) => {});
+    // Never recorded: pre-existing data the tour didn't create.
+    const outside = 'pre-existing';
+    const calls: string[] = [];
+    const deleter = vi.fn(async (_kind: TourLedgerKind, id: string) => {
+      calls.push(id);
+    });
     await discardLedger(deleter);
     expect(deleter).toHaveBeenCalledTimes(1);
     expect(deleter).toHaveBeenCalledWith('thing', 't1');
+    expect(calls).toEqual(['t1']);
+    expect(calls).not.toContain(outside);
   });
 
   it('discards an empty ledger with nothing to report', async () => {

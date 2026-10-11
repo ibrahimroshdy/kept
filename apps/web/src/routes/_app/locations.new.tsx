@@ -14,6 +14,8 @@ import { createLocation } from '@/api/locations';
 import { keys } from '@/api/queries';
 import type { LocationKind } from '@/api/types';
 import { StepCounter } from '@/components/auth-frame';
+import { tourLedger } from '@/components/hints/tour-ledger';
+import { hintSlot } from '@/components/hints/use-hint';
 import { InfoIcon, LockIcon, PlusIcon, XIcon } from '@/components/icons';
 import { KindIcon } from '@/components/kind-icon';
 import { Notice, Page, useErrorText } from '@/components/page';
@@ -68,6 +70,8 @@ function NewLocation() {
         currency,
       }),
     onSuccess: async (created) => {
+      // A location made mid-tour belongs to the run: Keep/Discard offers it at the end.
+      if (hintSlot.get() === 'tour') tourLedger.record('location', created.id);
       await qc.invalidateQueries({ queryKey: keys.locations });
       const createdName = created.name;
       toast({ title: t`${createdName} is ready`, tone: 'ok' });
@@ -145,7 +149,7 @@ function NewLocation() {
       </div>
 
       {step === 1 ? (
-        <div className="grid gap-5">
+        <div className="grid gap-5" data-tour="new-location-name">
           <h2 className="m-0 font-semibold text-[22px] leading-tight">
             <Trans>What's this place called?</Trans>
           </h2>

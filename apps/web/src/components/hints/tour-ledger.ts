@@ -29,7 +29,8 @@ export const tourLedger = {
     entries.push({ kind, id });
   },
   list(): readonly TourLedgerEntry[] {
-    return [...entries];
+    // Copies: the finish dialog reads this once, and nothing it does may reach back in.
+    return entries.map((e) => ({ ...e }));
   },
   clear(): void {
     entries.length = 0;

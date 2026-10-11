@@ -65,6 +65,12 @@ export function useGuidedTourCopy(): Record<string, HintCopy> {
       title: t`Location`,
       description: t`This is where it landed. Open one of its places to see what's inside it.`,
     },
+    // An empty household has no location to open: this step stands in for the location detail
+    // and its copy is the micro-action. The title reuses the existing "New location" entry.
+    'new-location': {
+      title: t`New location`,
+      description: t`Name it and create it. At the end you keep it, or discard it.`,
+    },
     search: {
       title: t`Search`,
       description: t`Type the thing's name in the box above and open it from the results.`,
