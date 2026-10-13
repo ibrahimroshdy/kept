@@ -72,8 +72,12 @@ async function newCar(name = 'Corolla'): Promise<Car> {
   return { id: thing.id, meterId: ((thing.meters as { id: string }[])[0] as { id: string }).id };
 }
 
+// `days` calendar days before today in the locations' zone (Cairo), at `hour` UTC. Counting from
+// the UTC date instead is a day off between midnight and 03:00 in Cairo, when the dates differ.
 const daysAgo = (days: number, hour = 9) => {
-  const at = new Date(Date.now() - days * 86_400_000);
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo' }).format(new Date());
+  const at = new Date(`${today}T00:00:00Z`);
+  at.setUTCDate(at.getUTCDate() - days);
   at.setUTCHours(hour, 0, 0, 0);
   return at.toISOString();
 };

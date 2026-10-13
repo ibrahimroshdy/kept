@@ -142,7 +142,13 @@ export function vehiclesOf(state: MockState): VehiclesState {
 
 const DAY_MS = 86_400_000;
 const ago = (days: number) => new Date(Date.now() - days * DAY_MS).toISOString();
-const cairo = (days = 0) => localDate('Africa/Cairo', new Date(Date.now() + days * DAY_MS));
+/** Cairo's date `days` calendar days from today. Adding days × 24 h instead lands a day short
+ * just after midnight when the clocks go back in between (Egypt's DST ends late October). */
+const cairo = (days = 0) => {
+  const d = new Date(`${localDate('Africa/Cairo')}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+};
 const actor = (displayName: string): ActorRef => ({ displayName });
 
 /**
