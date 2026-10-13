@@ -1,4 +1,10 @@
 <style>
+.a3 .rgrid{position:absolute;inset:0;z-index:10;background:rgba(15,14,13,.95);padding:56px 16px 16px;display:grid;align-content:start;gap:10px}
+.a3 .rgrid h4{margin:0;color:#F2EFE9;font:600 18px/1.3 var(--sans)}
+.a3 .rgrid p{margin:0;color:#BDB7AC;font:400 13.5px/1.45 var(--sans)}
+.a3 .rg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.a3 .rg span{display:grid;place-items:center;min-height:56px;border-radius:12px;background:#1E1C19;border:1px solid #34302A;color:#F2EFE9;font:600 14.5px/1.2 var(--sans);text-align:center;padding:6px}
+.a3 .rg span.u{color:#BDB7AC;font-weight:500}
 .a3 figure{margin:0}
 .a3 .ic{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .a3 .pill .ic{stroke-width:2.4}
@@ -257,6 +263,55 @@
         </div>
       </div>
       <figcaption class="frame-cap">Capture · phone · THING mode · camera chrome is dark in every theme. Place chip suggested by position on the device (D153); offline count per D17/D36; "+ photo to this thing" adds to the last draft (D19).</figcaption>
+    </figure>
+
+<figure id="f-capture-first">
+      <div class="phone cam t-dark" style="position:relative" role="img" aria-label="Phone: the first capture into a new home with AI off: Which room are you in? over the camera">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="ctop">
+          <div class="crow">
+            <button class="place" type="button"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><use href="#a3-pin"/></svg><span class="grow">Home › Unplaced<span class="sub">Tap to change</span></span><svg class="ic" width="18" height="18" viewBox="0 0 24 24"><use href="#a3-chev"/></svg></button>
+            <button class="done" type="button">Done</button>
+          </div>
+          <div class="crow">
+            <span class="ccount">0 captured</span>
+            <span></span>
+          </div>
+        </div>
+        <div class="vf">
+          <svg class="scene" viewBox="0 0 333 380" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="333" height="380" fill="#1C1A17"/>
+            <rect x="18" width="12" height="330" fill="#2A2722"/><rect x="303" width="12" height="330" fill="#2A2722"/>
+            <rect x="12" y="118" width="309" height="9" fill="#34302A"/><rect x="12" y="262" width="309" height="9" fill="#34302A"/>
+            <rect x="44" y="52" width="92" height="66" rx="2" fill="#2B2722"/><path d="M44 70h92" stroke="#221F1B" stroke-width="3"/>
+            <rect x="150" y="72" width="64" height="46" rx="2" fill="#29251F"/><rect x="226" y="40" width="62" height="78" rx="2" fill="#2E2A24"/>
+            <rect x="48" y="208" width="60" height="54" rx="3" fill="#2A2621"/>
+            <circle cx="166" cy="212" r="34" fill="none" stroke="#3E3A33" stroke-width="12"/><circle cx="166" cy="212" r="11" fill="#2C2924"/><path d="M198 228c16 8 22 20 18 34" stroke="#3E3A33" stroke-width="4" fill="none"/>
+            <rect x="252" y="178" width="28" height="84" rx="12" fill="#3A2B28"/><rect x="258" y="166" width="16" height="14" rx="3" fill="#2E2A24"/>
+            <rect y="330" width="333" height="50" fill="#151412"/>
+            <path d="M114 164v-14h14M204 150h14v14M218 262v14h-14M128 276h-14v-14" stroke="#F2EFE9" stroke-opacity=".85" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          </svg>
+          
+        </div>
+        <div class="namef"><span class="grow">Name</span><button class="mic" type="button" aria-label="Dictate a name"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-mic"/></svg></button></div>
+        <div class="modes" role="radiogroup" aria-label="Capture mode">
+          <button type="button" role="radio" aria-checked="true">Thing</button>
+          <button type="button" role="radio" aria-checked="false">Receipt</button>
+          <button type="button" role="radio" aria-checked="false">Label</button>
+          <button type="button" role="radio" aria-checked="false">Reading</button>
+        </div>
+        <div class="shut">
+          <button class="cside l" type="button"><span class="ring"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-gal"/></svg></span>Gallery</button>
+          <button class="shutter" type="button" aria-label="Take photo: new thing"><i></i></button>
+          <button class="cside r" type="button"><span class="ring"><svg class="ic" width="22" height="22" viewBox="0 0 24 24"><use href="#a3-plus"/></svg></span>+ photo to this thing</button>
+        </div>
+        <section class="rgrid" aria-label="Which room are you in?">
+          <h4>Which room are you in?</h4>
+          <p>The first things in Home go where you choose. You can change it any time from the place at the top.</p>
+          <div class="rg"><span>Living room</span><span>Kitchen</span><span>Bedroom</span><span>Bathroom</span><span>Balcony</span><span>Another place</span><span class="u">Unplaced for now</span></div>
+        </section>
+      </div>
+      <figcaption class="frame-cap">Capture · phone · the first capture into a new home, with AI off (D194). The room grid covers the camera until a room is chosen: the home's rooms, then Another place (the place picker) and Unplaced for now; the choice becomes the place chip. With AI off the field is "Name", and a capture with no photo needs one; with AI on it reads "Name (optional)". Where AI is paused, a warning sits under the place chip: "AI paused until …" with the reason, then Resume now (who can), AI settings (a manager) or "Ask … to resume"; photos still save (D206).</figcaption>
     </figure>
 
 <!-- ===== 3. CAPTURE · RECEIPT ===== -->
@@ -542,7 +597,7 @@
           <aside class="sidebar">
         <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
         <nav class="nav">
-          <a href="#">Home</a><a class="on" href="#">Inbox <span class="count">15</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+          <a href="#">Home</a><a class="on" href="#">Inbox <span class="count">15</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a class="soon" aria-disabled="true">Insights <span class="soon-badge">Coming soon</span></a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
         </nav>
         <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
         <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
@@ -618,7 +673,7 @@
           <aside class="sidebar">
         <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
         <nav class="nav">
-          <a href="#">Home</a><a class="on" href="#">Inbox <span class="count">15</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+          <a href="#">Home</a><a class="on" href="#">Inbox <span class="count">15</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a class="soon" aria-disabled="true">Insights <span class="soon-badge">Coming soon</span></a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
         </nav>
         <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
         <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>

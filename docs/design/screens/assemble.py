@@ -30,6 +30,7 @@ AREAS = [
     ('07-import-ai.html', 'import-ai', 'Import & AI'),
     ('08-portability.html', 'portability', 'Import, export & consumables'),
     ('09-operations.html', 'operations', 'Backups, status & this device'),
+    ('10-help-tour.html', 'help-tour', 'More, Help & the tour'),
 ]
 
 # id: (sidebar title, from, next). A from/next entry is a frame id or plain words (an entry point).
@@ -44,12 +45,14 @@ FRAMES = {
     'f-newloc-track': ('New location: what to track', ['f-newloc-rooms'], ['f-home-owner']),
     'f-home-owner': ('Home with Get started', ['f-newloc-track', 'Tab bar: Home'], ['f-install', 'f-capture', 'f-labels', 'f-ai-key', 'f-invite']),
     'f-install': ('Install on your phone', ['f-home-owner'], ['f-home-owner']),
+    'f-home-cards': ('Home: paused AI, labels, invite', ['f-home-owner'], ['f-labels', 'f-reading', 'f-invite']),
     'f-home-dark': ('Home, checklist hidden', ['f-home-owner'], ['f-inbox', 'f-reading', 'f-notifs']),
     'f-home-ar': ('Home in Arabic', ['f-settings-me'], ['f-loc']),
     'f-home-desk': ('Home on a desktop', ['Sidebar: Home'], ['f-search-desk', 'f-loc-desk']),
     'f-setup-kit': ('Recovery kit', ['f-ai-key', 'f-admin'], ['f-admin']),
     # Capture, inbox & scan
     'f-capture': ('Capture: thing', ['Tab bar: Capture', 'f-home-owner'], ['f-capture-receipt', 'f-capture-label', 'f-capture-summary']),
+    'f-capture-first': ('First capture, AI off', ['f-newloc-track', 'Tab bar: Capture'], ['f-capture']),
     'f-capture-receipt': ('Capture: receipt', ['f-capture'], ['f-capture-summary']),
     'f-capture-label': ('A label in view', ['f-capture'], ['f-boxcheck', 'f-capture']),
     'f-capture-summary': ('Capture done, queued', ['f-capture'], ['f-sync']),
@@ -73,7 +76,8 @@ FRAMES = {
     'f-tray-scan': ('Tray: scan the destination', ['f-tray-pick'], ['f-tray-land']),
     'f-tray-land': ('Tray: landed, Undo', ['f-tray-scan'], ['f-loc']),
     'f-boxcheck': ('Box check', ['f-scan', 'f-capture-label', 'f-scan-claim'], ['f-thing']),
-    'f-labels': ('Print labels', ['f-home-owner', 'f-thing-menu', 'Sidebar or More: Labels'], ['f-labels-ok']),
+    'f-labels-hub': ('Labels', ['Sidebar or More: Labels'], ['f-labels']),
+    'f-labels': ('Print labels', ['f-labels-hub', 'f-home-owner', 'f-home-cards', 'f-thing-menu'], ['f-labels-ok']),
     'f-labels-ok': ('Printed OK?', ['f-labels'], ['f-labels', 'f-scan']),
     # Search & assistant
     'f-search': ('Search', ['Tab bar: Search'], ['f-thing', 'f-loc', 'f-scan']),
@@ -155,6 +159,11 @@ FRAMES = {
     'f-kit-reauth': ('Download the recovery kit', ['f-status-ops', 'f-backups-s3', 'f-setup-kit'], ['f-status-ops']),
     'f-device': ('This device', ['Settings → Me → This device'], ['f-lock-screen']),
     'f-lock-screen': ('Lock screen', ['Opening Kept', 'Five minutes away', 'f-device'], ['f-home-owner']),
+    # Help & the tour (1.0.3, reviewed 2026-10-13)
+    'f-more': ('More', ['Tab bar: More'], ['f-loc', 'f-labels-hub', 'f-help', 'f-settings-me']),
+    'f-help': ('Help', ['Sidebar: Help', 'f-more'], ['f-tour-step', 'f-home-owner', 'f-install']),
+    'f-tour-step': ('The tour: a step', ['f-help'], ['f-tour-keep']),
+    'f-tour-keep': ('The tour: keep or discard', ['f-tour-step'], ['f-home-owner']),
 }
 
 # ----------------------------------------------------------------------------------------------
