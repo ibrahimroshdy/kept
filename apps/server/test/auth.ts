@@ -6,6 +6,7 @@ import {
   type SecurityNoticeMail,
 } from '../src/auth/auth.js';
 import { authRequestHeaders } from '../src/auth/client-ip.js';
+import { revokeTokensOnClaim } from '../src/tokens/service.js';
 import type { TestDb } from './db.js';
 
 export const PUBLIC_URL = 'http://localhost:5173';
@@ -25,6 +26,7 @@ export function testAuth(db: TestDb, overrides: Partial<AuthDeps> = {}): TestAut
   const notices: SecurityNoticeMail[] = [];
   const auth = createAuth({
     pool: db.pools.auth,
+    revokeTokensOnClaim: (userId) => revokeTokensOnClaim(db.pools.system, userId),
     mail: {
       sendMagicLink: async (mail) => {
         mails.push(mail);

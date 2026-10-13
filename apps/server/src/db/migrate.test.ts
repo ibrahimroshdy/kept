@@ -284,6 +284,7 @@ const KEPT_FUNCTION_EXECUTE: Record<string, string[]> = {
   'kept.token_rate_hit(uuid,text,integer)': APP_ONLY,
   'kept.revoke_tokens_in(uuid,uuid,text)': OWNER_ONLY,
   'kept.revoke_tokens_for(uuid,uuid,text)': APP_AND_SYSTEM,
+  'kept.revoke_user_tokens(uuid,text)': SYSTEM_ONLY,
   'kept.membership_access_ended()': OWNER_ONLY,
   // Step 5 (0074): an extraction follows its photo onto a new attachment.
   'kept.guard_extraction_attachment()': OWNER_ONLY,

@@ -69,6 +69,9 @@ export type AuthDeps = {
   /** Mail is sent without awaiting (so a known and an unknown address answer alike); a send that
    * fails, and a failed onUserCreated, land here. */
   onBackgroundError?: (err: unknown, what: 'mail' | 'user-created') => void;
+  /** D197: a claim ends every token of the claimed account; main.ts runs
+   * kept.revoke_user_tokens() on kept_system. Absent: tokens are left alone. */
+  revokeTokensOnClaim?: (userId: string) => Promise<void>;
   /** Step 6 (T16): generic OIDC sign-in, when KEPT_OIDC_ISSUER is set and boot-time discovery
    * worked (auth/oidc.ts bootOidc). Absent: no OIDC provider at all. */
   oidc?: AuthOidc | null;
@@ -228,7 +231,7 @@ export function createAuth(deps: AuthDeps) {
       // D197: a reset on an unverified address claims the account for the mailbox's owner.
       onPasswordReset: async ({ user }) => {
         if (!user.emailVerified && !isUndeliverableEmail(user.email)) {
-          await claimUnverifiedAccount(pool, user.id);
+          await claimUnverifiedAccount(pool, user.id, null, deps.revokeTokensOnClaim);
           notify(user, 'unverified-account-reset');
           return;
         }
@@ -356,6 +359,7 @@ export function createAuth(deps: AuthDeps) {
         pool,
         notify,
         enrolmentNeedsVerifiedEmail: deps.enrolmentNeedsVerifiedEmail ?? false,
+        ...(deps.revokeTokensOnClaim ? { revokeTokensOnClaim: deps.revokeTokensOnClaim } : {}),
         getSession: (headers) => {
           if (!lookup) throw new Error('auth instance not initialised');
           return lookup(headers);

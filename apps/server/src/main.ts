@@ -40,6 +40,7 @@ import { packageRoot } from './package-root.js';
 import { ensureSetupCode, setupCodeLine } from './setup/setup-code.js';
 import { createFileStorage } from './storage/create.js';
 import { syncCursorKey } from './sync/cursor.js';
+import { revokeTokensOnClaim } from './tokens/service.js';
 import { tokenHashKey } from './tokens/verify.js';
 import { setWebhookFanout } from './webhooks/fanout.js';
 
@@ -300,6 +301,7 @@ export async function startKept(env: Env, opts: StartOptions = {}): Promise<Runn
         mail: authMail(mailer),
         onUserCreated: accounts.onUserCreated,
         enrolmentNeedsVerifiedEmail: mail.configured,
+        revokeTokensOnClaim: (userId) => revokeTokensOnClaim(pools.system, userId),
         onBackgroundError: (err, what) =>
           logger.error({ err, what }, 'auth background task failed'),
       });

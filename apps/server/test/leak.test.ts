@@ -396,6 +396,8 @@ const FUNCTIONS: Record<string, { roles: string[]; definer: boolean }> = {
   'kept.token_oauth_grant(uuid,text,text,uuid[],text)': { roles: APP, definer: true },
   'kept.token_rate_hit(uuid,text,integer)': { roles: APP, definer: true },
   'kept.revoke_tokens_for(uuid,uuid,text)': { roles: BOTH, definer: true },
+  // (0109) D197's claim ends every token of the claimed account; the system only.
+  'kept.revoke_user_tokens(uuid,text)': { roles: SYS, definer: true },
   'kept.guard_token_location()': { roles: NOBODY, definer: true },
   'kept.token_last_location()': { roles: NOBODY, definer: true },
   'kept.membership_access_ended()': { roles: NOBODY, definer: true },

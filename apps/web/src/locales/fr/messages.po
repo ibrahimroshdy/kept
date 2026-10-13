@@ -21306,3 +21306,7 @@ msgstr "Tapez une partie du nom d'une chose ci-dessus. Chaque résultat montre o
 #: src/components/hints/hint-copy.ts
 msgid "What needs you is at the top, your locations below it. Next takes you into one."
 msgstr "Ce qui vous attend est en haut, vos lieux en dessous. Suivant vous emmène dans l'un d'eux."
+
+#: src/components/connections/words.tsx
+msgid "Ended: the account was reclaimed"
+msgstr "Terminé : le compte a été récupéré"

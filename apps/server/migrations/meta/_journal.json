@@ -757,6 +757,20 @@
       "when": 1791929802170,
       "tag": "0107_orphan_purge_keeps_queued_uploads",
       "breakpoints": true
+    },
+    {
+      "idx": 108,
+      "version": "7",
+      "when": 1791930200855,
+      "tag": "0108_token_reason_account_claimed",
+      "breakpoints": true
+    },
+    {
+      "idx": 109,
+      "version": "7",
+      "when": 1791930206831,
+      "tag": "0109_tokens_end_with_the_account",
+      "breakpoints": true
     }
   ]
 }

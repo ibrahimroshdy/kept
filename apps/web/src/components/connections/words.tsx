@@ -43,6 +43,8 @@ export function useRevokedWords() {
           return t`Revoked by an admin`;
         case 'client_revoked':
           return t`Disconnected by the app`;
+        case 'account_claimed':
+          return t`Ended: the account was reclaimed`;
         default:
           return t`Revoked`;
       }
