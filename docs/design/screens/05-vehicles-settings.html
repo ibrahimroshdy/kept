@@ -263,7 +263,7 @@
       <aside class="sidebar">
         <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
         <nav class="nav">
-          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a class="on" href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a class="on" href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a class="soon" aria-disabled="true">Insights <span class="soon-badge">Coming soon</span></a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
         </nav>
         <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
         <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
@@ -429,43 +429,39 @@
       <button class="icon-btn" aria-label="Assistant"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-spark"/></svg></button>
     </div>
     <div class="content">
-      <div class="chips"><a class="chip on" href="#">Me</a><a class="chip" href="#">Locations</a><a class="chip" href="#">Account</a><a class="chip" href="#">AI</a><a class="chip" href="#">Import</a><a class="chip" href="#">Admin</a></div>
-      <div class="card" style="grid-template-columns:auto 1fr auto;align-items:center"><span class="av">I</span><div class="st"><span class="t" style="font-weight:600">Ibrahim</span><span class="xs">ibrahim@example.com · owner of Home, Garage and Storage unit</span></div><button class="btn secondary small" type="button">Edit</button></div>
-      <div class="grp"><span class="eyebrow">Region and display</span>
+      <div class="chips"><a class="chip on" href="#">Me</a><a class="chip" href="#">Locations</a><a class="chip" href="#">Account</a><a class="chip" href="#">AI</a><a class="chip" href="#">Connections</a><a class="chip" href="#">Import</a><a class="chip" href="#">Export</a><a class="chip" href="#">Admin</a></div>
+      <div class="card" style="grid-template-columns:auto 1fr auto;align-items:center"><span class="av">I</span><div class="st"><span class="t" style="font-weight:600">Ibrahim</span><span class="xs">ibrahim@example.com</span></div><button class="btn secondary small" type="button">Change email</button></div>
+      <div class="grp"><span class="eyebrow">Display</span>
         <div class="row-list">
-          <div class="li c"><span class="t">Timezone</span><span class="s" style="text-align:end">Africa/Cairo<br><span class="xs">from this browser</span></span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
           <div class="li c"><span class="t">Language</span><span class="s" style="text-align:end">English</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
-          <div class="st" style="padding:12px 14px;gap:8px"><span class="t" style="font-weight:600">Digits in Arabic</span><span class="seg"><span class="on">0123 Western</span><span>٠١٢٣ Eastern</span></span><span class="xs">Used when Kept is in Arabic, for readings, amounts, dates and counts. Short IDs, serials and VINs stay 0–9; plates show as printed.</span></div>
-          <div class="li c"><span class="t">Units</span><span class="s" style="text-align:end">km · litres · L/100 km</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
-          <div class="st" style="padding:12px 14px;gap:8px"><span class="t" style="font-weight:600">Theme</span><span class="seg"><span class="on">System</span><span>Light</span><span>Dark</span></span></div>
-        </div>
-      </div>
-      <div class="grp"><span class="eyebrow">Capture</span>
-        <div class="row-list">
-          <div class="st" style="padding:12px 14px;gap:6px"><div class="hd sp" style="flex-wrap:nowrap"><span style="font-weight:600">Suggest where I am</span><span class="hd"><span class="xs">On</span><span class="tog on" role="switch" aria-checked="true" aria-label="Suggest where I am"></span></span></div><span class="xs">When you open Capture, this phone compares its position with your locations' saved coordinates. Your position is never sent, stored or logged.</span></div>
-          <div class="li c"><span class="t">Hidden modules</span><span class="s">None</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="st" style="padding:12px 14px;gap:8px"><span class="t" style="font-weight:600">Theme</span><span class="seg"><span class="on">System</span><span>Light</span><span>Dark</span></span><span class="xs">Follows this device’s light or dark setting.</span></div>
         </div>
       </div>
       <div class="grp"><span class="eyebrow">Notifications</span>
         <div class="row-list">
-          <div class="li c"><span class="t">Notifications</span><span class="s" style="text-align:end">Push on this phone, digest 08:00, quiet 23:00–07:00</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
-          <div class="st" style="padding:12px 14px;gap:8px"><span style="font-weight:600">Calendar feed</span><span class="xs">Private iCal link with due dates and expiries: titles and dates only, never money. Last fetched 2 hours ago.</span><div class="hd"><button class="btn secondary" type="button"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-copy"/></svg>Copy link</button><button class="btn danger" type="button">Revoke</button></div></div>
-        </div>
-      </div>
-      <div class="grp"><span class="eyebrow">Security</span>
-        <div class="row-list">
-          <div class="li c"><span class="t">Sessions and devices</span><span class="s">3 active</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
-          <div class="li c"><span class="t">Passkeys</span><span class="s">2 · iPhone, MacBook</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
-          <div class="li c"><span class="t">Two-factor</span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>On · app</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
-          <div class="li c"><span class="t">Backup codes</span><span class="s">8 of 10 left</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="li c"><span class="t">Reminders and alerts<br><span class="xs">What each location tells you, by email or on this device.</span></span><span></span><button class="btn secondary small" type="button">Open</button></div>
         </div>
       </div>
       <div class="grp"><span class="eyebrow">Your data</span>
         <div class="row-list">
-          <div class="li c"><span class="t">Personal AI key</span><span class="s">Set</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
-          <div class="li c"><span class="t">My tokens</span><span class="s">3, in Connections</span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
-          <div class="li c"><span class="t">Export my data</span><span></span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
-          <div class="li c"><span class="t" style="color:var(--danger)">Delete my account</span><span></span><svg class="ic flip" viewBox="0 0 24 24"><use href="#a5-chev"/></svg></div>
+          <div class="li c"><span class="t">Export my data<br><span class="xs">Your Personal location, profile and preferences, and your AI calls, as one file.</span></span><span></span><button class="btn secondary small" type="button">Export</button></div>
+        </div>
+      </div>
+      <div class="grp"><span class="eyebrow">Security</span>
+        <div class="row-list">
+          <div class="li c"><span class="t">Two-factor<br><span class="xs">On. Signing in asks for a code from your authenticator app.</span></span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>On</span><span></span></div>
+          <div class="li c"><span class="t">This device<br><span class="xs">Lock Kept with a PIN, and keep a location available offline.</span></span><span></span><button class="btn secondary small" type="button">Open</button></div>
+        </div>
+      </div>
+      <div class="grp"><span class="eyebrow">Sessions and devices</span>
+        <div class="row-list">
+          <div class="li c"><span class="t">Safari on iOS<br><span class="xs">Signed in 2 Oct</span> <span class="pill ok">This device</span></span><span></span><span></span></div>
+          <div class="li c"><span class="t">Chrome on macOS<br><span class="xs">Active today · signed in 28 Sep</span></span><span></span><button class="btn secondary small" type="button">Sign out</button></div>
+        </div>
+      </div>
+      <div class="grp"><span class="eyebrow">Check this device</span>
+        <div class="row-list">
+          <div class="li c"><span class="t">Diagnostics<br><span class="xs">Check the camera, offline support and storage, and copy a report.</span></span><span></span><button class="btn secondary small" type="button">Open</button></div>
         </div>
       </div>
     </div>
@@ -477,7 +473,7 @@
       <a href="#"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-menu"/></svg>More</a>
     </nav>
   </div>
-  <figcaption class="frame-cap">Settings · Me · phone · light. Scrolls through region, capture, notifications, security and your data. D122 D142 D143 D153 D165</figcaption>
+  <figcaption class="frame-cap">Settings · Me · phone · light. Display, notifications, your data, security, sessions and Diagnostics. "Digits in Arabic" shows only when Kept is in Arabic (D204); "Content width" only from 768 px (D203). Timezone and currency belong to each location (Location settings → General); units to vehicles; "Suggest where I am" sits on Capture's place chip; the calendar feed in Reminders and alerts; the personal AI key in Settings → AI. Backup codes show once, when two-factor is turned on. The web app has no page to add or list passkeys (sign-in accepts one), and no account deletion. D122 D142 D143 D165 D203 D204</figcaption>
 </figure>
 
 <!-- 6 · AI settings · desktop · light -->
@@ -487,7 +483,7 @@
       <aside class="sidebar">
         <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
         <nav class="nav">
-          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a class="soon" aria-disabled="true">Insights <span class="soon-badge">Coming soon</span></a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
         </nav>
         <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
         <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
@@ -495,7 +491,7 @@
       <section class="main">
         <div class="topbar"><h1>Settings</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
         <div class="work" style="gap:14px">
-          <nav class="tabs"><a href="#">Me</a><a href="#">Locations</a><a href="#">Account</a><a class="on" href="#">AI</a><a href="#">Import</a><a href="#">Admin</a></nav>
+          <nav class="tabs"><a href="#">Me</a><a href="#">Locations</a><a href="#">Account</a><a class="on" href="#">AI</a><a href="#">Connections</a><a href="#">Import</a><a href="#">Export</a><a href="#">Admin</a></nav>
           <div class="card" style="padding:10px 14px 4px;gap:4px">
             <div class="hd sp"><span class="sm">Ibrahim's account pays for AI in Home, Garage and Storage unit; a task with nothing set uses the instance default.</span><span class="pill ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg>On</span></div>
             <table class="tbl tight"><thead><tr><th>Task</th><th>Using</th><th>Last test</th><th class="r"></th></tr></thead><tbody>
@@ -546,7 +542,7 @@
       <aside class="sidebar">
         <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
         <nav class="nav">
-          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a class="soon" aria-disabled="true">Insights <span class="soon-badge">Coming soon</span></a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
         </nav>
         <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
         <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
@@ -554,7 +550,7 @@
       <section class="main">
         <div class="topbar"><h1>Settings</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
         <div class="work" style="gap:14px">
-          <nav class="tabs"><a href="#">Me</a><a href="#">Locations</a><a href="#">Account</a><a href="#">AI</a><a href="#">Import</a><a class="on" href="#">Connections</a><a href="#">Admin</a></nav>
+          <nav class="tabs"><a href="#">Me</a><a href="#">Locations</a><a href="#">Account</a><a href="#">AI</a><a class="on" href="#">Connections</a><a href="#">Import</a><a href="#">Export</a><a href="#">Admin</a></nav>
           <div class="g2" style="grid-template-columns:1.35fr 1fr">
             <div class="card">
               <h3>Token created: Claude Desktop, Ibrahim's MacBook</h3>
@@ -610,7 +606,7 @@
       <aside class="sidebar">
         <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
         <nav class="nav">
-          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a class="soon" aria-disabled="true">Insights <span class="soon-badge">Coming soon</span></a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
         </nav>
         <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
         <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
@@ -618,7 +614,7 @@
       <section class="main">
         <div class="topbar"><h1>Instance admin</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
         <div class="work" style="gap:14px">
-          <nav class="tabs tight"><a href="#">Users</a><a href="#">Admins</a><a class="on" href="#">Status</a><a href="#">Failed jobs</a><a href="#">Alerts</a><a href="#">Sign-up</a><a href="#">Currencies</a><a href="#">AI</a></nav>
+          <nav class="tabs tight"><a href="#">Users</a><a href="#">Admins</a><a class="on" href="#">Status</a><a href="#">Backups</a><a href="#">Failed jobs</a><a href="#">Alerts</a><a href="#">Sign-up</a><a href="#">Currencies</a><a href="#">AI</a></nav>
           <div class="kpis">
             <div class="kpi"><span class="xs">Reminders</span><span class="chk ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg><b style="font-size:15px">Scanned 4 min ago</b></span></div>
             <div class="kpi"><span class="xs">Last backup</span><span class="chk ok"><svg class="ic" viewBox="0 0 24 24"><use href="#a5-ok"/></svg><b style="font-size:15px">Today 03:00 · verified</b></span></div>
@@ -668,7 +664,7 @@
       </section>
     </div>
   </div>
-  <figcaption class="frame-cap">Admin status · desktop · dark. The page is titled Instance admin, with the built tabs Users · Admins · Status · Failed jobs · Alerts · Sign-up · Currencies · AI. Backups, the reminder scan, failed jobs with retry and discard, storage, the recovery kit behind re-authentication, and alert channels. Network safety holds the SSRF allowances and former hostnames. The restic target is an example. D65 D66 D144 D159 D166 D182</figcaption>
+  <figcaption class="frame-cap">Admin status · desktop · dark. The page is titled Instance admin, with the tabs Users · Admins · Status · Backups · Failed jobs · Alerts · Sign-up · Currencies · AI. Status shows backups, the reminder scan, failed jobs with retry and discard, storage, the recovery kit behind re-authentication, and alert channels. Network safety holds the SSRF allowances and former hostnames. The restic target is an example. D65 D66 D144 D159 D166 D182</figcaption>
 </figure>
     <figure id="f-setup-kit">
       <div class="frame-scroll">
@@ -676,7 +672,7 @@
           <aside class="sidebar">
         <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
         <nav class="nav">
-          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
+          <a href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a class="soon" aria-disabled="true">Insights <span class="soon-badge">Coming soon</span></a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a class="on" href="#">Settings</a><a href="#">Help</a>
         </nav>
         <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
         <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
@@ -684,7 +680,7 @@
           <section class="main">
             <div class="topbar"><h1>Instance admin</h1><div class="palette">Search or jump to… <kbd>⌘K</kbd></div><button class="icon-btn" type="button" aria-label="Notifications" style="width:40px;height:40px"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button><button class="btn primary" type="button" style="display:inline-flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>Capture</button></div>
             <div class="work">
-              <div class="k-tabs sm" role="tablist" aria-label="Instance admin"><span role="tab">Users</span><span role="tab">Admins</span><span class="on" role="tab">Status</span><span role="tab">Failed jobs</span><span role="tab">Alerts</span><span role="tab">Sign-up</span><span role="tab">Currencies</span><span role="tab">AI</span></div>
+              <div class="k-tabs sm" role="tablist" aria-label="Instance admin"><span role="tab">Users</span><span role="tab">Admins</span><span class="on" role="tab" aria-selected="true">Status</span><span role="tab">Backups</span><span role="tab">Failed jobs</span><span role="tab">Alerts</span><span role="tab">Sign-up</span><span role="tab">Currencies</span><span role="tab">AI</span></div>
               <div class="k-notice warn"><svg class="k-ic"><use href="#k-alert"/></svg><span><b>Keep the secret key somewhere else</b><span>Kept encrypts secret fields, AI keys and the backup password with <bdi class="mono">KEPT_SECRET_KEY</bdi>. If this server and its key are lost together, a backup still restores your things, but not those. Print the recovery kit with <bdi class="mono">kept admin recovery-kit</bdi> and keep it away from this server. Kept asks for this before the first secret, AI key or backup.</span><b class="kb kb-s sm">I've kept it somewhere else</b></span></div>
               <div class="k-stats three"><div class="k-stat"><small>Version</small><b style="font-size:15px"><bdi class="mono">1.0.0</bdi></b></div><div class="k-stat"><small>Database</small><b style="font-size:15px">Answering</b></div><div class="k-stat"><small>Alerts</small><b style="font-size:15px">None open</b></div><div class="k-stat"><small>Mail</small><b style="font-size:15px">Sending</b></div><div class="k-stat"><small>Recovery kit</small><b style="font-size:15px"><span style="color:var(--warn)">Not yet</span></b></div><div class="k-stat"><small>Backups</small><b style="font-size:15px">Last 03:00, verified</b></div></div>
             </div>

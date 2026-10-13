@@ -188,11 +188,25 @@ th:first-child,td:first-child{text-align:start}
 
 /* desktop device: 1200 x 760 */
 .desktop{width:1200px;height:760px;border-radius:12px;border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,.12);background:var(--paper);color:var(--ink);overflow:hidden;display:grid;grid-template-columns:232px 1fr;font:400 14.5px/1.45 var(--sans);flex:none}
+.desktop.wide{width:1360px}
+.desktop.railed{grid-template-columns:64px 1fr}
+.sidebar.rail{grid-template-rows:auto auto auto 1fr;justify-items:center;padding:14px 8px}
+.sidebar.rail .mark{display:grid;place-items:center;height:40px}
+.sidebar.rail .nav{justify-items:center;gap:2px}
+.sidebar.rail .nav a{position:relative;width:40px;height:36px;padding:0;justify-content:center}
+.sidebar.rail .nav a.soon svg{opacity:.45}
+.sidebar.rail .nav a.on{background:var(--sunken);color:var(--ink)}
+.sidebar.rail .nav .dot{position:absolute;inset-block-start:3px;inset-inline-end:3px;min-width:16px;height:16px;border-radius:999px;background:var(--amber);color:var(--amber-ink);font:600 10px/16px var(--sans);text-align:center;padding:0 3px}
+.sidebar.rail .nav .rule{display:block;width:32px;border-top:1px solid var(--line);margin-block:6px}
+.sidebar.rail .rail-foot{align-self:end;display:grid;justify-items:center;gap:4px}
+.sidebar.rail .rail-foot a{display:grid;place-items:center;width:40px;height:36px;color:var(--ink-3)}
 .sidebar{background:var(--surface);border-inline-end:1px solid var(--line);display:grid;grid-template-rows:auto auto 1fr auto;gap:8px;padding:14px 10px;min-height:0;overflow:auto}
 .sidebar .nav{display:grid;gap:2px}
 .sidebar .nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--ink-2);text-decoration:none;font:500 14px/1.2 var(--sans)}
 .sidebar .nav a svg{width:18px;height:18px;flex:none}
 .sidebar .nav a.on{background:var(--sunken);color:var(--ink)}
+.sidebar .nav a.soon{color:var(--ink-3);cursor:not-allowed}
+.sidebar .nav .soon-badge{margin-inline-start:auto;font:500 11px/1 var(--sans);color:var(--ink-3);border:1px solid var(--line);padding:3px 8px;border-radius:999px;white-space:nowrap}
 .sidebar .nav .count{margin-inline-start:auto;font:600 11px/1 var(--sans);background:var(--amber);color:var(--amber-ink);padding:3px 6px;border-radius:999px}
 .sidebar .tree{display:grid;gap:1px;align-content:start;font:400 13.5px/1.3 var(--sans);color:var(--ink-2)}
 .sidebar .tree div{padding:5px 10px;border-radius:6px}
@@ -536,3 +550,22 @@ a.fl-link:focus-visible .fl-box{stroke:var(--info);stroke-width:2.5}
 .k-rt small{overflow-wrap:anywhere}
 .k-seg.two{grid-auto-flow:row;grid-template-columns:1fr 1fr}
 .k-eic{justify-self:start}
+
+/* Location navigation (1.0.2): the back link that names its target, and the collapsed outline. */
+.backto{display:inline-flex;align-items:center;gap:4px;justify-self:start;font:500 13.5px/1 var(--sans);color:var(--ink-2);text-decoration:none;padding:6px 8px;margin-inline-start:-8px;border-radius:8px}
+.outline{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font:600 14px/1 var(--sans);color:var(--ink)}
+.outline svg{color:var(--ink-3)}
+
+/* Row lists (Help, Labels, More): a bordered list of icon · title and subtitle · action rows. */
+.rl-sec{display:grid;gap:6px}
+.rl-sec>.eyebrow{padding-inline:2px}
+.rl{display:grid;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.rl>div,.rl>a{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:11px 12px;color:inherit;text-decoration:none}
+.rl>*+*{border-top:1px solid var(--line)}
+.rl .tile{width:34px;height:34px;border-radius:8px;background:var(--sunken);display:grid;place-items:center;color:var(--ink-2)}
+.rl .tile svg{width:18px;height:18px}
+.rl .tx{display:grid;gap:2px;min-width:0}
+.rl .tx b{font:600 14.5px/1.3 var(--sans)}
+.rl .tx small{font:400 12.5px/1.4 var(--sans);color:var(--ink-2)}
+.rl .off b{color:var(--ink-3)}
+.rl .soon-badge{font:500 11px/1 var(--sans);color:var(--ink-3);border:1px solid var(--line);padding:3px 8px;border-radius:999px;white-space:nowrap}

@@ -133,9 +133,16 @@
 .a1 .pane{padding:28px 32px 24px;display:grid;gap:16px;align-content:start}
 .a1 .pane h2{font-size:24px;margin-top:-6px}
 .a1 .pane p{font-size:14.5px}
+.a1 .pend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:13px;color:var(--ink-2)}
+.a1 .pend>span{display:inline-flex;align-items:center;gap:6px}
 .a1 .where{display:grid;gap:6px;padding:12px 14px;border-radius:10px;background:var(--paper);border:1px solid var(--line)}
 .a1 .where b{font:600 13px/1.2 var(--sans)}
 .a1 .where small{font-size:12.5px;color:var(--ink-3)}
+.a1 .wtabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.a1 .wtabs span{font:500 12.5px/1 var(--sans);padding:7px 10px;color:var(--ink-2);border-bottom:2px solid transparent;margin-bottom:-1px}
+.a1 .wtabs span.on{color:var(--ink);border-bottom-color:var(--amber)}
+.a1 .term .cp{float:inline-end;margin-block:-4px}
+.a1 .where small a{color:var(--info)}
 .a1 .term{font:500 13px/1.5 var(--mono);background:var(--sunken);border-radius:6px;padding:8px 10px;color:var(--ink)}
 .a1 .codein{font:600 21px/1 var(--mono);letter-spacing:.14em;border:2px solid var(--info);min-height:54px;display:flex;align-items:center;max-width:360px;background:var(--surface)}
 .a1 .hint{font:400 12.5px/1.4 var(--sans);color:var(--ink-3)}
@@ -303,8 +310,9 @@
               <p>When Kept started for the first time, it printed a one-time setup code in the server's logs. Entering it shows you're the person who installed this server. The code stops working once it's used.</p>
               <div class="where">
                 <b>Where to find it</b>
-                <div class="term"><span class="muted">$</span> docker logs &lt;your Kept container&gt;</div>
-                <small>It's printed once, on the first start. Other installs: the logs page of your host or app store.</small>
+                <div class="wtabs" role="tablist" aria-label="How this server runs"><span class="on">Docker Compose</span><span>Docker</span><span>Kubernetes</span><span>New code</span></div>
+                <div class="term"><span class="muted">$</span> docker compose logs kept | grep "KEPT SETUP CODE"<button class="btn secondary small cp" type="button">Copy</button></div>
+                <small>The code is printed once, on the first start. If the container has been recreated since, issue a new code. <a href="#">Install guide</a></small>
               </div>
               <div class="field">
                 <label>Setup code</label>
@@ -320,7 +328,7 @@
           </div>
         </div>
       </div>
-      <figcaption class="frame-cap">First run · desktop · light · step 1 of 3, the 6-character setup code the web process prints to the logs at boot (D32, D190, screens §8).</figcaption>
+      <figcaption class="frame-cap">First run · desktop · light · step 1 of 3, the 6-character setup code the web process prints to the logs at boot (D32, D190, screens §8). "Where to find it" has one tab per way Kept runs, each a copyable command; Docker and Kubernetes highlight the parts to replace, and New code shows <code>kept admin setup-code</code> for Compose and Kubernetes with a link to the CLI guide. Guide links go to keptinventory.info.</figcaption>
     </figure>
     <figure id="f-setup-account">
       <div class="phone t-light k-frame k-bare" role="img" aria-label="Phone: first-run setup, step 2 of 3, create the first account, light theme">
@@ -388,8 +396,7 @@
           <a class="loc" href="#"><div class="loc-h"><span class="ic"><svg class="i"><use href="#a1-person"/></svg></span><span class="tx"><b>Personal</b><small>Only you · nothing yet · captures with no location land here</small></span><svg class="i chev"><use href="#a1-chev"/></svg></div></a>
           <div class="sh"><h3>Or</h3></div>
           <div class="alt">
-            <a href="#"><span class="ic"><svg class="i"><use href="#a1-link"/></svg></span><span class="tx"><b>Joining someone's Kept?</b><small>Open the invite link they sent you. It adds you to their location.</small></span><svg class="i chev"><use href="#a1-chev"/></svg></a>
-            <a href="#"><span class="ic"><svg class="i"><use href="#a1-down"/></svg></span><span class="tx"><b>Bring in an inventory</b><small>Import from Homebox or a CSV file.</small></span><svg class="i chev"><use href="#a1-chev"/></svg></a>
+            <a><span class="ic"><svg class="i"><use href="#a1-link"/></svg></span><span class="tx"><b>Joining someone's Kept?</b><small>Open the invite link they sent you, or scan its QR code with this phone's camera.</small></span></a>
           </div>
         </div>
         <nav class="tabbar" aria-label="Main">
@@ -400,7 +407,7 @@
           <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a>
         </nav>
       </div>
-      <figcaption class="frame-cap">Home · phone · light · first run: the Personal card plus Create your first home (screens §8, D114). Home is never empty, because Personal always exists; the checklist stays hidden so it doesn't repeat the main button.</figcaption>
+      <figcaption class="frame-cap">Home · phone · light · first run: the Personal card plus Create your first home (screens §8, D114). Home is never empty, because Personal always exists; the checklist stays hidden so it doesn't repeat the main button. The joining card is a note, not a link: the invite link or its QR code is the way in. Import lives in Settings → Import. An instance admin on plain HTTP also sees "Put Kept on HTTPS" above the welcome.</figcaption>
     </figure>
 
   </div>
@@ -496,16 +503,17 @@
 
           <div class="gs">
             <div class="gs-top">
-              <div><h3>Get started</h3><p>Three more steps and Kept is fully set up.</p></div>
-              <span class="tp">3 / 6</span>
-              <button class="icon-btn" aria-label="Hide the checklist"><svg class="i"><use href="#a1-x"/></svg></button>
+              <div><h3>Get started</h3><p>4 more steps and Kept is set up.</p></div>
+              <span class="tp">3 of 7</span>
+              <button class="icon-btn" aria-label="Hide Get started"><svg class="i"><use href="#a1-x"/></svg></button>
             </div>
-            <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i></div>
+            <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i><i></i></div>
             <div class="gs-list">
-              <div class="gs-item done"><span class="box on"><svg class="i"><use href="#a1-check"/></svg></span><span class="tx"><b>Done</b><small>Created Home · captured 3 things · invited Alfred</small></span><span></span></div>
-              <div class="gs-item"><span class="box"></span><span class="tx"><b>Install on your phone</b><small>On iPhone, reminders only reach the installed app.</small></span><button class="btn secondary small" type="button">How</button></div>
+              <div class="gs-item done"><span class="box on"><svg class="i"><use href="#a1-check"/></svg></span><span class="tx"><b>Done</b><small>Created Home · Added 3 things · Invited someone</small></span><span></span></div>
+              <div class="gs-item"><span class="box"></span><span class="tx"><b>Set up email</b><small>Without it, Kept sends no sign-in links, password resets, email invites or reminders.</small></span><button class="btn secondary small" type="button">How</button></div>
               <div class="gs-item"><span class="box"></span><span class="tx"><b>Print your first label</b><small>Stick it on a box, then scan it to see what's inside.</small></span><button class="btn secondary small" type="button">Print</button></div>
-              <div class="gs-item"><span class="box"></span><span class="tx"><b>Connect an AI provider</b><small>Reads receipts and suggests details for you to confirm.</small></span><button class="btn secondary small" type="button">Set up</button></div>
+              <div class="gs-item"><span class="box"></span><span class="tx"><b>Connect an AI provider</b><small>Reads receipts and suggests details for you to confirm.</small></span><span></span></div>
+              <div class="gs-item"><span class="box"></span><span class="tx"><b>Install on your phone</b><small>On iPhone, reminders only reach the installed app.</small></span><button class="btn secondary small" type="button">How</button></div>
             </div>
           </div>
 
@@ -541,7 +549,57 @@
           <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a>
         </nav>
       </div>
-      <figcaption class="frame-cap">Home · phone · light · owner view, Get-started 3 of 6 (D138, D139) · full-length scroll. Invited members don't see "Invite" or "Connect an AI provider". Zero-count attention rows are not shown.</figcaption>
+      <figcaption class="frame-cap">Home · phone · light · owner who is also the instance admin, Get started 3 of 7 (D138, D139) · full-length scroll. Finished steps fold into one Done row. Only the instance admin sees "Set up email" (while mail is off) and "Put Kept on HTTPS" (over plain HTTP, pinned first). Invited members don't see "Invite someone" or "Connect an AI provider". Zero-count attention rows are not shown.</figcaption>
+    </figure>
+
+    <figure id="f-home-cards">
+      <div class="phone t-light tall" role="img" aria-label="Phone: Home with the AI paused row, pending labels, Log a reading and an invite card, light theme, full length">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar">
+          <h1>Home</h1>
+          <button class="icon-btn" aria-label="Scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/></svg></button>
+          <button class="icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></button>
+          <button class="icon-btn" aria-label="Assistant"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5h-6.5L8 20v-3.5H5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5Z"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 14.9v.01"/></svg></button>
+        </div>
+        <div class="content">
+          <div class="hd"><span class="date">Monday 12 October</span></div>
+
+          <div class="att">
+            <a><span class="ic w"><svg class="i"><use href="#a1-warn"/></svg></span><span class="tx"><b>AI paused until 1 Nov</b><small>The monthly cap is reached</small></span><button class="btn secondary small" type="button">Resume</button></a>
+          </div>
+
+          <div class="gs">
+            <div class="gs-top"><div><h3>Print pending labels (3)</h3><p>Things captured on this phone got their IDs when it synced. Print their labels now.</p></div><span></span><span></span></div>
+            <div class="pend"><span><span class="sid">7KQ‑4MZ</span> HDMI cable</span><span><span class="sid">2HX‑9RB</span> Bosch drill</span><span><span class="sid">6NB‑2GE</span> IKEA shelf</span></div>
+            <button class="btn secondary small" type="button" style="justify-self:start">Print these</button>
+          </div>
+
+          <button class="btn secondary" type="button" style="justify-self:start"><svg class="i"><use href="#a1-gauge"/></svg>Log a reading</button>
+
+          <div class="sh"><h3>Needs you</h3></div>
+          <div class="att">
+            <a href="#"><span class="ic"><svg class="i"><use href="#a1-inbox"/></svg></span><span class="tx"><b>To review</b><small>From Saturday's capture in Garage</small></span><span class="num">4</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+            <a href="#"><span class="ic w"><svg class="i"><use href="#a1-cal"/></svg></span><span class="tx"><b>Overdue &amp; due</b><small>Smoke alarm test, 3 days late</small></span><span class="num">1</span><svg class="i chev flip"><use href="#a1-chev"/></svg></a>
+          </div>
+
+          <div class="sh"><h3>Locations</h3><a href="#">+ New location</a></div>
+          <div class="locs">
+            <a class="loc" href="#"><div class="loc-h"><span class="ic"><svg class="i"><use href="#a1-apt"/></svg></span><span class="tx"><b>Home</b><small>Apartment · 214 things</small></span><span class="av"><i>I</i><i>A</i></span></div></a>
+            <a class="loc" href="#"><div class="loc-h"><span class="ic"><svg class="i"><use href="#a1-storage"/></svg></span><span class="tx"><b>Storage unit</b><small>Storage unit · 41 things</small></span><span class="av"><i>I</i></span></div></a>
+          </div>
+          <div class="att">
+            <a><span class="ic"><svg class="i"><use href="#a1-person"/></svg></span><span class="tx"><b>Invite people to Storage unit</b><small>Share a link or a QR code. Choose what they can do and for how long.</small></span><button class="btn primary small" type="button">Invite</button></a>
+          </div>
+        </div>
+        <nav class="tabbar" aria-label="Main">
+          <a class="on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a>
+          <a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a>
+        </nav>
+      </div>
+      <figcaption class="frame-cap">Home · phone · light · the rows that come and go, in their order above "Needs you". <b>AI paused</b> (D206): only for a location's owner, one row per pausing cap, with the reason; Resume opens the Resume AI sheet, everyone else sees the pause on Capture and the inbox. <b>Print pending labels</b>: things captured on this phone that got their short IDs when it synced, grouped by location when there are several; "Print these" opens Labels with them chosen. <b>Log a reading</b> (T19): only when something has a meter; it opens "What did you read?". <b>Invite people to …</b> (D194): under the locations, for a shared location you manage that has nobody else and no pending invite. Get started, when open, sits first.</figcaption>
     </figure>
 
 <!-- 8. Install-on-phone help sheet -->
@@ -557,8 +615,8 @@
         <div class="content">
           <div class="hd"><span class="date">Monday 12 October</span></div>
           <div class="gs">
-            <div class="gs-top"><div><h3>Get started</h3><p>Three more steps and Kept is fully set up.</p></div><span class="tp">3 / 6</span><span></span></div>
-            <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i></div>
+            <div class="gs-top"><div><h3>Get started</h3><p>4 more steps and Kept is set up.</p></div><span class="tp">3 of 7</span><span></span></div>
+            <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i><i></i></div>
           </div>
         </div>
         <nav class="tabbar" aria-label="Main">
@@ -644,7 +702,7 @@
               <span class="tp">٣ من ٦</span>
               <button class="icon-btn" aria-label="إخفاء القائمة"><svg class="i"><use href="#a1-x"/></svg></button>
             </div>
-            <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i></div>
+            <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i><i></i></div>
             <div class="gs-list">
               <div class="gs-item done"><span class="box on"><svg class="i"><use href="#a1-check"/></svg></span><span class="tx"><b>تم</b><small>أنشأت «المنزل» · التقطت ٣ أشياء · دعوت ألفريد</small></span><span></span></div>
               <div class="gs-item"><span class="box"></span><span class="tx"><b>ثبّت <span class="ltr">Kept</span> على هاتفك</b><small>على آيفون، لا تصل التذكيرات إلا إلى التطبيق المثبّت.</small></span><button class="btn secondary small" type="button">كيف؟</button></div>
@@ -699,7 +757,7 @@
           <aside class="sidebar">
         <svg width="112" height="37.5" viewBox="0 0 191 64" aria-label="Kept"><path d="M9 2H55A7 7 0 0 1 62 9V55A7 7 0 0 1 55 62H9A7 7 0 0 1 2 55V9A7 7 0 0 1 9 2ZM12 8.5A3.5 3.5 0 1 0 12 15.5A3.5 3.5 0 1 0 12 8.5Z" fill="#F0B03A" fill-rule="evenodd"/><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" fill="#2E2100" transform="translate(21.4 48) scale(0.042 -0.042)"/><g fill="var(--ink)"><path d="M277 306 204 210V0H73V698H204V384H210L291 500L438 698H586L367 404L596 0H448Z" transform="translate(74 48) scale(0.042 -0.042)"/><path d="M83 0V698H524V590H214V408H513V300H214V108H524V0Z" transform="translate(104.2 48) scale(0.042 -0.042)"/><path d="M80 0V698H345Q447 698 501 640Q555 582 555 482Q555 382 501 324Q447 266 345 266H211V0ZM211 373H318Q371 373 394 394.5Q417 416 417 463V501Q417 548 394 569.5Q371 591 318 591H211Z" transform="translate(134.4 48) scale(0.042 -0.042)"/><path d="M365 590V0H235V590H25V698H575V590Z" transform="translate(164.6 48) scale(0.042 -0.042)"/></g></svg>
         <nav class="nav">
-          <a class="on" href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a href="#">Insights</a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
+          <a class="on" href="#">Home</a><a href="#">Inbox <span class="count">4</span></a><a href="#">Vehicles</a><a href="#">Schedules</a><a href="#">Lending</a><a href="#">Paperwork</a><a class="soon" aria-disabled="true">Insights <span class="soon-badge">Coming soon</span></a><a href="#">Labels</a><a href="#">Activity</a><a href="#">Trash</a><a href="#">Notifications</a><a href="#">Settings</a><a href="#">Help</a>
         </nav>
         <div class="tree"><div class="eyebrow">Locations</div><div>Personal</div><div>Home</div><div>Garage</div><div>Storage unit</div><div class="muted">+ New location</div></div>
         <div class="side-foot"><span class="muted">v1.0.0 · Source code</span><span class="icon-btn" aria-label="Collapse sidebar" style="width:36px;height:36px"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9 4.5v15M15 10l-2 2 2 2"/></svg></span></div>
@@ -767,15 +825,16 @@
                   <div class="gs">
                     <div class="gs-top">
                       <div><h3>Get started</h3></div>
-                      <span class="tp">3 / 6</span>
-                      <button class="icon-btn" aria-label="Hide the checklist"><svg class="i"><use href="#a1-x"/></svg></button>
+                      <span class="tp">3 of 7</span>
+                      <button class="icon-btn" aria-label="Hide Get started"><svg class="i"><use href="#a1-x"/></svg></button>
                     </div>
-                    <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i></div>
+                    <div class="gs-bar" aria-hidden="true"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i><i></i><i></i></div>
                     <div class="gs-list">
-                      <div class="gs-item done"><span class="box on"><svg class="i"><use href="#a1-check"/></svg></span><span class="tx"><b>Done</b><small>Location · 3 things · invited Alfred</small></span><span></span></div>
-                      <div class="gs-item"><span class="box"></span><span class="tx"><b>Install on your phone</b><small>Steps for iPhone and Android</small></span><button class="btn secondary small" type="button">How</button></div>
-                      <div class="gs-item"><span class="box"></span><span class="tx"><b>Print your first label</b><small>Any printer, any sheet</small></span><button class="btn secondary small" type="button">Print</button></div>
-                      <div class="gs-item"><span class="box"></span><span class="tx"><b>Connect an AI provider</b><small>For receipts and suggestions</small></span><button class="btn secondary small" type="button">Set up</button></div>
+                      <div class="gs-item done"><span class="box on"><svg class="i"><use href="#a1-check"/></svg></span><span class="tx"><b>Done</b><small>Created Home · Added 3 things · Invited someone</small></span><span></span></div>
+                      <div class="gs-item"><span class="box"></span><span class="tx"><b>Set up email</b><small>Without it, Kept sends no sign-in links, password resets, email invites or reminders.</small></span><button class="btn secondary small" type="button">How</button></div>
+                      <div class="gs-item"><span class="box"></span><span class="tx"><b>Print your first label</b><small>Stick it on a box, then scan it to see what's inside.</small></span><button class="btn secondary small" type="button">Print</button></div>
+                      <div class="gs-item"><span class="box"></span><span class="tx"><b>Connect an AI provider</b><small>Reads receipts and suggests details for you to confirm.</small></span><span></span></div>
+                      <div class="gs-item"><span class="box"></span><span class="tx"><b>Install on your phone</b><small>On iPhone, reminders only reach the installed app.</small></span><button class="btn secondary small" type="button">How</button></div>
                     </div>
                   </div>
 

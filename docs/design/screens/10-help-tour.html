@@ -1,0 +1,156 @@
+<section class="area a10" id="help-tour">
+<style>
+.a10 .hsec{display:grid;gap:6px}
+.a10 .hsec>.eyebrow{padding-inline:2px}
+.a10 .hlist{display:grid;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.a10 .hlist>div{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:11px 12px}
+.a10 .hlist>div+div{border-top:1px solid var(--line)}
+.a10 .tile{width:34px;height:34px;border-radius:8px;background:var(--sunken);display:grid;place-items:center;color:var(--ink-2)}
+.a10 .tile svg{width:18px;height:18px}
+.a10 .tx{display:grid;gap:2px;min-width:0}
+.a10 .tx b{font:600 14.5px/1.3 var(--sans)}
+.a10 .tx small{font:400 12.5px/1.4 var(--sans);color:var(--ink-2)}
+.a10 .note{grid-template-columns:auto 1fr!important;align-items:start!important}
+.a10 .hl{position:relative;z-index:2;border-radius:12px;box-shadow:0 0 0 4px var(--amber),0 0 0 9999px rgba(0,0,0,.45)}
+.a10 .pop{position:absolute;z-index:3;inset-inline:14px;background:var(--surface);color:var(--ink);border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.28);padding:14px 14px 12px;display:grid;gap:8px}
+.a10 .pop::before{content:"";position:absolute;inset-block-end:-7px;inset-inline-start:40px;width:14px;height:14px;background:var(--surface);transform:rotate(45deg)}
+.a10 .pop .ph{display:flex;align-items:start;gap:8px}
+.a10 .pop h4{margin:0;flex:1;font:600 16px/1.3 var(--sans)}
+.a10 .pop p{margin:0;font:400 14px/1.45 var(--sans);color:var(--ink-2)}
+.a10 .pop .pf{display:flex;align-items:center;gap:6px}
+.a10 .pop .prog{flex:1;font:500 12.5px/1 var(--sans);color:var(--ink-3)}
+.a10 .pop .x{width:28px;height:28px;display:grid;place-items:center;color:var(--ink-3)}
+.a10 .dlg{position:absolute;z-index:3;inset-inline:18px;inset-block-start:30%;background:var(--surface);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.3);padding:18px;display:grid;gap:10px}
+.a10 .dlg h4{margin:0;font:600 18px/1.3 var(--sans)}
+.a10 .dlg p{margin:0;font:400 14px/1.5 var(--sans);color:var(--ink-2)}
+.a10 .dlg .df{display:flex;justify-content:flex-end;gap:8px;padding-block-start:4px}
+.a10 .btn.danger{background:var(--danger);color:#fff;border-color:var(--danger)}
+.a10 .dim{opacity:.55}
+</style>
+<header>
+  <span class="eyebrow">Screens · More, Help &amp; the tour</span>
+  <h2>More, Help, and a tour that walks every section</h2>
+  <p>The phone's More page, where everything off the tab bar lives. Help as built: the tour, the checklist brought back, installing, sharing in, an odometer Shortcut and Diagnostics. "Show me around" steps through each section the person has (Home, Capture, the Inbox, a location, Search, then every module that is on), highlighting one part of each. It describes; it never asks for a tap that leaves its path, because any page it didn't open ends it. At the end, anything it added can be kept or discarded.</p>
+</header>
+  <h3 class="grp">More and Help</h3>
+  <div class="frames">
+    <figure id="f-more">
+      <div class="phone t-light tall" role="img" aria-label="Phone: the More page, light theme, full length">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><h1>More</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="rl-sec"><span class="eyebrow">Locations</span>
+            <div class="rl">
+              <a href="#"><span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span><span class="tx"><b>Personal</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg class="k-ic"><use href="#k-home"/></svg></span><span class="tx"><b>Home</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="tx"><b>Garage</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="tx"><b>Storage unit</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg class="k-ic"><use href="#k-plus"/></svg></span><span class="tx"><b>New location</b></span><span></span></a>
+            </div>
+          </div>
+          <div class="rl-sec"><span class="eyebrow">Everything else</span>
+            <div class="rl">
+              <a href="#"><span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16V11l2-5h10l2 5v5M3 16h18v3H3zM7 19v1M17 19v1"/></svg></span><span class="tx"><b>Vehicles</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span><span class="tx"><b>Schedules</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h12M12 8l4 4-4 4M20 5v14"/></svg></span><span class="tx"><b>Lending</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l4 4v14H7Z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span><span class="tx"><b>Paperwork</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><div class="off"><span class="tile" style="opacity:.6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="tx"><b>Insights</b></span><span class="soon-badge">Coming soon</span></div><a href="#"><span class="tile"><svg class="k-ic"><use href="#k-tag"/></svg></span><span class="tx"><b>Labels</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span><span class="tx"><b>Activity</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg class="k-ic"><use href="#k-trash"/></svg></span><span class="tx"><b>Trash</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg class="k-ic"><use href="#k-bell"/></svg></span><span class="tx"><b>Notifications</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></span><span class="tx"><b>Settings</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a><a href="#"><span class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.8 9.2a2.2 2.2 0 1 1 3 2.1c-.6.3-.8.6-.8 1.2M12 15.9v.01"/></svg></span><span class="tx"><b>Help</b></span><svg class="k-ic"><use href="#k-chev"/></svg></a>
+            </div>
+          </div>
+          <button class="btn secondary" type="button">Sign out</button>
+          <div class="muted" style="text-align:center;font-size:12.5px">v1.0.5 · Source code</div>
+        </div>
+        <nav class="tabbar" aria-label="Main">
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z"/></svg>Home</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>Search</a>
+          <a class="capture" href="#"><span class="fab"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg></span>Capture</a>
+          <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 13 7 5h10l2 8v6H5Z"/></svg>Inbox</a>
+          <a class="on" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg>More</a>
+        </nav>
+      </div>
+      <figcaption class="frame-cap">More · phone · light · full length. Every location, then New location; then everything the sidebar holds on a desktop except Home and the Inbox, which are tabs. Module entries (Vehicles, Schedules, Lending, Paperwork, Consumables, Labels) show only where the module is on in some location; Insights is muted with "Coming soon" and goes nowhere. Then Sign out and the version.</figcaption>
+    </figure>
+
+    <figure id="f-help">
+      <div class="phone t-light tall" role="img" aria-label="Phone: Help page, light theme, full length">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><button class="icon-btn" aria-label="Back"><svg class="k-ic"><use href="#k-back"/></svg></button><h1>Help</h1><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="hsec"><span class="eyebrow">Find your way around</span>
+            <div class="hlist">
+              <div><span class="tile"><svg class="k-ic"><use href="#k-info"/></svg></span><span class="tx"><b>Show me around</b><small>Every section, one small thing in each, then keep or discard what you added. Replay it any time.</small></span><button class="btn primary small" type="button">Start</button></div>
+              <div><span class="tile"><svg class="k-ic"><use href="#k-checkc"/></svg></span><span class="tx"><b>Get-started checklist</b><small>Hidden from Home.</small></span><button class="btn secondary small" type="button">Bring it back</button></div>
+            </div>
+          </div>
+          <div class="hsec"><span class="eyebrow">On your phone</span>
+            <div class="hlist">
+              <div><span class="tile"><svg class="k-ic"><use href="#k-down"/></svg></span><span class="tx"><b>Install on your phone</b><small>Kept opens from its own icon, full screen, and works offline.</small></span><button class="btn secondary small" type="button">Show steps</button></div>
+            </div>
+          </div>
+          <div class="hsec"><span class="eyebrow">Share into Kept</span>
+            <div class="hlist">
+              <div class="note"><span class="tile"><svg class="k-ic"><use href="#k-upload"/></svg></span><span class="tx"><b>Android</b><small>Once Kept is installed it's in the Share sheet. Share photos or PDFs to it from any app, and they open in Capture.</small></span></div>
+              <div class="note"><span class="tile"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="tx"><b>iPhone, iPad</b><small>iPhone doesn't let web apps appear in the Share sheet. Save the photo first, then add it in Capture with Gallery.</small></span></div>
+              <div class="note"><span class="tile"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="tx"><b>Computer</b><small>Add photos from your files with Gallery in Capture.</small></span></div>
+            </div>
+          </div>
+          <div class="hsec"><span class="eyebrow">Connect other apps</span>
+            <div class="hlist">
+              <div><span class="tile"><svg class="k-ic"><use href="#k-key"/></svg></span><span class="tx"><b>Log your odometer from an iPhone Shortcut</b><small>A Shortcut that asks for the reading and sends it to Kept with a token.</small></span><button class="btn secondary small" type="button">Show the recipe</button></div>
+            </div>
+          </div>
+          <div class="hsec"><span class="eyebrow">Something not working?</span>
+            <div class="hlist">
+              <div><span class="tile"><svg class="k-ic"><use href="#k-alert"/></svg></span><span class="tx"><b>Diagnostics</b><small>Check the camera, offline support and storage, and copy a report.</small></span><button class="btn secondary small" type="button">Open</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">Help · phone · light · full length. Reached from More → Help, or the sidebar's Help. "Bring it back" shows only while the checklist is hidden and steps remain; it otherwise reads "On Home until every step is done." or "Every step is done." (D138)</figcaption>
+    </figure>
+  </div>
+
+  <h3 class="grp">Show me around</h3>
+  <div class="frames">
+    <figure id="f-tour-step">
+      <div class="phone t-light" role="img" aria-label="Phone: the guided tour's first step on Home, its popover pointing at the locations, light theme" style="position:relative">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><h1>Home</h1><button class="icon-btn" aria-label="Scan"><svg class="k-ic"><use href="#k-scan"/></svg></button><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content" style="overflow:visible">
+          <div class="hsec dim"><span class="eyebrow">Needs you</span>
+            <div class="hlist">
+              <div><span class="tile"><svg class="k-ic"><use href="#k-inbox"/></svg></span><span class="tx"><b>To review</b><small>From Saturday's capture in Garage</small></span><b>4</b></div>
+              <div><span class="tile"><svg class="k-ic"><use href="#k-alert"/></svg></span><span class="tx"><b>Overdue &amp; due</b><small>Smoke alarm test, 3 days late</small></span><b>2</b></div>
+            </div>
+          </div>
+          <div class="pop" role="dialog" aria-label="Home" style="position:relative;inset:auto;margin-block:6px 4px">
+            <div class="ph"><h4>Home</h4><span class="x" aria-label="Close"><svg class="k-ic"><use href="#k-x"/></svg></span></div>
+            <p>What needs you is at the top, your locations below it. Next takes you into one.</p>
+            <div class="pf"><span class="prog">1 of 16</span><button class="btn secondary small" type="button">Skip</button><button class="btn primary small" type="button">Next</button></div>
+          </div>
+          <div class="hsec"><span class="eyebrow" style="position:relative;z-index:2;color:#fff">Locations</span>
+            <div class="hlist hl">
+              <div><span class="tile"><svg class="k-ic"><use href="#k-home"/></svg></span><span class="tx"><b>Home</b><small>Apartment · 214 things</small></span><svg class="k-ic"><use href="#k-chev"/></svg></div>
+              <div><span class="tile"><svg class="k-ic"><use href="#k-box"/></svg></span><span class="tx"><b>Garage</b><small>Garage · 63 things</small></span><svg class="k-ic"><use href="#k-chev"/></svg></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">The tour · phone · light · step 1. Each step opens its section itself, waits up to 3 s for the part it points at, and skips the section when that part never shows (a module that's off, a viewer with no Inbox); a skipped section drops out of the count. Back appears once an earlier section has shown; Skip moves past this section; Next opens the next one. Opening anything else, or Close, ends the tour. Steps: Home, Capture, Inbox, a location (or New location in an empty household), Search, Labels, Vehicles, Schedules, Lending, Paperwork, Consumables, Activity, Trash, Notifications, Settings, then the finish. Capture's step asks for one photo; that photo and anything else the tour adds are listed for the end.</figcaption>
+    </figure>
+
+    <figure id="f-tour-keep">
+      <div class="phone t-light" role="img" aria-label="Phone: Keep what you added? dialog at the end of the tour, light theme" style="position:relative">
+        <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+        <div class="appbar"><h1>Home</h1><button class="icon-btn" aria-label="Scan"><svg class="k-ic"><use href="#k-scan"/></svg></button><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
+        <div class="content">
+          <div class="hsec"><span class="eyebrow">Locations</span>
+            <div class="hlist">
+              <div><span class="tile"><svg class="k-ic"><use href="#k-home"/></svg></span><span class="tx"><b>Home</b><small>Apartment · 214 things</small></span><svg class="k-ic"><use href="#k-chev"/></svg></div>
+            </div>
+          </div>
+        </div>
+        <div class="scrim"></div>
+        <div class="dlg" role="dialog" aria-label="Keep what you added?">
+          <h4>Keep what you added?</h4>
+          <p>The tour added 1 item to your library.</p>
+          <p>Keep leaves everything where it is. Discard moves only what the tour added to Trash, where it waits 30 days before it's gone for good. Your activity history stays either way.</p>
+          <div class="df"><button class="btn secondary" type="button">Keep</button><button class="btn danger" type="button">Discard</button></div>
+        </div>
+      </div>
+      <figcaption class="frame-cap">The tour's end · phone · light. Shown only when the tour added something: the photo taken at Capture (its whole batch, undone together), or a location made by New location. It has no close button: Keep or Discard. Discard works newest first, and anything it couldn't remove (offline) is listed in red with "Check your connection and try Discard again, or Keep it." Ids the tour didn't create are never touched.</figcaption>
+    </figure>
+  </div>
+</section>
