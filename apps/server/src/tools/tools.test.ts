@@ -90,6 +90,21 @@ function ctx(
   };
 }
 
+/** Whether the field at `path` is absent and `trimmed` says fit() removed it. */
+function missingAndTrimmed(env: unknown, path: PropertyKey[], trimmed: string[]): boolean {
+  let at: unknown = env;
+  for (const k of path) at = at == null ? undefined : (at as Record<PropertyKey, unknown>)[k];
+  if (at !== undefined) return false;
+  if (trimmed.includes('*')) return true;
+  const dotted = path
+    .slice(1) // fit() names paths inside `data`
+    .map((k, i) => (typeof k === 'number' ? `[${k}]` : i === 0 ? String(k) : `.${String(k)}`))
+    .join('');
+  return trimmed.some(
+    (t) => dotted === t || dotted.startsWith(`${t}.`) || dotted.startsWith(`${t}[`),
+  );
+}
+
 /** Runs a tool and checks the envelope against its contract and the size limit. */
 async function tool<N extends ToolName>(
   who: Person | ToolContext,
@@ -98,10 +113,17 @@ async function tool<N extends ToolName>(
 ): Promise<Envelope<Record<string, unknown>>> {
   const c = 'deps' in who ? who : ctx(who);
   const env = (await runTool(c, name, args)) as Envelope<Record<string, unknown>>;
-  const parsed = envelopeSchema(TOOL_DEFS[name].output).safeParse(env);
-  expect(parsed.success, `${name}: ${JSON.stringify(parsed.error?.issues?.slice(0, 3))}`).toBe(
-    true,
+  // An answer is checked against its own branch of the envelope (a union reports only "no
+  // branch matched"), so each issue names the field that broke the contract.
+  const [okBranch, errorBranch] = envelopeSchema(TOOL_DEFS[name].output).options;
+  const parsed = (isToolError(env) ? errorBranch : okBranch).safeParse(env);
+  // The contract lets fit() remove a field under pressure only when `trimmed` lists it: those,
+  // and only those, may be missing (`*` is fitCommitted's skeleton of a saved write).
+  const trimmed = isToolError(env) ? [] : (env.trimmed ?? []);
+  const unexplained = (parsed.error?.issues ?? []).filter(
+    (i) => !(i.code === 'invalid_type' && missingAndTrimmed(env, i.path, trimmed)),
   );
+  expect(unexplained, `${name}: ${JSON.stringify(unexplained.slice(0, 3))}`).toEqual([]);
   expect(byteLength(env)).toBeLessThanOrEqual(OUTPUT_LIMIT_BYTES);
   return env;
 }
@@ -311,6 +333,66 @@ describe('add_thing (D213) and its undo', () => {
     expect(d.places).toHaveLength(2);
   });
 
+  it('takes place_id as a short ID, or as a container, and reports what it resolved to', async () => {
+    const attic = await data(louis, 'create_place', { location_id: home.id, name: 'Attic' });
+    // A place gets a short ID when its label is made; give the attic one directly.
+    const code = { code: 'ATT1C2' };
+    await own(
+      db,
+      'INSERT INTO public.short_ids (code, location_id, place_id) VALUES ($1, $2, $3)',
+      [code.code, home.id, attic.place.id],
+    );
+    const crate = await createThing(t, ibrahim, home, {
+      name: 'Crate',
+      placeId: attic.place.id,
+      typeId: (
+        await own<{ id: string }>(db, `SELECT id FROM public.types WHERE builtin_key = 'box_bin'`)
+      )[0]?.id,
+    });
+    const d = await data(louis, 'add_thing', {
+      location_id: home.id,
+      items: [
+        { name: 'Sleeping bag', place_id: code?.code },
+        { name: 'Tent pegs', place_id: crate.id },
+      ],
+    });
+    expect(d.placed).toEqual([
+      { item: 0, status: 'found', place: 0 },
+      { item: 1, status: 'found', place: null, container_id: crate.id },
+    ]);
+    expect(d.places.map((p: Json) => p.id)).toEqual([attic.place.id]);
+    const [pegs] = await own<{ container_id: string | null }>(
+      db,
+      'SELECT container_id FROM public.things WHERE id = $1',
+      [d.things[1].id],
+    );
+    expect(pegs?.container_id).toBe(crate.id);
+  });
+
+  it('answers a committed bulk add with its ids even when the full answer is over 8 KB', async () => {
+    // Names at their 200 and 120 character limits: twenty of them can't fit in 8 KB whole.
+    const env = await tool(louis, 'add_thing', {
+      location_id: home.id,
+      items: Array.from({ length: 20 }, (_, i) => ({
+        name: `Bulk ${String(i).padStart(2, '0')} ${'y'.repeat(192)}`,
+        new_place: { name: `Bay ${String(i).padStart(2, '0')} ${'z'.repeat(113)}` },
+      })),
+    });
+    // The 20 things were saved: the answer must say how to cite and undo them, not ask for a
+    // retry that would add them twice.
+    expect(isToolError(env)).toBe(false);
+    if (isToolError(env)) return;
+    const d = env.data as Answer;
+    expect(d.audit_event_id).toBeTruthy();
+    expect(env.trimmed?.length).toBeGreaterThan(0);
+    expect(byteLength(env)).toBeLessThanOrEqual(OUTPUT_LIMIT_BYTES);
+    const [n] = await own<{ n: string }>(
+      db,
+      `SELECT count(*)::text AS n FROM public.things WHERE name LIKE 'Bulk %' AND deleted_at IS NULL`,
+    );
+    expect(n?.n).toBe('20');
+  });
+
   it('refuses to undo a created thing someone changed since', async () => {
     const d = await data(louis, 'add_thing', { location_id: home.id, items: [{ name: 'Torch' }] });
     const thing = d.things[0];
@@ -438,9 +520,7 @@ describe('reads', () => {
   });
 
   it('pages 20 by default, at most 200, under 8 KB, with a cursor that loses nothing', async () => {
-    // Long names share the 8 KB budget with add_thing's per-item placement answer (placed[]):
-    // 100 characters each still stresses bulk adds without starving it.
-    const pad = 'x'.repeat(100);
+    const pad = 'x'.repeat(150);
     await data(ibrahim, 'add_thing', {
       location_id: home.id,
       items: Array.from({ length: 20 }, (_, i) => ({ name: `Jar ${i} ${pad}` })),

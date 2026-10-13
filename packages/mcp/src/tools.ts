@@ -420,13 +420,15 @@ export const TOOL_DEFS = Object.freeze({
       things: z.array(thingRef),
       places: z.array(placeRef),
       /** Per item, where it landed: `status` says whether its place already existed, was
-       * just made, or is the default Unplaced bucket; `place` is its index in `places`
-       * (null for Unplaced). `item` is the index in `items`. */
+       * just made, or is the default Unplaced bucket; `place` is its index in `places` (null
+       * for Unplaced, or when it went into a container: then `container_id` says which).
+       * `item` is the index in `items`. */
       placed: z.array(
         z.object({
           item: z.number().int().min(0),
           status: z.enum(['found', 'created', 'unplaced']),
           place: z.number().int().min(0).nullable(),
+          container_id: uuid.optional(),
         }),
       ),
       attach_link: z.string().optional(),

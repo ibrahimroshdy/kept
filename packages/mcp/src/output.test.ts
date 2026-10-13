@@ -6,6 +6,7 @@ import {
   encodeOffsetCursor,
   envelopeSchema,
   fit,
+  fitCommitted,
   isToolError,
   OUTPUT_LIMIT_BYTES,
   ok,
@@ -108,6 +109,62 @@ describe('fit', () => {
   it('passes errors through', () => {
     const e = toolError('tool_unavailable', 'Call capabilities.');
     expect(fit(e)).toBe(e);
+  });
+});
+
+describe('fitCommitted', () => {
+  const big = (n: number) => 'n'.repeat(n);
+  const audit = {
+    audit_event_id: '0192f000-0000-7000-8000-000000000001',
+    audit_event_ids: ['0192f000-0000-7000-8000-000000000001'],
+    undo_until: '2026-10-20T10:00:00.000Z',
+  };
+
+  it('passes a write answer through when it fits, like fit()', () => {
+    const env = ok({ ...audit, things: [{ id: 'a', untrusted: { name: 'Torch' } }] });
+    expect(fitCommitted(env)).toEqual(env);
+  });
+
+  it('never answers an error for a saved write: cuts to its skeleton instead', () => {
+    // Protected names alone are over the limit, so fit() gives up.
+    const things = Array.from({ length: 12 }, (_, i) => ({
+      id: `t${i}`,
+      untrusted: { name: big(700), path: ['Home', big(50)] },
+    }));
+    const env = ok({ ...audit, things, placed: [{ item: 0, status: 'found', place: 0 }] });
+    expect(isToolError(fit(env))).toBe(true);
+    const out = fitCommitted(env);
+    expect(isToolError(out)).toBe(false);
+    if (isToolError(out)) return;
+    expect(out.trimmed).toEqual(['*']);
+    expect(byteLength(out)).toBeLessThanOrEqual(OUTPUT_LIMIT_BYTES);
+    // Too big even as a skeleton: the audit ids alone, which still undo it.
+    expect(out.data).toEqual(audit);
+  });
+
+  it('trims a large saved write the usual way first, keeping ids, names, placed and undo ids', () => {
+    const things = Array.from({ length: 20 }, (_, i) => ({
+      id: `t${i}`,
+      untrusted: { name: big(150), path: ['Home', big(150)], aliases: [big(100)] },
+    }));
+    const placed = things.map((_, i) => ({ item: i, status: 'unplaced', place: null }));
+    const out = fitCommitted(ok({ ...audit, things, placed, note: big(300) }));
+    expect(isToolError(out)).toBe(false);
+    if (isToolError(out)) return;
+    const data = out.data as Record<string, unknown>;
+    expect(data.placed).toEqual(placed);
+    expect(data.audit_event_ids).toEqual(audit.audit_event_ids);
+    expect(data.undo_until).toBe(audit.undo_until);
+    const third = (data.things as { id: string; untrusted: { name: string } }[])[3];
+    expect(third?.id).toBe('t3');
+    expect(third?.untrusted.name).toBe(big(150));
+    expect(data.note).toBeUndefined();
+    expect(out.trimmed).toContain('note');
+  });
+
+  it('passes an error through untouched', () => {
+    const e = toolError('not_found', 'No such thing.');
+    expect(fitCommitted(e)).toBe(e);
   });
 });
 
