@@ -1,0 +1,2 @@
+ALTER TABLE "admin_alerts" DROP CONSTRAINT "admin_alerts_kind_chk";--> statement-breakpoint
+ALTER TABLE "admin_alerts" ADD CONSTRAINT "admin_alerts_kind_chk" CHECK ("kind" IN ('failed_jobs_rising', 'audit_default_partition', 'llm_default_partition', 'ai_instance_cap_warning', 'ai_instance_cap_reached', 'ai_instance_key_rejected', 'backup_failed', 'reminders_not_scanned', 'backup_stale', 'disk_space_low', 'bucket_versioning_off', 'restore_drill_due', 'backup_suspicious_size', 'backup_verify_failed', 'webhook_failing'));

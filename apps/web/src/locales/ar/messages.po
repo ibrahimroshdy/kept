@@ -21310,3 +21310,11 @@ msgstr "ما يحتاجك في الأعلى، ومواقعك تحته. «الت�
 #: src/components/connections/words.tsx
 msgid "Ended: the account was reclaimed"
 msgstr "انتهى: استُعيد الحساب"
+
+#: src/routes/_app/admin.alerts.tsx
+msgid "The weekly backup check found a problem"
+msgstr "وجد الفحص الأسبوعي للنسخ الاحتياطية مشكلة"
+
+#: src/components/ops/ops-words.ts
+msgid "Some files are missing from the file storage, so no backup holds them. The server's log names them."
+msgstr "بعض الملفات مفقودة من مخزن الملفات، فلا تحويها أي نسخة احتياطية. سجل الخادم يذكرها بأسمائها."

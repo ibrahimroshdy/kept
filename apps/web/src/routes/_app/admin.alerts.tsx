@@ -43,6 +43,8 @@ function useAlertTitle() {
         return t`Time for a restore drill`;
       case 'backup_suspicious_size':
         return t`The latest backup looks too small`;
+      case 'backup_verify_failed':
+        return t`The weekly backup check found a problem`;
       default:
         return kind;
     }

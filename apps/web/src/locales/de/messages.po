@@ -21310,3 +21310,11 @@ msgstr "Was Sie braucht, steht oben, Ihre Orte darunter. „Weiter“ führt Sie
 #: src/components/connections/words.tsx
 msgid "Ended: the account was reclaimed"
 msgstr "Beendet: das Konto wurde zurückgeholt"
+
+#: src/routes/_app/admin.alerts.tsx
+msgid "The weekly backup check found a problem"
+msgstr "Die wöchentliche Prüfung der Sicherungen hat ein Problem gefunden"
+
+#: src/components/ops/ops-words.ts
+msgid "Some files are missing from the file storage, so no backup holds them. The server's log names them."
+msgstr "Einige Dateien fehlen im Dateispeicher, also enthält keine Sicherung sie. Das Protokoll des Servers nennt sie."

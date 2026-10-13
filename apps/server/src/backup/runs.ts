@@ -101,8 +101,9 @@ export async function backupQueued(system: Pick<pg.Pool, 'query'>): Promise<bool
   const { rows } = await system.query<{ queued: boolean }>(
     `SELECT EXISTS (
        SELECT 1 FROM pgboss.job
-        WHERE name = 'backup' AND state IN ('created', 'active')
-          AND start_after <= now()
+        WHERE name = 'backup' AND state IN ('created', 'retry', 'active')
+          -- A future start is tomorrow's nightly, unless it is a failed run waiting to retry.
+          AND (state = 'retry' OR start_after <= now())
           AND created_on > now() - make_interval(hours => $1)) AS queued`,
     [RUNNING_FOR_AT_MOST_HOURS],
   );

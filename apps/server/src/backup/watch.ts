@@ -87,6 +87,8 @@ type BackupFacts = {
   last: { status: BackupRunState; finishedAt: Date | null } | null;
   versioningOk: boolean | null;
   lastDrillAt: Date | null;
+  /** The latest repository check (backup-verify), when one ran. */
+  lastVerify: { status: BackupRunState; error: string | null; finishedAt: Date | null } | null;
 };
 
 async function readBackupFacts(ownerUrl: string): Promise<BackupFacts> {
@@ -102,6 +104,9 @@ async function readBackupFacts(ownerUrl: string): Promise<BackupFacts> {
       last_finished: Date | null;
       versioning: boolean | null;
       last_drill: Date | null;
+      verify_status: BackupRunState | null;
+      verify_error: string | null;
+      verify_finished: Date | null;
     }>(
       `SELECT
          (SELECT max(finished_at) FROM public.backup_runs
@@ -113,11 +118,15 @@ async function readBackupFacts(ownerUrl: string): Promise<BackupFacts> {
          (SELECT bucket_versioning_ok FROM public.backup_runs
            WHERE bucket_versioning_ok IS NOT NULL ORDER BY started_at DESC LIMIT 1) AS versioning,
          (SELECT max(finished_at) FROM public.backup_runs
-           WHERE kind = 'drill' AND status = 'ok') AS last_drill
+           WHERE kind = 'drill' AND status = 'ok') AS last_drill,
+         v.status AS verify_status, v.error AS verify_error, v.finished_at AS verify_finished
        FROM (SELECT 1) AS one
        LEFT JOIN LATERAL (SELECT status, finished_at FROM public.backup_runs
                            WHERE kind = ANY($1::text[]) AND status <> 'running'
-                           ORDER BY started_at DESC LIMIT 1) AS l ON true`,
+                           ORDER BY started_at DESC LIMIT 1) AS l ON true
+       LEFT JOIN LATERAL (SELECT status, error, finished_at FROM public.backup_runs
+                           WHERE kind = 'verify' AND status <> 'running'
+                           ORDER BY started_at DESC LIMIT 1) AS v ON true`,
       [SNAPSHOT_KINDS],
     );
     const r = rows[0];
@@ -128,6 +137,9 @@ async function readBackupFacts(ownerUrl: string): Promise<BackupFacts> {
       last: r?.last_status ? { status: r.last_status, finishedAt: r.last_finished } : null,
       versioningOk: r?.versioning ?? null,
       lastDrillAt: r?.last_drill ?? null,
+      lastVerify: r?.verify_status
+        ? { status: r.verify_status, error: r.verify_error, finishedAt: r.verify_finished }
+        : null,
     };
   } finally {
     await client.end();
@@ -215,6 +227,17 @@ export async function runOpsWatch(deps: OpsWatchDeps): Promise<OpsWatchResult> {
       'restore_drill_due',
       view.configured && drillFor !== null && drillFor > DRILL_DUE_DAYS * 24 * HOUR,
       () => ({ lastDrillAt: facts.lastDrillAt?.toISOString() ?? null }),
+    );
+    // The weekly repository check found errors or lost files: until a later check passes, the
+    // snapshots may not restore as they are (the verify job itself only records its row).
+    await step(
+      'backup_verify_failed',
+      'backup_verify_failed',
+      view.configured && facts.lastVerify?.status === 'failed',
+      () => ({
+        error: facts.lastVerify?.error ?? null,
+        at: facts.lastVerify?.finishedAt?.toISOString() ?? null,
+      }),
     );
     metrics = {
       lastSuccessAt: facts.lastOkAt?.toISOString() ?? null,

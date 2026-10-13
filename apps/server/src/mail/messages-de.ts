@@ -352,6 +352,17 @@ export const DE: CoreTable = {
         footnote,
       };
     }
+    if (m.alert === 'backup_verify_failed') {
+      return {
+        subject: 'Kept: Die wöchentliche Prüfung der Sicherungen hat ein Problem gefunden',
+        paragraphs: [
+          `Die wöchentliche Prüfung des Sicherungs-Repositorys ist fehlgeschlagen: ${String(m.details.error ?? '')}`,
+          'Deine Sicherungen lassen sich so womöglich nicht wiederherstellen. Öffne die Sicherungen, um zu sehen, was gefunden wurde, und prüfe erneut, sobald es behoben ist.',
+        ],
+        action: { label: 'Sicherungen öffnen', url: page(ctx, '/admin/backups') },
+        footnote,
+      };
+    }
     if (m.alert === 'backup_suspicious_size') {
       return {
         subject: 'Kept: Die neueste Sicherung wirkt zu klein',
