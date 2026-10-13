@@ -788,8 +788,11 @@ describe('inside a location (D39)', () => {
   it('a place page links back to its parent and outlines the location around it', async () => {
     await renderApp(`/p/${P.deskDrawer}`);
     await findHeading('Desk drawer');
-    // Explicit, labelled, at every width: the phone's arrow is icon-only.
-    expect(screen.getByRole('link', { name: /Back to/ })).toHaveAttribute('href', '/p/R00M4K');
+    // Explicit, labelled, at every width: the phone's arrow is icon-only. jsdom applies no CSS,
+    // so check that nothing around the link hides it at some width (it was `hidden md:block`).
+    const back = screen.getByRole('link', { name: /Back to/ });
+    expect(back).toHaveAttribute('href', '/p/R00M4K');
+    expect(back.closest('[class*="hidden"]')).toBeNull();
     const tree = (
       await screen.findByText(
         (_, el) => el?.tagName === 'SUMMARY' && el.textContent === 'All places',

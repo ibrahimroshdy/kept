@@ -162,7 +162,9 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
   return (
     <Page title={name} back={back} eyebrow={<bdi>{locationName}</bdi>} wide>
       <div className="grid gap-2">
-        <div className="hidden md:block">
+        {/* At every width: on a phone the header's back arrow is icon-only, and this says where
+            it goes (the maintainer couldn't tell how to get back to a thing's place). */}
+        <div>
           <LinkButton size="small" variant="ghost" {...back}>
             <ChevronStartIcon className="size-4" />
             <Trans>Back to {isolate(backName)}</Trans>

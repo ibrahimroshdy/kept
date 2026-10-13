@@ -31,12 +31,16 @@ msgid "Renamed to {trimmed}"
 msgstr "تغيّر الاسم إلى {trimmed}"
 
 #: src/components/home/checklist.tsx
-msgid "Set these where Kept's other settings live (the .env file with Docker Compose, Kept's secret on Kubernetes), then restart Kept:"
-msgstr "اضبط هذين حيث توجد إعدادات Kept الأخرى (ملف ‎.env مع Docker Compose، أو سرّ Kept على Kubernetes)، ثم أعد تشغيل Kept:"
+msgid "Set these where Kept's other settings live (the .env file with Docker Compose; with the Helm chart, the URL in the secret named by smtp.existingSecret and the sender in smtp.from), then restart Kept:"
+msgstr "اضبط هذين حيث توجد إعدادات Kept الأخرى (ملف ‎.env مع Docker Compose؛ ومع Helm chart: الرابط في السرّ الذي يسمّيه smtp.existingSecret والمُرسِل في smtp.from)، ثم أعد تشغيل Kept:"
 
 #: src/components/home/checklist.tsx
 msgid "Set up email"
 msgstr "إعداد البريد الإلكتروني"
+
+#: src/components/ai/labels.ts
+msgid "the request was more than the plan allows in one minute"
+msgstr "كان الطلب أكبر مما تسمح به الخطة في دقيقة واحدة"
 
 #: src/components/home/checklist.tsx
 msgid "the sender, for example <0>Kept <kept@example.org></0>"

@@ -53,9 +53,8 @@ documentation. Discussions are switched with `gh repo edit --enable-discussions`
   `kubernetes`, `helm`, `arabic`, `rtl`, `agpl` (19 of GitHub's 20). The script replaces the
   whole set, so edit the list in the script, not in the web UI.
 - Homepage: the Pages site's `html_url`, read from `GET /repos/{owner}/{repo}/pages`, always as
-  `https://`: the API gives `http://ibrahimroshdy.com/kept/` because the maintainer's user site
-  doesn't enforce HTTPS, though the domain serves it. It stays unset until Pages exists; the script
-  never builds the URL itself.
+  `https://` (the site is `https://keptinventory.info/` since 2026-10-11). It stays unset until
+  Pages exists; the script never builds the URL itself.
 
 ### Security (`security`) — Dependabot alerts now, the rest at the flip
 

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Kept's documentation site (Starlight, D102, D199): built to static files in dist/, published to GitHub Pages at https://ibrahimroshdy.com/kept/.",
+  "description": "Kept's documentation site (Starlight, D102, D199): built to static files in dist/, published to GitHub Pages at https://keptinventory.info/.",
   "scripts": {
     "dev": "pnpm run gen:openapi && ASTRO_TELEMETRY_DISABLED=1 astro dev",
     "build": "pnpm run gen:openapi && ASTRO_TELEMETRY_DISABLED=1 astro build",

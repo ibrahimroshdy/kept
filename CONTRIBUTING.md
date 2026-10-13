@@ -9,20 +9,20 @@ Developers section goes deeper than this page; this page is what you need to sen
 
 On the docs site:
 
-- **Getting going:** [local setup](https://ibrahimroshdy.com/kept/developers/local-setup/),
-  [the architecture](https://ibrahimroshdy.com/kept/developers/architecture/),
-  [the monorepo](https://ibrahimroshdy.com/kept/developers/monorepo/),
-  [testing](https://ibrahimroshdy.com/kept/developers/testing/) and
-  [a feature end to end](https://ibrahimroshdy.com/kept/developers/feature-walkthrough/).
+- **Getting going:** [local setup](https://keptinventory.info/developers/local-setup/),
+  [the architecture](https://keptinventory.info/developers/architecture/),
+  [the monorepo](https://keptinventory.info/developers/monorepo/),
+  [testing](https://keptinventory.info/developers/testing/) and
+  [a feature end to end](https://keptinventory.info/developers/feature-walkthrough/).
 - **The parts with rules:**
-  [languages and right-to-left](https://ibrahimroshdy.com/kept/developers/i18n-rtl/),
-  [the UI kit](https://ibrahimroshdy.com/kept/developers/ui-kit/),
-  [row-level security](https://ibrahimroshdy.com/kept/developers/rls/),
-  [migrations](https://ibrahimroshdy.com/kept/developers/migrations/),
-  [API conventions](https://ibrahimroshdy.com/kept/developers/api/) and
-  [the MCP server](https://ibrahimroshdy.com/kept/developers/mcp/).
-- **Maintainers:** [the DCO](https://ibrahimroshdy.com/kept/maintainers/dco/) and
-  [releasing](https://ibrahimroshdy.com/kept/maintainers/releasing/).
+  [languages and right-to-left](https://keptinventory.info/developers/i18n-rtl/),
+  [the UI kit](https://keptinventory.info/developers/ui-kit/),
+  [row-level security](https://keptinventory.info/developers/rls/),
+  [migrations](https://keptinventory.info/developers/migrations/),
+  [API conventions](https://keptinventory.info/developers/api/) and
+  [the MCP server](https://keptinventory.info/developers/mcp/).
+- **Maintainers:** [the DCO](https://keptinventory.info/maintainers/dco/) and
+  [releasing](https://keptinventory.info/maintainers/releasing/).
 
 ## Prerequisites
 

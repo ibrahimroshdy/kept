@@ -1021,13 +1021,18 @@ test('email and push: Louis turns on warranties by email, the digest reaches Mai
       return s.locations.find((l) => l.locationId === home.id)?.kinds.warranty?.email;
     })
     .toBe(true);
-  await page.getByRole('button', { name: /Daily digest/ }).click();
-  await page.getByRole('option', { name: '23:30' }).click();
-  await expect(page.getByRole('button', { name: 'Save', exact: true })).toBeEnabled({
-    timeout: 5000,
-  });
-  await page.getByRole('button', { name: 'Save', exact: true }).click();
-  await expect(page.getByText('Saved', { exact: true }).first()).toBeVisible();
+  // A retry runs against the first attempt's saved digest: 23:30 already chosen leaves Save
+  // disabled, so only choose and save it when it isn't set yet.
+  const digest = page.getByRole('button', { name: /Daily digest/ });
+  if (!((await digest.textContent()) ?? '').includes('23:30')) {
+    await digest.click();
+    await page.getByRole('option', { name: '23:30' }).click();
+    await expect(page.getByRole('button', { name: 'Save', exact: true })).toBeEnabled({
+      timeout: 5000,
+    });
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+    await expect(page.getByText('Saved', { exact: true }).first()).toBeVisible();
+  }
   await axe(page, 'Notifications settings, saved');
 
   // A shop warranty on the smoke alarm that ends in ten days: expiring, so it waits for the digest.
@@ -1102,9 +1107,14 @@ test('email and push: Louis turns on warranties by email, the digest reaches Mai
   });
   await page.evaluate(() => navigator.serviceWorker.ready.then(() => undefined));
   const cdp = await context.newCDPSession(page);
+  // A push to a registration whose worker isn't activated and running yet is dropped silently
+  // (the step's flake): wait for an activated, running version of our worker.
   const registered = new Promise<string>((resolve) => {
-    cdp.on('ServiceWorker.workerRegistrationUpdated', (e) => {
-      const ours = e.registrations.find((r) => !r.isDeleted && r.scopeURL.startsWith(BASE));
+    cdp.on('ServiceWorker.workerVersionUpdated', (e) => {
+      const ours = e.versions.find(
+        (v) =>
+          v.scriptURL.startsWith(BASE) && v.status === 'activated' && v.runningStatus === 'running',
+      );
       if (ours) resolve(ours.registrationId);
     });
   });
@@ -1116,23 +1126,29 @@ test('email and push: Louis turns on warranties by email, the digest reaches Mai
     url: `/t/${alarm.id}`,
     tag: `r${alarm.id.replaceAll('-', '')}`,
   };
-  await cdp.send('ServiceWorker.deliverPushMessage', {
-    origin: BASE,
-    registrationId,
-    data: JSON.stringify(payload),
-  });
-  await expect
-    .poll(() =>
-      page.evaluate(async () =>
-        (await (await navigator.serviceWorker.ready).getNotifications()).map((n) => ({
-          title: n.title,
-          body: n.body,
-          tag: n.tag,
-          url: (n.data as { url?: string } | null)?.url ?? null,
-        })),
-      ),
-    )
-    .toEqual([{ title: payload.title, body: payload.body, tag: payload.tag, url: payload.url }]);
+  // Delivered again until it shows: the same tag replaces the notification, so a repeat can't
+  // add a second one, and a worker that was stopped between delivery and show gets another go.
+  await expect(async () => {
+    await cdp.send('ServiceWorker.deliverPushMessage', {
+      origin: BASE,
+      registrationId,
+      data: JSON.stringify(payload),
+    });
+    await expect
+      .poll(
+        () =>
+          page.evaluate(async () =>
+            (await (await navigator.serviceWorker.ready).getNotifications()).map((n) => ({
+              title: n.title,
+              body: n.body,
+              tag: n.tag,
+              url: (n.data as { url?: string } | null)?.url ?? null,
+            })),
+          ),
+        { timeout: 8_000 },
+      )
+      .toEqual([{ title: payload.title, body: payload.body, tag: payload.tag, url: payload.url }]);
+  }).toPass({ timeout: 45_000 });
   // Nothing in this CDP version taps a notification: the tap's URL logic is unit-tested
   // (pwa/push-worker.ts clickTarget), and the real tap is on the device checklist.
   await cdp.detach();

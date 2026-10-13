@@ -33,7 +33,7 @@ describe('SetupCodeHelp', () => {
     expect(panel).toHaveTextContent('docker compose logs kept | grep "KEPT SETUP CODE"');
     expect(screen.getByRole('link', { name: 'Install guide' })).toHaveAttribute(
       'href',
-      'https://ibrahimroshdy.com/kept/install/compose/',
+      'https://keptinventory.info/install/compose/',
     );
   });
 
@@ -51,7 +51,7 @@ describe('SetupCodeHelp', () => {
     expect(panel).toHaveTextContent('--previous');
     expect(screen.getByRole('link', { name: 'Install guide' })).toHaveAttribute(
       'href',
-      'https://ibrahimroshdy.com/kept/install/kubernetes/',
+      'https://keptinventory.info/install/kubernetes/',
     );
     expect(localStorage.getItem(KEY)).toBe('kubernetes');
     expect(storedWay()).toBe('kubernetes');

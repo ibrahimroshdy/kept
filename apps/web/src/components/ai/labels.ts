@@ -110,6 +110,8 @@ export function useFailureReason(): (outcome: LedgerOutcome, code?: string | nul
         return t`the provider had an error`;
       case 'http_4xx':
         return t`the provider refused the request`;
+      case 'too_large':
+        return t`the request was more than the plan allows in one minute`;
       case 'network':
         return t`the provider couldn't be reached`;
       case 'content_filter':

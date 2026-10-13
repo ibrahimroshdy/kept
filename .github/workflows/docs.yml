@@ -6,9 +6,9 @@
 # release tag (`gh workflow run docs.yml --ref vX.Y.Z`), to redeploy the current release's docs.
 # The github-pages environment must allow tags `v*` (scripts/repo-settings.sh, group pages).
 #
-# The site is served at https://ibrahimroshdy.com/kept/: a project site under the maintainer's
-# GitHub Pages user site, whose custom domain is ibrahimroshdy.com (ibrahimroshdy.github.io/kept/
-# redirects there). The build is told that origin and base path directly, as KEPT_DOCS_SITE and
+# The site is served at https://keptinventory.info/ (the Pages custom domain, apex, since
+# 2026-10-11); ibrahimroshdy.com/kept/ and ibrahimroshdy.github.io/kept/ 301 there, keeping the
+# path. The build is told that origin and base path directly, as KEPT_DOCS_SITE and
 # KEPT_DOCS_BASE (apps/docs/astro.config.mjs), so pull requests build the same links as main.
 # Pages must be enabled with "GitHub Actions" as its source (a maintainer step on the 1.0
 # checklist). Actions pinned by commit SHA (spike W1).

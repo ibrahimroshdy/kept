@@ -44,4 +44,4 @@ without the public transparency log (the repository is private); it is dropped o
 each release's notes give the exact command.
 
 Every release is signed. The docs site's
-[Verifying a release](https://ibrahimroshdy.com/kept/admin/verify-release/) page has the details.
+[Verifying a release](https://keptinventory.info/admin/verify-release/) page has the details.

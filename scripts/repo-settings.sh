@@ -199,10 +199,8 @@ if want metadata; then
   [[ $c == "$description" ]] ||
     apply "set the description" -- api_json PATCH "repos/$repo" "$(jq -n --arg d "$description" '{description: $d}')"
   # The homepage is the Pages site's own URL, read from the Pages API; unset until Pages exists.
-  # Kept's site is a project site under the maintainer's user site, which has the custom domain
-  # ibrahimroshdy.com, so html_url already carries that domain (…/kept/); nothing here hard-codes it.
-  # The API gives it as http:// while the user site doesn't enforce HTTPS (seen 2026-10-07 on his
-  # other project sites), though the domain serves HTTPS; the homepage is always the https:// one.
+  # html_url carries the site's custom domain (keptinventory.info since 2026-10-11); nothing here
+  # hard-codes it. The API can give it as http://; the homepage is always the https:// one.
   c=$(jq -r '.homepage // "" | if . == "" then "(none)" else . end' <<<"$repo_json")
   if [[ -n $pages_json ]]; then
     home=$(jq -r '.html_url | sub("^http://"; "https://")' <<<"$pages_json")
