@@ -68,7 +68,10 @@ function LocationPage() {
         <ErrorState error={location.error} onRetry={() => void location.refetch()} />
       </Page>
     );
-  return <LocationBody location={location.data} />;
+  // Keyed, like the place and thing pages: TanStack keeps this component across a change of
+  // `$id`, and a location already in the cache renders at once, so without the key a selection
+  // (and anything else the body holds) would carry into the next location.
+  return <LocationBody key={location.data.id} location={location.data} />;
 }
 
 function LocationBody({ location }: { location: LocationDetail }) {

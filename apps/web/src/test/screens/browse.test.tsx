@@ -268,6 +268,22 @@ describe('select and pick up (D175, frame 7a)', () => {
   });
 });
 
+describe('switching locations (review finding, 2026-10-14)', () => {
+  it('starts the next location with nothing selected, even one already visited', async () => {
+    const { user, router } = await renderApp(`/loc/${IDS.garage}`);
+    await list('Contents of Garage');
+    await router.navigate({ to: '/loc/$id', params: { id: IDS.home } });
+    await list('Contents of Home');
+    await user.click(screen.getByRole('button', { name: 'Select' }));
+    await user.click(screen.getByRole('checkbox', { name: 'Select Galaxy S23' }));
+    expect(screen.getByRole('toolbar', { name: 'Selection' })).toBeInTheDocument();
+    // Garage is in the query cache, so the page renders it at once: the selection must not follow.
+    await router.navigate({ to: '/loc/$id', params: { id: IDS.garage } });
+    await list('Contents of Garage');
+    expect(screen.queryByRole('toolbar', { name: 'Selection' })).toBeNull();
+  });
+});
+
 describe('select and move (D45)', () => {
   it('moves selected things, warning who loses sight across locations', async () => {
     const { user, mock } = await renderApp(`/loc/${IDS.home}`);

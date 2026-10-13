@@ -32,6 +32,7 @@ import {
 import { signOut } from '@/api/auth';
 import { isApiError } from '@/api/client';
 import { useLocations, useMe } from '@/api/queries';
+import { assistantStore } from '@/assistant/store';
 import { useConfirm } from '@/components/ui/confirm';
 import {
   discardOrphan,
@@ -134,6 +135,7 @@ export function OfflineProvider({ children }: { children: ReactNode }) {
     const onError = (error: unknown) => {
       if (!sessionEnded(error)) return;
       setOffline(null);
+      assistantStore.reset();
       void lockOffline();
     };
     const q = qc.getQueryCache().subscribe((e) => {
