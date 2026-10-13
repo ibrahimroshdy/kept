@@ -582,6 +582,23 @@ describe('writes', () => {
     expect(row).toEqual({ name: 'Main router', aliases: { en: ['modem'] }, notes: 'By the TV' });
   });
 
+  it('update_thing files an alias by its script: an Arabic one goes to Arabic, English stays (D214)', async () => {
+    const d = await data(louis, 'add_thing', {
+      location_id: home.id,
+      items: [{ name: 'Drill' }],
+    });
+    const id = d.things[0].id;
+    await data(louis, 'update_thing', { thing_id: id, fields: { aliases: ['driver', 'bit'] } });
+    // An MCP client asked to add the Arabic word sends only that one.
+    await data(louis, 'update_thing', { thing_id: id, fields: { aliases: ['مثقاب'] } });
+    const [row] = await own<{ aliases: unknown }>(
+      db,
+      'SELECT aliases FROM public.things WHERE id = $1',
+      [id],
+    );
+    expect(row?.aliases).toEqual({ en: ['driver', 'bit'], ar: ['مثقاب'] });
+  });
+
   it('update_thing with a stale proposal version is refused (D156)', async () => {
     const thing = await createThing(t, ibrahim, home, { name: 'Lamp' });
     const c = { ...ctx(louis), ifMatch: Number(thing.rowVersion) - 1 };

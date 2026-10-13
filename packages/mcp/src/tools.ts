@@ -460,7 +460,13 @@ export const TOOL_DEFS = Object.freeze({
       fields: z
         .object({
           name: shortText(200).optional(),
-          aliases: z.array(shortText(200)).max(20).optional(),
+          aliases: z
+            .array(shortText(200))
+            .max(20)
+            .optional()
+            .describe(
+              'Replaces the aliases of each language given: Arabic-script words are Arabic, the rest English. Send the full list for that language',
+            ),
           notes: z.string().max(2000).nullable().optional(),
           brand: z.string().max(120).nullable().optional(),
           model: z.string().max(120).nullable().optional(),

@@ -197,6 +197,26 @@ const aliasLanguage = (locale: string) => {
   return /^[a-z]{2}$/.test(lang) ? lang : 'en';
 };
 
+const ARABIC = /\p{Script=Arabic}/u;
+
+/**
+ * The aliases a tool was given, by language (D214): Arabic-script words are Arabic, the rest the
+ * caller's language (English where that is Arabic). MCP always runs in English, so without this an
+ * Arabic alias landed in the English list and replaced it. Only the languages given are replaced;
+ * an empty list clears the caller's.
+ */
+function aliasesByLanguage(locale: string, aliases: readonly string[]): Record<string, string[]> {
+  const own = aliasLanguage(locale);
+  const latin = own === 'ar' ? 'en' : own;
+  if (aliases.length === 0) return { [own]: [] };
+  const out: Record<string, string[]> = {};
+  for (const a of aliases) {
+    const lang = ARABIC.test(a) ? 'ar' : latin;
+    out[lang] = [...(out[lang] ?? []), a];
+  }
+  return out;
+}
+
 export const updateThingTool: Handler<'update_thing'> = {
   action: 'things.edit',
   subjectLocation: (client, input) => locationOfRef(client, input.thing_id),
@@ -213,7 +233,7 @@ export const updateThingTool: Handler<'update_thing'> = {
     if (f.custom !== undefined) body.custom = f.custom;
     if (f.aliases !== undefined) {
       const v = await viewOf(op.tx, op.client, op.scope, null, id);
-      body.aliases = { ...(v.aliases ?? {}), [aliasLanguage(op.locale)]: f.aliases };
+      body.aliases = { ...(v.aliases ?? {}), ...aliasesByLanguage(op.locale, f.aliases) };
     }
     if (f.brand !== undefined) {
       if (f.brand === null) body.brandId = null;
