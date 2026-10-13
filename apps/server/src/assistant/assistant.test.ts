@@ -436,6 +436,49 @@ describe('writes are proposals the person confirms (D22, D179)', () => {
     expect(prompts).toHaveLength(1);
   });
 
+  it('confirms an "it came back" card against the loan, not the thing’s version', async () => {
+    const drill = await createThing(t, ibrahim, home, { name: 'Drill' });
+    const lent = ok(
+      await call(t, `/api/v1/things/${drill.id}/lend`, {
+        as: louis,
+        body: { person: { name: 'Murdock' } },
+      }),
+      201,
+    ) as unknown as { loan: { id: string; rowVersion: number } };
+    // An edit after the lend moves the thing's version on; the loan's stays.
+    await own(db, `UPDATE public.things SET notes = 'Blue case' WHERE id = $1`, [drill.id]);
+    const [thing] = await own<{ row_version: number }>(
+      db,
+      'SELECT row_version FROM public.things WHERE id = $1',
+      [drill.id],
+    );
+    // The two versions differ, which is what the card used to trip on.
+    expect(thing?.row_version).not.toBe(lent.loan.rowVersion);
+
+    const { turnId } = await ask(louis, 'The drill came back', { kind: 'thing', id: drill.id });
+    script.push(calls({ id: 'r1', name: 'return_thing', input: { thing_id: drill.id } }));
+    expect(await run(louis, turnId)).toEqual({ status: 'done' });
+    const [proposal] = await own<{ id: string; batch_id: string; args_hash: string }>(
+      db,
+      'SELECT id, batch_id, args_hash FROM public.assistant_proposals WHERE turn_id = $1',
+      [turnId],
+    );
+    if (!proposal) throw new Error('no proposal');
+    const res = ok(
+      await call(t, '/api/v1/assistant/proposals/confirm', {
+        as: louis,
+        body: confirmBody(proposal),
+      }),
+    ) as unknown as { results: { status: string }[] };
+    expect(res.results).toEqual([expect.objectContaining({ status: 'confirmed' })]);
+    const [loan] = await own<{ returned: boolean }>(
+      db,
+      'SELECT returned_at IS NOT NULL AS returned FROM public.loans WHERE id = $1',
+      [lent.loan.id],
+    );
+    expect(loan).toEqual({ returned: true });
+  });
+
   it('after ten minutes a proposal is expired, never applied', async () => {
     const { proposal } = await proposeMove();
     const later = new Date(Date.now() + 11 * 60_000);

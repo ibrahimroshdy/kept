@@ -25,6 +25,13 @@ import { findRef } from '../tools/resolve.js';
 import type { ToolDeps } from '../tools/types.js';
 import { PROPOSAL_COLUMNS, type ProposalRow } from './threads.js';
 
+/** Write tools whose If-Match is the thing's own row version (the card's `before.rowVersion`). */
+const THING_VERSIONED: ReadonlySet<string> = new Set([
+  'update_thing',
+  'move_thing',
+  'adjust_stock',
+]);
+
 // Write proposals (D22, D123, D179, D213; plan T13, Q5). The model never runs a write: each write
 // call becomes a proposal, drawn by the web from its `args`, `before` and `refs` (never from model
 // text), bound to the SHA-256 of its canonical arguments, open for 10 minutes, one batch (one card)
@@ -483,7 +490,9 @@ export async function confirmProposals(
       continue;
     }
     const row = c.row;
-    const rowVersion = row.before.rowVersion;
+    // The card's before holds the thing's version; only the tools that write the thing's own row
+    // check it. return_thing and update_claim match ifMatch against the loan's or the claim's.
+    const rowVersion = THING_VERSIONED.has(row.tool) ? row.before.rowVersion : undefined;
     const env = (await runTool(
       {
         deps: deps.tools,
