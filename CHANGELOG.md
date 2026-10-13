@@ -3,6 +3,21 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.0.5 (2026-10-11)
+
+### Fixes
+
+- **web:** tour Next/Got it hover stays amber instead of flipping gray (#23) (f98fb16)
+
+### Documentation
+
+- README badge to keptinventory.info (#24) (a6c9dae)
+
+## 1.0.4 (2026-10-11)
+
+No user-facing changes: tagged on 1.0.3's commit (e722c41) before the README fix it was cut for
+had merged, so it is 1.0.3 rebuilt. That fix shipped in 1.0.5.
+
 ## 1.0.3 (2026-10-11)
 
 ### Features
@@ -43,6 +58,10 @@ subjects when a release is cut (`scripts/release.sh`).
 - **capture:** photos named after AI is connected show their names without a reload (#4) (a364a83)
 - **assistant:** fit a free-tier plan's per-minute limit, and say so when a question doesn't (#3) (7ae1cde)
 - **web:** the sidebar expands while the assistant's panel is docked (#2) (ec414e7)
+- **web:** a page left blank because the app's code failed to load reloads once by itself (#8) (164b8ec)
+- **web:** fuel trends opened offline before their first load show nothing instead of an error (#8) (164b8ec)
+- **inbox:** a receipt's shop and date fill in when its reading arrives after the review opened,
+  unless you've typed your own (#8) (164b8ec)
 
 ### Security
 
