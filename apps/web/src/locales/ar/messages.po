@@ -21244,65 +21244,65 @@ msgid "Keep what you added?"
 msgstr "الاحتفاظ بما أضفته؟"
 
 #: src/components/hints/hint-copy.ts
-msgid "Locations, members, AI and backups live here. Look around: nothing changes unless you change it."
-msgstr "المواقع والأعضاء والذكاء الاصطناعي والنسخ الاحتياطية هنا. تفقّدها: لا يتغير شيء ما لم تغيّره بنفسك."
+msgid "Locations, members, AI and backups live here. Nothing changes unless you change it."
+msgstr "المواقع والأعضاء والذكاء الاصطناعي والنسخ الاحتياطية هنا. لا يتغير شيء ما لم تغيّره."
 
 #: src/components/hints/hint-copy.ts
 msgid "Name it and create it. At the end you keep it, or discard it."
 msgstr "سمّه وأنشئه. في النهاية تُبقيه أو تتجاهله."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open \"Label everything unprinted\" to see its label. Print it only if you want to stick one on now."
-msgstr "افتح «اطبع ملصقات كل ما لم يُطبع له ملصق» لرؤية ملصقه. اطبعه فقط إذا أردت لصق واحد الآن."
+msgid "What has no label yet is listed here. Print a sheet whenever you want to stick some on."
+msgstr "ما ليس له ملصق بعد مُدرج هنا. اطبع ورقة متى أردت لصق بعضها."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a document to read it. The ones running out are one tap away."
-msgstr "افتح مستندًا لقراءته. التي توشك على الانتهاء على بُعد نقرة."
+msgid "Every document, with the ones running out first."
+msgstr "كل الوثائق، وأولها ما يوشك على الانتهاء."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a loan to see what's out, who has it, and what's overdue."
-msgstr "افتح إعارة لرؤية ما هو مُعار، ومن لديه، وما تأخر."
+msgid "What's lent out, who has it, and what's overdue."
+msgstr "ما هو مُعار، ومن لديه، وما تأخّر."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a schedule to see what's due next. A new one starts here too."
-msgstr "افتح جدولًا لرؤية ما يستحق تاليًا. جدول جديد يبدأ من هنا أيضًا."
+msgid "What's due, soonest first. New schedules start here too."
+msgstr "ما يستحق، الأقرب أولًا. ومن هنا تبدأ المواعيد الجديدة أيضًا."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a vehicle to see its odometer, what's due next, and its documents."
-msgstr "افتح مركبة لرؤية عدّاد المسافات وما يستحق تاليًا ومستنداتها."
+msgid "Each vehicle shows its odometer, what's due next and its documents."
+msgstr "كل مركبة تعرض عدّادها وما يستحق بعد ذلك ووثائقها."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open something low and adjust its stock after you use some."
-msgstr "افتح شيئًا منخفض المخزون وعدّل مخزونه بعد استخدام بعضه."
+msgid "What runs low, with how much is left."
+msgstr "ما يوشك على النفاد، ومقدار ما تبقّى."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open the item, check what Kept suggests, and confirm it. Confirming files it into its place."
-msgstr "افتح العنصر، وراجع ما يقترحه Kept، وأكّده. التأكيد يحفظه في مكانه."
+msgid "Your photo waits here. Check what Kept suggests and accept it: accepting files it into its place."
+msgstr "صورتك تنتظر هنا. راجع ما يقترحه Kept واقبله: القبول يضعه في مكانه."
 
 #: src/components/hints/hint-copy.ts
-msgid "Reminders land here. Open one to act on it, or change what you're told about."
-msgstr "التذكيرات تصل هنا. افتح واحدًا للتصرف بشأنه، أو غيّر ما تُبلَّغ به."
+msgid "Reminders land here, newest first. What you're told about is in Settings."
+msgstr "تصل التذكيرات إلى هنا، الأحدث أولًا. وما يُبلَّغ لك يُضبط في الإعدادات."
 
 #: src/components/hints/hint-copy.ts
-msgid "Take a photo of one thing, or add it from your gallery instead. It lands in your Inbox."
-msgstr "التقط صورة لشيء واحد، أو أضفه من معرض الصور بدلًا من ذلك. سيصل إلى الوارد."
+msgid "Take a photo of one thing, or pick one from your gallery, then tap Next. It waits in your Inbox."
+msgstr "التقط صورة لشيء واحد، أو اختر صورة من معرضك، ثم اضغط «التالي». ستنتظرك في الوارد."
 
 #: src/components/hints/hint-copy.ts
-msgid "That's every section. Anything you added along the way, you can keep or discard."
-msgstr "هذه كل الأقسام. أي شيء أضفته في الطريق، يمكنك إبقاؤه أو تجاهله."
+msgid "That's every section. If the tour added anything, you choose to keep it or discard it."
+msgstr "هذه كل الأقسام. إن أضافت الجولة شيئًا، فلك أن تحتفظ به أو تتجاهله."
 
 #: src/components/hints/hint-copy.ts
-msgid "This is where it landed. Open one of its places to see what's inside it."
-msgstr "هنا استقر. افتح أحد أماكنه لرؤية ما بداخله."
+msgid "A location's places, and how much each holds. Open any of them after the tour."
+msgstr "أماكن الموقع، وكم يحوي كل منها. افتح أيًّا منها بعد الجولة."
 
 #: src/components/hints/hint-copy.ts
-msgid "Trashed things wait here for 30 days. Restore one to put it back."
-msgstr "المهملات تبقى هنا 30 يومًا. استعد واحدًا لإرجاعه."
+msgid "Trashed things wait here for 30 days, each with Restore."
+msgstr "تنتظر الأشياء المحذوفة هنا 30 يومًا، ولكل منها «استعادة»."
 
 #: src/components/hints/hint-copy.ts
-msgid "Type the thing's name in the box above and open it from the results."
-msgstr "اكتب اسم الشيء في المربع أعلاه وافتحه من النتائج."
+msgid "Type part of a thing's name above. Each result shows where it is."
+msgstr "اكتب جزءًا من اسم شيء في الأعلى. كل نتيجة تبيّن مكانه."
 
 #: src/components/hints/hint-copy.ts
-msgid "What needs you is at the top. Open one of your locations to see its places and things."
-msgstr "ما يحتاجك في الأعلى. افتح أحد مواقعك لرؤية أماكنه وأشيائه."
+msgid "What needs you is at the top, your locations below it. Next takes you into one."
+msgstr "ما يحتاجك في الأعلى، ومواقعك تحته. «التالي» يأخذك إلى أحدها."

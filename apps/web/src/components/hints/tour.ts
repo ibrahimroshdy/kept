@@ -188,8 +188,7 @@ function sectionPath(section: ResolvedGuidedSection): string {
 
 /**
  * Discard through the existing mutations (spec decision 3): Trash-move for things and places,
- * the location delete, the capture batch undo. A printed label exists in the world — nothing
- * deletes it, so its entry reports back as kept and the dialog says so.
+ * the location delete, the capture batch undo (the batch's synced drafts go to the trash).
  */
 export const tourDeleter: TourDeleter = async (kind, id) => {
   switch (kind) {
@@ -205,8 +204,6 @@ export const tourDeleter: TourDeleter = async (kind, id) => {
     case 'capture':
       await captureApi.undoBatch(id);
       return;
-    case 'label':
-      throw new Error('Label batches stay: the tour only previews labels.');
   }
 };
 
@@ -456,9 +453,11 @@ export function useGuidedTour() {
     }
     run.shown[i] = true;
     run.shownAny = true;
-    // Progress counts shown sections: everything displayed up to and including this one.
+    // Progress counts shown sections: everything displayed up to and including this one, out of
+    // the sections that can still show (one skipped for a missing anchor drops out of the total,
+    // so the last section reads "n of n").
     const position = run.shown.slice(0, i + 1).filter(Boolean).length;
-    const total = run.sections.length;
+    const total = run.sections.length - run.skipped.size;
     const entry = copy[section.copyId] ?? copy[section.id];
     if (!entry) return step(run, i + 1);
     const isLast = i === run.sections.length - 1;

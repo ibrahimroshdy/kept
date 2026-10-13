@@ -13,6 +13,8 @@ import { INV_IDS } from '@/api/inventory/mock/fixtures';
 import type { Geo } from '@/camera/geo';
 import { hasFrame } from '@/camera/grab';
 import type { CameraEnv } from '@/camera/session';
+import { tourLedger } from '@/components/hints/tour-ledger';
+import { hintSlot } from '@/components/hints/use-hint';
 import { toastQueue } from '@/components/ui/toast';
 import { MemoryStore } from '@/offline/store';
 import { renderApp } from '@/test/app';
@@ -201,6 +203,28 @@ describe('the capture screen', () => {
     });
     expect(await screen.findByText('2 captured')).toBeInTheDocument();
     expect(screen.getByText('2 waiting to sync')).toBeInTheDocument();
+  });
+
+  it('during the guided tour, records the batch once so Discard can undo it; outside it, nothing', async () => {
+    tourLedger.clear();
+    const { user, store } = await renderCapture();
+    await screen.findByRole('button', { name: /Capturing into Home › Unplaced/ });
+    await user.click(await shutter());
+    await waitFor(async () => expect(await store.pending()).toHaveLength(1));
+    expect(tourLedger.list()).toEqual([]);
+
+    hintSlot.take('tour');
+    try {
+      await user.click(await shutter());
+      await user.click(await shutter());
+      await waitFor(async () => expect(await store.pending()).toHaveLength(3));
+      const [first] = await store.pending();
+      const batchId = (first?.payload as { batchId: string } | undefined)?.batchId;
+      expect(tourLedger.list()).toEqual([{ kind: 'capture', id: batchId }]);
+    } finally {
+      hintSlot.release('tour');
+      tourLedger.clear();
+    }
   });
 
   it('"+ photo to this thing" attaches the next shot to the draft just taken (D175)', async () => {

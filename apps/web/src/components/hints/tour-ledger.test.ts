@@ -25,6 +25,16 @@ describe('tourLedger', () => {
     ]);
   });
 
+  it('records an id once: a batch queued twice is discarded once', () => {
+    tourLedger.record('capture', 'b1');
+    tourLedger.record('capture', 'b1');
+    tourLedger.record('thing', 'b1');
+    expect(tourLedger.list()).toEqual([
+      { kind: 'capture', id: 'b1' },
+      { kind: 'thing', id: 'b1' },
+    ]);
+  });
+
   it('clears on demand', () => {
     tourLedger.record('capture', 'c1');
     tourLedger.clear();

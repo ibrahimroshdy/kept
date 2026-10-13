@@ -21244,65 +21244,65 @@ msgid "Keep what you added?"
 msgstr "Hinzugefügtes behalten?"
 
 #: src/components/hints/hint-copy.ts
-msgid "Locations, members, AI and backups live here. Look around: nothing changes unless you change it."
-msgstr "Standorte, Mitglieder, KI und Backups sind hier. Schau dich um: Es ändert sich nichts, außer du änderst es."
+msgid "Locations, members, AI and backups live here. Nothing changes unless you change it."
+msgstr "Orte, Mitglieder, KI und Sicherungen sind hier. Nichts ändert sich, solange Sie es nicht ändern."
 
 #: src/components/hints/hint-copy.ts
 msgid "Name it and create it. At the end you keep it, or discard it."
 msgstr "Benenne ihn und erstelle ihn. Am Ende behältst du ihn oder verwirfst ihn."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open \"Label everything unprinted\" to see its label. Print it only if you want to stick one on now."
-msgstr "Öffne „Alles etikettieren, was noch kein gedrucktes Etikett hat“, um sein Etikett zu sehen. Drucke es nur, wenn du jetzt eines aufkleben willst."
+msgid "What has no label yet is listed here. Print a sheet whenever you want to stick some on."
+msgstr "Hier steht, was noch kein Etikett hat. Drucken Sie einen Bogen, wann immer Sie welche aufkleben möchten."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a document to read it. The ones running out are one tap away."
-msgstr "Öffne ein Dokument, um es zu lesen. Die bald ablaufen sind einen Tipp entfernt."
+msgid "Every document, with the ones running out first."
+msgstr "Alle Dokumente, die bald ablaufenden zuerst."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a loan to see what's out, who has it, and what's overdue."
-msgstr "Öffne eine Ausleihe, um zu sehen, was draußen ist, wer es hat und was überfällig ist."
+msgid "What's lent out, who has it, and what's overdue."
+msgstr "Was verliehen ist, wer es hat und was überfällig ist."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a schedule to see what's due next. A new one starts here too."
-msgstr "Öffne einen Zeitplan, um zu sehen, was als Nächstes fällig ist. Ein neuer beginnt auch hier."
+msgid "What's due, soonest first. New schedules start here too."
+msgstr "Was fällig ist, das Nächste zuerst. Neue Pläne beginnen auch hier."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a vehicle to see its odometer, what's due next, and its documents."
-msgstr "Öffne ein Fahrzeug, um seinen Kilometerstand, die nächste Fälligkeit und seine Dokumente zu sehen."
+msgid "Each vehicle shows its odometer, what's due next and its documents."
+msgstr "Jedes Fahrzeug zeigt seinen Kilometerstand, was als Nächstes fällig ist, und seine Dokumente."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open something low and adjust its stock after you use some."
-msgstr "Öffne etwas mit niedrigem Bestand und passe seinen Vorrat an, nachdem du etwas verbraucht hast."
+msgid "What runs low, with how much is left."
+msgstr "Was knapp wird, und wie viel noch da ist."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open the item, check what Kept suggests, and confirm it. Confirming files it into its place."
-msgstr "Öffne den Eintrag, prüfe, was Kept vorschlägt, und bestätige ihn. Bestätigen legt ihn an seinen Platz."
+msgid "Your photo waits here. Check what Kept suggests and accept it: accepting files it into its place."
+msgstr "Ihr Foto wartet hier. Prüfen Sie, was Kept vorschlägt, und übernehmen Sie es: So kommt es an seinen Platz."
 
 #: src/components/hints/hint-copy.ts
-msgid "Reminders land here. Open one to act on it, or change what you're told about."
-msgstr "Erinnerungen landen hier. Öffne eine, um zu handeln, oder ändere, worüber du informiert wirst."
+msgid "Reminders land here, newest first. What you're told about is in Settings."
+msgstr "Erinnerungen landen hier, die neuesten zuerst. Worüber Sie informiert werden, steht in den Einstellungen."
 
 #: src/components/hints/hint-copy.ts
-msgid "Take a photo of one thing, or add it from your gallery instead. It lands in your Inbox."
-msgstr "Fotografiere eine Sache oder füge sie stattdessen aus deiner Galerie hinzu. Sie landet im Eingang."
+msgid "Take a photo of one thing, or pick one from your gallery, then tap Next. It waits in your Inbox."
+msgstr "Fotografieren Sie ein Ding oder wählen Sie ein Foto aus der Galerie, dann tippen Sie auf „Weiter“. Es wartet im Eingang."
 
 #: src/components/hints/hint-copy.ts
-msgid "That's every section. Anything you added along the way, you can keep or discard."
-msgstr "Das war jeder Bereich. Alles, was du unterwegs hinzugefügt hast, kannst du behalten oder verwerfen."
+msgid "That's every section. If the tour added anything, you choose to keep it or discard it."
+msgstr "Das waren alle Bereiche. Hat die Tour etwas hinzugefügt, entscheiden Sie, ob Sie es behalten oder verwerfen."
 
 #: src/components/hints/hint-copy.ts
-msgid "This is where it landed. Open one of its places to see what's inside it."
-msgstr "Hier ist es gelandet. Öffne einen seiner Plätze, um zu sehen, was darin ist."
+msgid "A location's places, and how much each holds. Open any of them after the tour."
+msgstr "Die Plätze eines Ortes und wie viel jeder enthält. Öffnen Sie sie nach der Tour."
 
 #: src/components/hints/hint-copy.ts
-msgid "Trashed things wait here for 30 days. Restore one to put it back."
-msgstr "Gelöschte Dinge warten hier 30 Tage. Stelle eines wieder her, um es zurückzuholen."
+msgid "Trashed things wait here for 30 days, each with Restore."
+msgstr "Gelöschte Dinge warten hier 30 Tage, jedes mit „Wiederherstellen“."
 
 #: src/components/hints/hint-copy.ts
-msgid "Type the thing's name in the box above and open it from the results."
-msgstr "Tippe den Namen der Sache in das Feld oben und öffne sie aus den Ergebnissen."
+msgid "Type part of a thing's name above. Each result shows where it is."
+msgstr "Tippen Sie oben einen Teil eines Namens ein. Jedes Ergebnis zeigt, wo es ist."
 
 #: src/components/hints/hint-copy.ts
-msgid "What needs you is at the top. Open one of your locations to see its places and things."
-msgstr "Was dich braucht, steht oben. Öffne einen deiner Standorte, um seine Plätze und Dinge zu sehen."
+msgid "What needs you is at the top, your locations below it. Next takes you into one."
+msgstr "Was Sie braucht, steht oben, Ihre Orte darunter. „Weiter“ führt Sie in einen davon."

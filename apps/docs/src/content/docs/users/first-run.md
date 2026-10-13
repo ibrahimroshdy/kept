@@ -128,8 +128,9 @@ holds at most 20 of them.
 
 ## 7. Take the tour
 
-**Help → Show me around** is a short look at Home, Capture, Inbox and Search. It never starts by
-itself, and you can replay it any time. A few one-time hints also appear the first time you use
+**Help → Show me around** walks through each section you have: Home, Capture, the Inbox, a
+location, Search, then every module that is on. It never starts by itself, and you can replay it
+any time. If it added anything along the way, you choose at the end to keep it or discard it. A few one-time hints also appear the first time you use
 Capture, Scan, the Inbox's suggested values or Labels.
 
 :::tip[Keep the keys]

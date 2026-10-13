@@ -193,8 +193,6 @@ describe('tourDeleter', () => {
       expect.stringMatching(/^DELETE .*\/locations\/l1$/),
       expect.stringMatching(/^POST .*\/captures\/batches\/c1\/undo$/),
     ]);
-    // A printed label exists in the world: nothing deletes it.
-    await expect(tourDeleter('label', 'b1')).rejects.toThrow();
   });
 });
 
@@ -575,13 +573,14 @@ describe('useGuidedTour', () => {
         expect(dialog).toHaveTextContent(`${k + 1} of 16`);
         await user.click(within(dialog).getByRole('button', { name: 'Next' }));
       }
-      // Schedules has no anchor: the tour moves past it to Lending, still counting shown steps.
+      // Schedules has no anchor: the tour moves past it to Lending, still counting shown steps,
+      // and the skipped section drops out of the total so the last one reads "15 of 15".
       const vehicles = await screen.findByRole('dialog', { name: titleOf(copy, 'vehicles') });
       expect(vehicles).toHaveTextContent('7 of 16');
       await user.click(within(vehicles).getByRole('button', { name: 'Next' }));
       expect(
         await screen.findByRole('dialog', { name: titleOf(copy, 'lending') }, { timeout: 8000 }),
-      ).toHaveTextContent('8 of 16');
+      ).toHaveTextContent('8 of 15');
     },
     ENGINE_TIMEOUT,
   );
@@ -602,13 +601,13 @@ describe('useGuidedTour', () => {
         { name: titleOf(copy, 'lending') },
         { timeout: 8000 },
       );
-      expect(lending).toHaveTextContent('8 of 16');
+      expect(lending).toHaveTextContent('8 of 15');
       await user.click(within(lending).getByRole('button', { name: 'Back' }));
       // Back jumps the known-skipped Schedules: Vehicles shows without another 3 s wait
       // (a regressed Back would still be waiting out the anchor bound past this timeout).
       expect(
         await screen.findByRole('dialog', { name: titleOf(copy, 'vehicles') }, { timeout: 2500 }),
-      ).toHaveTextContent('7 of 16');
+      ).toHaveTextContent('7 of 15');
     },
     ENGINE_TIMEOUT,
   );
