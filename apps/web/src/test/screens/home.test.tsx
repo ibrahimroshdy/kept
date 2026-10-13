@@ -18,6 +18,7 @@ import {
 import { type MockApi, MockReply } from '@/api/mock/server';
 import { paths } from '@/api/paths';
 import type { LocationDetail } from '@/api/types';
+import { assistantStore, setDraft, showThread } from '@/assistant/store';
 import { ATTENTION_ORDER } from '@/components/home/attention';
 import { findHeading, pathOf, renderApp } from '@/test/app';
 import { expectLogicalOnly } from '@/test/render';
@@ -658,6 +659,16 @@ describe('the frame', () => {
   // /search is built from step 2 (task 27): src/test/screens/search.test.tsx; /capture from
   // step 3 (task 25): src/components/capture/capture-screen.test.tsx; /inbox from step 3
   // (task 27): src/test/screens/inbox.test.tsx.
+
+  it('signing out leaves nothing of the assistant for whoever signs in next (review finding)', async () => {
+    const { user } = await renderApp('/more');
+    await findHeading('More');
+    showThread('01926f00-0000-7000-8000-0000000000aa');
+    setDraft('Where is the passport');
+    await user.click(screen.getByRole('button', { name: 'Sign out' }));
+    await waitFor(() => expect(assistantStore.get().draft).toBe(''));
+    expect(assistantStore.get()).toMatchObject({ open: false, threadId: null, draft: '' });
+  });
 
   it('More lists the locations and every entry', async () => {
     await renderApp('/more');

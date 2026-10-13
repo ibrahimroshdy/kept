@@ -1,5 +1,6 @@
 /** Better Auth calls (sign-in, second factor, passkeys). Paths in ./paths.ts. */
 import { startAuthentication } from '@simplewebauthn/browser';
+import { assistantStore } from '@/assistant/store';
 import { api } from './client';
 import { paths } from './paths';
 import type { EmailChangeStage, SignInResult, SignUpBody, TwoFactorEnableResult } from './types';
@@ -45,7 +46,11 @@ export function confirmMagicLink(token: string) {
   return api.post<{ mfaRequired: boolean }>(paths.auth.magicLinkVerify, { token });
 }
 
+/** Every way out (the menu, the app lock, the orphaned queue, a cancelled second factor) comes
+ * here, so the assistant's draft and thread go too: the next person on this device mustn't see
+ * them (its store lives outside React and survives the sign-in page). */
 export function signOut() {
+  assistantStore.reset();
   return api.post<unknown>(paths.auth.signOut);
 }
 
