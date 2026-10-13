@@ -233,7 +233,10 @@ const FUNCTIONS: Record<string, { roles: string[]; definer: boolean }> = {
   'kept.type_impact(uuid)': { roles: APP, definer: true },
   // (0022) kept_system's maintenance doors: the reindex job and the purges (task 10).
   'kept.purge_deleted_locations(integer)': { roles: SYS, definer: true },
-  'kept.purge_orphan_files(timestamp with time zone,integer)': { roles: SYS, definer: true },
+  'kept.purge_orphan_files(timestamp with time zone,timestamp with time zone,integer)': {
+    roles: SYS,
+    definer: true,
+  },
   'kept.purge_trash(timestamp with time zone,integer)': { roles: SYS, definer: true },
   'kept.reindex_location(uuid)': { roles: SYS, definer: true },
   // (0024, security review of Phase A) Adding contact details past the contacts' own policy
@@ -261,6 +264,9 @@ const FUNCTIONS: Record<string, { roles: string[]; definer: boolean }> = {
   // (0036, step-3 T4) The cover cache: things.cover_file_id has no UPDATE grant, so the
   // attachments trigger that keeps it writes past the column privileges. Nobody calls it.
   'kept.refresh_thing_cover()': { roles: NOBODY, definer: true },
+  // (0107) files.attached_at has no UPDATE grant: the attachments trigger that sets it writes
+  // past it. Nobody calls it.
+  'kept.note_file_attached()': { roles: NOBODY, definer: true },
   'kept.touch_thing_meters()': { roles: NOBODY, definer: true },
   // (0038, T5) Document search on file_text's index (`@@` isn't leakproof, §7.2): file ids the
   // caller could already select, and nothing else.

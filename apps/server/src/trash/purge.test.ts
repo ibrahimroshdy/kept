@@ -2,7 +2,7 @@ import { randomBytes } from 'node:crypto';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { newId } from '@kept/shared';
+import { newId, SYNC_LIMITS } from '@kept/shared';
 import type pg from 'pg';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { type TestDb, testDb } from '../../test/db.js';
@@ -145,6 +145,27 @@ describe('the purge job (T21)', () => {
     expect(await blobs.exists(freshBlob)).toBe(true);
   });
 
+  it('keeps an upload that was never attached for the sync window: its queued op may come later', async () => {
+    const home = await location('Home');
+    // A phone uploads a capture's photos before its op; a queue held back (an outdated server,
+    // a locked queue after a sign-out) sends the op days later, up to the 90-day op window.
+    const waiting = await file(home, 30);
+    const tooOld = await file(home, SYNC_LIMITS.clientIdPastDays + 1);
+    // A file that was attached once and is now let go (its thing purged) still goes after a day.
+    const kettle = await thing(home, 'Kettle', null);
+    const letGo = await file(home, 2, kettle);
+    await own('DELETE FROM public.attachments WHERE thing_id = $1', [kettle]);
+
+    await runPurge({ pools: db.pools, log, blobs });
+
+    expect(await blobs.exists(waiting)).toBe(true);
+    expect(await own('SELECT 1 FROM public.files WHERE storage_key = $1', [waiting])).toHaveLength(
+      1,
+    );
+    expect(await blobs.exists(tooOld)).toBe(false);
+    expect(await blobs.exists(letGo)).toBe(false);
+  });
+
   it('keeps going while a round fills its limit', async () => {
     const home = await location('Home');
     await own(
@@ -205,8 +226,9 @@ describe('the purge job (T21)', () => {
 
   it('fails the job, naming the key, when a blob will not delete; the rest is still done', async () => {
     const home = await location('Home');
-    const first = await file(home, 2);
-    const second = await file(home, 2);
+    // Never attached and past the sync op window: both are the purge's.
+    const first = await file(home, SYNC_LIMITS.clientIdPastDays + 1);
+    const second = await file(home, SYNC_LIMITS.clientIdPastDays + 1);
     const stuck = [first, second].sort()[0] as string;
     const flaky: BlobStore = {
       ...blobs,

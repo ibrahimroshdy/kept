@@ -1,3 +1,4 @@
+import { SYNC_LIMITS } from '@kept/shared';
 import type pg from 'pg';
 import { withSystem } from '../db/scope.js';
 import { defineJob, type JobDefinition } from '../jobs/boss.js';
@@ -14,8 +15,10 @@ import type { BlobStore } from '../storage/blob-store.js';
 // 2. kept.purge_deleted_locations(10), again while a round fills its limit: locations past
 //    their 30-day grace, with everything in them. It returns the storage keys nothing else
 //    references.
-// 3. kept.purge_orphan_files(now() - 1 day, 500), again while a round returns keys: files no
-//    attachment holds (a discarded upload a day old, the files of what step 1 purged).
+// 3. kept.purge_orphan_files(now() - 1 day, now() - 90 days, 500), again while a round returns
+//    keys: files no attachment holds. One attached once and let go (the files of what step 1
+//    purged) goes after a day; one never attached may be a phone's upload whose op is still
+//    queued (a held-back queue, D148, D210), so it waits out the sync op window first.
 // The blobs of steps 2 and 3 are deleted from the BlobStore after their transaction commits, so
 // a rolled-back purge never loses a blob a row still names. A blob that won't delete is logged
 // and fails the job once the rest is done (it shows in the failed-jobs view); its row is already
@@ -110,8 +113,9 @@ export async function runPurge(deps: PurgeDeps): Promise<PurgeReport> {
   for (let round = 0; round < MAX_ROUNDS; round++) {
     const keys = await once(deps.pools, async (c) => {
       const { rows } = await c.query<{ storage_key: string }>(
-        `SELECT storage_key FROM kept.purge_orphan_files(now() - interval '1 day', $1)`,
-        [FILE_BATCH],
+        `SELECT storage_key FROM kept.purge_orphan_files(now() - interval '1 day',
+                now() - make_interval(days => $2::int), $1)`,
+        [FILE_BATCH, SYNC_LIMITS.clientIdPastDays],
       );
       return rows.map((r) => r.storage_key);
     });

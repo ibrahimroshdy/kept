@@ -248,7 +248,7 @@ describe('kept.purge_orphan_files() (D161, D162)', () => {
     const shared = await file(a, a.userId, { key: sharedKey });
     const copy = await file(b, b.userId, { key: sharedKey, age: '1 hour' });
     const keys = await sys<{ storage_key: string }>(
-      `SELECT storage_key FROM kept.purge_orphan_files(now() - interval '24 hours', 100)`,
+      `SELECT storage_key FROM kept.purge_orphan_files(now() - interval '24 hours', now() - interval '24 hours', 100)`,
     );
     expect(keys.map((k) => k.storage_key).sort()).toEqual(
       [`f/${a.locationId}/${orphan}`, `d/${orphan}/thumb.jpg`, `d/${shared}/thumb.jpg`].sort(),
@@ -285,7 +285,7 @@ describe('who may open these doors', () => {
       'SELECT kept.reindex_location($1)',
       `SELECT kept.purge_trash(now(), 1)`,
       'SELECT kept.purge_deleted_locations(1)',
-      `SELECT kept.purge_orphan_files(now(), 1)`,
+      `SELECT kept.purge_orphan_files(now(), now(), 1)`,
       `SELECT * FROM kept.unreferenced_storage_keys('{}')`,
     ]) {
       const call = withScope(db.pools.app, { userId: a.userId, mfa: true }, (_tx, c) =>

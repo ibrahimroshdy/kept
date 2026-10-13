@@ -1,0 +1,1 @@
+ALTER TABLE "files" ADD COLUMN "attached_at" timestamp with time zone;
