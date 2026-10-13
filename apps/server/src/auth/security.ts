@@ -224,6 +224,8 @@ export type KeptSecurityOptions = {
   /** D197: once mail is delivered (KEPT_SMTP_URL), an account whose address isn't verified may
    * not enrol a passkey or TOTP. An email-bound invite verifies the address when accepted. */
   enrolmentNeedsVerifiedEmail?: boolean;
+  /** D197: ends the claimed account's tokens (kept.revoke_user_tokens, on kept_system). */
+  revokeTokensOnClaim?: (userId: string) => Promise<void>;
 };
 
 export function keptSecurity(opts: KeptSecurityOptions): BetterAuthPlugin {
@@ -393,7 +395,12 @@ export function keptSecurity(opts: KeptSecurityOptions): BetterAuthPlugin {
             if (!userId || isAPIError(ctx.context.returned)) return;
             const created = ctx.context.newSession;
             if (!created || created.user.id !== userId) return;
-            await claimUnverifiedAccount(pool, userId, created.session.id);
+            await claimUnverifiedAccount(
+              pool,
+              userId,
+              created.session.id,
+              opts.revokeTokensOnClaim,
+            );
             opts.notify?.({ id: userId, email: created.user.email }, 'unverified-account-link');
           }),
         },
@@ -504,13 +511,16 @@ export function keptSecurity(opts: KeptSecurityOptions): BetterAuthPlugin {
  * up with it before its owner may have planted a passkey or TOTP, so the claim marks the address
  * verified and deletes every passkey, the TOTP secret and backup codes, and every session but
  * `keepSessionId` (the magic link's new one), in one kept_auth transaction. The caller mails the
- * owner.
+ * owner. A token made before the claim is the planter's too: `revokeTokens` ends them all first
+ * (another login, so not in that transaction; a claim that then fails leaves them revoked).
  */
 export async function claimUnverifiedAccount(
   pool: pg.Pool,
   userId: string,
   keepSessionId: string | null = null,
+  revokeTokens?: (userId: string) => Promise<void>,
 ): Promise<void> {
+  await revokeTokens?.(userId);
   const client = await pool.connect();
   try {
     await client.query('BEGIN');

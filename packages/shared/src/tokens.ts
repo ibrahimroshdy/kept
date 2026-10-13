@@ -19,6 +19,8 @@ export const TOKEN_REVOKED_REASONS = [
   'expired',
   'admin',
   'client_revoked',
+  // D197: the mailbox's owner claimed an unverified account; whatever was made before goes.
+  'account_claimed',
 ] as const;
 export type TokenRevokedReason = (typeof TOKEN_REVOKED_REASONS)[number];
 

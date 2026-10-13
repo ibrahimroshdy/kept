@@ -21306,3 +21306,7 @@ msgstr "اكتب جزءًا من اسم شيء في الأعلى. كل نتيج�
 #: src/components/hints/hint-copy.ts
 msgid "What needs you is at the top, your locations below it. Next takes you into one."
 msgstr "ما يحتاجك في الأعلى، ومواقعك تحته. «التالي» يأخذك إلى أحدها."
+
+#: src/components/connections/words.tsx
+msgid "Ended: the account was reclaimed"
+msgstr "انتهى: استُعيد الحساب"

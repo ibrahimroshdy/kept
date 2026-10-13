@@ -497,6 +497,57 @@ describe('the doors', () => {
     expect(await thingsIn(viaToken(bruce, first as string, true), garage.locationId)).toBe(1);
   });
 
+  it('kept.token_verify() and token_oauth_for(): nothing while the user is disabled, back once enabled (D210)', async () => {
+    const h = hash();
+    const l = lookup();
+    const id = await token(bruce, 'write', [ibrahim.locationId], { hash: h, lookup: l });
+    const client = 'https://claude.example/.well-known/client.json';
+    const grant = await as(
+      user(bruce),
+      async (c) =>
+        (
+          await c.query<{ id: string }>(
+            `SELECT kept.token_oauth_grant($1, $2, 'read', $3, 'Claude') AS id`,
+            [bruce, client, [ibrahim.locationId]],
+          )
+        ).rows[0]?.id,
+    );
+    const verify = async () =>
+      (await db.pools.app.query('SELECT token_id FROM kept.token_verify($1, $2)', [l, h])).rows;
+    const oauth = async () =>
+      (
+        await db.pools.app.query('SELECT token_id FROM kept.token_oauth_for($1, $2)', [
+          bruce,
+          client,
+        ])
+      ).rows;
+    const ban = (banned: boolean) =>
+      own('UPDATE auth."user" SET banned = $2 WHERE id = $1', [bruce, banned]);
+
+    await ban(true);
+    expect(await verify()).toEqual([]);
+    expect(await oauth()).toEqual([]);
+    await ban(false);
+    expect(await verify()).toEqual([{ token_id: id }]);
+    expect(await oauth()).toEqual([{ token_id: grant }]);
+  });
+
+  it('kept.revoke_user_tokens(): the system ends every live token of a claimed account (D197)', async () => {
+    const a = await token(bruce, 'write', [ibrahim.locationId]);
+    const b = await token(bruce, 'read', [garage.locationId]);
+    const louisToken = await token(louis, 'read', [ibrahim.locationId]);
+    const revoke = (pool: pg.Pool) =>
+      pool.query<{ n: number }>("SELECT kept.revoke_user_tokens($1, 'account_claimed') AS n", [
+        bruce,
+      ]);
+    expect((await pgError(revoke(db.pools.app))).code).toBe('42501');
+    expect((await revoke(db.pools.system)).rows[0]?.n).toBe(2);
+    for (const t of [a, b]) {
+      expect(await tokenRow(t)).toMatchObject({ revoked_reason: 'account_claimed' });
+    }
+    expect(await tokenRow(louisToken)).toMatchObject({ revoked_at: null });
+  });
+
   it('kept.token_rate_hit(): counts a minute per token and kind, and only your own token', async () => {
     const read = await token(bruce, 'read', [ibrahim.locationId]);
     const sql = `SELECT * FROM kept.token_rate_hit($1, 'read', 2)`;

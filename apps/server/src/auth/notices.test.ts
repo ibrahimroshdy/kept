@@ -5,6 +5,7 @@ import { fragmentToken, jar, type TestApp, testApp } from '../../test/app.js';
 import { enrolTotp, signUp } from '../../test/auth.js';
 import { type TestDb, testDb } from '../../test/db.js';
 import { freshIp } from '../../test/people.js';
+import { ownerTx } from '../../test/tenancy.js';
 import { softRegistration } from '../../test/webauthn.js';
 import { AUTH_BASE_PATH } from './auth.js';
 
@@ -100,6 +101,15 @@ describe('security notices (review I3)', () => {
       },
     });
     expect(planted.statusCode).toBe(200);
+    // …and a personal token, which a reset alone wouldn't touch.
+    const planter = randomUUID();
+    await ownerTx(db, (c) =>
+      c.query(
+        `INSERT INTO public.api_tokens (id, user_id, kind, name, lookup, hash, scope)
+         VALUES ($1, $2, 'personal', 'Planted', $3, $4, 'write')`,
+        [planter, user.userId, planter.slice(0, 8), planter.replaceAll('-', '').repeat(2)],
+      ),
+    );
 
     // The address's real owner resets the password, which proves the mailbox.
     await auth('/request-password-reset', { body: { email: user.email } });
@@ -123,6 +133,10 @@ describe('security notices (review I3)', () => {
       totp: 0,
       sessions: 0,
     });
+    const token = await ownerTx(db, (c) =>
+      c.query('SELECT revoked_reason FROM public.api_tokens WHERE id = $1', [planter]),
+    );
+    expect(token.rows).toEqual([{ revoked_reason: 'account_claimed' }]);
     await vi.waitFor(
       () =>
         expect(noticesFor(user.email)).toContainEqual({

@@ -1,0 +1,2 @@
+ALTER TABLE "api_tokens" DROP CONSTRAINT "api_tokens_revoked_reason_chk";--> statement-breakpoint
+ALTER TABLE "api_tokens" ADD CONSTRAINT "api_tokens_revoked_reason_chk" CHECK ("revoked_reason" IN ('user', 'membership_ended', 'role_lost', 'expired', 'admin', 'client_revoked', 'account_claimed'));

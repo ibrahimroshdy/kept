@@ -454,3 +454,9 @@ export async function forgetOAuthClient(
     [userId, clientId],
   );
 }
+
+/** D197: a claim ends every live token of the claimed account, on kept_system (the claim itself
+ * runs on kept_auth, which can't reach api_tokens). */
+export async function revokeTokensOnClaim(system: pg.Pool, userId: string): Promise<void> {
+  await system.query("SELECT kept.revoke_user_tokens($1, 'account_claimed')", [userId]);
+}

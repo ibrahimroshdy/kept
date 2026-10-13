@@ -21306,3 +21306,7 @@ msgstr "Tippen Sie oben einen Teil eines Namens ein. Jedes Ergebnis zeigt, wo es
 #: src/components/hints/hint-copy.ts
 msgid "What needs you is at the top, your locations below it. Next takes you into one."
 msgstr "Was Sie braucht, steht oben, Ihre Orte darunter. „Weiter“ führt Sie in einen davon."
+
+#: src/components/connections/words.tsx
+msgid "Ended: the account was reclaimed"
+msgstr "Beendet: das Konto wurde zurückgeholt"
