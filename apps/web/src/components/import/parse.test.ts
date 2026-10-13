@@ -31,6 +31,30 @@ describe('parseCsvFile', () => {
     ]);
   });
 
+  it('refuses a file that isn’t UTF-8 (Excel’s Arabic CSV) instead of garbling every name', async () => {
+    // "الاسم,Qty\nمثقاب,1\n" as Windows-1256, what Excel's plain "CSV (Comma delimited)" writes on
+    // Arabic Windows.
+    const cp1256 = new Uint8Array([
+      0xc7, 0xe1, 0xc7, 0xd3, 0xe3, 0x2c, 0x51, 0x74, 0x79, 0x0a, 0xe3, 0xcb, 0xde, 0xc7, 0xc8,
+      0x2c, 0x31, 0x0a,
+    ]);
+    expect(await problemOf(new Blob([cp1256], { type: 'text/csv' }))).toEqual({
+      kind: 'unreadable',
+    });
+  });
+
+  it('reads a UTF-16 file by its byte-order mark', async () => {
+    const text = 'الاسم,Qty\nمثقاب,1\n';
+    const bytes = [0xff, 0xfe];
+    for (const ch of text) {
+      const c = ch.charCodeAt(0);
+      bytes.push(c & 0xff, c >> 8);
+    }
+    const parsed = await parseCsvFile(new Blob([new Uint8Array(bytes)]), blank);
+    expect(parsed.columns).toEqual(['الاسم', 'Qty']);
+    expect(parsed.rows).toEqual([['مثقاب', '1']]);
+  });
+
   it('keeps a formula-looking cell as the text it is', async () => {
     const parsed = await parseCsvFile(csv('Name\n"=HYPERLINK(""x"")"\n'), blank);
     expect(parsed.rows).toEqual([['=HYPERLINK("x")']]);

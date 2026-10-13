@@ -78,14 +78,29 @@ async function parseText(text: string, size: number): Promise<WorkerAnswer> {
  * The file's columns and rows, or a ParseError saying what's wrong with it. `blank` names a
  * column with no header ("Column 3", translated).
  */
+/**
+ * The file's text: UTF-16 by its byte-order mark, else UTF-8, strictly,
+ * so bytes in another encoding throw instead of turning into U+FFFD. Byte-order marks are dropped
+ * (a file can carry two).
+ */
+export function decodeCsv(bytes: Uint8Array): string {
+  const encoding =
+    bytes[0] === 0xff && bytes[1] === 0xfe
+      ? 'utf-16le'
+      : bytes[0] === 0xfe && bytes[1] === 0xff
+        ? 'utf-16be'
+        : 'utf-8';
+  return new TextDecoder(encoding, { fatal: true }).decode(bytes).replace(/^\uFEFF+/, '');
+}
+
 export async function parseCsvFile(file: Blob, blank: (n: number) => string): Promise<ParsedCsv> {
   if (file.size > CSV_LIMITS.bytes) throw new ParseError({ kind: 'too_big', bytes: file.size });
   let text: string;
   try {
-    // Blob.text() decodes UTF-8 and drops a leading byte-order mark; the replace is for a file
-    // that carries a second one.
-    text = (await file.text()).replace(/^﻿/, '');
+    text = decodeCsv(new Uint8Array(await file.arrayBuffer()));
   } catch {
+    // Not UTF-8: Excel's plain "CSV" on Arabic Windows writes Windows-1256, which would import as
+    // garbled names. The message asks for "CSV (UTF-8)".
     throw new ParseError({ kind: 'unreadable' });
   }
   const { rows: all, error } = await parseText(text, file.size);
