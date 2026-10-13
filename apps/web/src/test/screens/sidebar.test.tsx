@@ -281,18 +281,27 @@ describe('with the assistant docked (1280 px and up, D216)', () => {
       'true',
     );
     expect(sidebar()).not.toHaveClass('w-16');
-    expect(stored()).toBe('expanded');
-    // The assistant stays open, floating over the page's end as it does below 1280 px.
+    // The assistant stays open, floating over the page's end as it does below 1280 px. Nothing
+    // is stored: D216 leaves the person's own choice alone.
     expect(await panel()).toHaveClass('xl:fixed');
+    expect(stored()).toBeNull();
 
-    // Collapsing docks it again.
+    // Collapsing docks it again, still storing nothing.
     await user.click(screen.getByRole('button', { name: 'Collapse sidebar' }));
     expect(screen.getByRole('button', { name: 'Expand sidebar' })).toBeInTheDocument();
-    expect(stored()).toBe('collapsed');
     expect(await panel()).not.toHaveClass('xl:fixed');
+    expect(stored()).toBeNull();
+
+    // Closed, the sidebar is back to the person's choice (expanded, by width).
+    act(() => closeAssistant());
+    await waitFor(() =>
+      expect(screen.queryByRole('complementary', { name: 'Assistant' })).toBeNull(),
+    );
+    expect(screen.getByRole('button', { name: 'Collapse sidebar' })).toBeInTheDocument();
+    expect(stored()).toBeNull();
   });
 
-  it('⌘\\ expands a stored rail while docked; reopening the panel docks it on the rail again', async () => {
+  it('⌘\\ expands a stored rail while docked without changing it; closing brings the rail back', async () => {
     media(WIDEST);
     localStorage.setItem(SIDEBAR_KEY, 'collapsed');
     const { user } = await renderApp('/');
@@ -308,19 +317,20 @@ describe('with the assistant docked (1280 px and up, D216)', () => {
     composer.blur();
     await user.keyboard('{Meta>}\\{/Meta}');
     expect(screen.getByRole('button', { name: 'Collapse sidebar' })).toBeInTheDocument();
-    expect(stored()).toBe('expanded');
     expect(await panel()).toHaveClass('xl:fixed');
+    expect(stored()).toBe('collapsed');
 
-    // Closed, the sidebar is the person's choice; opened again, the panel docks on the rail.
+    // Closed, the sidebar is the person's choice again: the rail they stored.
     act(() => closeAssistant());
     await waitFor(() =>
       expect(screen.queryByRole('complementary', { name: 'Assistant' })).toBeNull(),
     );
-    expect(screen.getByRole('button', { name: 'Collapse sidebar' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Expand sidebar' })).toBeInTheDocument();
+    expect(stored()).toBe('collapsed');
+    // Opened again, the panel docks on the rail.
     act(() => openAssistant());
     expect(await panel()).not.toHaveClass('xl:fixed');
     expect(screen.getByRole('button', { name: 'Expand sidebar' })).toBeInTheDocument();
-    expect(stored()).toBe('expanded');
   });
 });
 

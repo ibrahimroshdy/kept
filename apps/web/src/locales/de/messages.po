@@ -31,12 +31,16 @@ msgid "Renamed to {trimmed}"
 msgstr "Umbenannt in {trimmed}"
 
 #: src/components/home/checklist.tsx
-msgid "Set these where Kept's other settings live (the .env file with Docker Compose, Kept's secret on Kubernetes), then restart Kept:"
-msgstr "Setzen Sie diese dort, wo Kepts übrige Einstellungen liegen (die .env-Datei bei Docker Compose, Kepts Secret bei Kubernetes), und starten Sie Kept neu:"
+msgid "Set these where Kept's other settings live (the .env file with Docker Compose; with the Helm chart, the URL in the secret named by smtp.existingSecret and the sender in smtp.from), then restart Kept:"
+msgstr "Setzen Sie diese dort, wo Kepts übrige Einstellungen liegen (die .env-Datei bei Docker Compose; beim Helm-Chart die URL im Secret aus smtp.existingSecret und den Absender in smtp.from), und starten Sie Kept neu:"
 
 #: src/components/home/checklist.tsx
 msgid "Set up email"
 msgstr "E-Mail einrichten"
+
+#: src/components/ai/labels.ts
+msgid "the request was more than the plan allows in one minute"
+msgstr "die Anfrage war größer, als der Tarif pro Minute erlaubt"
 
 #: src/components/home/checklist.tsx
 msgid "the sender, for example <0>Kept <kept@example.org></0>"

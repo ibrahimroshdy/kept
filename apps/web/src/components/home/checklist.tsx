@@ -418,8 +418,9 @@ export function MailHowButton() {
           <div className="grid gap-3 text-ink-2">
             <p className="m-0">
               <Trans>
-                Set these where Kept's other settings live (the .env file with Docker Compose,
-                Kept's secret on Kubernetes), then restart Kept:
+                Set these where Kept's other settings live (the .env file with Docker Compose; with
+                the Helm chart, the URL in the secret named by smtp.existingSecret and the sender in
+                smtp.from), then restart Kept:
               </Trans>
             </p>
             <ul className="m-0 grid gap-2 ps-5">

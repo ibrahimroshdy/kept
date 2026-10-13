@@ -23,8 +23,8 @@
 // Nothing here loads a remote font, script or stylesheet. Astro's telemetry is turned off by the
 // package scripts (ASTRO_TELEMETRY_DISABLED=1), so a build makes no network call at all.
 //
-// Publishing (D199, .github/workflows/docs.yml): the site lives at https://ibrahimroshdy.com/kept/,
-// a GitHub Pages project site under the maintainer's user site and its custom domain. The workflow
+// Publishing (D199, .github/workflows/docs.yml): the site lives at https://keptinventory.info/, the
+// GitHub Pages custom domain (the old ibrahimroshdy.com/kept/ address redirects there). The workflow
 // passes that origin and base path as KEPT_DOCS_SITE and KEPT_DOCS_BASE; a local build has neither
 // and is served from `/`.
 import { satteri } from '@astrojs/markdown-satteri';

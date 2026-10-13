@@ -44,8 +44,8 @@ function rememberWay(way: SetupHelpWay): void {
   }
 }
 
-/** The docs site (apps/docs, published at https://ibrahimroshdy.com/kept/). */
-const DOCS = 'https://ibrahimroshdy.com/kept';
+/** The docs site (apps/docs, published at https://keptinventory.info/). */
+const DOCS = 'https://keptinventory.info';
 
 function docsUrl(page: 'install/compose' | 'install/kubernetes' | 'admin/cli', locale: string) {
   // Only the Compose page has an Arabic translation so far (apps/docs/src/content/docs/ar).
