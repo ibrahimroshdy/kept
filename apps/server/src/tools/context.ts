@@ -1,6 +1,7 @@
 import {
   type Envelope,
   fit,
+  fitCommitted,
   isToolName,
   ok,
   TOOL_DEFS,
@@ -278,7 +279,10 @@ export async function runTool(
       return handler.run(op, input);
     });
     const envelope = ok(result.data, now(), result.nextCursor ?? undefined);
-    return fit(envelope, result.cursorAt ? { cursorAt: result.cursorAt } : {});
+    const opts = result.cursorAt ? { cursorAt: result.cursorAt } : {};
+    // A write has committed by now: its answer is shortened, never turned into an error that a
+    // client would retry (fitCommitted).
+    return def.scope === 'write' ? fitCommitted(envelope, opts) : fit(envelope, opts);
   } catch (err) {
     const refusal = refusalOf(err);
     if (refusal) return refusal;

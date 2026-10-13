@@ -95,11 +95,22 @@ export type FitOptions = {
 };
 
 /**
- * Keys that are never removed, nor any field holding one: without them a result can't be cited
- * or followed. `items` is the list itself; `placed` is add_thing's per-item answer, required by
- * its contract, so under pressure fit() sheds audit ids and paths around it instead.
+ * Keys that are never removed, nor any field holding one: without them a result can't be cited,
+ * followed or undone. `items` is the list itself; `placed` is add_thing's per-item answer;
+ * `audit_event_ids` and `undo_until` are how a write is undone. Under pressure fit() sheds
+ * paths, aliases and the like around them, listing each in `trimmed`.
  */
-const PROTECTED = new Set(['id', 'short_code', 'kind', 'role', 'name', 'items', 'placed']);
+const PROTECTED = new Set([
+  'id',
+  'short_code',
+  'kind',
+  'role',
+  'name',
+  'items',
+  'placed',
+  'audit_event_ids',
+  'undo_until',
+]);
 const isProtected = (key: string) => PROTECTED.has(key) || key.endsWith('_id');
 
 function holdsProtected(value: unknown): boolean {
@@ -153,6 +164,47 @@ export function fit<T>(env: Envelope<T>, opts: FitOptions = {}): Envelope<T> {
     delete (largest.parent as Record<string, unknown>)[largest.key];
     trimmed.push(largest.path);
   }
+}
+
+/** What a committed write must still say when nothing else fits: how to cite and undo it. */
+const COMMITTED_KEYS = new Set(['audit_event_id', 'audit_event_ids', 'undo_until']);
+
+/**
+ * Only what cites a row or undoes the change: protected keys whole (a list's `items` pruned the
+ * same way), and any other field only for the protected keys inside it.
+ */
+function skeleton(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(skeleton);
+  if (value && typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(value)) {
+      if (k === 'items') out[k] = skeleton(v);
+      else if (isProtected(k)) out[k] = v;
+      else if (v && typeof v === 'object' && holdsProtected(v)) out[k] = skeleton(v);
+    }
+    return out;
+  }
+  return value;
+}
+
+/**
+ * fit() for a write that has already committed. A write's answer must never be an error: a
+ * client that reads `output_too_large` after the change was saved retries it and duplicates it
+ * (a 20-item add_thing with long names did exactly that). When fit() can't fit the answer, it is
+ * cut to its skeleton (ids, short IDs, names, the undo ids and per-item answers such as
+ * add_thing's `placed`), and failing that to the audit ids alone; either way `trimmed: ['*']`.
+ */
+export function fitCommitted<T>(env: Envelope<T>, opts: FitOptions = {}): Envelope<T> {
+  if (isToolError(env)) return env;
+  const fitted = fit(env, opts);
+  if (!isToolError(fitted)) return fitted;
+  const limit = opts.limit ?? OUTPUT_LIMIT_BYTES;
+  const lean: EnvelopeOk<T> = { ...env, data: skeleton(env.data) as T, trimmed: ['*'] };
+  if (byteLength(lean) <= limit) return lean;
+  const data = env.data as Record<string, unknown>;
+  const ids: Record<string, unknown> = {};
+  for (const k of COMMITTED_KEYS) if (k in data) ids[k] = data[k];
+  return { ...env, data: ids as T, trimmed: ['*'] };
 }
 
 function listOf(data: unknown): unknown[] | null {

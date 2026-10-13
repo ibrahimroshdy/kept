@@ -107,6 +107,12 @@ proved the flow with the official MCP client against a local fixture. Connecting
 120 a minute, writes 30 a minute; `tokens/rate.ts`). Every write a tool makes is audited as the
 token.
 
+**Answer size.** A tool's answer stays under 8 KB of JSON. A list is shortened (with
+`next_cursor`), then the largest fields go, each listed in `trimmed`; ids, short IDs, names and a
+write's undo ids (`audit_event_ids`, `undo_until`) are never removed. A write has already saved
+when it answers, so its answer is never an error: if even that won't fit, it is cut to its ids and
+undo ids, with `trimmed: ["*"]`. A client must not retry a write because of `trimmed`.
+
 ## Connecting a client
 
 When you create a token, the response includes ready-made client settings: the endpoint and the

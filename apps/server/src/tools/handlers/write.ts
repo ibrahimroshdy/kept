@@ -97,6 +97,7 @@ export const addThing: Handler<'add_thing'> = {
       item: number;
       status: 'found' | 'created' | 'unplaced';
       place: number | null;
+      container_id?: string;
     }[] = [];
     const notSet: NonNullable<ToolOutput<'add_thing'>['not_set']> = [];
     let unplaced: string | null = null;
@@ -115,8 +116,14 @@ export const addThing: Handler<'add_thing'> = {
     for (const [i, item] of input.items.entries()) {
       let target: { placeId: string } | { containerId: string };
       if (item.place_id) {
+        // `place_id` is an id or a short ID, of a place or a container: report what it resolved
+        // to, never the raw input (a short ID isn't a uuid, a container isn't a place).
         target = await targetIn(op.client, loc.id, item.place_id);
-        placed.push({ item: i, status: 'found', place: await rememberPlace(item.place_id) });
+        placed.push(
+          'placeId' in target
+            ? { item: i, status: 'found', place: await rememberPlace(target.placeId) }
+            : { item: i, status: 'found', place: null, container_id: target.containerId },
+        );
       } else if (item.new_place) {
         const np = item.new_place;
         const parentId = np.parent_id ? await placeIn(op.client, loc.id, np.parent_id) : null;
