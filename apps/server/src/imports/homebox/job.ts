@@ -154,6 +154,10 @@ async function applyChunk(
     if (op.op !== 'type' && c.ids.has(op.key)) continue;
     if (failed.some((f) => f.key === op.key)) continue;
     const before = new Set(c.ids.keys());
+    const madeBefore = {
+      brands: new Set(c.made.brands.keys()),
+      vendors: new Set(c.made.vendors.keys()),
+    };
     await client.query('SAVEPOINT import_step');
     try {
       const done = await applyOp(c, op);
@@ -161,8 +165,13 @@ async function applyChunk(
       if (done.thingId) made.push(done.thingId);
     } catch (err) {
       await client.query('ROLLBACK TO SAVEPOINT import_step');
-      // Forget what the step remembered before it failed.
+      // Forget what the step remembered before it failed: its ids, and the brands and vendors it
+      // made, which the rollback took back (a later item with the same brand makes it again).
       for (const k of [...c.ids.keys()]) if (!before.has(k)) c.ids.delete(k);
+      for (const k of [...c.made.brands.keys()])
+        if (!madeBefore.brands.has(k)) c.made.brands.delete(k);
+      for (const k of [...c.made.vendors.keys()])
+        if (!madeBefore.vendors.has(k)) c.made.vendors.delete(k);
       failed.push({
         key: op.key,
         code: err instanceof MissingRef ? 'missing_parent' : String(toErrorReply(err).body.code),
