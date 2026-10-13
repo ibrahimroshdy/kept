@@ -11,9 +11,8 @@ least 2 GB of RAM and 2 CPU cores ([what it needs](/install/hardware/)).
 
 :::note[Built or pulled]
 Releases are published to `ghcr.io/ibrahimroshdy/kept`, tagged `1`, `1.2` and `1.2.3`, never
-`latest`; `1.0.0` is the first signed one. The images stay private until the repository is
-public, so by default `compose.yaml` builds the image from a checkout of the repository and tags it
-`kept:local`. To run a release instead, set `KEPT_IMAGE` in `.env` to a released tag and run
+`latest`; `1.0.0` is the first signed one. Without `KEPT_IMAGE`, `compose.yaml` builds the image
+from a checkout of the repository and tags it `kept:local`. To run a release instead, set `KEPT_IMAGE` in `.env` to a released tag and run
 `docker compose pull`, and [verify it](/admin/verify-release/) first.
 :::
 

@@ -13,11 +13,10 @@ To check an image before running it, install cosign and verify it against `cosig
 repository:
 
 ```sh
-cosign verify --key cosign.pub --insecure-ignore-tlog <image>:<version>
+cosign verify --key cosign.pub <image>:<version>
 ```
 
-`--insecure-ignore-tlog` is needed while releases are signed without the public transparency log
-(the repository is private); it is dropped once they are, and each release's notes give the exact
+Signatures are recorded in the public transparency log, and each release's notes give the exact
 command. A good signature prints the verified claims and exits 0; anything else means don't run it. Pin the
 digest it printed in `KEPT_IMAGE` (`<image>@sha256:…`) to run exactly that image.
 

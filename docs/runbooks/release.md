@@ -186,7 +186,7 @@ pull request.
 5. Verify from outside, as a user would (the commands are in the record):
 
    ```sh
-   cosign verify --key cosign.pub --insecure-ignore-tlog ghcr.io/ibrahimroshdy/kept:X.Y.Z
+   cosign verify --key cosign.pub ghcr.io/ibrahimroshdy/kept:X.Y.Z
    docker buildx imagetools inspect ghcr.io/ibrahimroshdy/kept:X.Y.Z --format '{{ json .SBOM }}'
    ```
 

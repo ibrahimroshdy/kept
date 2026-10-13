@@ -62,6 +62,8 @@ export type ModuleDef = {
   reminderSources: readonly SourceType[];
   /** Its nav entries (screens §1); Insights is part of Money (§7.6). */
   nav: readonly ModuleNav[];
+  /** Not built yet (1.x): shown as "Coming soon", in no preset, and never on. */
+  soon: boolean;
 };
 
 const E = ['essentials', 'household', 'complete'] as const;
@@ -83,12 +85,14 @@ const def = (
   presets: readonly Preset[],
   deps: readonly ModuleId[] = [],
   requiresProvider = false,
+  soon = false,
 ): ModuleDef =>
   Object.freeze({
     label,
-    presets,
+    presets: soon ? [] : presets,
     deps,
     requiresProvider,
+    soon,
     reminderSources: Object.freeze(SOURCE_TYPES.filter((s) => SOURCE_MODULE[s] === id)),
     nav: Object.freeze([...(NAV[id] ?? [])]),
   });
@@ -103,7 +107,8 @@ export const MODULES: Readonly<Record<ModuleId, ModuleDef>> = Object.freeze({
   vehicles: def('vehicles', 'Vehicles', H),
   fuel: def('fuel', 'Fuel & charging', C, ['vehicles']),
   consumables: def('consumables', 'Things you run out of', C),
-  moving: def('moving', 'Moving mode', C, ['labels']),
+  // 1.x: the module could be switched on with nothing behind it (review, 2026-10-14).
+  moving: def('moving', 'Moving mode', C, ['labels'], false, true),
   secrets: def('secrets', 'Passwords and codes', C),
   ai_capture: def('ai_capture', 'AI capture', E, [], true),
   ai_assistant: def('ai_assistant', 'AI assistant', E, [], true),
@@ -134,7 +139,11 @@ export function effectiveModules(
     changed = false;
     for (const id of [...on]) {
       const m = MODULES[id];
-      if ((m.requiresProvider && !opts.providerResolved) || m.deps.some((d) => !on.has(d))) {
+      if (
+        m.soon ||
+        (m.requiresProvider && !opts.providerResolved) ||
+        m.deps.some((d) => !on.has(d))
+      ) {
         on.delete(id);
         changed = true;
       }

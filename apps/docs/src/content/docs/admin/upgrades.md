@@ -14,6 +14,8 @@ docker compose pull      # a released image
 docker compose up -d
 ```
 
+Built from a checkout instead, rebuild after `git pull`: `docker compose up -d --build`.
+
 The one-shot `migrate` service runs `kept migrate` first: the migrations apply **once, under a
 database lock**, before the new version serves a request. Kept's migrations only add (a column or
 table is dropped or renamed only across two releases), so the previous version still runs against
