@@ -35,7 +35,9 @@ permissions:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # A newer push to a pull request replaces its run; a run on main always finishes, because
+  # release.yml refuses a tag whose commit has no successful ci run (a cancelled one never does).
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   fast:

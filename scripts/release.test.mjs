@@ -106,6 +106,16 @@ describe('release.sh refuses', { timeout: 30_000 }, () => {
     git('add', '.');
     git('commit', '-q', '-m', 'feat: the scripts');
     git('tag', 'v1.2.0');
+    // A commit after the last release, with a README whose quick start installs the versions
+    // these tests release (the preflight refuses one it doesn't, and a tag on v1.2.0's commit).
+    writeFileSync(
+      path.join(dir, 'README.md'),
+      ['0.9.0', '1.1.0', '1.3.0']
+        .map((v) => `git clone --branch v${v} --depth 1 x\nKEPT_IMAGE=ghcr.io/o/kept:${v}|\n`)
+        .join(''),
+    );
+    git('add', 'README.md');
+    git('commit', '-q', '-m', 'docs: the quick start');
   });
   afterEach(() => rmSync(dir, { recursive: true, force: true }));
 
@@ -122,6 +132,17 @@ describe('release.sh refuses', { timeout: 30_000 }, () => {
     r = releaseWith(ci, '1.3.0', '--ci', '--arch', 'arm64', '--publish');
     expect(r.status).not.toBe(0);
     expect(r.out).toContain('one or the other');
+  });
+
+  it("a tag on the last release's commit, and a version the README doesn't install", () => {
+    git('tag', 'v1.2.1');
+    let r = release('1.3.0');
+    expect(r.status).not.toBe(0);
+    expect(r.out).toContain("is v1.2.1's commit");
+    git('tag', '-d', 'v1.2.1');
+    r = release('1.4.0');
+    expect(r.status).not.toBe(0);
+    expect(r.out).toContain("README.md's quick start doesn't install 1.4.0");
   });
 
   it('a dirty tree', () => {

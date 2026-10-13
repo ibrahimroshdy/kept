@@ -140,15 +140,17 @@ tag. Actions must stay enabled for the repository (it is, with "all actions" all
 goes in by a pull request, the tag goes on the merged commit, and the record follows in a second
 pull request.
 
-1. The changelog section, by a pull request, squash-merged. Its title must be
-   `chore(release): X.Y.Z` (a squash merge commits under the pull request's title, and a `chore`
-   subject stays out of the next changelog):
+1. The changelog section and the README's quick start, by a pull request, squash-merged. Its title
+   must be `chore(release): X.Y.Z` (a squash merge commits under the pull request's title, and a
+   `chore` subject stays out of the next changelog). The preflight refuses a version README.md
+   doesn't install, and a tag on the previous release's commit:
 
    ```sh
    git switch main && git pull --ff-only
    git switch -c release-X.Y.Z
    node scripts/changelog.mjs --version X.Y.Z --from vPREVIOUS --write CHANGELOG.md   # no --from for the first
-   git commit -m "chore(release): X.Y.Z" -- CHANGELOG.md
+   sed -i.bak -e 's/--branch v[0-9.]* /--branch vX.Y.Z /' -e 's|/kept:[0-9.]*|/kept:X.Y.Z|' README.md && rm README.md.bak
+   git commit -m "chore(release): X.Y.Z" -- CHANGELOG.md README.md
    git push -u origin release-X.Y.Z
    gh pr create --base main --title "chore(release): X.Y.Z" --body "The X.Y.Z changelog section."
    gh pr merge --squash --delete-branch      # once the checks are green
