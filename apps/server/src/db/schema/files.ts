@@ -62,6 +62,9 @@ export const files = pgTable(
     derivativeState: derivativeState.col().notNull(),
     createdBy: uuid('created_by').notNull(),
     createdAt: tstz('created_at').notNull().defaultNow(),
+    // First attached (a trigger on attachments sets it, 0107). A file never attached is an
+    // upload whose op may still be queued on a phone: the orphan purge keeps it for the op window.
+    attachedAt: tstz('attached_at'),
   },
   (t) => [
     fileClass.check('files'),

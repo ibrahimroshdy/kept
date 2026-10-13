@@ -743,6 +743,20 @@
       "when": 1791344934607,
       "tag": "0105_token_actor_names",
       "breakpoints": true
+    },
+    {
+      "idx": 106,
+      "version": "7",
+      "when": 1791929775142,
+      "tag": "0106_files_attached_at",
+      "breakpoints": true
+    },
+    {
+      "idx": 107,
+      "version": "7",
+      "when": 1791929802170,
+      "tag": "0107_orphan_purge_keeps_queued_uploads",
+      "breakpoints": true
     }
   ]
 }

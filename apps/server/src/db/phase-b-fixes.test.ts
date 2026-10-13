@@ -204,7 +204,7 @@ describe('the orphan-file purge and the undo window (T10–T12)', () => {
     asSystem(async (c) =>
       (
         await c.query<{ storage_key: string }>(
-          `SELECT storage_key FROM kept.purge_orphan_files(now() - interval '1 day', 100)`,
+          `SELECT storage_key FROM kept.purge_orphan_files(now() - interval '1 day', now() - interval '1 day', 100)`,
         )
       ).rows.map((r) => r.storage_key),
     );
