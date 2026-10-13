@@ -371,6 +371,17 @@ const EN: CoreTable = {
         footnote,
       };
     }
+    if (m.alert === 'backup_verify_failed') {
+      return {
+        subject: 'Kept: the weekly backup check found a problem',
+        paragraphs: [
+          `The weekly check of the backup repository failed: ${String(m.details.error ?? '')}`,
+          'Your backups may not restore as they are. Open Backups to see what it found, and check again once it is fixed.',
+        ],
+        action: { label: 'Open Backups', url: page(ctx, '/admin/backups') },
+        footnote,
+      };
+    }
     if (m.alert === 'backup_suspicious_size') {
       return {
         subject: 'Kept: the latest backup looks too small',
@@ -738,6 +749,17 @@ const AR: CoreTable = {
             ? `كانت آخر تجربة استعادة في ${day(m.details.lastDrillAt)}، أي قبل أكثر من 30 يومًا.`
             : 'لم تُجرَ أي تجربة استعادة بعد.',
           'تستعيد التجربة آخر نسخة احتياطية إلى قاعدة بيانات مؤقتة وتفحص كل جدول، لتعرف أن النسخ الاحتياطية قابلة للاستعادة فعلًا. شغّل `kept admin backup drill` كما يبيّن دليل الاستعادة.',
+        ],
+        action: { label: 'فتح النسخ الاحتياطية', url: page(ctx, '/admin/backups') },
+        footnote,
+      };
+    }
+    if (m.alert === 'backup_verify_failed') {
+      return {
+        subject: 'Kept: وجد الفحص الأسبوعي للنسخ الاحتياطية مشكلة',
+        paragraphs: [
+          `فشل الفحص الأسبوعي لمستودع النسخ الاحتياطية: ${String(m.details.error ?? '')}`,
+          'قد لا تُستعاد نسخك الاحتياطية كما هي. افتح النسخ الاحتياطية لترى ما وجده، ثم أعد الفحص بعد إصلاحه.',
         ],
         action: { label: 'فتح النسخ الاحتياطية', url: page(ctx, '/admin/backups') },
         footnote,

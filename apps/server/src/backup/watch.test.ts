@@ -134,6 +134,29 @@ describe('runOpsWatch', () => {
     expect(await openAlerts()).toEqual([]);
   });
 
+  it('backup_verify_failed while the latest repository check failed, resolved by a good one', async () => {
+    await run('nightly', 'ok', 2);
+    await ownerTx(db, (c) =>
+      c.query(
+        `INSERT INTO public.backup_runs (kind, status, error, started_at, finished_at, storage_mode,
+                                         target, missing)
+         VALUES ('verify', 'failed', 'repository_check_failed', $1, $1, 'local',
+                 'directory /mnt/nas/kept', 0)`,
+        [new Date(NOW.getTime() - 5 * HOUR)],
+      ),
+    );
+    const watch = () =>
+      runOpsWatch({ alerts, ownerUrl: db.urls.owner, raw, probe: probe(0.1, 0.1), now: NOW });
+    const bad = await watch();
+    expect(bad.raised).toContain('backup_verify_failed');
+    expect(await openAlerts()).toContain('backup_verify_failed');
+
+    await run('verify', 'ok', 1);
+    const good = await watch();
+    expect(good.resolved).toContain('backup_verify_failed');
+    expect(await openAlerts()).not.toContain('backup_verify_failed');
+  });
+
   it('nothing about backups without a target, and bucket_versioning_off with S3 storage', async () => {
     await run('nightly', 'failed', 100);
     const none = await runOpsWatch({

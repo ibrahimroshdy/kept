@@ -382,6 +382,16 @@ describe('test, run, runs and snapshots', () => {
       const second = await call(t, '/api/v1/admin/backup/run', { as: ibrahim, body: {} });
       expect([second.statusCode, second.json().code]).toEqual([409, 'backup_running']);
       expect(sent).toEqual([]);
+      // Failed once and waiting out its retry delay: still the same run, still refused.
+      await asOwner(db, (c) =>
+        c.query(
+          `UPDATE pgboss.job SET state = 'retry', start_after = now() + interval '15 minutes'
+            WHERE id = $1`,
+          [jobId],
+        ),
+      );
+      const retrying = await call(t, '/api/v1/admin/backup/run', { as: ibrahim, body: {} });
+      expect([retrying.statusCode, retrying.json().code]).toEqual([409, 'backup_running']);
       // Once it's done, Run now works again.
       await asOwner(db, (c) =>
         c.query(`UPDATE pgboss.job SET state = 'completed' WHERE id = $1`, [jobId]),

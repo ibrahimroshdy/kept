@@ -245,7 +245,13 @@ async function recorded(
   const { rows } = await client.query<{ id: string }>(
     `INSERT INTO public.backup_runs (id, kind, status, storage_mode, target, from_version,
                                      to_version)
-     VALUES (coalesce($6::uuid, uuidv7()), $1, 'running', $2, $3, $4, $5) RETURNING id`,
+     VALUES (coalesce($6::uuid, uuidv7()), $1, 'running', $2, $3, $4, $5)
+     -- A "Run now" that failed is retried by pg-boss with the same id (the backup policy's one
+     -- retry): it takes its own row back to running, and finish() rewrites the figures.
+     ON CONFLICT (id) DO UPDATE
+        SET status = 'running', started_at = now(), finished_at = NULL, error = NULL,
+            storage_mode = EXCLUDED.storage_mode, target = EXCLUDED.target
+     RETURNING id`,
     [
       opts.kind,
       deps.storage,
@@ -545,6 +551,17 @@ async function snapshotOnce(
       ? await deps.bucketVersioning().catch(() => null)
       : null;
 
+  // A missing file is a purge that raced the run when its row is gone now too; one whose row is
+  // still there lost its blob, and no backup holds it (review finding, 2026-10-14).
+  let lost = 0;
+  if (missing.size > 0) {
+    const { rows } = await client.query<{ n: number }>(
+      'SELECT count(*)::int AS n FROM public.files WHERE storage_key = ANY ($1::text[])',
+      [[...missing]],
+    );
+    lost = rows[0]?.n ?? 0;
+  }
+
   let status: Figures['status'] = 'ok';
   let error: string | null = null;
   const readableFailed = readable?.failed.length ?? 0;
@@ -560,6 +577,9 @@ async function snapshotOnce(
   } else if (readableFailed > 0) {
     status = 'warning';
     error = 'readable_incomplete';
+  } else if (lost > 0) {
+    status = 'warning';
+    error = 'files_missing';
   }
   return {
     snapshotId: summary.snapshotId,

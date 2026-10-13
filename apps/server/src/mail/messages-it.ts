@@ -348,6 +348,17 @@ export const IT: CoreTable = {
         footnote,
       };
     }
+    if (m.alert === 'backup_verify_failed') {
+      return {
+        subject: 'Kept: il controllo settimanale dei backup ha trovato un problema',
+        paragraphs: [
+          `Il controllo settimanale del repository dei backup non è riuscito: ${String(m.details.error ?? '')}`,
+          'I tuoi backup potrebbero non ripristinarsi così come sono. Apri i backup per vedere cosa ha trovato, e ricontrolla una volta risolto.',
+        ],
+        action: { label: 'Apri i backup', url: page(ctx, '/admin/backups') },
+        footnote,
+      };
+    }
     if (m.alert === 'backup_suspicious_size') {
       return {
         subject: 'Kept: l’ultimo backup sembra troppo piccolo',

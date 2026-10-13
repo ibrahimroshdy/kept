@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process';
 import { chmod, mkdtemp, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { KEPT_VERSION } from '@kept/shared';
+import { KEPT_VERSION, newId } from '@kept/shared';
 import pg from 'pg';
 import { afterAll, beforeAll, describe, expect, inject, it, vi } from 'vitest';
 import type { TestApp } from '../../test/app.js';
@@ -481,6 +481,48 @@ describe('retention', () => {
       },
     );
     expect(next.status).toBe('ok');
+  });
+});
+
+describe('a file lost from storage', () => {
+  it('makes the run a warning while its row is still there; a purge that raced the run does not', async () => {
+    const lost = await uniqueJpeg();
+    const res = await upload(t, ibrahim, garage.id, lost);
+    const fileId = (res.json() as { id: string }).id;
+    const [row] = await asOwner(
+      db,
+      async (c) =>
+        (
+          await c.query<{ storage_key: string }>(
+            'SELECT storage_key FROM public.files WHERE id = $1',
+            [fileId],
+          )
+        ).rows,
+    );
+    await files.blobs.delete(row?.storage_key as string);
+    try {
+      const run = await runSnapshot(depsFor(new FakeRestic(), path.join(scratch, 'lost')), {
+        kind: 'manual',
+      });
+      expect(run).toMatchObject({ status: 'warning', error: 'files_missing' });
+      expect(run.missing).toBeGreaterThanOrEqual(1);
+    } finally {
+      await asOwner(db, (c) => c.query('DELETE FROM public.files WHERE id = $1', [fileId]));
+    }
+  });
+});
+
+describe('a retried "Run now"', () => {
+  it('takes the same run row again when the job retries, and finishes it', async () => {
+    const restic = new FakeRestic();
+    const runId = newId();
+    const dir = path.join(scratch, 'retry');
+    restic.failNext('unreachable');
+    await expect(runSnapshot(depsFor(restic, dir), { kind: 'manual', runId })).rejects.toThrow();
+    expect(await runsOf(`id = '${runId}'`)).toMatchObject([{ status: 'failed' }]);
+    // pg-boss retries the job with the same data, so the same id (backup policy, one retry).
+    await runSnapshot(depsFor(restic, dir), { kind: 'manual', runId });
+    expect(await runsOf(`id = '${runId}'`)).toMatchObject([{ status: 'ok', error: null }]);
   });
 });
 

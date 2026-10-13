@@ -414,6 +414,7 @@ export type AdminAlertKind =
   | 'bucket_versioning_off'
   | 'restore_drill_due'
   | 'backup_suspicious_size'
+  | 'backup_verify_failed'
   | (string & {});
 
 /** GET /api/v1/admin/accounts?q&limit: an account, its owner's name and how many locations it

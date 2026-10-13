@@ -173,6 +173,12 @@ const EVERY_MAIL: MailBody[] = [
     details: { lastDrillAt: null },
   },
   { kind: 'admin-alert', to: 'admin@x.test', alert: 'backup_suspicious_size', details: {} },
+  {
+    kind: 'admin-alert',
+    to: 'admin@x.test',
+    alert: 'backup_verify_failed',
+    details: { error: 'repository_check_failed' },
+  },
   // D206: the instance caps and a rejected instance key.
   {
     kind: 'admin-alert',
@@ -384,6 +390,7 @@ describe('the operations alerts (step 8)', () => {
     'bucket_versioning_off',
     'restore_drill_due',
     'backup_suspicious_size',
+    'backup_verify_failed',
     'webhook_failing',
   ];
 

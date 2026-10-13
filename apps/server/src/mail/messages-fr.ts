@@ -362,6 +362,17 @@ export const FR: CoreTable = {
         footnote,
       };
     }
+    if (m.alert === 'backup_verify_failed') {
+      return {
+        subject: 'Kept : la vérification hebdomadaire des sauvegardes a trouvé un problème',
+        paragraphs: [
+          `La vérification hebdomadaire du dépôt de sauvegarde a échoué : ${String(m.details.error ?? '')}`,
+          'Vos sauvegardes pourraient ne pas se restaurer telles quelles. Ouvrez les sauvegardes pour voir ce qui a été trouvé, puis relancez la vérification une fois le problème réglé.',
+        ],
+        action: { label: 'Ouvrir les sauvegardes', url: page(ctx, '/admin/backups') },
+        footnote,
+      };
+    }
     if (m.alert === 'backup_suspicious_size') {
       return {
         subject: 'Kept : la dernière sauvegarde semble trop petite',

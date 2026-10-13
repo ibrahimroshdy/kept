@@ -62,6 +62,8 @@ export function useRunWords() {
         return t`Some files couldn't be read. The rest are in the snapshot.`;
       case 'blob_checksum_mismatch':
         return t`Some files don't match their checksums. They were backed up as they are.`;
+      case 'files_missing':
+        return t`Some files are missing from the file storage, so no backup holds them. The server's log names them.`;
       case 'unreachable':
       case 'backup_target_unreachable':
       case 'restic_unreachable':

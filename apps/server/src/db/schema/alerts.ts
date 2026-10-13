@@ -36,6 +36,9 @@ export const ADMIN_ALERT_KINDS = [
   /** A snapshot came out much smaller than the last good one, so its retention was skipped
    * (step 8 T5). */
   'backup_suspicious_size',
+  /** The weekly repository check (backup-verify) failed: restic check found errors, or the S3
+   * bucket lost files a good snapshot references (review finding, 2026-10-14). */
+  'backup_verify_failed',
   /** A location webhook started failing (step 6 T15): its failing_since was set. */
   'webhook_failing',
 ] as const;
