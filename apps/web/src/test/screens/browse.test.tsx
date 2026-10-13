@@ -301,6 +301,35 @@ describe('switching locations (review finding, 2026-10-14)', () => {
   });
 });
 
+describe('collapsible Places and Things (1.1)', () => {
+  it('folds a section away, keeps the other, and remembers it on this device', async () => {
+    localStorage.clear();
+    const { user, router } = await renderApp(`/loc/${IDS.home}`);
+    const contents = await list('Contents of Home');
+    const places = within(contents).getByRole('button', { name: /^Places/ });
+    expect(places).toHaveAttribute('aria-expanded', 'true');
+    const placeRows = () =>
+      within(contents)
+        .queryAllByRole('link')
+        .filter((a) => a.getAttribute('href')?.startsWith('/p/'));
+    expect(placeRows().length).toBeGreaterThan(0);
+    await user.click(places);
+    expect(places).toHaveAttribute('aria-expanded', 'false');
+    expect(placeRows()).toEqual([]);
+    expect(within(contents).getByText('Galaxy S23')).toBeInTheDocument();
+
+    await router.navigate({ to: '/loc/$id', params: { id: IDS.garage } });
+    await list('Contents of Garage');
+    await router.navigate({ to: '/loc/$id', params: { id: IDS.home } });
+    const again = await list('Contents of Home');
+    expect(within(again).getByRole('button', { name: /^Places/ })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
+    localStorage.clear();
+  });
+});
+
 describe('select and move (D45)', () => {
   it('moves selected things, warning who loses sight across locations', async () => {
     const { user, mock } = await renderApp(`/loc/${IDS.home}`);

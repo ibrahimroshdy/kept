@@ -180,9 +180,7 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
 
   const entries = query.data?.pages.flatMap((pg) => pg.items) ?? [];
   const placeCount = fmt.num(entries.filter((e) => e.kind === 'place').length);
-  const firstPlace = entries.find((e) => e.kind === 'place');
-  const firstThing = entries.find((e) => e.kind === 'thing');
-  const grouped = !!list.group && list.group !== 'none';
+  const hasPlaces = entries.some((e) => e.kind === 'place');
   const things = entries.flatMap((e) => (e.kind === 'thing' ? [e.thing] : []));
 
   // ----- selection and moves -----
@@ -297,12 +295,6 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
     ...(canImport ? [f.importRun(parent.locationId)] : []),
   ];
 
-  const heading = (text: ReactNode) => (
-    <div className="eyebrow bg-sunken px-3.5 py-2" role="presentation">
-      {text}
-    </div>
-  );
-
   const renderRow = (e: Entry) => {
     if (e.kind === 'place')
       return (
@@ -312,13 +304,6 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
             dropOn === e.place.id && 'bg-sunken outline-2 -outline-offset-2 outline-info',
           )}
         >
-          {!grouped && e === firstPlace
-            ? heading(
-                <Trans>
-                  Places · <span className="tabular-nums">{placeCount}</span>
-                </Trans>,
-              )
-            : null}
           <PlaceRowView place={e.place} />
         </div>
       );
@@ -343,9 +328,6 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
           ev.dataTransfer.effectAllowed = 'move';
         }}
       >
-        {!grouped && e === firstThing && firstPlace
-          ? heading(parent.kind === 'location' ? <Trans>Things</Trans> : <Trans>Things here</Trans>)
-          : null}
         <ThingRowView thing={thing} showPath={parent.kind === 'location'} leading={checkbox} />
       </div>
     );
@@ -522,6 +504,27 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
         query={query}
         getKey={(e) => (e.kind === 'place' ? `p:${e.place.id}` : `t:${e.thing.id}`)}
         renderRow={renderRow}
+        // Places, then Things, each a section that folds away (1.1): a location with 200 things
+        // stays navigable. Things get a heading only below places.
+        sections={(e) =>
+          e.kind === 'place'
+            ? {
+                key: '__places',
+                label: (
+                  <Trans>
+                    Places · <span className="tabular-nums">{placeCount}</span>
+                  </Trans>
+                ),
+              }
+            : hasPlaces
+              ? {
+                  key: '__things',
+                  label:
+                    parent.kind === 'location' ? <Trans>Things</Trans> : <Trans>Things here</Trans>,
+                }
+              : null
+        }
+        collapsible="contents"
         groupOf={(e) =>
           e.kind === 'place'
             ? { key: '__places', label: <Trans>Places</Trans> }
