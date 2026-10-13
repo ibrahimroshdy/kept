@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { newId } from '@kept/shared';
+import { newId, SYNC_LIMITS } from '@kept/shared';
 import type pg from 'pg';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { testDb } from '../../test/db.js';
@@ -12,7 +12,7 @@ import {
   seedUser,
   type Tenant,
 } from '../../test/tenancy.js';
-import { withScope } from './scope.js';
+import { withScope, withSystem } from './scope.js';
 
 // Step-3 T4: the sync ledger, legacy codes, box checks, the cover cache and tombstones on
 // arrival (engineering spec §1.10, §2.3, §7.4, §7.13; D40, D146, D156, D175, D195).
@@ -87,6 +87,26 @@ describe('sync_ops', () => {
     expect(
       (await pgError(as(member, (c) => c.query(INSERT_OP, opRow(member, 'op-000003', null))))).code,
     ).toBe('23505');
+  });
+
+  it('keeps an op for the whole window a phone may resend it in (90 days), then prunes it', async () => {
+    await as(member, (c) => c.query(INSERT_OP, opRow(member, 'op-000060', t.locationId)));
+    await as(member, (c) => c.query(INSERT_OP, opRow(member, 'op-000092', t.locationId)));
+    await own(
+      `UPDATE public.sync_ops SET received_at = now() - make_interval(days => $2)
+        WHERE idempotency_key = $1`,
+      ['op-000060', 60],
+    );
+    await own(
+      `UPDATE public.sync_ops SET received_at = now() - make_interval(days => $2)
+        WHERE idempotency_key = $1`,
+      ['op-000092', SYNC_LIMITS.clientIdPastDays + 2],
+    );
+    await withSystem(db.pools.system, (_tx, c) => c.query('SELECT * FROM kept.prune_stale_rows()'));
+    const left = await own<{ idempotency_key: string }>(
+      'SELECT idempotency_key FROM public.sync_ops ORDER BY 1',
+    );
+    expect(left.map((r) => r.idempotency_key)).toEqual(['op-000060']);
   });
 
   it('refuses a location the person can’t see', async () => {
