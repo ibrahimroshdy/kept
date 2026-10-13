@@ -23,7 +23,7 @@ import { HistoryTimeline } from '@/components/history/timeline';
 import { ChevronStartIcon, LinkIcon, PencilIcon } from '@/components/icons';
 import { ErrorState, LinkButton, LoadingRows, Page, Pill } from '@/components/page';
 import { usePlaceTree } from '@/components/places/api';
-import { PlaceTree } from '@/components/places/tree';
+import { PlacesPanel, PlaceTree } from '@/components/places/tree';
 import { SaveAsTemplateSheet } from '@/components/templates/template-sheet';
 import { Button } from '@/components/ui/button';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
@@ -41,6 +41,7 @@ import { addressOf } from '@/lib/address';
 import { isolate } from '@/lib/bidi';
 import { useFormat } from '@/lib/format';
 import { useLocationName } from '@/lib/labels';
+import { DOCKED, useMediaQuery } from '@/lib/media';
 import { cn } from '@/lib/utils';
 import { ActionMenu, type SheetName, useCopyLink, useRunAction } from './action-menu';
 import { ContentsSection } from './contents';
@@ -311,6 +312,9 @@ function Loaded({ tab, sheet }: { tab: ThingTab | undefined; sheet: SheetName | 
   const locationName = useLocationName();
   const backName = parent ? parent.name : locationName(location);
   const tree = usePlaceTree(location.id);
+  // 1.1: from 1280 px the location's places stay open beside the page, the nearest place marked.
+  const placesPanel = useMediaQuery(DOCKED);
+  const placeAt = [...thing.path].reverse().find((p) => p.kind === 'place');
 
   return (
     <VehicleNavProvider value={{ go: goVehicleTab }}>
@@ -318,6 +322,17 @@ function Loaded({ tab, sheet }: { tab: ThingTab | undefined; sheet: SheetName | 
         title={<bdi dir="auto">{thing.name ?? t`Untitled`}</bdi>}
         back={back}
         wide
+        {...(placesPanel && tree.data?.places
+          ? {
+              aside: (
+                <PlacesPanel
+                  places={tree.data.places}
+                  {...(placeAt ? { currentId: placeAt.id } : {})}
+                  location={{ id: location.id, name: locationName(location) }}
+                />
+              ),
+            }
+          : {})}
         actions={
           viewer ? null : (
             <>
@@ -357,10 +372,12 @@ function Loaded({ tab, sheet }: { tab: ThingTab | undefined; sheet: SheetName | 
           </LinkButton>
         </div>
         {tree.data?.places ? (
-          <PlaceTree
-            places={tree.data.places}
-            currentId={parent?.kind === 'place' ? parent.id : undefined}
-          />
+          !placesPanel ? (
+            <PlaceTree
+              places={tree.data.places}
+              currentId={parent?.kind === 'place' ? parent.id : undefined}
+            />
+          ) : null
         ) : null}
         {viewer ? (
           <div className="grid gap-2">

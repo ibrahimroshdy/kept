@@ -880,6 +880,35 @@ describe('inside a location (D39)', () => {
     expect(within(tree).getByRole('link', { current: 'page' })).toHaveTextContent('Desk drawer');
   });
 
+  it('from 1280 px keeps the outline open beside the page, the place marked, headed by its location', async () => {
+    vi.stubGlobal('matchMedia', (q: string) => ({
+      matches: ['(min-width: 768px)', '(min-width: 1024px)', '(min-width: 1280px)'].includes(q),
+      media: q,
+      onchange: null,
+      addEventListener() {},
+      removeEventListener() {},
+      addListener() {},
+      removeListener() {},
+      dispatchEvent: () => false,
+    }));
+    try {
+      await renderApp(`/p/${P.deskDrawer}`);
+      await findHeading('Desk drawer');
+      const panel = await screen.findByRole('navigation', { name: 'Places in Home' });
+      expect(within(panel).getByRole('link', { name: 'Home' })).toHaveAttribute(
+        'href',
+        `/loc/${IDS.home}`,
+      );
+      expect(within(panel).getByRole('link', { current: 'page' })).toHaveTextContent('Desk drawer');
+      // The page's own collapsed outline gives way to it.
+      expect(
+        screen.queryByText((_, el) => el?.tagName === 'SUMMARY' && el.textContent === 'All places'),
+      ).toBeNull();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('a top-level place links back to the location', async () => {
     await renderApp(`/p/${P.office}`);
     await findHeading('Office');
