@@ -514,3 +514,42 @@ describe('resuming, cancelling and losing the right to import', () => {
     LONG,
   );
 });
+
+describe('a step that fails after making a brand (review finding, 2026-10-14)', () => {
+  it(
+    'forgets the brand the failed step made, so the next item with it imports',
+    async () => {
+      const cabin = await createLocation(t, db, ibrahim, 'complete', 'Cabin');
+      // Fridge and Kettle are both Bosch, which Cabin hasn't got: Fridge's step makes it, then
+      // fails, and its savepoint takes the brand back with it.
+      await own(
+        db,
+        `CREATE FUNCTION public.test_fail_fridge() RETURNS trigger LANGUAGE plpgsql AS $$
+         BEGIN RAISE EXCEPTION 'no fridges today' USING ERRCODE = 'check_violation'; END $$`,
+      );
+      await own(
+        db,
+        `CREATE TRIGGER test_fail_fridge BEFORE INSERT ON public.things
+           FOR EACH ROW WHEN (NEW.name = 'Fridge') EXECUTE FUNCTION public.test_fail_fridge()`,
+      );
+      try {
+        const run = await prepare(ibrahim, cabin, homeZip);
+        await start(ibrahim, run.id);
+        await runHomeboxImport(jobDeps(), scopeOf(ibrahim), run.id);
+        expect(await statusOf(run.id)).toMatchObject({ status: 'done' });
+        const rows = await own<{ name: string; brand: string | null }>(
+          db,
+          `SELECT t.name, b.name AS brand FROM public.things t
+             LEFT JOIN public.brands b ON b.id = t.brand_id
+            WHERE t.location_id = $1 AND t.name IN ('Fridge', 'Kettle')`,
+          [cabin.id],
+        );
+        expect(rows).toEqual([{ name: 'Kettle', brand: 'Bosch' }]);
+      } finally {
+        await own(db, 'DROP TRIGGER test_fail_fridge ON public.things');
+        await own(db, 'DROP FUNCTION public.test_fail_fridge()');
+      }
+    },
+    LONG,
+  );
+});
