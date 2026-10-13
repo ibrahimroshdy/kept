@@ -56,6 +56,7 @@ export const OMIT_REASONS: Readonly<Record<string, string>> = Object.freeze({
   search_tsv: 'derived: the search index',
   search_names: 'derived: the search index',
   place_path: 'derived: re-made from the place tree',
+  attached_at: "this server's purge bookkeeping; attaching the file on import sets it again",
   storage_key: "this server's storage; the original travels as files/<fileId>",
   derivative_state: 'derived: thumbnails are re-made from the original',
   deleted_at: 'a location export is of a live location',
@@ -223,7 +224,7 @@ export const REGISTRY: readonly EntityDef[] = Object.freeze([
     key: ['id'],
     fields:
       'id:uuid sha256:text bytes:int mime:text class:text has_gps:bool width:int height:int created_at:ts',
-    omit: 'location_id storage_key derivative_state created_by',
+    omit: 'location_id storage_key derivative_state created_by attached_at',
     // Only the originals the exported rows reference (D117): an attachment's, or a thing's cover.
     where: `(x.id IN (SELECT a.file_id FROM public.attachments a
                        WHERE a.location_id = $1 AND a.file_id IS NOT NULL AND {thingOk:a.thing_id})
