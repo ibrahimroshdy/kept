@@ -21,5 +21,5 @@ export const CONTENTS_FILTERS = [
 
 /** `validateSearch` for a route that hosts a ContentsList: the list keys plus `view`. */
 export const contentsSearch = listSearch(CONTENTS_FILTERS, {
-  view: z.optional(z.catch(z.enum(['list', 'photos']), 'list')),
+  view: z.optional(z.catch(z.enum(['list', 'photos', 'grid']), 'list')),
 });

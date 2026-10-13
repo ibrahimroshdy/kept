@@ -71,6 +71,31 @@ export function PlaceRowView({ place, trailing }: { place: PlaceNode; trailing?:
   );
 }
 
+/** A place as a grid tile (1.1): its kind's icon in a square, its name and what it holds. */
+export function PlaceTile({ place }: { place: PlaceNode }) {
+  const nameOf = usePlaceName();
+  return (
+    <Link
+      to="/p/$id"
+      params={{ id: addressOf(place) }}
+      className="grid content-start gap-1.5 rounded-[10px] p-1 text-ink outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:outline-info"
+    >
+      <span
+        aria-hidden="true"
+        className="grid aspect-square w-full place-items-center rounded-lg border border-line bg-surface text-ink-3 [&_svg]:size-8"
+      >
+        <TypeIcon icon={placeIcon(place)} />
+      </span>
+      <span className="text-small font-semibold leading-snug [overflow-wrap:anywhere]">
+        <bdi>{nameOf(place)}</bdi>
+      </span>
+      <span className="text-small text-ink-2">
+        <PlaceCounts place={place} />
+      </span>
+    </Link>
+  );
+}
+
 /** "Office › Desk drawer › Cable box". */
 export function PathText({ path }: { path: PathStep[] }) {
   const placeName = usePlaceName();
