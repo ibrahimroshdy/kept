@@ -6,7 +6,9 @@
  * existing delete fetchers — no new endpoint, and never anything the tour didn't create.
  */
 
-export type TourLedgerKind = 'capture' | 'thing' | 'place' | 'location' | 'label';
+/** What a tour micro-action can create. Labels aren't here: the tour only previews them
+ * (spec decision 4), and a printed sheet exists in the world, so nothing could discard one. */
+export type TourLedgerKind = 'capture' | 'thing' | 'place' | 'location';
 
 export type TourLedgerEntry = { kind: TourLedgerKind; id: string };
 
@@ -25,7 +27,9 @@ const entries: TourLedgerEntry[] = [];
  * `record` is only called by tour micro-actions, so pre-existing data never lands here.
  */
 export const tourLedger = {
+  /** Once per id: a capture batch records itself on every photo it queues. */
   record(kind: TourLedgerKind, id: string): void {
+    if (entries.some((e) => e.kind === kind && e.id === id)) return;
     entries.push({ kind, id });
   },
   list(): readonly TourLedgerEntry[] {

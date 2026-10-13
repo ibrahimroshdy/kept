@@ -47,6 +47,8 @@ import {
 import { type Detect, nativeDetect, watchForLabels } from '@/camera/label-recogniser';
 import { type CameraEnv, type CameraProblem, cameraEnv, openCamera } from '@/camera/session';
 import { PausedBanner } from '@/components/ai/paused-banner';
+import { tourLedger } from '@/components/hints/tour-ledger';
+import { hintSlot } from '@/components/hints/use-hint';
 import { UNDO_TOAST_MS } from '@/components/history/undo';
 import { CameraIcon, GalleryIcon } from '@/components/icons';
 import { usePlaceName } from '@/components/places/labels';
@@ -419,6 +421,14 @@ export function CaptureScreen({
     rememberMode(m);
   };
   const [batchId, setBatchId] = useState(newId);
+  /**
+   * Something was queued in this batch. During "Show me around" the batch is the tour's own
+   * micro-action, so it goes in the tour's ledger (once) and Discard undoes it at the end.
+   */
+  const noteQueued = useCallback(() => {
+    if (hintSlot.get() === 'tour') tourLedger.record('capture', batchId);
+    onQueued?.();
+  }, [batchId, onQueued]);
   const [shots, setShots] = useState<Shot[]>([]);
   const [armed, setArmed] = useState(false);
   const [name, setName] = useState('');
@@ -514,7 +524,7 @@ export function CaptureScreen({
     ]);
     setAnnounce((n) => n + 1);
     rememberTarget(target);
-    onQueued?.();
+    noteQueued();
     void refreshCounts();
   };
 
@@ -550,7 +560,7 @@ export function CaptureScreen({
       };
       setShots((s) => [...s, { ...q, thumb, name: null, added: true, target: where }]);
       setAnnounce((n) => n + 1);
-      onQueued?.();
+      noteQueued();
       void refreshCounts();
       return;
     }
@@ -574,7 +584,7 @@ export function CaptureScreen({
     if (thumb) thumbs.current.push(thumb);
     setShots((s) => [...s, { ...q, thumb, name: null, added: true, target: where }]);
     setAnnounce((n) => n + 1);
-    onQueued?.();
+    noteQueued();
     void refreshCounts();
   };
 
@@ -678,13 +688,13 @@ export function CaptureScreen({
         ...s,
         ...queued.map((q) => ({ ...q, thumb: null, name: null, added: false, target })),
       ]);
-      onQueued?.();
+      noteQueued();
       toast({
         title: plural(queued.length, { one: 'Kept # file', other: 'Kept # files' }),
         tone: 'ok',
       });
     },
-    [store, target, batchId, decode, onQueued],
+    [store, target, batchId, decode, noteQueued],
   );
 
   const toSummary = () => (shots.length ? setPhase('summary') : onExit());

@@ -21244,65 +21244,65 @@ msgid "Keep what you added?"
 msgstr "Mantenere ciò che hai aggiunto?"
 
 #: src/components/hints/hint-copy.ts
-msgid "Locations, members, AI and backups live here. Look around: nothing changes unless you change it."
-msgstr "Luoghi, membri, IA e backup sono qui. Guarda pure: niente cambia a meno che non lo cambi tu."
+msgid "Locations, members, AI and backups live here. Nothing changes unless you change it."
+msgstr "Posizioni, membri, IA e backup sono qui. Nulla cambia se non lo cambi tu."
 
 #: src/components/hints/hint-copy.ts
 msgid "Name it and create it. At the end you keep it, or discard it."
 msgstr "Dagli un nome e crealo. Alla fine lo mantieni o lo scarti."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open \"Label everything unprinted\" to see its label. Print it only if you want to stick one on now."
-msgstr "Apri «Etichetta tutto ciò che non ha un’etichetta stampata» per vederne l’etichetta. Stampala solo se vuoi attaccarne una adesso."
+msgid "What has no label yet is listed here. Print a sheet whenever you want to stick some on."
+msgstr "Qui c'è ciò che non ha ancora un'etichetta. Stampa un foglio quando vuoi attaccarne qualcuna."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a document to read it. The ones running out are one tap away."
-msgstr "Apri un documento per leggerlo. Quelli in scadenza sono a un tocco."
+msgid "Every document, with the ones running out first."
+msgstr "Tutti i documenti, quelli in scadenza per primi."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a loan to see what's out, who has it, and what's overdue."
-msgstr "Apri un prestito per vedere cosa è fuori, chi ce l’ha e cosa è scaduto."
+msgid "What's lent out, who has it, and what's overdue."
+msgstr "Cosa è in prestito, chi ce l'ha e cosa è in ritardo."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a schedule to see what's due next. A new one starts here too."
-msgstr "Apri una pianificazione per vedere la prossima scadenza. Una nuova inizia anche qui."
+msgid "What's due, soonest first. New schedules start here too."
+msgstr "Ciò che è in scadenza, il più vicino prima. Anche i nuovi programmi iniziano qui."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open a vehicle to see its odometer, what's due next, and its documents."
-msgstr "Apri un veicolo per vedere il suo contachilometri, la prossima scadenza e i suoi documenti."
+msgid "Each vehicle shows its odometer, what's due next and its documents."
+msgstr "Ogni veicolo mostra il contachilometri, la prossima scadenza e i suoi documenti."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open something low and adjust its stock after you use some."
-msgstr "Apri qualcosa di quasi esaurito e aggiorna la sua scorta dopo averne usato un po’."
+msgid "What runs low, with how much is left."
+msgstr "Ciò che sta finendo, e quanto ne resta."
 
 #: src/components/hints/hint-copy.ts
-msgid "Open the item, check what Kept suggests, and confirm it. Confirming files it into its place."
-msgstr "Apri l’elemento, controlla cosa suggerisce Kept e confermalo. La conferma lo archivia al suo posto."
+msgid "Your photo waits here. Check what Kept suggests and accept it: accepting files it into its place."
+msgstr "La tua foto aspetta qui. Controlla cosa suggerisce Kept e accettalo: accettare la mette al suo posto."
 
 #: src/components/hints/hint-copy.ts
-msgid "Reminders land here. Open one to act on it, or change what you're told about."
-msgstr "I promemoria arrivano qui. Aprine uno per agire, oppure cambia su cosa vieni avvisato."
+msgid "Reminders land here, newest first. What you're told about is in Settings."
+msgstr "I promemoria arrivano qui, i più recenti prima. Di cosa vieni avvisato si sceglie nelle Impostazioni."
 
 #: src/components/hints/hint-copy.ts
-msgid "Take a photo of one thing, or add it from your gallery instead. It lands in your Inbox."
-msgstr "Fotografa una cosa, oppure aggiungila dalla tua galleria. Finisce in In arrivo."
+msgid "Take a photo of one thing, or pick one from your gallery, then tap Next. It waits in your Inbox."
+msgstr "Scatta una foto di una cosa, o scegline una dalla galleria, poi tocca Avanti. Ti aspetta nella posta in arrivo."
 
 #: src/components/hints/hint-copy.ts
-msgid "That's every section. Anything you added along the way, you can keep or discard."
-msgstr "Ecco tutte le sezioni. Tutto ciò che hai aggiunto lungo il percorso puoi mantenerlo o scartarlo."
+msgid "That's every section. If the tour added anything, you choose to keep it or discard it."
+msgstr "Queste sono tutte le sezioni. Se il tour ha aggiunto qualcosa, scegli se tenerlo o scartarlo."
 
 #: src/components/hints/hint-copy.ts
-msgid "This is where it landed. Open one of its places to see what's inside it."
-msgstr "È qui che è finito. Apri uno dei suoi posti per vedere cosa contiene."
+msgid "A location's places, and how much each holds. Open any of them after the tour."
+msgstr "I punti di una posizione e quanto contiene ciascuno. Aprili dopo il tour."
 
 #: src/components/hints/hint-copy.ts
-msgid "Trashed things wait here for 30 days. Restore one to put it back."
-msgstr "Gli elementi cestinati aspettano qui 30 giorni. Ripristinane uno per rimetterlo a posto."
+msgid "Trashed things wait here for 30 days, each with Restore."
+msgstr "Le cose nel cestino restano qui 30 giorni, ciascuna con Ripristina."
 
 #: src/components/hints/hint-copy.ts
-msgid "Type the thing's name in the box above and open it from the results."
-msgstr "Digita il nome della cosa nel campo qui sopra e aprila dai risultati."
+msgid "Type part of a thing's name above. Each result shows where it is."
+msgstr "Scrivi sopra parte del nome di una cosa. Ogni risultato mostra dove si trova."
 
 #: src/components/hints/hint-copy.ts
-msgid "What needs you is at the top. Open one of your locations to see its places and things."
-msgstr "Ciò che ti aspetta è in alto. Apri uno dei tuoi luoghi per vederne posti e contenuti."
+msgid "What needs you is at the top, your locations below it. Next takes you into one."
+msgstr "Quello che ti aspetta è in alto, le tue posizioni sotto. Avanti ti porta in una di esse."
