@@ -620,7 +620,10 @@ describe('a person’s contact details (D177)', () => {
       phone: { changed: true, class: 'secret' },
       email: { changed: true, class: 'secret' },
     });
-    expect(JSON.stringify(audit)).not.toContain('555');
+    // The values themselves, not a fragment: a random uuid in the audit can contain '555'.
+    const logged = JSON.stringify(audit);
+    expect(logged).not.toContain('555 0199');
+    expect(logged).not.toContain('ibrahim@example.com');
   });
 
   it('is a 404 to an admin of only one of the locations that use them, and to members', async () => {
