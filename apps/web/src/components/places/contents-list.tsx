@@ -56,7 +56,7 @@ import {
 } from './api';
 import { usePlaceName, useTypeName } from './labels';
 import { MoveThingsDialog, placeMatches } from './move-picker';
-import { PhotoTile, PlaceRowView, ThingRowView } from './rows';
+import { PhotoTile, PlaceRowView, PlaceTile, ThingRowView } from './rows';
 
 export { CONTENTS_FILTERS, contentsSearch } from './contents-search';
 
@@ -71,7 +71,7 @@ export type ContentsListProps = {
   /** The caller may change things here (`things.edit`): selection, Move, drag and drop. */
   canEdit: boolean;
   /** `photos` leads with a photo grid of the things (D195). Default: from the URL's `view`. */
-  view?: 'list' | 'photos';
+  view?: 'list' | 'photos' | 'grid';
   /** Shown instead of the default empty state ("Nothing here yet" / "Box 3 is empty"). */
   empty?: ReactNode;
 };
@@ -185,6 +185,9 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
 
   // ----- selection and moves -----
   const [selecting, setSelecting] = useState(false);
+  // A location's or place's places and things as tiles (1.1); selecting goes back to rows, where
+  // the checkboxes are.
+  const grid = (view ?? list.layout) === 'grid' && parent.kind !== 'container' && !selecting;
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [moving, setMoving] = useState<string[] | null>(null);
   const toggle = (id: string) =>
@@ -296,6 +299,8 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
   ];
 
   const renderRow = (e: Entry) => {
+    if (grid)
+      return e.kind === 'place' ? <PlaceTile place={e.place} /> : <PhotoTile thing={e.thing} />;
     if (e.kind === 'place')
       return (
         <div
@@ -493,38 +498,52 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
             kind: 'date',
           },
         ]}
-        {...(parent.kind === 'container' && !view
-          ? {
-              layouts: [
-                { value: 'list', label: t`List` },
-                { value: 'photos', label: t`Photos`, short: t`photos` },
-              ],
-            }
-          : {})}
+        {...(view
+          ? {}
+          : parent.kind === 'container'
+            ? {
+                layouts: [
+                  { value: 'list', label: t`List` },
+                  { value: 'photos', label: t`Photos`, short: t`photos` },
+                ],
+              }
+            : {
+                layouts: [
+                  { value: 'list', label: t`List` },
+                  { value: 'grid', label: t`Grid`, short: t`grid` },
+                ],
+              })}
+        tiles={grid}
         query={query}
         getKey={(e) => (e.kind === 'place' ? `p:${e.place.id}` : `t:${e.thing.id}`)}
         renderRow={renderRow}
         // Places, then Things, each a section that folds away (1.1): a location with 200 things
         // stays navigable. Things get a heading only below places.
         sections={(e) =>
-          e.kind === 'place'
-            ? {
-                key: '__places',
-                label: (
-                  <Trans>
-                    Places · <span className="tabular-nums">{placeCount}</span>
-                  </Trans>
-                ),
-              }
-            : hasPlaces
+          grid
+            ? null
+            : e.kind === 'place'
               ? {
-                  key: '__things',
-                  label:
-                    parent.kind === 'location' ? <Trans>Things</Trans> : <Trans>Things here</Trans>,
+                  key: '__places',
+                  label: (
+                    <Trans>
+                      Places · <span className="tabular-nums">{placeCount}</span>
+                    </Trans>
+                  ),
                 }
-              : null
+              : hasPlaces
+                ? {
+                    key: '__things',
+                    label:
+                      parent.kind === 'location' ? (
+                        <Trans>Things</Trans>
+                      ) : (
+                        <Trans>Things here</Trans>
+                      ),
+                  }
+                : null
         }
-        collapsible="contents"
+        {...(grid ? {} : { collapsible: 'contents' })}
         groupOf={(e) =>
           e.kind === 'place'
             ? { key: '__places', label: <Trans>Places</Trans> }

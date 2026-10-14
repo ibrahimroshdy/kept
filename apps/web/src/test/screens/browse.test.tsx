@@ -120,8 +120,9 @@ describe('the location page', () => {
     expect(router.state.location.search).not.toHaveProperty('dir');
     await user.click(within(sheet).getByRole('menuitemradio', { name: 'Oldest first' }));
     await waitFor(() => expect(router.state.location.search).toMatchObject({ dir: 'asc' }));
-    // A location has no layouts: those are a container's.
-    expect(within(sheet).queryByText('Layout')).toBeNull();
+    // A location lays out as a list or a grid (1.1); a container's choice is list or photos.
+    expect(within(sheet).getByText('Layout')).toBeInTheDocument();
+    expect(within(sheet).getByRole('menuitemradio', { name: 'Grid' })).toBeInTheDocument();
   });
 
   it('the Unplaced chip narrows things to the Unplaced area', async () => {
@@ -327,6 +328,22 @@ describe('collapsible Places and Things (1.1)', () => {
       'false',
     );
     localStorage.clear();
+  });
+});
+
+describe('a grid of a location (1.1)', () => {
+  it('shows places and things as tiles with view=grid, and rows again while selecting', async () => {
+    const { user } = await renderApp(`/loc/${IDS.home}?view=grid`);
+    const contents = await list('Contents of Home');
+    expect(contents.className).toContain('grid-cols-2');
+    const hrefs = within(contents)
+      .getAllByRole('link')
+      .map((a) => a.getAttribute('href') ?? '');
+    expect(hrefs.some((h) => h.startsWith('/p/'))).toBe(true);
+    expect(hrefs.some((h) => h.startsWith('/t/'))).toBe(true);
+    await user.click(screen.getByRole('button', { name: 'Select' }));
+    expect((await list('Contents of Home')).className).not.toContain('grid-cols-2');
+    expect(screen.getByRole('checkbox', { name: 'Select Galaxy S23' })).toBeInTheDocument();
   });
 });
 
