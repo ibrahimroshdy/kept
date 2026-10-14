@@ -10,7 +10,7 @@ import { queueReportRun } from '../../inventory/mock/reports';
 import type { MockState } from '../../mock/fixtures';
 import { err, type MockRoute, reply, route, sessionGate } from '../../mock/kit';
 import { vehiclePaths as p } from '../paths';
-import type { VehicleHistoryReportBody } from '../types';
+import type { LubeLoggerImportBody, VehicleHistoryReportBody } from '../types';
 import { ensureVehiclesSeeded, isVehicle, thingGate, vehiclesOf } from './state';
 
 export function vehicleReportRoutes(state: MockState): MockRoute[] {
@@ -42,6 +42,27 @@ export function vehicleReportRoutes(state: MockState): MockRoute[] {
         202,
         queueReportRun(state, { locationId: t.locationId }, readings + services + fills),
       );
+    }),
+    // 1.3 (D229): the LubeLogger import, answered from the rows without keeping anything (a row
+    // with no readable date is an issue, the rest would be added).
+    route('POST', p.thingLubeLogger(':id'), ({ params, body }) => {
+      const gate = sessionGate(state);
+      if (gate) return gate;
+      ensureVehiclesSeeded(state);
+      const g = thingGate(state, params.id, 'vehicles', 'write');
+      if ('reply' in g) return g.reply;
+      const b = body as LubeLoggerImportBody;
+      const issues = b.rows.flatMap((r, i) =>
+        /^\s*\d{1,4}[/.-]\d{1,2}[/.-]\d{1,4}/.test(r.Date ?? '')
+          ? []
+          : [{ row: i + 1, code: 'date' }],
+      );
+      return {
+        created: b.rows.length - issues.length,
+        skipped: 0,
+        issues,
+        dryRun: b.dryRun === true,
+      };
     }),
   ];
 }

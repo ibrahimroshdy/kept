@@ -234,3 +234,61 @@ describe('starter schedules', () => {
     expect(screen.queryByRole('article', { name: 'Brake fluid' })).toBeNull();
   });
 });
+
+describe('Import from LubeLogger (D229)', () => {
+  const FUEL = [
+    'Date,Odometer,FuelConsumed,Cost,FuelEconomy,IsFillToFull,MissedFuelUp,Notes,Tags',
+    '14/09/2026 00:00:00,10500,"42,5","65,30",,True,False,,',
+    '28/09/2026 00:00:00,10900,"40,25","61,10",,True,False,,',
+  ].join('\n');
+
+  it('reads a fuel export, guesses day-first and the decimal comma, checks, then imports', async () => {
+    desktop();
+    const { user, mock } = await renderApp(`/t/${COROLLA}`, { state: seeded() });
+    await findHeading('Toyota Corolla');
+    await user.click(await screen.findByRole('button', { name: 'Import from LubeLogger' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Import from LubeLogger' });
+    const input = dialog.querySelector<HTMLInputElement>('input[type="file"]') as HTMLInputElement;
+    await user.upload(input, new File([FUEL], 'Fuel.csv', { type: 'text/csv' }));
+    expect(await within(dialog).findByText('Fuel: 2 rows')).toBeInTheDocument();
+    expect(within(dialog).getByRole('radio', { name: 'Day first' })).toBeChecked();
+    expect(within(dialog).getByRole('radio', { name: '1.234,56' })).toBeChecked();
+    await user.click(within(dialog).getByRole('button', { name: 'Check' }));
+    expect(
+      await within(dialog).findByText("Add 2. Already here: 0. Can't add: 0."),
+    ).toBeInTheDocument();
+    expect(
+      mock.lastCall('POST', `/api/v1/things/${COROLLA}/import/lubelogger`)?.body,
+    ).toMatchObject({
+      kind: 'fuel',
+      dateOrder: 'dmy',
+      decimal: ',',
+      fuelUnit: 'L',
+      dryRun: true,
+    });
+    await user.click(within(dialog).getByRole('button', { name: 'Import' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(
+      mock.lastCall('POST', `/api/v1/things/${COROLLA}/import/lubelogger`)?.body,
+    ).not.toHaveProperty('dryRun');
+  });
+
+  it('says so for a CSV that is not a LubeLogger export', async () => {
+    desktop();
+    const { user } = await renderApp(`/t/${COROLLA}`, { state: seeded() });
+    await findHeading('Toyota Corolla');
+    await user.click(await screen.findByRole('button', { name: 'Import from LubeLogger' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Import from LubeLogger' });
+    const input = dialog.querySelector<HTMLInputElement>('input[type="file"]') as HTMLInputElement;
+    await user.upload(
+      input,
+      new File(['Name,Place\nKettle,Kitchen'], 'things.csv', { type: 'text/csv' }),
+    );
+    expect(
+      await within(dialog).findByText(
+        "This isn't a LubeLogger export of fuel, services or odometer.",
+      ),
+    ).toBeInTheDocument();
+    expect(within(dialog).getByRole('button', { name: 'Check' })).toBeDisabled();
+  });
+});

@@ -38,6 +38,8 @@ import type {
   FuelSummary,
   FuelSummaryParams,
   HomeResponseV5,
+  LubeLoggerImportBody,
+  LubeLoggerImportResult,
   MeterSeries,
   Page,
   ProofsPage,
@@ -153,6 +155,10 @@ export const vehiclesApi = {
   // the history report (T15): read back through step 2's `reportsApi.run(id)` (../inventory/reports)
   vehicleHistoryReport: (body: VehicleHistoryReportBody) =>
     api.post<VehicleHistoryReportCreated>(p.reportsVehicleHistory, body),
+
+  // 1.3 (D229): a LubeLogger export into this vehicle (a dry run first)
+  importLubeLogger: (thingId: string, body: LubeLoggerImportBody) =>
+    api.post<LubeLoggerImportResult>(p.thingLubeLogger(thingId), body),
 };
 
 // ----- hooks -----------------------------------------------------------------------------------

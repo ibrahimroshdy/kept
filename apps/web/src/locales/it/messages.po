@@ -21627,3 +21627,107 @@ msgstr "Il 1° di ogni mese"
 #: src/components/notifications/settings/scheduled-reports.tsx
 msgid "Last sent {0}"
 msgstr "Ultimo invio {0}"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Import from LubeLogger"
+msgstr "Importa da LubeLogger"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "This isn't a LubeLogger export of fuel, services or odometer."
+msgstr "Non è un’esportazione LubeLogger di carburante, manutenzioni o contachilometri."
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Kept can't read this file. Export it from LubeLogger again as CSV."
+msgstr "Kept non riesce a leggere questo file. Esportalo di nuovo da LubeLogger come CSV."
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Kept can't read this file."
+msgstr "Kept non riesce a leggere questo file."
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Imported {0} records"
+msgstr "{0} registrazioni importate"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "In LubeLogger, export this vehicle's fuel, service or odometer records as CSV, then choose the file here. One file at a time; importing the same one again adds nothing."
+msgstr "In LubeLogger esporta in CSV rifornimenti, manutenzioni o letture del contachilometri di questo veicolo, poi scegli qui il file. Un file alla volta; importare di nuovo lo stesso non aggiunge nulla."
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "{kindName}: {0} rows"
+msgstr "{kindName}: {0} righe"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Dates are written"
+msgstr "Le date sono scritte"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Month first"
+msgstr "Prima il mese"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Day first"
+msgstr "Prima il giorno"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Year first"
+msgstr "Prima l’anno"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Decimal mark"
+msgstr "Separatore decimale"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Fuel is in"
+msgstr "Carburante in"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Gallons"
+msgstr "Galloni"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Check"
+msgstr "Verifica"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "no date Kept can read"
+msgstr "nessuna data che Kept riesca a leggere"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "no amount of fuel"
+msgstr "nessuna quantità di carburante"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "no description"
+msgstr "nessuna descrizione"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "no odometer reading"
+msgstr "nessuna lettura del contachilometri"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "this vehicle has no odometer"
+msgstr "questo veicolo non ha un contachilometri"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "the odometer goes backwards"
+msgstr "il contachilometri torna indietro"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "a cost below zero"
+msgstr "un costo sotto zero"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Kept refused it"
+msgstr "Kept l’ha rifiutata"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "What it will do"
+msgstr "Cosa farà"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Add {0}. Already here: {1}. Can't add: {2}."
+msgstr "Da aggiungere: {0}. Già presenti: {1}. Non aggiungibili: {2}."
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Row {0}: {1}"
+msgstr "Riga {0}: {1}"

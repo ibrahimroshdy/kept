@@ -21,6 +21,7 @@ import { fuelRoutes } from '../fuel/routes.js';
 import { historyRoutes } from '../history/routes.js';
 import { homeRoutes } from '../home/routes.js';
 import { archiveImportRoutes } from '../imports/archive.js';
+import { lubeloggerRoutes } from '../imports/lubelogger.js';
 import { importRoutes } from '../imports/routes.js';
 import { inboxRoutes } from '../inbox/routes.js';
 import { incidentRoutes } from '../incidents/routes.js';
@@ -146,6 +147,7 @@ export const INVENTORY_ROUTE_MODULES = [
   // fills in its own `src/<area>/routes.ts`; step 4's service-record routes stay in schedules/.
   serviceDraftRoutes,
   fuelRoutes,
+  lubeloggerRoutes,
   vehicleRoutes,
   // Step 7 (T2): exports, archive imports, alias enrichment and consumables. Each Phase-B task
   // fills in its own file.

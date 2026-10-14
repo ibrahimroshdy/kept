@@ -21627,3 +21627,107 @@ msgstr "في اليوم الأول من كل شهر"
 #: src/components/notifications/settings/scheduled-reports.tsx
 msgid "Last sent {0}"
 msgstr "آخر إرسال {0}"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Import from LubeLogger"
+msgstr "استيراد من LubeLogger"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "This isn't a LubeLogger export of fuel, services or odometer."
+msgstr "هذا ليس تصديرًا من LubeLogger للوقود أو الصيانة أو عدّاد المسافة."
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Kept can't read this file. Export it from LubeLogger again as CSV."
+msgstr "لا يستطيع Kept قراءة هذا الملف. صدّره من LubeLogger مجددًا بصيغة CSV."
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Kept can't read this file."
+msgstr "لا يستطيع Kept قراءة هذا الملف."
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Imported {0} records"
+msgstr "استُورد {0} سجلًا"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "In LubeLogger, export this vehicle's fuel, service or odometer records as CSV, then choose the file here. One file at a time; importing the same one again adds nothing."
+msgstr "في LubeLogger، صدّر سجلات الوقود أو الصيانة أو عدّاد المسافة لهذه المركبة بصيغة CSV، ثم اختر الملف هنا. ملف واحد في كل مرة، واستيراد الملف نفسه مجددًا لا يضيف شيئًا."
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "{kindName}: {0} rows"
+msgstr "{kindName}: {0} صفًا"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Dates are written"
+msgstr "تُكتب التواريخ"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Month first"
+msgstr "الشهر أولًا"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Day first"
+msgstr "اليوم أولًا"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Year first"
+msgstr "السنة أولًا"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Decimal mark"
+msgstr "الفاصلة العشرية"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Fuel is in"
+msgstr "الوقود بوحدة"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Gallons"
+msgstr "غالونات"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Check"
+msgstr "تحقّق"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "no date Kept can read"
+msgstr "لا تاريخ يستطيع Kept قراءته"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "no amount of fuel"
+msgstr "لا كمية وقود"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "no description"
+msgstr "لا وصف"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "no odometer reading"
+msgstr "لا قراءة لعدّاد المسافة"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "this vehicle has no odometer"
+msgstr "ليس لهذه المركبة عدّاد مسافة"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "the odometer goes backwards"
+msgstr "عدّاد المسافة يرجع إلى الخلف"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "a cost below zero"
+msgstr "تكلفة أقل من الصفر"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Kept refused it"
+msgstr "رفضه Kept"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "What it will do"
+msgstr "ما الذي سيحدث"
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Add {0}. Already here: {1}. Can't add: {2}."
+msgstr "سيُضاف {0}. موجود مسبقًا: {1}. لا يمكن إضافته: {2}."
+
+#: src/components/vehicles/lubelogger-import.tsx
+msgid "Row {0}: {1}"
+msgstr "الصف {0}: {1}"

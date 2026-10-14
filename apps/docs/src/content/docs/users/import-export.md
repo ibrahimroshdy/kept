@@ -97,6 +97,16 @@ If it holds secret values, **Open the secrets** with the passphrase chosen when 
 without it, everything else is imported. **People to invite** lists who shared the location;
 nobody is invited by the import, so invite each person yourself.
 
+### A vehicle's LubeLogger history
+
+On a vehicle's Overview, **Import from LubeLogger** takes the CSV that LubeLogger exports for one
+vehicle: its fuel, its service records (repairs and upgrades too) or its odometer readings, one
+file at a time. Kept reads the file, says which kind it is and guesses how dates and decimals are
+written (LubeLogger writes them in its server's language); change either if the guess is wrong,
+and say whether fuel is in litres or gallons. **Check** shows what would be added and which rows
+can't be, and why; **Import** adds them, oldest first, with their odometer readings. Importing the
+same file again adds nothing. Owners and admins of the location can import.
+
 ### Search words after an import
 
 When an AI provider is connected, the end of an import can offer **Add search words with AI?**,

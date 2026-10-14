@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button';
 import { useFormat } from '@/lib/format';
 import { useMeterUnit } from '@/lib/units';
 import { EstimatedPill, useEstimatedDates, useMainMeter } from './estimates';
+import { LubeLoggerImportButton } from './lubelogger-import';
 import { useVehicleNav } from './nav';
 import { ServiceRecordsList } from './recent-services';
 import { FuelSummaryCard, HistoryReportButton, LogReadingSheet } from './slots';
@@ -83,7 +84,10 @@ export function VehicleOverview() {
         ) : null}
         <DocumentsCard />
       </div>
-      <HistoryReportButton />
+      <div className="flex flex-wrap items-center gap-2">
+        <HistoryReportButton />
+        <LubeLoggerImportButton />
+      </div>
     </div>
   );
 }

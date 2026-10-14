@@ -697,7 +697,7 @@ export async function createReading(
   body: CreateReadingInput,
   /** `photo` for a READING capture's typed value (capture/service.ts, T13; §1.6); `fuel` for a
    * fill's odometer (fuel/service.ts, T11). 0017's meter_readings_source_chk accepts all three. */
-  source: 'manual' | 'photo' | 'fuel' = 'manual',
+  source: 'manual' | 'photo' | 'fuel' | 'import' = 'manual',
   opts: CreateReadingOptions = {},
 ): Promise<CreateReadingResult> {
   const { client, tx, scope } = ctx;

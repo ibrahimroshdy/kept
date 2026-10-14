@@ -37,6 +37,9 @@ export const vehiclePaths = {
 
   // ----- the history report (T15) -----
   reportsVehicleHistory: `${V1}/reports/vehicle-history`,
+
+  // ----- 1.3 (D229): LubeLogger's CSV exports into a vehicle -----
+  thingLubeLogger: (id: string) => `${V1}/things/${seg(id)}/import/lubelogger`,
 } as const;
 
 type Method = 'GET' | 'POST' | 'PATCH' | 'DELETE';
@@ -55,4 +58,5 @@ export const VEHICLE_METHODS: Record<keyof typeof vehiclePaths, readonly Method[
   meterSeries: ['GET'],
   thingStarterSchedules: ['POST'],
   reportsVehicleHistory: ['POST'],
+  thingLubeLogger: ['POST'],
 };
