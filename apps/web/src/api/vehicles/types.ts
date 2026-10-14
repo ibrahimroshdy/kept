@@ -441,3 +441,27 @@ export type VehicleHistoryReportBody = {
   digits?: 'western' | 'eastern';
 };
 export type VehicleHistoryReportCreated = ReportCreated;
+
+// ----- 1.3 (D229): LubeLogger import -----------------------------------------------------------
+
+/** What one LubeLogger export holds: fuel ("gas"), service (repairs and upgrades too), odometer. */
+export type LubeLoggerKind = 'fuel' | 'service' | 'odometer';
+
+/** POST /api/v1/things/:id/import/lubelogger: the parsed rows (header → cell, at most 5,000). */
+export type LubeLoggerImportBody = {
+  kind: LubeLoggerKind;
+  rows: Array<Record<string, string>>;
+  dateOrder: 'mdy' | 'dmy' | 'ymd';
+  decimal: '.' | ',';
+  fuelUnit?: 'L' | 'gal';
+  currency?: string;
+  dryRun?: boolean;
+};
+
+/** What it did, or would do on a dry run: rows added, rows already imported, rows refused. */
+export type LubeLoggerImportResult = {
+  created: number;
+  skipped: number;
+  issues: Array<{ row: number; code: string }>;
+  dryRun: boolean;
+};

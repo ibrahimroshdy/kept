@@ -361,7 +361,11 @@ async function insertCompletions(
 }
 
 /** Noon of `day` in the location's zone, as an ISO time (§7.13: a service's reading). */
-async function noonOf(client: pg.ClientBase, locationId: string, day: string): Promise<string> {
+export async function noonOf(
+  client: pg.ClientBase,
+  locationId: string,
+  day: string,
+): Promise<string> {
   const { rows } = await client.query<{ at: Date }>(
     `SELECT (($2::date + time '12:00') AT TIME ZONE l.timezone) AS at
        FROM public.locations l WHERE l.id = $1`,
