@@ -834,6 +834,20 @@
       "when": 1791945294083,
       "tag": "0118_report_schedules_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 119,
+      "version": "7",
+      "when": 1791945349694,
+      "tag": "0119_mailboxes",
+      "breakpoints": true
+    },
+    {
+      "idx": 120,
+      "version": "7",
+      "when": 1791945351552,
+      "tag": "0120_mailboxes_rls",
+      "breakpoints": true
     }
   ]
 }

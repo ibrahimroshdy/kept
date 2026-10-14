@@ -560,6 +560,8 @@ export const NOT_EXPORTED: Readonly<Record<string, string>> = Object.freeze({
   token_locations: "this server's access tokens",
   webhooks: "this server's integrations and their secrets",
   webhook_deliveries: "this server's integrations",
+  mailboxes: "this server's integrations and their passwords",
+  mailbox_messages: "this server's bookkeeping",
 });
 
 const SNAKE = /_([a-z0-9])/g;

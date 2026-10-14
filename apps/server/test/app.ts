@@ -39,6 +39,8 @@ export type TestAppOptions = {
   files?: Parameters<typeof buildApp>[0]['files'];
   /** The keyring for the secret routes (T19); omitted, they answer 503. */
   secretKeys?: Parameters<typeof buildApp>[0]['secretKeys'];
+  /** 1.4 (D231): a fake mailbox for the mailbox routes; omitted, they would reach for imapflow. */
+  mailSource?: Parameters<typeof buildApp>[0]['mailSource'];
   /** Step 3's AI layer (ai/routes.ts AiDeps); omitted, the AI routes answer as with no layer. */
   ai?: Parameters<typeof buildApp>[0]['ai'];
   /** A pino logger (http/logger.ts createLogger) to capture what the app logs; default silent. */
@@ -81,6 +83,7 @@ export async function testApp(db: TestDb, opts: TestAppOptions = {}): Promise<Te
     ...(opts.onRoute ? { onRoute: opts.onRoute } : {}),
     ...(opts.files ? { files: opts.files } : {}),
     ...(opts.secretKeys ? { secretKeys: opts.secretKeys } : {}),
+    ...(opts.mailSource ? { mailSource: opts.mailSource } : {}),
     ...(opts.logger ? { logger: opts.logger } : {}),
     ...(opts.ai ? { ai: opts.ai } : {}),
     ...(opts.notify ? { notify: opts.notify } : {}),

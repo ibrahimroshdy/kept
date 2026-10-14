@@ -13,6 +13,7 @@ export * from './fuel.js';
 export * from './imports.js';
 export * from './labels.js';
 export * from './lending.js';
+export * from './mailboxes.js';
 export * from './meters.js';
 export * from './money.js';
 export * from './notify.js';

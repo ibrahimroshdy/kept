@@ -129,6 +129,21 @@ export async function fillAssistant(c: pg.ClientBase, t: Tenant, label: string):
     [t.locationId],
   );
 
+  // Email-in (1.4, D231): a mailbox with a (fake) sealed connection, and one message it read.
+  const mailbox = await one(
+    `INSERT INTO public.mailboxes (location_id, host, username, folder, config_ciphertext,
+                                   key_version, created_by)
+     VALUES ($1, $2, 'receipts', 'Kept', '{"v": 1, "c": "x"}', 1, $3)
+     RETURNING id`,
+    [t.locationId, `imap.${label}.example.test`, t.userId],
+  );
+  await c.query(
+    `INSERT INTO public.mailbox_messages (location_id, mailbox_id, uid_validity, uid,
+                                          from_address, subject, outcome)
+     VALUES ($1, $2, 1, 1, 'shop@example.test', 'Your order', 'no_receipt')`,
+    [t.locationId, mailbox],
+  );
+
   // Webhooks (T7): a hook with a (fake) sealed secret, and one delivery of an event to it.
   const hook = await one(
     `INSERT INTO public.webhooks (location_id, url, secret_ciphertext, key_version, events,

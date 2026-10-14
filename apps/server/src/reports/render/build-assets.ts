@@ -9,7 +9,7 @@ import { buildFonts, fontDir } from './fonts.js';
 // - the eight TTFs, converted from the @ibm/plex-* devDependencies into assets/fonts (fonts.ts);
 // - the files tsc doesn't emit, copied beside the compiled modules that load them: the child
 //   renderer (child.mjs, plain JavaScript), the Typst templates (report.typ, insurance.typ,
-//   vehicle.typ), and the PDF text
+//   vehicle.typ, email.typ), and the PDF text
 //   reader's child (files/pdf-worker.mjs, T21).
 // The Dockerfile copies assets/ and dist/ into the image.
 
@@ -21,6 +21,7 @@ export async function buildReportAssets(): Promise<void> {
     ['src/reports/template/report.typ', 'dist/reports/template/report.typ'],
     ['src/reports/template/insurance.typ', 'dist/reports/template/insurance.typ'],
     ['src/reports/template/vehicle.typ', 'dist/reports/template/vehicle.typ'],
+    ['src/reports/template/email.typ', 'dist/reports/template/email.typ'],
     ['src/files/pdf-worker.mjs', 'dist/files/pdf-worker.mjs'],
   ];
   for (const [from, to] of copies) {

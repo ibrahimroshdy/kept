@@ -34,9 +34,12 @@ const SYSTEM_TABLES = [
  * rows, and the channels, devices and preferences they send by; and the webhook jobs' (0078,
  * step-6 T7): the hooks they send to (read, and marked failing) and the deliveries they record;
  * and the worker's boot guard's (0091, step-8 T8): the release history it reads and stamps; and
- * the `report-schedules` job's (1.3, D228): the schedules it reads and marks as run.
+ * the `report-schedules` job's (1.3, D228): the schedules it reads and marks as run; and the
+ * `mail-in` job's (0120, 1.4 D231): the mailboxes it polls and the messages it records.
  * Each kept_system policy names its job in a comment. */
 const SYSTEM_JOB_TABLES = [
+  'mailbox_messages',
+  'mailboxes',
   'notification_channels',
   'notification_digests',
   'notification_preferences',
@@ -435,6 +438,8 @@ const FUNCTIONS: Record<string, { roles: string[]; definer: boolean }> = {
   // (0078, step-6 T7) Webhooks: the delivery job's view of a hook with its sealed secret, whether
   // a write should fan out, and turning off a hook whose creator lost the admin role (D180).
   'kept.webhook_secret(uuid)': { roles: SYS, definer: true },
+  // (0120, 1.4 D231) The mail-in job's view of a mailbox with its sealed connection.
+  'kept.mailbox_config(uuid)': { roles: SYS, definer: true },
   'kept.webhooks_listening(uuid,text)': { roles: APP, definer: true },
   'kept.disable_webhooks_for(uuid,uuid)': { roles: BOTH, definer: true },
   // (0080, step-7 T4) An archive import's target, set once by its creator; the prune-imports
@@ -927,6 +932,8 @@ describe('catalogue', () => {
                    has_column_privilege(r, 'public.ai_providers', 'key_version', 'SELECT')),
                   ('SELECT webhooks.secret_ciphertext',
                    has_column_privilege(r, 'public.webhooks', 'secret_ciphertext', 'SELECT')),
+                  ('SELECT mailboxes.config_ciphertext',
+                   has_column_privilege(r, 'public.mailboxes', 'config_ciphertext', 'SELECT')),
                   ('INSERT llm_calls', has_table_privilege(r, 'public.llm_calls', 'INSERT')),
                   ('UPDATE llm_calls', has_table_privilege(r, 'public.llm_calls', 'UPDATE')),
                   ('DELETE llm_calls', has_table_privilege(r, 'public.llm_calls', 'DELETE'))

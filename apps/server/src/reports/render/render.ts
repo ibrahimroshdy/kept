@@ -58,6 +58,8 @@ export const TEMPLATES = {
   inventory: TEMPLATE,
   insurance: path.join(here, '..', 'template', 'insurance.typ'),
   vehicle_history: path.join(here, '..', 'template', 'vehicle.typ'),
+  /** Not a report: an emailed receipt's body, kept as a PDF page (email-in, 1.4, D231). */
+  email: path.join(here, '..', 'template', 'email.typ'),
 } as const;
 export type TemplateKind = keyof typeof TEMPLATES;
 

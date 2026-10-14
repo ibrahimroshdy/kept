@@ -12,6 +12,7 @@ import { AUDIT_EVENT_HEADER } from '../client';
 import { connectionsMockRoutes } from '../connections/mock';
 import { householdMockRoutes } from '../household/mock';
 import { inventoryMockRoutes } from '../inventory/mock';
+import { mailinMockRoutes } from '../mailin/mock';
 import { opsMockRoutes } from '../ops/mock';
 import { ops } from '../ops/mock/state';
 import { paths } from '../paths';
@@ -603,6 +604,8 @@ export function createMockApi(state: MockState): MockApi {
   for (const r of portabilityMockRoutes(state)) add(r.method, r.template, r.handler);
   // ----- step 8: backups, the status page's new fields, the recovery kit, updates, keep offline ---
   for (const r of opsMockRoutes(state)) add(r.method, r.template, r.handler);
+  // ----- 1.4: email-in, a location's mailbox (D231) ----------------------------------------------
+  for (const r of mailinMockRoutes(state)) add(r.method, r.template, r.handler);
 
   const mockFetch: typeof fetch = async (input, init) => {
     const url = new URL(

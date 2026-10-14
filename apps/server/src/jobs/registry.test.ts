@@ -177,6 +177,8 @@ describe('policies and schedules', () => {
       // Hourly; it asks GitHub once a day at this instance's own hour (updates/job.ts).
       'update-check': '7 * * * *',
       'backup-verify': '10 4 * * 0',
+      // 1.4 (D231): each mailbox's new mail, every 10 minutes.
+      'mail-in': '*/10 * * * *',
     });
 
     // A queue made earlier without a policy is brought up to date.

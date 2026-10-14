@@ -101,6 +101,15 @@ export const CIPHERTEXTS: readonly SealedColumn[] = Object.freeze([
     fieldKey: { constant: 'secrets_key' },
     ciphertextColumn: 'secrets_key_ciphertext',
   }),
+  // 1.4 (D231, migration 0119): a location mailbox's IMAP connection, sealed with AAD
+  // `mailboxes|<id>|config` (mailin/config.ts).
+  sealedColumn({
+    name: 'mailbox connections',
+    table: 'public.mailboxes',
+    aadTable: 'mailboxes',
+    fieldKey: { constant: 'config' },
+    ciphertextColumn: 'config_ciphertext',
+  }),
 ]);
 
 /**
