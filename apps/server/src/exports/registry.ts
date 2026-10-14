@@ -62,6 +62,7 @@ export const OMIT_REASONS: Readonly<Record<string, string>> = Object.freeze({
   deleted_at: 'a location export is of a live location',
   purge_after: 'a location export is of a live location',
   low_since: "derived: this server's day the thing ran low, re-made from its quantity",
+  condition_room_id: "a condition report's photo; condition reports aren't in a Kept export yet",
 });
 
 export type EntityDef = Readonly<{
@@ -227,7 +228,8 @@ export const REGISTRY: readonly EntityDef[] = Object.freeze([
     omit: 'location_id storage_key derivative_state created_by attached_at',
     // Only the originals the exported rows reference (D117): an attachment's, or a thing's cover.
     where: `(x.id IN (SELECT a.file_id FROM public.attachments a
-                       WHERE a.location_id = $1 AND a.file_id IS NOT NULL AND {thingOk:a.thing_id})
+                       WHERE a.location_id = $1 AND a.file_id IS NOT NULL AND {thingOk:a.thing_id}
+                         AND a.condition_room_id IS NULL)
              OR x.id IN (SELECT t.cover_file_id FROM public.things t
                           WHERE t.location_id = $1 AND {thingOk:t.id}))`,
   },
@@ -238,8 +240,10 @@ export const REGISTRY: readonly EntityDef[] = Object.freeze([
     key: ['id'],
     fields:
       'id:uuid file_id:uuid url:text thing_id:uuid place_id:uuid purchase_id:uuid meter_reading_id:uuid role:text sort:int created_at:ts updated_at:ts warranty_id:uuid claim_id:uuid loan_id:uuid incident_id:uuid valuation_id:uuid service_record_id:uuid expiring_document_id:uuid fuel_entry_id:uuid',
-    omit: 'location_id created_by row_version change_seq',
+    omit: 'location_id created_by row_version change_seq condition_room_id',
     thingRefs: ['x.thing_id'],
+    // A condition report's photos stay out with their reports (NOT_EXPORTED below).
+    where: 'x.condition_room_id IS NULL',
   },
   {
     entity: 'meters',
@@ -562,6 +566,10 @@ export const NOT_EXPORTED: Readonly<Record<string, string>> = Object.freeze({
   webhook_deliveries: "this server's integrations",
   mailboxes: "this server's integrations and their passwords",
   mailbox_messages: "this server's bookkeeping",
+  // 1.x (D235): a finished report is locked, and the importer can't write a locked report's rooms
+  // and photos back yet; its PDF is the copy that travels.
+  condition_reports: "not in a Kept export yet; a report's PDF is its portable copy",
+  condition_report_rooms: "not in a Kept export yet; a report's PDF is its portable copy",
 });
 
 const SNAKE = /_([a-z0-9])/g;

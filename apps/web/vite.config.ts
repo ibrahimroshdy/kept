@@ -112,6 +112,9 @@ const HOUSEHOLD_ROUTES = [
     'settings.location.$id.track',
     // 1.4 (D231): a location's mailbox for email-in.
     'settings.location.$id.email-in',
+    // 1.x (D235): condition reports and one report.
+    'condition-reports',
+    'condition-reports.$id',
     'settings.two-factor',
     'activity',
     'trash',

@@ -5,6 +5,7 @@ export * from './assistant.js';
 export * from './audit.js';
 export * from './auth.js';
 export * from './capture.js';
+export * from './condition.js';
 export * from './consumables.js';
 export * from './currencies.js';
 export * from './embeddings.js';

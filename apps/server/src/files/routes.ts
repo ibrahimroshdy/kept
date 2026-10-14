@@ -76,6 +76,8 @@ const Subject = z.union([
   z.strictObject({ incidentId: Id }),
   // Step 5 (T11): a fill's pump receipt.
   z.strictObject({ fuelEntryId: Id }),
+  // 1.x (D235): a condition report room's photo.
+  z.strictObject({ conditionRoomId: Id }),
   z.strictObject({ location: z.literal(true) }),
 ]);
 

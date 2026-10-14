@@ -126,6 +126,9 @@ location's languages, the way captured things get them ([AI providers](/users/ai
 AI calls, and **A copy you can read without Kept**: web pages, spreadsheets, thumbnails and
 receipts that open in any browser, optionally with the inventory PDF, in a language of its own.
 
+**What stays out**: condition reports and their photos, for now. Make each report's PDF before you
+move.
+
 **Include secrets** is for the location's owner. Secret values are encrypted with a passphrase of
 at least 12 characters, typed twice. Anyone with the file and the passphrase can read every secret
 in it, and Kept can't recover a forgotten passphrase. The readable copy never holds secrets.

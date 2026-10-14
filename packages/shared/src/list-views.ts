@@ -25,6 +25,8 @@ export const LIST_SURFACES = [
   'vehicles',
   'fuel',
   'readings',
+  // 1.x (D235): condition reports.
+  'condition-reports',
 ] as const;
 export type ListSurface = (typeof LIST_SURFACES)[number];
 
@@ -55,6 +57,8 @@ export type ListSurface = (typeof LIST_SURFACES)[number];
  *   `kept.meter_estimate().advice`), due (overdue, soon: from the agenda).
  * - fuel (a vehicle's fills and charges): date (`when`), unit, station (`vendor`), full or partial.
  * - readings (a meter's readings): date (`when`), source, state.
+ * - condition-reports (D235): location, kind (move_in, move_out), state (open, finished), date
+ *   (`when`).
  */
 export const SURFACE_FILTER_KEYS: Record<ListSurface, readonly string[]> = {
   search: ['location', 'place', 'type', 'tag', 'state', 'priceMin', 'priceMax', 'currency'],
@@ -90,6 +94,7 @@ export const SURFACE_FILTER_KEYS: Record<ListSurface, readonly string[]> = {
   vehicles: ['location', 'type', 'state', 'reading', 'due'],
   fuel: ['when', 'unit', 'vendor', 'full'],
   readings: ['when', 'source', 'state'],
+  'condition-reports': ['location', 'kind', 'state', 'when'],
 };
 
 /** Filter keys that carry money: a view holding one is withheld where money is hidden. */

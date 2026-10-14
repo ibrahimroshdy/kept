@@ -3,7 +3,8 @@
  * container · Room or spot), the Unplaced area with Sort them, then its places and every thing in
  * it under the list standard, its Paperwork (D155, plan T23), and the settings links and Leave (D180). Personal has no Members,
  * Invite or Leave (D114). "Print inventory" (D201) sits under the location's name, with the
- * insurance report where money shows and Incidents for owners and admins (D158, T26).
+ * insurance report where money shows, Incidents for owners and admins (D158, T26), and Condition
+ * reports in any location but Personal (D235).
  *
  * Controls follow screens §3: what the role can't do is hidden (a viewer browses only).
  */
@@ -18,6 +19,7 @@ import {
   AlertIcon,
   ChevronEndIcon,
   ClockIcon,
+  DocumentIcon,
   GearIcon,
   PeopleIcon,
   PrinterIcon,
@@ -192,6 +194,17 @@ function LocationBody({ location }: { location: LocationDetail }) {
                 <Trans>Incidents</Trans>
               </Link>
             ) : null}
+            {/* 1.x (D235): move-in and move-out condition reports, everyone's to read. */}
+            {location.kind === 'personal' ? null : (
+              <Link
+                to="/condition-reports"
+                search={{ 'f.location': location.id }}
+                className={buttonClass('secondary', 'small')}
+              >
+                <DocumentIcon className="size-4" />
+                <Trans>Condition reports</Trans>
+              </Link>
+            )}
           </div>
         </div>
       </div>

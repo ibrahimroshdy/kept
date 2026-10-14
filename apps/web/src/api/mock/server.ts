@@ -9,6 +9,7 @@
 import { assistantMockRoutes } from '../assistant/mock';
 import { captureMockRoutes } from '../capture/mock';
 import { AUDIT_EVENT_HEADER } from '../client';
+import { conditionMockRoutes } from '../condition/mock';
 import { connectionsMockRoutes } from '../connections/mock';
 import { householdMockRoutes } from '../household/mock';
 import { inventoryMockRoutes } from '../inventory/mock';
@@ -606,6 +607,8 @@ export function createMockApi(state: MockState): MockApi {
   for (const r of opsMockRoutes(state)) add(r.method, r.template, r.handler);
   // ----- 1.4: email-in, a location's mailbox (D231) ----------------------------------------------
   for (const r of mailinMockRoutes(state)) add(r.method, r.template, r.handler);
+  // ----- 1.x: renters' condition reports (D235) --------------------------------------------------
+  for (const r of conditionMockRoutes(state)) add(r.method, r.template, r.handler);
 
   const mockFetch: typeof fetch = async (input, init) => {
     const url = new URL(

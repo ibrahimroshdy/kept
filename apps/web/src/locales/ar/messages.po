@@ -21951,3 +21951,187 @@ msgstr "روابط Apprise"
 #: src/components/notifications/settings/channels.tsx
 msgid "One or more, separated by spaces or commas, like discord://… or mailto://…. Apprise's documentation lists every service."
 msgstr "رابط واحد أو أكثر، تفصل بينها مسافات أو فواصل، مثل discord://… أو mailto://…. توثيق Apprise يسرد كل الخدمات."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Condition reports"
+msgstr "تقارير حالة السكن"
+
+#: src/components/condition/labels.ts
+msgid "Move-in"
+msgstr "عند الاستلام"
+
+#: src/components/condition/labels.ts
+msgid "Move-out"
+msgstr "عند التسليم"
+
+#: src/components/condition/labels.ts
+msgid "Damaged"
+msgstr "متضرر"
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Condition report PDF"
+msgstr "ملف PDF لتقرير الحالة"
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Both walk-throughs room by room, the earlier one first: each room's condition, note and photos, with the time Kept received each photo."
+msgstr "الجولتان غرفةً غرفة، الأقدم أولًا: حالة كل غرفة وملاحظتها وصورها، مع وقت استلام Kept لكل صورة."
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Each room's condition, note and photos, with the time Kept received each photo."
+msgstr "حالة كل غرفة وملاحظتها وصورها، مع وقت استلام Kept لكل صورة."
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "This report isn't finished, and the PDF says so."
+msgstr "لم يُنهَ هذا التقرير بعد، وملف PDF يذكر ذلك."
+
+#: src/components/condition/report-screen.tsx
+msgid "This report is finished, so it can't change."
+msgstr "هذا التقرير مُنهى، فلا يمكن تغييره."
+
+#: src/components/condition/report-screen.tsx
+msgid "Condition report"
+msgstr "تقرير حالة السكن"
+
+#: src/components/condition/report-screen.tsx
+msgid "Finished by <0>{0}</0>, {1}"
+msgstr "أنهاه <0>{0}</0>، {1}"
+
+#: src/components/condition/report-screen.tsx
+msgid "Not finished"
+msgstr "لم يُنهَ بعد"
+
+#: src/components/condition/report-screen.tsx
+msgid "Started by <0>{0}</0>"
+msgstr "بدأه <0>{0}</0>"
+
+#: src/components/condition/report-screen.tsx
+msgid "Finish this report?"
+msgstr "إنهاء هذا التقرير؟"
+
+#: src/components/condition/report-screen.tsx
+msgid "It is locked once finished: nothing in it can change, and its photos stay as they are."
+msgstr "يُقفل بعد إنهائه: لا يمكن تغيير أي شيء فيه، وتبقى صوره كما هي."
+
+#: src/components/condition/report-screen.tsx
+msgid "Finish"
+msgstr "إنهاء"
+
+#: src/components/condition/report-screen.tsx
+msgid "Delete this report?"
+msgstr "حذف هذا التقرير؟"
+
+#: src/components/condition/report-screen.tsx
+msgid "Its rooms, notes and photos go with it. This can't be undone."
+msgstr "ستُحذف معه غرفه وملاحظاته وصوره. لا يمكن التراجع عن ذلك."
+
+#: src/components/condition/report-screen.tsx
+msgid "Compare with"
+msgstr "قارن مع"
+
+#: src/components/condition/report-screen.tsx
+msgid "Keys handed over, meter readings, who was there"
+msgstr "المفاتيح المسلّمة، قراءات العدادات، من كان حاضرًا"
+
+#: src/components/condition/report-screen.tsx
+msgid "No rooms yet. Add the first one below."
+msgstr "لا غرف بعد. أضف أول غرفة أدناه."
+
+#: src/components/condition/report-screen.tsx
+msgid "Remove {0} from this report?"
+msgstr "إزالة {0} من هذا التقرير؟"
+
+#: src/components/condition/report-screen.tsx
+msgid "Its note and photos go with it."
+msgstr "ستُحذف معها ملاحظتها وصورها."
+
+#: src/components/condition/report-screen.tsx
+msgid "Marks, damage, what works and what doesn't"
+msgstr "العلامات، الأضرار، ما يعمل وما لا يعمل"
+
+#: src/components/condition/report-screen.tsx
+msgid "Condition not recorded"
+msgstr "لم تُسجَّل الحالة"
+
+#: src/components/condition/report-screen.tsx
+msgid "Add photos"
+msgstr "أضف صورًا"
+
+#: src/components/condition/report-screen.tsx
+msgid "A room holds {MAX_ROOM_PHOTOS} photos. Remove one to add another."
+msgstr "تتسع الغرفة لـ {MAX_ROOM_PHOTOS} صورة. أزل واحدة لإضافة أخرى."
+
+#: src/components/condition/report-screen.tsx
+msgid "Added {when}"
+msgstr "أُضيفت {when}"
+
+#: src/components/condition/report-screen.tsx
+msgid "Remove this photo?"
+msgstr "إزالة هذه الصورة؟"
+
+#: src/components/condition/report-screen.tsx
+msgid "Another room"
+msgstr "غرفة أخرى"
+
+#: src/components/condition/report-screen.tsx
+msgid "Balcony, hallway, storage"
+msgstr "الشرفة، الممر، المخزن"
+
+#: src/components/condition/report-screen.tsx
+msgid "Add room"
+msgstr "أضف غرفة"
+
+#: src/components/condition/report-screen.tsx
+msgid "Room by room"
+msgstr "غرفةً غرفة"
+
+#: src/components/condition/report-screen.tsx
+msgid "Not in this report."
+msgstr "ليست في هذا التقرير."
+
+#: src/components/condition/reports-screen.tsx
+msgid "{0, plural, one {# room} other {# rooms}}"
+msgstr "{0, plural, zero {لا غرف} one {غرفة واحدة} two {غرفتان} few {# غرف} many {# غرفة} other {# غرفة}}"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Finished"
+msgstr "مُنهى"
+
+#: src/components/condition/reports-screen.tsx
+msgid "New report"
+msgstr "تقرير جديد"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Needs a connection: starting a report waits until you're back online."
+msgstr "يحتاج إلى اتصال: بدء التقرير ينتظر حتى تعود متصلًا."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Search condition reports"
+msgstr "ابحث في تقارير حالة السكن"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Kind, location or notes"
+msgstr "النوع أو الموقع أو الملاحظات"
+
+#: src/components/condition/reports-screen.tsx
+msgid "No condition reports"
+msgstr "لا تقارير حالة"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Renting? When you move in, walk through each room and record how you found it, with photos. Do the same when you move out, and print both side by side if the deposit is disputed."
+msgstr "تستأجر؟ عند الاستلام، مرّ على كل غرفة وسجّل حالتها بالصور. افعل الشيء نفسه عند التسليم، واطبع التقريرين جنبًا إلى جنب إن حدث خلاف على التأمين."
+
+#: src/components/condition/reports-screen.tsx
+msgid "New condition report"
+msgstr "تقرير حالة جديد"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Pick the day of the walk-through."
+msgstr "اختر يوم الجولة."
+
+#: src/components/condition/reports-screen.tsx
+msgid "It starts with the location's rooms. Add any it missed, and record each one with photos."
+msgstr "يبدأ بغرف الموقع. أضف ما فاته، وسجّل كل غرفة بالصور."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Day of the walk-through"
+msgstr "يوم الجولة"

@@ -5,6 +5,7 @@ export * from './assistant.js';
 export * from './builtin-names.js';
 export * from './builtin-types.js';
 export * from './capture.js';
+export * from './condition.js';
 export * from './consumables.js';
 export * from './csv-import.js';
 export * from './csv-safe.js';

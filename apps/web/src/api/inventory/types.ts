@@ -958,7 +958,9 @@ export type AttachmentSubject =
   | { serviceRecordId: string }
   | { incidentId: string }
   /** Step 5 (T11): a fill's pump receipt. */
-  | { fuelEntryId: string };
+  | { fuelEntryId: string }
+  /** 1.x (D235): a condition report room's photo. */
+  | { conditionRoomId: string };
 
 export type AttachmentView = {
   id: string;

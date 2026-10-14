@@ -869,6 +869,20 @@
       "when": 1792007900053,
       "tag": "0123_apprise_channel_cap",
       "breakpoints": true
+    },
+    {
+      "idx": 124,
+      "version": "7",
+      "when": 1792008191045,
+      "tag": "0124_condition_reports",
+      "breakpoints": true
+    },
+    {
+      "idx": 125,
+      "version": "7",
+      "when": 1792008195085,
+      "tag": "0125_condition_reports_rls",
+      "breakpoints": true
     }
   ]
 }

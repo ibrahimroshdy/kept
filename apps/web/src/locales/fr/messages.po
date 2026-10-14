@@ -21951,3 +21951,187 @@ msgstr "URL Apprise"
 #: src/components/notifications/settings/channels.tsx
 msgid "One or more, separated by spaces or commas, like discord://… or mailto://…. Apprise's documentation lists every service."
 msgstr "Une ou plusieurs, séparées par des espaces ou des virgules, comme discord://… ou mailto://…. La documentation d’Apprise liste tous les services."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Condition reports"
+msgstr "États des lieux"
+
+#: src/components/condition/labels.ts
+msgid "Move-in"
+msgstr "Entrée"
+
+#: src/components/condition/labels.ts
+msgid "Move-out"
+msgstr "Sortie"
+
+#: src/components/condition/labels.ts
+msgid "Damaged"
+msgstr "Endommagé"
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Condition report PDF"
+msgstr "PDF de l’état des lieux"
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Both walk-throughs room by room, the earlier one first: each room's condition, note and photos, with the time Kept received each photo."
+msgstr "Les deux états des lieux pièce par pièce, le plus ancien d’abord : l’état, la note et les photos de chaque pièce, avec l’heure à laquelle Kept a reçu chaque photo."
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Each room's condition, note and photos, with the time Kept received each photo."
+msgstr "L’état, la note et les photos de chaque pièce, avec l’heure à laquelle Kept a reçu chaque photo."
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "This report isn't finished, and the PDF says so."
+msgstr "Cet état des lieux n’est pas terminé, et le PDF le précise."
+
+#: src/components/condition/report-screen.tsx
+msgid "This report is finished, so it can't change."
+msgstr "Cet état des lieux est terminé, il ne peut plus changer."
+
+#: src/components/condition/report-screen.tsx
+msgid "Condition report"
+msgstr "État des lieux"
+
+#: src/components/condition/report-screen.tsx
+msgid "Finished by <0>{0}</0>, {1}"
+msgstr "Terminé par <0>{0}</0>, {1}"
+
+#: src/components/condition/report-screen.tsx
+msgid "Not finished"
+msgstr "Pas terminé"
+
+#: src/components/condition/report-screen.tsx
+msgid "Started by <0>{0}</0>"
+msgstr "Commencé par <0>{0}</0>"
+
+#: src/components/condition/report-screen.tsx
+msgid "Finish this report?"
+msgstr "Terminer cet état des lieux ?"
+
+#: src/components/condition/report-screen.tsx
+msgid "It is locked once finished: nothing in it can change, and its photos stay as they are."
+msgstr "Il est verrouillé une fois terminé : rien ne peut plus y changer, et ses photos restent telles quelles."
+
+#: src/components/condition/report-screen.tsx
+msgid "Finish"
+msgstr "Terminer"
+
+#: src/components/condition/report-screen.tsx
+msgid "Delete this report?"
+msgstr "Supprimer cet état des lieux ?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Its rooms, notes and photos go with it. This can't be undone."
+msgstr "Ses pièces, notes et photos partent avec lui. C’est définitif."
+
+#: src/components/condition/report-screen.tsx
+msgid "Compare with"
+msgstr "Comparer avec"
+
+#: src/components/condition/report-screen.tsx
+msgid "Keys handed over, meter readings, who was there"
+msgstr "Clés remises, relevés des compteurs, qui était présent"
+
+#: src/components/condition/report-screen.tsx
+msgid "No rooms yet. Add the first one below."
+msgstr "Aucune pièce pour l’instant. Ajoutez la première ci-dessous."
+
+#: src/components/condition/report-screen.tsx
+msgid "Remove {0} from this report?"
+msgstr "Retirer {0} de cet état des lieux ?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Its note and photos go with it."
+msgstr "Sa note et ses photos partent avec elle."
+
+#: src/components/condition/report-screen.tsx
+msgid "Marks, damage, what works and what doesn't"
+msgstr "Traces, dégâts, ce qui marche et ce qui ne marche pas"
+
+#: src/components/condition/report-screen.tsx
+msgid "Condition not recorded"
+msgstr "État non noté"
+
+#: src/components/condition/report-screen.tsx
+msgid "Add photos"
+msgstr "Ajouter des photos"
+
+#: src/components/condition/report-screen.tsx
+msgid "A room holds {MAX_ROOM_PHOTOS} photos. Remove one to add another."
+msgstr "Une pièce contient {MAX_ROOM_PHOTOS} photos au plus. Retirez-en une pour en ajouter une autre."
+
+#: src/components/condition/report-screen.tsx
+msgid "Added {when}"
+msgstr "Ajoutée le {when}"
+
+#: src/components/condition/report-screen.tsx
+msgid "Remove this photo?"
+msgstr "Retirer cette photo ?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Another room"
+msgstr "Une autre pièce"
+
+#: src/components/condition/report-screen.tsx
+msgid "Balcony, hallway, storage"
+msgstr "Balcon, couloir, débarras"
+
+#: src/components/condition/report-screen.tsx
+msgid "Add room"
+msgstr "Ajouter la pièce"
+
+#: src/components/condition/report-screen.tsx
+msgid "Room by room"
+msgstr "Pièce par pièce"
+
+#: src/components/condition/report-screen.tsx
+msgid "Not in this report."
+msgstr "Pas dans cet état des lieux."
+
+#: src/components/condition/reports-screen.tsx
+msgid "{0, plural, one {# room} other {# rooms}}"
+msgstr "{0, plural, one {# pièce} other {# pièces}}"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Finished"
+msgstr "Terminé"
+
+#: src/components/condition/reports-screen.tsx
+msgid "New report"
+msgstr "Nouvel état des lieux"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Needs a connection: starting a report waits until you're back online."
+msgstr "Nécessite une connexion : commencer un état des lieux attend votre retour en ligne."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Search condition reports"
+msgstr "Rechercher dans les états des lieux"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Kind, location or notes"
+msgstr "Type, lieu ou notes"
+
+#: src/components/condition/reports-screen.tsx
+msgid "No condition reports"
+msgstr "Aucun état des lieux"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Renting? When you move in, walk through each room and record how you found it, with photos. Do the same when you move out, and print both side by side if the deposit is disputed."
+msgstr "Locataire ? À l’entrée, faites le tour de chaque pièce et notez son état, photos à l’appui. Faites de même à la sortie, et imprimez les deux côte à côte si le dépôt de garantie est contesté."
+
+#: src/components/condition/reports-screen.tsx
+msgid "New condition report"
+msgstr "Nouvel état des lieux"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Pick the day of the walk-through."
+msgstr "Choisissez le jour de l’état des lieux."
+
+#: src/components/condition/reports-screen.tsx
+msgid "It starts with the location's rooms. Add any it missed, and record each one with photos."
+msgstr "Il commence avec les pièces du lieu. Ajoutez celles qui manquent, et notez chacune avec des photos."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Day of the walk-through"
+msgstr "Jour de l’état des lieux"

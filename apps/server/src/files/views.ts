@@ -55,6 +55,8 @@ export const SUBJECT_COLUMNS = [
   ['expiring_document_id', 'expiringDocumentId'],
   // Step 5 (T11): a fill's pump receipt.
   ['fuel_entry_id', 'fuelEntryId'],
+  // 1.x (D235): a condition report room's photo.
+  ['condition_room_id', 'conditionRoomId'],
 ] as const;
 export type SubjectColumn = (typeof SUBJECT_COLUMNS)[number][0];
 export type SubjectKey = (typeof SUBJECT_COLUMNS)[number][1];

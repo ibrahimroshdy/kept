@@ -8,6 +8,8 @@ import type { InventoryDeps } from '../http/routes.js';
 import { scopedRead, scopedWrite } from '../http/write.js';
 import { gatherInsurance, insuranceCsv } from '../incidents/report.js';
 import {
+  ConditionReportBody,
+  createConditionRun,
   createInsuranceRun,
   createInventoryRun,
   createVehicleRun,
@@ -52,6 +54,12 @@ import {
 //    locale?: 'en' | 'ar', digits?} → 202 {id, status: 'queued', expiresAt}; anyone who sees the
 //   vehicle, viewers included (no money unless the location shows it to them); 404 for a vehicle
 //   they can't see; 409 `module_off` where Vehicles is off; the same 5-an-hour limit.
+//
+// The condition report (1.x, D171, D235), in no module:
+// POST /api/v1/reports/condition
+//   {reportId, compareWith?, include?: {photos? = true}, locale?: 'en' | 'ar', digits?}
+//   → 202 {id, status: 'queued', expiresAt}; anyone who sees the report, viewers included; 404
+//   for a report they can't see, or a comparison with one of another location; the same limit.
 
 const Created = z.object({
   id: z.uuid(),
@@ -221,6 +229,24 @@ export async function reportRoutes(app: KeptApp, deps: InventoryDeps): Promise<v
         return await scopedWrite(pools, req, reply, async (tx, client, scope) => ({
           status: 202,
           body: await createVehicleRun(tx, client, scope, jobs, req.body, req.id),
+        }));
+      } catch (err) {
+        const retryAfter = err instanceof AppError ? err.extra?.retryAfter : undefined;
+        if (typeof retryAfter === 'number') reply.header('retry-after', String(retryAfter));
+        throw err;
+      }
+    },
+  );
+
+  app.post(
+    '/api/v1/reports/condition',
+    { schema: { body: ConditionReportBody, response: { 202: Created } } },
+    async (req, reply) => {
+      const { jobs } = needs();
+      try {
+        return await scopedWrite(pools, req, reply, async (tx, client, scope) => ({
+          status: 202,
+          body: await createConditionRun(tx, client, scope, jobs, req.body, req.id),
         }));
       } catch (err) {
         const retryAfter = err instanceof AppError ? err.extra?.retryAfter : undefined;
