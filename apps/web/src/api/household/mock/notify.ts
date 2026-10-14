@@ -14,6 +14,7 @@
 import {
   ACCOUNT_LEVEL_KINDS,
   defaultPreference,
+  MAX_RELAY_CHANNELS,
   MAX_WEBHOOK_CHANNELS,
   NOTIFY_KINDS,
   type NotifyKind,
@@ -154,7 +155,34 @@ export function notifyRoutes(state: MockState): MockRoute[] {
     }),
     route('POST', p.channels, ({ body }) => {
       const b = body as CreateChannelBody;
-      if (b.kind !== 'webhook') return invalid('kind: webhook');
+      // ntfy and Telegram (D227): checked as the server does, the settings never returned.
+      if (b.kind === 'ntfy' || b.kind === 'telegram') {
+        if (h().channels.filter((c) => c.kind === b.kind).length >= MAX_RELAY_CHANNELS)
+          return err(409, 'conflict', `At most ${MAX_RELAY_CHANNELS}.`);
+        let host = 'api.telegram.org';
+        if (b.kind === 'ntfy') {
+          if (!/^[-_A-Za-z0-9]{1,64}$/.test(b.topic.trim()))
+            return invalid('topic: letters, digits, - and _, at most 64 characters.');
+          try {
+            host = new URL(b.server).host;
+          } catch {
+            return invalid('server: an http or https address, like https://ntfy.sh.');
+          }
+        } else if (!/^\d{1,20}:[A-Za-z0-9_-]{20,100}$/.test(b.botToken.trim())) {
+          return invalid('botToken: the token BotFather gave you, like 123456:ABC-DEF….');
+        }
+        const channel: Channel = {
+          id: newId(),
+          kind: b.kind,
+          label: b.label ?? null,
+          displayHost: host,
+          verifiedAt: null,
+          failingSince: null,
+        };
+        h().channels.push(channel);
+        return reply(201, { channel, secret: '' });
+      }
+      if (b.kind !== 'webhook') return invalid('kind');
       let url: URL;
       try {
         url = new URL(b.url);

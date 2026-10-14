@@ -594,9 +594,10 @@ export type AgendaPage = Page<AgendaItem> & {
 
 export type Channel = {
   id: string;
-  kind: 'email' | 'webpush' | 'webhook';
+  kind: 'email' | 'webpush' | 'webhook' | 'ntfy' | 'telegram';
   label: string | null;
-  /** A webhook's host only: its URL is never returned after it's made. */
+  /** A webhook's or ntfy server's host only (`api.telegram.org` for Telegram): the URL, topic
+   * and tokens are never returned after the channel is made (D227). */
   displayHost: string | null;
   verifiedAt: string | null;
   failingSince: string | null;
@@ -615,6 +616,8 @@ export type KindPreference = {
   email: boolean;
   webpush: boolean;
   webhook: boolean;
+  ntfy: boolean;
+  telegram: boolean;
   isDefault: boolean;
 };
 
@@ -652,9 +655,12 @@ export type PutPreferencesBody = {
     enabled: boolean;
   }>;
 };
-/** POST /api/v1/me/channels. At most 5. */
-export type CreateChannelBody = { kind: 'webhook'; url: string; label?: string };
-/** 201: the signing secret, shown **once**. */
+/** POST /api/v1/me/channels. At most 5 webhooks, 3 ntfy, 3 Telegram (D227). */
+export type CreateChannelBody =
+  | { kind: 'webhook'; url: string; label?: string }
+  | { kind: 'ntfy'; server: string; topic: string; token?: string; label?: string }
+  | { kind: 'telegram'; botToken: string; chatId: string; label?: string };
+/** 201: a webhook's signing secret, shown **once** (empty for ntfy and Telegram). */
 export type CreatedChannel = { channel: Channel; secret: string };
 /** POST /api/v1/me/channels/:id/test (5 an hour) · /me/push-subscriptions/:id/test. */
 export type ChannelTestResult = { ok: boolean; status?: number; error?: string };

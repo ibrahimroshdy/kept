@@ -3,8 +3,8 @@ title: Mail, push and the calendar feed
 description: Set up outgoing mail and web push for a Kept server, and what operators should know about the private calendar links people make.
 ---
 
-Kept reaches people in three ways outside the app: **email**, **web push** to a browser or the
-installed app, and a **calendar feed** their calendar app subscribes to. Everything also lands in
+Kept reaches people outside the app by **email**, **web push** to a browser or the installed app,
+**ntfy** and **Telegram**, and a **calendar feed** their calendar app subscribes to. Everything also lands in
 the in-app notification centre, which needs no setup. People choose what reaches them in
 **Settings → Notifications** (Reminders and alerts → **Open**). This page is the operator's side.
 Every variable is listed in the [configuration reference](/reference/configuration/).
@@ -94,6 +94,17 @@ Kept makes a new pair and drops every push subscription. Nothing else is lost: p
 again on each device. Keep [the recovery kit](/admin/recovery-kit/) and this never happens on a
 restore or a [move](/admin/move-server/).
 :::
+
+## ntfy and Telegram
+
+People add these themselves in Settings → Me → Notifications; there is nothing to configure on the
+server. Kept posts to an ntfy server's JSON endpoint and to Telegram's Bot API
+(`api.telegram.org`), both at once and through the same guard as webhooks: an ntfy server on a
+private address works only when **Allow private addresses** is on (Admin → Settings), and
+redirects are refused. Their settings (an ntfy topic and token, a Telegram bot token) are
+encrypted like a webhook's secret and covered by [key rotation](/admin/recovery-kit/). A failed
+send is retried with the reminder and marks the channel "Failing since"; the next send that gets
+through clears it. Admin alerts don't go to them.
 
 ## The calendar feed
 

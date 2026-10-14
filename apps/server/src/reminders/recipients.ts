@@ -1,5 +1,5 @@
 import {
-  type ChannelKind10,
+  type ChannelKindBuilt,
   defaultPreference,
   type NotifyKind,
   type PreferenceChannel,
@@ -143,6 +143,8 @@ type UserChannels = {
   email: string | null;
   webpush: string | null;
   webhooks: string[];
+  ntfy: string[];
+  telegram: string[];
   devices: number;
 };
 
@@ -215,7 +217,7 @@ export class RecipientBook {
     const missing = ids.filter((id) => !this.users.has(id));
     if (missing.length === 0) return;
     for (const [id, info] of await loadUsers(this.deps, client, missing)) this.users.set(id, info);
-    const { rows } = await client.query<{ id: string; user_id: string; kind: ChannelKind10 }>(
+    const { rows } = await client.query<{ id: string; user_id: string; kind: ChannelKindBuilt }>(
       `SELECT id, user_id, kind FROM public.notification_channels
         WHERE user_id = ANY($1::uuid[]) ORDER BY created_at, id`,
       [missing],
@@ -232,6 +234,8 @@ export class RecipientBook {
         email: mine.find((r) => r.kind === 'email')?.id ?? null,
         webpush: mine.find((r) => r.kind === 'webpush')?.id ?? null,
         webhooks: mine.filter((r) => r.kind === 'webhook').map((r) => r.id),
+        ntfy: mine.filter((r) => r.kind === 'ntfy').map((r) => r.id),
+        telegram: mine.filter((r) => r.kind === 'telegram').map((r) => r.id),
         devices: deviceCount.get(id) ?? 0,
       });
     }
@@ -295,6 +299,11 @@ export class RecipientBook {
       if (senders.webhook && pref('webhook') === true) {
         for (const id of ch?.webhooks ?? [])
           channels.push({ id, kind: 'webhook', userId: m.userId });
+      }
+      // ntfy and Telegram (D227): added by the person to be heard, so the same default as push.
+      for (const kind of ['ntfy', 'telegram'] as const) {
+        if (!senders[kind] || !(pref(kind) ?? fallback)) continue;
+        for (const id of ch?.[kind] ?? []) channels.push({ id, kind, userId: m.userId });
       }
       out.push({ userId: m.userId, role: m.role, channels });
     }

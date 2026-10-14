@@ -12,7 +12,9 @@ import { createLocation, own } from '../../test/things.js';
 import type { Keyring, MasterKey, Sealed } from '../crypto/envelope.js';
 import { fixedSecretKeys } from '../crypto/keyring.js';
 import { withScope } from '../db/scope.js';
+import { guardedFetch } from '../net/ssrf.js';
 import { LOCATION_KINDS } from './prefs.js';
+import { openRelayConfig, TELEGRAM_API } from './relay.js';
 import { fixedPushSource } from './vapid.js';
 import { openWebhookConfig, verifyWebhook } from './webhook.js';
 
@@ -29,12 +31,20 @@ let service: Receiver;
 const master: MasterKey = { key: randomBytes(32), keyVersion: 1 };
 const keyring = new Map([[1, master.key]]) as Keyring;
 const vapid = webpush.generateVAPIDKeys();
+/** Telegram's API, stood in for (its host is fixed): every call, and what it answers. */
+const telegram = {
+  calls: [] as Array<{ url: string; body: unknown }>,
+  answer: { ok: true } as object,
+  status: 200,
+};
 
 type KindPref = {
   inapp: boolean;
   email: boolean;
   webpush: boolean;
   webhook: boolean;
+  ntfy: boolean;
+  telegram: boolean;
   isDefault: boolean;
 };
 type Channel = {
@@ -82,6 +92,14 @@ beforeAll(async () => {
           agent: new https.Agent({ ca: service.ca as Buffer }),
           refuseLiterals: false,
         },
+        // ntfy goes to the local receiver through the guard; Telegram to the stand-in.
+        relayFetch: (allowPrivate) =>
+          (async (input: string | URL | Request, init?: RequestInit) => {
+            const url = String(input instanceof Request ? input.url : input);
+            if (!url.startsWith(TELEGRAM_API)) return guardedFetch({ allowPrivate })(input, init);
+            telegram.calls.push({ url, body: JSON.parse(String(init?.body)) });
+            return Response.json(telegram.answer, { status: telegram.status });
+          }) as typeof fetch,
       },
     },
   });
@@ -174,6 +192,8 @@ describe('GET /api/v1/me/notification-settings', () => {
       email: true,
       webpush: true,
       webhook: false,
+      ntfy: true,
+      telegram: true,
       isDefault: true,
     });
 
@@ -420,6 +440,137 @@ describe('webhook channels', () => {
     const sixth = await test();
     expect(sixth.statusCode).toBe(429);
     expect(sixth.headers['retry-after']).toBeDefined();
+  });
+});
+
+describe('ntfy and Telegram channels (D227)', () => {
+  beforeEach(() => {
+    telegram.calls.length = 0;
+    telegram.answer = { ok: true };
+    telegram.status = 200;
+  });
+
+  // catalogue: POST /api/v1/me/channels
+  it('makes an ntfy channel: settings sealed, never returned, audited; a test is JSON to the root', async () => {
+    const bruce = await person(t, db, 'bruce');
+    const res = await call(t, '/api/v1/me/channels', {
+      as: bruce,
+      body: {
+        kind: 'ntfy',
+        server: `${hook.url}/ntfy`,
+        topic: 'kept_home-1',
+        token: 'tk_secret123',
+        label: 'Phone',
+      },
+    });
+    expect(res.statusCode, res.body).toBe(201);
+    const { channel, secret } = res.json() as { channel: Channel; secret: string };
+    expect(secret).toBe('');
+    expect(channel).toMatchObject({
+      kind: 'ntfy',
+      label: 'Phone',
+      displayHost: new URL(hook.url).host,
+    });
+    expect(res.body).not.toContain('tk_secret123');
+    expect(res.body).not.toContain('kept_home-1');
+    const [row] = await own<{ config_ciphertext: Sealed; key_version: number }>(
+      db,
+      'SELECT config_ciphertext, key_version FROM public.notification_channels WHERE id = $1',
+      [channel.id],
+    );
+    expect(JSON.stringify(row?.config_ciphertext)).not.toContain('tk_secret123');
+    expect(openRelayConfig(keyring, channel.id, 'ntfy', row?.config_ciphertext as Sealed)).toEqual({
+      kind: 'ntfy',
+      server: `${hook.url}/ntfy/`,
+      topic: 'kept_home-1',
+      token: 'tk_secret123',
+    });
+    expect((await accountAudit(bruce.userId)).map((e) => e.action)).toContain('channel.create');
+
+    const test = await call(t, `/api/v1/me/channels/${channel.id}/test`, {
+      as: bruce,
+      method: 'POST',
+    });
+    expect(test.json()).toEqual({ ok: true, status: 200 });
+    const [got] = hook.received;
+    expect(got?.url).toBe('/ntfy/');
+    expect(got?.headers.authorization).toBe('Bearer tk_secret123');
+    expect(JSON.parse(got?.body.toString() ?? '{}')).toMatchObject({
+      topic: 'kept_home-1',
+      title: expect.any(String),
+      message: expect.any(String),
+      priority: 3,
+      click: expect.stringContaining('/settings/me/notifications'),
+    });
+    expect(
+      (await settings(bruce)).channels.find((c) => c.id === channel.id)?.verifiedAt,
+    ).not.toBeNull();
+
+    hook.reply(403);
+    const refused = await call(t, `/api/v1/me/channels/${channel.id}/test`, {
+      as: bruce,
+      method: 'POST',
+    });
+    expect(refused.json()).toEqual({ ok: false, status: 403, error: 'http_403' });
+    expect(
+      (await settings(bruce)).channels.find((c) => c.id === channel.id)?.failingSince,
+    ).not.toBeNull();
+  });
+
+  it('refuses a bad topic, a server with credentials, and a fourth channel of a kind', async () => {
+    const bruce = await person(t, db, 'bruce');
+    const make = (body: object) =>
+      call(t, '/api/v1/me/channels', { as: bruce, body: { kind: 'ntfy', ...body } });
+    expect((await make({ server: 'https://ntfy.sh', topic: 'has space' })).statusCode).toBe(400);
+    expect((await make({ server: 'https://u:p@ntfy.sh', topic: 'ok' })).statusCode).toBe(400);
+    expect((await make({ server: 'ftp://ntfy.sh', topic: 'ok' })).statusCode).toBe(400);
+    for (let i = 0; i < 3; i++) {
+      expect((await make({ server: 'https://ntfy.sh', topic: `kept${i}` })).statusCode).toBe(201);
+    }
+    expect((await make({ server: 'https://ntfy.sh', topic: 'kept4' })).statusCode).toBe(409);
+  });
+
+  it('makes a Telegram channel and tests it with sendMessage, plain text, no preview', async () => {
+    const bruce = await person(t, db, 'bruce');
+    const bad = await call(t, '/api/v1/me/channels', {
+      as: bruce,
+      body: { kind: 'telegram', botToken: 'not-a-token', chatId: '42' },
+    });
+    expect(bad.statusCode).toBe(400);
+    const token = `123456:${'A'.repeat(35)}`;
+    const res = await call(t, '/api/v1/me/channels', {
+      as: bruce,
+      body: { kind: 'telegram', botToken: token, chatId: '-1001234567890' },
+    });
+    expect(res.statusCode, res.body).toBe(201);
+    const { channel } = res.json() as { channel: Channel };
+    expect(channel).toMatchObject({ kind: 'telegram', displayHost: 'api.telegram.org' });
+    expect(res.body).not.toContain(token);
+
+    const test = await call(t, `/api/v1/me/channels/${channel.id}/test`, {
+      as: bruce,
+      method: 'POST',
+    });
+    expect(test.json()).toEqual({ ok: true, status: 200 });
+    expect(telegram.calls).toEqual([
+      {
+        url: `${TELEGRAM_API}/bot${token}/sendMessage`,
+        body: {
+          chat_id: '-1001234567890',
+          text: expect.stringContaining('/settings/me/notifications'),
+          link_preview_options: { is_disabled: true },
+        },
+      },
+    ]);
+
+    telegram.status = 400;
+    telegram.answer = { ok: false, description: 'Bad Request: chat not found' };
+    const refused = await call(t, `/api/v1/me/channels/${channel.id}/test`, {
+      as: bruce,
+      method: 'POST',
+    });
+    expect(refused.json()).toEqual({ ok: false, status: 400, error: 'telegram_400' });
+    expect(refused.body).not.toContain(token);
   });
 });
 

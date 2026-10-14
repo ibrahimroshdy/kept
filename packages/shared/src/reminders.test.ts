@@ -4,7 +4,7 @@ import {
   ACCOUNT_LEVEL_KINDS,
   ACTIVE_SOURCE_TYPES,
   CHANNEL_KINDS,
-  CHANNEL_KINDS_1_0,
+  CHANNEL_KINDS_BUILT,
   DEFAULT_DIGEST_TIME,
   defaultPreference,
   duePeriod,
@@ -123,9 +123,16 @@ describe('notification kinds and channels (D30, D130; Q10, Q35)', () => {
   });
 
   it('builds email, push and webhook in 1.0; preferences add in-app', () => {
-    expect(CHANNEL_KINDS_1_0).toEqual(['email', 'webpush', 'webhook']);
-    for (const c of CHANNEL_KINDS_1_0) expect(CHANNEL_KINDS).toContain(c);
-    expect(PREFERENCE_CHANNELS).toEqual(['inapp', 'email', 'webpush', 'webhook']);
+    expect(CHANNEL_KINDS_BUILT).toEqual(['email', 'webpush', 'webhook', 'ntfy', 'telegram']);
+    for (const c of CHANNEL_KINDS_BUILT) expect(CHANNEL_KINDS).toContain(c);
+    expect(PREFERENCE_CHANNELS).toEqual([
+      'inapp',
+      'email',
+      'webpush',
+      'webhook',
+      'ntfy',
+      'telegram',
+    ]);
   });
 
   it('sends the digest at 08:00 by default (Q9)', () => {

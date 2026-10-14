@@ -1,7 +1,7 @@
 import {
   ACTIVE_SOURCE_TYPES,
   type ActiveSourceType,
-  type ChannelKind10,
+  type ChannelKindBuilt,
   type OccurrenceKind,
   type SourceType,
 } from '@kept/shared';
@@ -100,7 +100,7 @@ export type ChannelMessage =
 /** The channel row a message goes out on (notification_channels). A sender that needs the
  * row's sealed config (the webhook) or its devices (web push) reads them by `id` itself, as
  * kept_system. */
-export type ChannelTarget = { id: string; kind: ChannelKind10; userId: string };
+export type ChannelTarget = { id: string; kind: ChannelKindBuilt; userId: string };
 
 /**
  * How a send went:
@@ -123,7 +123,7 @@ export interface ChannelSender {
 }
 
 /** The senders this instance has. A missing one means that channel is off here. */
-export type ChannelSenders = Partial<Record<ChannelKind10, ChannelSender>>;
+export type ChannelSenders = Partial<Record<ChannelKindBuilt, ChannelSender>>;
 
 /** The reminder sources built (Q3; step 5 added `reading_stale`, step 7 `stock`). */
 export function isActiveSource(t: SourceType): t is ActiveSourceType {

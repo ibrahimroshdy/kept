@@ -1,5 +1,5 @@
 import {
-  CHANNEL_KINDS_1_0,
+  CHANNEL_KINDS_BUILT,
   NOTIFY_KIND_SLOTS,
   NOTIFY_KINDS,
   PREFERENCE_CHANNELS,
@@ -26,7 +26,7 @@ import { locations } from './tenancy.js';
 // own. Row-level security, the caps and the calendar door are in 0055; see
 // src/db/reminders.test.ts.
 
-const channelKind = textEnum('kind', CHANNEL_KINDS_1_0);
+const channelKind = textEnum('kind', CHANNEL_KINDS_BUILT);
 const preferenceKind = textEnum('kind', NOTIFY_KINDS);
 // The CHECK holds step 5's `reading_stale` slot before the kind is built (0067).
 const preferenceKindSlots = textEnum('kind', NOTIFY_KIND_SLOTS);
@@ -34,10 +34,12 @@ const preferenceChannel = textEnum('channel', PREFERENCE_CHANNELS);
 
 /**
  * Where a user's notices go (D30; Q13): one email channel (made lazily; managed accounts never
- * get one), one web-push channel (its devices are push_subscriptions), and up to 5 webhooks (a
- * trigger, 0055). A webhook's `{url, secret}` is sealed (§7.3: table 'notification_channels', row
- * id, field 'config'); kept_app can't SELECT it, only notify/webhook.ts on the system side opens
- * it. `display_host` is the URL's host, to show.
+ * get one), one web-push channel (its devices are push_subscriptions), up to 5 webhooks, and up
+ * to 3 ntfy and 3 Telegram channels (1.3, D227; triggers, 0055 and later). A webhook's
+ * `{url, secret}`, an ntfy channel's server, topic and token and a Telegram bot's token and chat
+ * are sealed (§7.3: table 'notification_channels', row id, field 'config'); kept_app can't SELECT
+ * them, only the system side opens them (notify/webhook.ts, notify/relay.ts). `display_host` is
+ * what to show: the webhook's or ntfy server's host, `api.telegram.org` for Telegram.
  */
 export const notificationChannels = pgTable(
   'notification_channels',
@@ -61,7 +63,7 @@ export const notificationChannels = pgTable(
     check('notification_channels_display_host_chk', sql`char_length(display_host) <= 255`),
     check(
       'notification_channels_config_chk',
-      sql`(kind = 'webhook') = (config_ciphertext IS NOT NULL)
+      sql`(kind IN ('webhook', 'ntfy', 'telegram')) = (config_ciphertext IS NOT NULL)
           AND (config_ciphertext IS NULL) = (key_version IS NULL)`,
     ),
     uniqueIndex('notification_channels_email_uq').on(t.userId).where(sql`kind = 'email'`),

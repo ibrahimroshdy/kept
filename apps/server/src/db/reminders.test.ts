@@ -142,7 +142,8 @@ describe("a person's channels, devices, choices and centre (D29, D30, D39)", () 
         async (c) => (await c.query('SELECT 1 FROM public.notification_channels')).rowCount,
       ),
     ).toBe(1);
-    expect((await pgError(channel(ibrahim.userId, 'ntfy'))).code).toBe('23514');
+    // Apprise isn't built (D130; ntfy and Telegram came in 1.3, D227).
+    expect((await pgError(channel(ibrahim.userId, 'apprise'))).code).toBe('23514');
   });
 
   it('keeps push endpoints to HTTPS', async () => {

@@ -1,4 +1,9 @@
-import { MAX_WEBHOOK_CHANNELS, newId } from '@kept/shared';
+import {
+  MAX_RELAY_CHANNELS,
+  MAX_WEBHOOK_CHANNELS,
+  newId,
+  type RelayChannelKind,
+} from '@kept/shared';
 import type pg from 'pg';
 import type { Keyring, MasterKey } from '../crypto/envelope.js';
 import type { Pools } from '../db/pools.js';
@@ -9,6 +14,16 @@ import type { Mailer } from '../mail/mailer.js';
 import { mailLocale } from '../mail/messages.js';
 import { auditMine } from './prefs.js';
 import { type PushTransport, pushToUser, testPush } from './push.js';
+import {
+  openRelayConfig,
+  type RelayFetch,
+  relayChannel,
+  relayConfigFrom,
+  relayDisplayHost,
+  relayTest,
+  sealRelayConfig,
+  sendRelay,
+} from './relay.js';
 import type { PushSource } from './vapid.js';
 import {
   newWebhookSecret,
@@ -22,8 +37,8 @@ import {
 } from './webhook.js';
 
 // A person's channels (D30, D139; plan T7, T15, Q13): one email channel (made lazily; managed
-// accounts never get one), one web-push channel whose devices are push_subscriptions, and up to
-// five webhooks. kept_app reads every column but a webhook's sealed config; this file never
+// accounts never get one), one web-push channel whose devices are push_subscriptions, up to
+// five webhooks, and up to three ntfy and three Telegram channels (1.3, D227). kept_app reads every column but a webhook's sealed config; this file never
 // selects `*` from notification_channels.
 
 /** What routes and jobs need to reach people (http/routes.ts InventoryDeps.notify). */
@@ -33,13 +48,13 @@ export type NotifyDeps = {
   mailer: Mailer;
   /** KEPT_SMTP_URL is set: email reminders can go out. */
   mailConfigured: boolean;
-  /** Tests: how a push or a webhook leaves the process. */
-  transport?: { push?: PushTransport; webhookFetch?: WebhookFetch };
+  /** Tests: how a push, a webhook or an ntfy or Telegram message leaves the process. */
+  transport?: { push?: PushTransport; webhookFetch?: WebhookFetch; relayFetch?: RelayFetch };
 };
 
 export type ChannelView = {
   id: string;
-  kind: 'email' | 'webpush' | 'webhook';
+  kind: 'email' | 'webpush' | 'webhook' | 'ntfy' | 'telegram';
   label: string | null;
   displayHost: string | null;
   verifiedAt: string | null;
@@ -76,12 +91,13 @@ function channelOf(r: ChannelRow): ChannelView {
   };
 }
 
-/** The caller's channels, email first, then push (with its devices), then webhooks. */
+/** The caller's channels, email first, then push (with its devices), webhooks, ntfy, Telegram. */
 export async function myChannels(client: pg.ClientBase): Promise<ChannelView[]> {
   const { rows } = await client.query<ChannelRow>(
     `SELECT ${CHANNEL_COLUMNS} FROM public.notification_channels
       WHERE user_id = kept.current_user_id()
-      ORDER BY array_position(ARRAY['email', 'webpush', 'webhook'], kind), created_at, id`,
+      ORDER BY array_position(ARRAY['email', 'webpush', 'webhook', 'ntfy', 'telegram'], kind),
+               created_at, id`,
   );
   const subs = await client.query<{
     id: string;
@@ -212,6 +228,47 @@ export async function createWebhook(
     requestId,
   });
   return { channel, secret };
+}
+
+/** POST /api/v1/me/channels for ntfy or Telegram (D227): the settings sealed, never shown again. */
+export async function createRelayChannel(
+  tx: Tx,
+  client: pg.ClientBase,
+  master: MasterKey,
+  userId: string,
+  body: Parameters<typeof relayConfigFrom>[0] & { label?: string | undefined },
+  requestId: string,
+): Promise<{ channel: ChannelView; secret: string }> {
+  const config = relayConfigFrom(body);
+  const kind: RelayChannelKind = config.kind;
+  const { rows: count } = await client.query<{ n: number }>(
+    `SELECT count(*)::int AS n FROM public.notification_channels
+      WHERE user_id = kept.current_user_id() AND kind = $1`,
+    [kind],
+  );
+  if ((count[0]?.n ?? 0) >= MAX_RELAY_CHANNELS) {
+    throw conflict(`You already have ${MAX_RELAY_CHANNELS} of these; remove one first.`);
+  }
+  const id = newId();
+  const sealed = sealRelayConfig(master, id, config);
+  const label = body.label?.trim() || null;
+  const displayHost = relayDisplayHost(config);
+  const { rows } = await client.query<ChannelRow>(
+    `INSERT INTO public.notification_channels
+       (id, user_id, kind, label, display_host, config_ciphertext, key_version)
+     VALUES ($1, kept.current_user_id(), $2, $3, $4, $5::jsonb, $6)
+     RETURNING ${CHANNEL_COLUMNS}`,
+    [id, kind, label, displayHost, JSON.stringify(sealed), master.keyVersion],
+  );
+  const channel = channelOf(rows[0] as ChannelRow);
+  await auditMine(tx, userId, {
+    action: 'channel.create',
+    entity: { type: 'notification_channel', id },
+    after: { kind, label, display_host: displayHost },
+    requestId,
+  });
+  // Nothing to show once: the person typed the token, and it stays sealed.
+  return { channel, secret: '' };
 }
 
 /**
@@ -409,6 +466,47 @@ export async function testWebhookSend(
   return res.ok
     ? { ok: true, status: res.status }
     : { ok: false, ...(res.status !== undefined ? { status: res.status } : {}), error: res.error };
+}
+
+/** A test message to one ntfy or Telegram channel (D227), opened as kept_system. */
+export async function testRelaySend(
+  deps: NotifyDeps,
+  pools: Pick<Pools, 'system'>,
+  keyring: Keyring,
+  publicUrl: string,
+  userId: string,
+  channelId: string,
+  locale: string | null,
+): Promise<TestResult> {
+  const channel = await withSystem(pools.system, (_t, c) => relayChannel(c, channelId, userId));
+  if (!channel) throw notFound();
+  const config = openRelayConfig(keyring, channel.id, channel.kind, channel.sealed);
+  const res = await sendRelay(config, relayTest(mailLocale(locale), publicUrl), {
+    allowPrivate: await webhookAllowsPrivate(pools),
+    ...(deps.transport?.relayFetch ? { fetchFor: deps.transport.relayFetch } : {}),
+  });
+  await markRelay(pools, channel.id, res.ok);
+  return res.ok
+    ? { ok: true, status: res.status }
+    : { ok: false, ...(res.status !== undefined ? { status: res.status } : {}), error: res.error };
+}
+
+/** A send's mark on the channel: verified and not failing, or failing since the first miss. */
+export async function markRelay(
+  pools: Pick<Pools, 'system'>,
+  channelId: string,
+  ok: boolean,
+): Promise<void> {
+  await withSystem(pools.system, (_t, c) =>
+    c.query(
+      ok
+        ? `UPDATE public.notification_channels SET verified_at = now(), failing_since = NULL
+            WHERE id = $1`
+        : `UPDATE public.notification_channels SET failing_since = coalesce(failing_since, now())
+            WHERE id = $1`,
+      [channelId],
+    ),
+  );
 }
 
 /** A test mail to the person's own address. */
