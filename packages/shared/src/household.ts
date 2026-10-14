@@ -75,9 +75,9 @@ export type DocumentKind = (typeof DOCUMENT_KINDS)[number];
 export const SERVICE_LINE_KINDS = ['part', 'labour', 'fluid', 'other'] as const;
 export type ServiceLineKind = (typeof SERVICE_LINE_KINDS)[number];
 
-/** `report_runs.kind` (D201): the inventory report, step 4's insurance report and step 5's vehicle
- * history report (Q17). */
-export const REPORT_KINDS = ['inventory', 'insurance', 'vehicle_history'] as const;
+/** `report_runs.kind` (D201): the inventory report, step 4's insurance report, step 5's vehicle
+ * history report (Q17) and 1.x's condition report (D235). */
+export const REPORT_KINDS = ['inventory', 'insurance', 'vehicle_history', 'condition'] as const;
 export type ReportKind = (typeof REPORT_KINDS)[number];
 
 /** 1.3 (D228): the reports a person can have mailed on a schedule, per location. */

@@ -21951,3 +21951,187 @@ msgstr "URL Apprise"
 #: src/components/notifications/settings/channels.tsx
 msgid "One or more, separated by spaces or commas, like discord://… or mailto://…. Apprise's documentation lists every service."
 msgstr "Una o più, separate da spazi o virgole, come discord://… o mailto://…. La documentazione di Apprise elenca tutti i servizi."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Condition reports"
+msgstr "Verbali di stato"
+
+#: src/components/condition/labels.ts
+msgid "Move-in"
+msgstr "Ingresso"
+
+#: src/components/condition/labels.ts
+msgid "Move-out"
+msgstr "Uscita"
+
+#: src/components/condition/labels.ts
+msgid "Damaged"
+msgstr "Danneggiato"
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Condition report PDF"
+msgstr "PDF del verbale di stato"
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Both walk-throughs room by room, the earlier one first: each room's condition, note and photos, with the time Kept received each photo."
+msgstr "Entrambi i sopralluoghi stanza per stanza, prima il più vecchio: lo stato, la nota e le foto di ogni stanza, con l’ora in cui Kept ha ricevuto ogni foto."
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Each room's condition, note and photos, with the time Kept received each photo."
+msgstr "Lo stato, la nota e le foto di ogni stanza, con l’ora in cui Kept ha ricevuto ogni foto."
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "This report isn't finished, and the PDF says so."
+msgstr "Questo verbale non è concluso, e il PDF lo indica."
+
+#: src/components/condition/report-screen.tsx
+msgid "This report is finished, so it can't change."
+msgstr "Questo verbale è concluso, quindi non può cambiare."
+
+#: src/components/condition/report-screen.tsx
+msgid "Condition report"
+msgstr "Verbale di stato"
+
+#: src/components/condition/report-screen.tsx
+msgid "Finished by <0>{0}</0>, {1}"
+msgstr "Concluso da <0>{0}</0>, {1}"
+
+#: src/components/condition/report-screen.tsx
+msgid "Not finished"
+msgstr "Non concluso"
+
+#: src/components/condition/report-screen.tsx
+msgid "Started by <0>{0}</0>"
+msgstr "Iniziato da <0>{0}</0>"
+
+#: src/components/condition/report-screen.tsx
+msgid "Finish this report?"
+msgstr "Concludere questo verbale?"
+
+#: src/components/condition/report-screen.tsx
+msgid "It is locked once finished: nothing in it can change, and its photos stay as they are."
+msgstr "Una volta concluso è bloccato: nulla può cambiare e le foto restano come sono."
+
+#: src/components/condition/report-screen.tsx
+msgid "Finish"
+msgstr "Concludi"
+
+#: src/components/condition/report-screen.tsx
+msgid "Delete this report?"
+msgstr "Eliminare questo verbale?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Its rooms, notes and photos go with it. This can't be undone."
+msgstr "Le stanze, le note e le foto vanno via con lui. Non si può annullare."
+
+#: src/components/condition/report-screen.tsx
+msgid "Compare with"
+msgstr "Confronta con"
+
+#: src/components/condition/report-screen.tsx
+msgid "Keys handed over, meter readings, who was there"
+msgstr "Chiavi consegnate, letture dei contatori, chi era presente"
+
+#: src/components/condition/report-screen.tsx
+msgid "No rooms yet. Add the first one below."
+msgstr "Ancora nessuna stanza. Aggiungi la prima qui sotto."
+
+#: src/components/condition/report-screen.tsx
+msgid "Remove {0} from this report?"
+msgstr "Togliere {0} da questo verbale?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Its note and photos go with it."
+msgstr "La nota e le foto vanno via con lei."
+
+#: src/components/condition/report-screen.tsx
+msgid "Marks, damage, what works and what doesn't"
+msgstr "Segni, danni, cosa funziona e cosa no"
+
+#: src/components/condition/report-screen.tsx
+msgid "Condition not recorded"
+msgstr "Stato non registrato"
+
+#: src/components/condition/report-screen.tsx
+msgid "Add photos"
+msgstr "Aggiungi foto"
+
+#: src/components/condition/report-screen.tsx
+msgid "A room holds {MAX_ROOM_PHOTOS} photos. Remove one to add another."
+msgstr "Una stanza contiene {MAX_ROOM_PHOTOS} foto. Togline una per aggiungerne un’altra."
+
+#: src/components/condition/report-screen.tsx
+msgid "Added {when}"
+msgstr "Aggiunta il {when}"
+
+#: src/components/condition/report-screen.tsx
+msgid "Remove this photo?"
+msgstr "Togliere questa foto?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Another room"
+msgstr "Un’altra stanza"
+
+#: src/components/condition/report-screen.tsx
+msgid "Balcony, hallway, storage"
+msgstr "Balcone, corridoio, ripostiglio"
+
+#: src/components/condition/report-screen.tsx
+msgid "Add room"
+msgstr "Aggiungi stanza"
+
+#: src/components/condition/report-screen.tsx
+msgid "Room by room"
+msgstr "Stanza per stanza"
+
+#: src/components/condition/report-screen.tsx
+msgid "Not in this report."
+msgstr "Non è in questo verbale."
+
+#: src/components/condition/reports-screen.tsx
+msgid "{0, plural, one {# room} other {# rooms}}"
+msgstr "{0, plural, one {# stanza} other {# stanze}}"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Finished"
+msgstr "Concluso"
+
+#: src/components/condition/reports-screen.tsx
+msgid "New report"
+msgstr "Nuovo verbale"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Needs a connection: starting a report waits until you're back online."
+msgstr "Serve una connessione: iniziare un verbale aspetta che tu torni online."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Search condition reports"
+msgstr "Cerca nei verbali di stato"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Kind, location or notes"
+msgstr "Tipo, luogo o note"
+
+#: src/components/condition/reports-screen.tsx
+msgid "No condition reports"
+msgstr "Nessun verbale di stato"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Renting? When you move in, walk through each room and record how you found it, with photos. Do the same when you move out, and print both side by side if the deposit is disputed."
+msgstr "In affitto? All’ingresso, passa ogni stanza e registra com’era, con le foto. Fai lo stesso all’uscita, e stampa i due affiancati se la cauzione è contestata."
+
+#: src/components/condition/reports-screen.tsx
+msgid "New condition report"
+msgstr "Nuovo verbale di stato"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Pick the day of the walk-through."
+msgstr "Scegli il giorno del sopralluogo."
+
+#: src/components/condition/reports-screen.tsx
+msgid "It starts with the location's rooms. Add any it missed, and record each one with photos."
+msgstr "Parte dalle stanze del luogo. Aggiungi quelle mancanti e registra ognuna con le foto."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Day of the walk-through"
+msgstr "Giorno del sopralluogo"

@@ -21951,3 +21951,187 @@ msgstr "Apprise URLs"
 #: src/components/notifications/settings/channels.tsx
 msgid "One or more, separated by spaces or commas, like discord://… or mailto://…. Apprise's documentation lists every service."
 msgstr "One or more, separated by spaces or commas, like discord://… or mailto://…. Apprise's documentation lists every service."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Condition reports"
+msgstr "Condition reports"
+
+#: src/components/condition/labels.ts
+msgid "Move-in"
+msgstr "Move-in"
+
+#: src/components/condition/labels.ts
+msgid "Move-out"
+msgstr "Move-out"
+
+#: src/components/condition/labels.ts
+msgid "Damaged"
+msgstr "Damaged"
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Condition report PDF"
+msgstr "Condition report PDF"
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Both walk-throughs room by room, the earlier one first: each room's condition, note and photos, with the time Kept received each photo."
+msgstr "Both walk-throughs room by room, the earlier one first: each room's condition, note and photos, with the time Kept received each photo."
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Each room's condition, note and photos, with the time Kept received each photo."
+msgstr "Each room's condition, note and photos, with the time Kept received each photo."
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "This report isn't finished, and the PDF says so."
+msgstr "This report isn't finished, and the PDF says so."
+
+#: src/components/condition/report-screen.tsx
+msgid "This report is finished, so it can't change."
+msgstr "This report is finished, so it can't change."
+
+#: src/components/condition/report-screen.tsx
+msgid "Condition report"
+msgstr "Condition report"
+
+#: src/components/condition/report-screen.tsx
+msgid "Finished by <0>{0}</0>, {1}"
+msgstr "Finished by <0>{0}</0>, {1}"
+
+#: src/components/condition/report-screen.tsx
+msgid "Not finished"
+msgstr "Not finished"
+
+#: src/components/condition/report-screen.tsx
+msgid "Started by <0>{0}</0>"
+msgstr "Started by <0>{0}</0>"
+
+#: src/components/condition/report-screen.tsx
+msgid "Finish this report?"
+msgstr "Finish this report?"
+
+#: src/components/condition/report-screen.tsx
+msgid "It is locked once finished: nothing in it can change, and its photos stay as they are."
+msgstr "It is locked once finished: nothing in it can change, and its photos stay as they are."
+
+#: src/components/condition/report-screen.tsx
+msgid "Finish"
+msgstr "Finish"
+
+#: src/components/condition/report-screen.tsx
+msgid "Delete this report?"
+msgstr "Delete this report?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Its rooms, notes and photos go with it. This can't be undone."
+msgstr "Its rooms, notes and photos go with it. This can't be undone."
+
+#: src/components/condition/report-screen.tsx
+msgid "Compare with"
+msgstr "Compare with"
+
+#: src/components/condition/report-screen.tsx
+msgid "Keys handed over, meter readings, who was there"
+msgstr "Keys handed over, meter readings, who was there"
+
+#: src/components/condition/report-screen.tsx
+msgid "No rooms yet. Add the first one below."
+msgstr "No rooms yet. Add the first one below."
+
+#: src/components/condition/report-screen.tsx
+msgid "Remove {0} from this report?"
+msgstr "Remove {0} from this report?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Its note and photos go with it."
+msgstr "Its note and photos go with it."
+
+#: src/components/condition/report-screen.tsx
+msgid "Marks, damage, what works and what doesn't"
+msgstr "Marks, damage, what works and what doesn't"
+
+#: src/components/condition/report-screen.tsx
+msgid "Condition not recorded"
+msgstr "Condition not recorded"
+
+#: src/components/condition/report-screen.tsx
+msgid "Add photos"
+msgstr "Add photos"
+
+#: src/components/condition/report-screen.tsx
+msgid "A room holds {MAX_ROOM_PHOTOS} photos. Remove one to add another."
+msgstr "A room holds {MAX_ROOM_PHOTOS} photos. Remove one to add another."
+
+#: src/components/condition/report-screen.tsx
+msgid "Added {when}"
+msgstr "Added {when}"
+
+#: src/components/condition/report-screen.tsx
+msgid "Remove this photo?"
+msgstr "Remove this photo?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Another room"
+msgstr "Another room"
+
+#: src/components/condition/report-screen.tsx
+msgid "Balcony, hallway, storage"
+msgstr "Balcony, hallway, storage"
+
+#: src/components/condition/report-screen.tsx
+msgid "Add room"
+msgstr "Add room"
+
+#: src/components/condition/report-screen.tsx
+msgid "Room by room"
+msgstr "Room by room"
+
+#: src/components/condition/report-screen.tsx
+msgid "Not in this report."
+msgstr "Not in this report."
+
+#: src/components/condition/reports-screen.tsx
+msgid "{0, plural, one {# room} other {# rooms}}"
+msgstr "{0, plural, one {# room} other {# rooms}}"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Finished"
+msgstr "Finished"
+
+#: src/components/condition/reports-screen.tsx
+msgid "New report"
+msgstr "New report"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Needs a connection: starting a report waits until you're back online."
+msgstr "Needs a connection: starting a report waits until you're back online."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Search condition reports"
+msgstr "Search condition reports"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Kind, location or notes"
+msgstr "Kind, location or notes"
+
+#: src/components/condition/reports-screen.tsx
+msgid "No condition reports"
+msgstr "No condition reports"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Renting? When you move in, walk through each room and record how you found it, with photos. Do the same when you move out, and print both side by side if the deposit is disputed."
+msgstr "Renting? When you move in, walk through each room and record how you found it, with photos. Do the same when you move out, and print both side by side if the deposit is disputed."
+
+#: src/components/condition/reports-screen.tsx
+msgid "New condition report"
+msgstr "New condition report"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Pick the day of the walk-through."
+msgstr "Pick the day of the walk-through."
+
+#: src/components/condition/reports-screen.tsx
+msgid "It starts with the location's rooms. Add any it missed, and record each one with photos."
+msgstr "It starts with the location's rooms. Add any it missed, and record each one with photos."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Day of the walk-through"
+msgstr "Day of the walk-through"

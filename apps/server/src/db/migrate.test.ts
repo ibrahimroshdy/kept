@@ -63,6 +63,8 @@ const KEPT_FUNCTION_EXECUTE: Record<string, string[]> = {
   'kept.fellow_member_ids()': APP_ONLY,
   'kept.field_for_key(uuid,text)': OWNER_ONLY,
   'kept.guard_attachment_file()': OWNER_ONLY,
+  // 1.5 (0125, D235): a finished condition report's photos stay as they are.
+  'kept.guard_condition_photo()': OWNER_ONLY,
   'kept.note_file_attached()': OWNER_ONLY,
   'kept.guard_field_secret()': OWNER_ONLY,
   'kept.guard_inventory_id()': OWNER_ONLY,

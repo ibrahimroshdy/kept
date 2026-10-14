@@ -9,6 +9,7 @@ import { boxCheckRoutes } from '../boxcheck/routes.js';
 import { calendarRoutes } from '../calendar/routes.js';
 import { captureRoutes } from '../capture/routes.js';
 import { codeRoutes } from '../codes/routes.js';
+import { conditionRoutes } from '../condition/routes.js';
 import { consumableRoutes } from '../consumables/routes.js';
 import type { SecretKeys } from '../crypto/keyring.js';
 import { currencyRoutes } from '../currencies/routes.js';
@@ -177,6 +178,8 @@ export const INVENTORY_ROUTE_MODULES = [
   updateRoutes,
   // 1.4 (D231): a location's mailbox for email-in.
   mailboxRoutes,
+  // 1.x (D235): renters' condition reports.
+  conditionRoutes,
 ] as const satisfies readonly ((app: KeptApp, deps: InventoryDeps) => Promise<void>)[];
 
 export async function registerInventoryRoutes(app: KeptApp, deps: InventoryDeps): Promise<void> {

@@ -21951,3 +21951,187 @@ msgstr "Apprise-URLs"
 #: src/components/notifications/settings/channels.tsx
 msgid "One or more, separated by spaces or commas, like discord://… or mailto://…. Apprise's documentation lists every service."
 msgstr "Eine oder mehrere, durch Leerzeichen oder Kommas getrennt, etwa discord://… oder mailto://…. Die Dokumentation von Apprise listet alle Dienste."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Condition reports"
+msgstr "Zustandsprotokolle"
+
+#: src/components/condition/labels.ts
+msgid "Move-in"
+msgstr "Einzug"
+
+#: src/components/condition/labels.ts
+msgid "Move-out"
+msgstr "Auszug"
+
+#: src/components/condition/labels.ts
+msgid "Damaged"
+msgstr "Beschädigt"
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Condition report PDF"
+msgstr "PDF des Zustandsprotokolls"
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Both walk-throughs room by room, the earlier one first: each room's condition, note and photos, with the time Kept received each photo."
+msgstr "Beide Begehungen Raum für Raum, die frühere zuerst: Zustand, Notiz und Fotos jedes Raums, mit der Uhrzeit, zu der Kept jedes Foto erhalten hat."
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "Each room's condition, note and photos, with the time Kept received each photo."
+msgstr "Zustand, Notiz und Fotos jedes Raums, mit der Uhrzeit, zu der Kept jedes Foto erhalten hat."
+
+#: src/components/condition/pdf-sheet.tsx
+msgid "This report isn't finished, and the PDF says so."
+msgstr "Dieses Protokoll ist nicht abgeschlossen, und das PDF sagt das."
+
+#: src/components/condition/report-screen.tsx
+msgid "This report is finished, so it can't change."
+msgstr "Dieses Protokoll ist abgeschlossen und kann nicht mehr geändert werden."
+
+#: src/components/condition/report-screen.tsx
+msgid "Condition report"
+msgstr "Zustandsprotokoll"
+
+#: src/components/condition/report-screen.tsx
+msgid "Finished by <0>{0}</0>, {1}"
+msgstr "Abgeschlossen von <0>{0}</0>, {1}"
+
+#: src/components/condition/report-screen.tsx
+msgid "Not finished"
+msgstr "Nicht abgeschlossen"
+
+#: src/components/condition/report-screen.tsx
+msgid "Started by <0>{0}</0>"
+msgstr "Begonnen von <0>{0}</0>"
+
+#: src/components/condition/report-screen.tsx
+msgid "Finish this report?"
+msgstr "Dieses Protokoll abschließen?"
+
+#: src/components/condition/report-screen.tsx
+msgid "It is locked once finished: nothing in it can change, and its photos stay as they are."
+msgstr "Nach dem Abschluss ist es gesperrt: Nichts darin kann sich ändern, und seine Fotos bleiben, wie sie sind."
+
+#: src/components/condition/report-screen.tsx
+msgid "Finish"
+msgstr "Abschließen"
+
+#: src/components/condition/report-screen.tsx
+msgid "Delete this report?"
+msgstr "Dieses Protokoll löschen?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Its rooms, notes and photos go with it. This can't be undone."
+msgstr "Seine Räume, Notizen und Fotos werden mitgelöscht. Das lässt sich nicht rückgängig machen."
+
+#: src/components/condition/report-screen.tsx
+msgid "Compare with"
+msgstr "Vergleichen mit"
+
+#: src/components/condition/report-screen.tsx
+msgid "Keys handed over, meter readings, who was there"
+msgstr "Übergebene Schlüssel, Zählerstände, wer dabei war"
+
+#: src/components/condition/report-screen.tsx
+msgid "No rooms yet. Add the first one below."
+msgstr "Noch keine Räume. Fügen Sie unten den ersten hinzu."
+
+#: src/components/condition/report-screen.tsx
+msgid "Remove {0} from this report?"
+msgstr "{0} aus diesem Protokoll entfernen?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Its note and photos go with it."
+msgstr "Notiz und Fotos werden mitgelöscht."
+
+#: src/components/condition/report-screen.tsx
+msgid "Marks, damage, what works and what doesn't"
+msgstr "Spuren, Schäden, was funktioniert und was nicht"
+
+#: src/components/condition/report-screen.tsx
+msgid "Condition not recorded"
+msgstr "Zustand nicht erfasst"
+
+#: src/components/condition/report-screen.tsx
+msgid "Add photos"
+msgstr "Fotos hinzufügen"
+
+#: src/components/condition/report-screen.tsx
+msgid "A room holds {MAX_ROOM_PHOTOS} photos. Remove one to add another."
+msgstr "Ein Raum fasst {MAX_ROOM_PHOTOS} Fotos. Entfernen Sie eines, um ein weiteres hinzuzufügen."
+
+#: src/components/condition/report-screen.tsx
+msgid "Added {when}"
+msgstr "Hinzugefügt am {when}"
+
+#: src/components/condition/report-screen.tsx
+msgid "Remove this photo?"
+msgstr "Dieses Foto entfernen?"
+
+#: src/components/condition/report-screen.tsx
+msgid "Another room"
+msgstr "Ein weiterer Raum"
+
+#: src/components/condition/report-screen.tsx
+msgid "Balcony, hallway, storage"
+msgstr "Balkon, Flur, Abstellraum"
+
+#: src/components/condition/report-screen.tsx
+msgid "Add room"
+msgstr "Raum hinzufügen"
+
+#: src/components/condition/report-screen.tsx
+msgid "Room by room"
+msgstr "Raum für Raum"
+
+#: src/components/condition/report-screen.tsx
+msgid "Not in this report."
+msgstr "Nicht in diesem Protokoll."
+
+#: src/components/condition/reports-screen.tsx
+msgid "{0, plural, one {# room} other {# rooms}}"
+msgstr "{0, plural, one {# Raum} other {# Räume}}"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Finished"
+msgstr "Abgeschlossen"
+
+#: src/components/condition/reports-screen.tsx
+msgid "New report"
+msgstr "Neues Protokoll"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Needs a connection: starting a report waits until you're back online."
+msgstr "Braucht eine Verbindung: Ein Protokoll lässt sich erst wieder online beginnen."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Search condition reports"
+msgstr "Zustandsprotokolle durchsuchen"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Kind, location or notes"
+msgstr "Art, Ort oder Notizen"
+
+#: src/components/condition/reports-screen.tsx
+msgid "No condition reports"
+msgstr "Keine Zustandsprotokolle"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Renting? When you move in, walk through each room and record how you found it, with photos. Do the same when you move out, and print both side by side if the deposit is disputed."
+msgstr "Zur Miete? Gehen Sie beim Einzug jeden Raum durch und halten Sie seinen Zustand mit Fotos fest. Beim Auszug ebenso, und drucken Sie beide nebeneinander, wenn die Kaution strittig ist."
+
+#: src/components/condition/reports-screen.tsx
+msgid "New condition report"
+msgstr "Neues Zustandsprotokoll"
+
+#: src/components/condition/reports-screen.tsx
+msgid "Pick the day of the walk-through."
+msgstr "Wählen Sie den Tag der Begehung."
+
+#: src/components/condition/reports-screen.tsx
+msgid "It starts with the location's rooms. Add any it missed, and record each one with photos."
+msgstr "Es beginnt mit den Räumen des Orts. Fügen Sie fehlende hinzu und erfassen Sie jeden mit Fotos."
+
+#: src/components/condition/reports-screen.tsx
+msgid "Day of the walk-through"
+msgstr "Tag der Begehung"

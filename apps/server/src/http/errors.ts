@@ -209,6 +209,10 @@ const CONFLICT_HINTS: Record<string, string> = {
   token_locations_none: 'Pick at least one location.',
   // Step 6 (0072): one live turn per thread; the code is turn_running (CODED below).
   assistant_turns_one_live_uq: 'Wait for the answer, or cancel it, before asking again.',
+  // 1.5 (D235, 0125): a finished condition report's photos, and one room per place in a report.
+  condition_report_finished:
+    'This report is finished, so it can’t change. Start a new one, or ask an owner or admin to delete it.',
+  condition_report_rooms_place_uq: 'That place is already a room of this report.',
 };
 
 /** Step 4: constraints a request can hit that answer with a code of their own (plan T1's codes),

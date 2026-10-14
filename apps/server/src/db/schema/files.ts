@@ -15,6 +15,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { id, mutable, textEnum, tstz } from './common.js';
+import { conditionReportRooms } from './condition.js';
 import { fuelEntries } from './fuel.js';
 import { loans } from './lending.js';
 import { meterReadings } from './meters.js';
@@ -116,7 +117,7 @@ export const fileDerivatives = pgTable(
 /**
  * A file or a link attached to one subject, typed (§7.13): a thing, a place, a purchase, a meter
  * reading, or (step 4) a warranty, claim, loan, incident, valuation, service record or expiring
- * document, or (step 5) a fuel entry; none means
+ * document, or (step 5) a fuel entry, or (1.x, D235) a condition report's room; none means
  * the location itself (D155). The file foreign key is DEFERRABLE (in
  * 0020), so a cross-location move can re-home files within one transaction.
  */
@@ -142,6 +143,8 @@ export const attachments = pgTable(
     expiringDocumentId: uuid('expiring_document_id'),
     /** Step 5: a fill's pump receipt (role `receipt`). */
     fuelEntryId: uuid('fuel_entry_id'),
+    /** 1.x (D235): a condition report room's photo (role `photo`). */
+    conditionRoomId: uuid('condition_room_id'),
     role: attachmentRole.col().notNull(),
     sort: integer('sort').notNull().default(0),
     createdBy: uuid('created_by').notNull(),
@@ -154,7 +157,7 @@ export const attachments = pgTable(
       'attachments_one_subject_chk',
       sql`num_nonnulls(thing_id, place_id, purchase_id, meter_reading_id, warranty_id, claim_id,
                        loan_id, incident_id, valuation_id, service_record_id,
-                       expiring_document_id, fuel_entry_id) <= 1`,
+                       expiring_document_id, fuel_entry_id, condition_room_id) <= 1`,
     ),
     check(
       'attachments_url_chk',
@@ -198,6 +201,7 @@ export const attachments = pgTable(
         ['service_record', t.serviceRecordId, serviceRecords],
         ['expiring_document', t.expiringDocumentId, expiringDocuments],
         ['fuel_entry', t.fuelEntryId, fuelEntries],
+        ['condition_room', t.conditionRoomId, conditionReportRooms],
       ] as const
     ).flatMap(([name, column, parent]) => [
       foreignKey({

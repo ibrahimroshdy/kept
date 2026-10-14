@@ -24,6 +24,8 @@ import { gateFor } from '../serialize/gates.js';
 import { type FileStorage, reportKey } from '../storage/blob-store.js';
 import { SIGNED_URL_TTL_SECONDS } from '../storage/signed-url.js';
 import { requireCurrencies } from '../things/validate.js';
+import { type ConditionReportOptions, gatherCondition } from './condition/gather.js';
+import { buildConditionView } from './condition/view.js';
 import {
   gather,
   MAX_THINGS,
@@ -74,6 +76,13 @@ import { buildView } from './view.js';
 // `thing_id`, in the vehicle's location, with VehicleReportOptions; the job renders
 // template/vehicle.typ from reports/vehicle/{gather,view}.ts. Who: anyone who can see the vehicle,
 // viewers included, where Vehicles is on (the route's module gate); money per the gate.
+//
+// The condition report (1.x, D171, D235) is the fourth: POST /api/v1/reports/condition records a
+// run with `kind = 'condition'` in the report's location, ConditionReportOptions in `options` (the
+// report, and another of the same location to print beside it), and the job renders
+// template/condition.typ from reports/condition/{gather,view}.ts, its photos larger than a
+// thumbnail and never cropped. Who: anyone who can see the report, viewers included; it holds no
+// money. A draft prints too, marked as not finished.
 
 export const RATE_LIMIT = 5;
 export const RATE_WINDOW_SECONDS = 3600;
@@ -145,13 +154,13 @@ export type ReportRunView = z.infer<typeof ReportRunView>;
 
 type RunRow = {
   id: string;
-  kind: 'inventory' | 'insurance' | 'vehicle_history';
+  kind: 'inventory' | 'insurance' | 'vehicle_history' | 'condition';
   location_id: string | null;
   owner_account_id: string | null;
   location_ids: string[];
   /** ReportOptions for an inventory run, InsuranceOptions for an insurance run,
-   * VehicleReportOptions for a vehicle history run. */
-  options: ReportOptions | InsuranceOptions | VehicleReportOptions;
+   * VehicleReportOptions for a vehicle history run, ConditionReportOptions for a condition run. */
+  options: ReportOptions | InsuranceOptions | VehicleReportOptions | ConditionReportOptions;
   status: 'queued' | 'running' | 'done' | 'failed';
   progress_done: number;
   progress_total: number;
@@ -574,6 +583,88 @@ export async function createVehicleRun(
 }
 
 // ---------------------------------------------------------------------------------------------
+// POST /api/v1/reports/condition (1.x, D235)
+// ---------------------------------------------------------------------------------------------
+
+export const ConditionReportBody = z
+  .object({
+    reportId: z.uuid(),
+    /** Another report of the same location, printed beside this one, room by room. */
+    compareWith: z.uuid().optional(),
+    include: z.object({ photos: z.boolean().optional() }).strict().optional(),
+    locale: z.enum(['en', 'ar']).optional(),
+    digits: z.enum(['western', 'eastern']).optional(),
+  })
+  .strict()
+  .refine((b) => b.compareWith === undefined || b.compareWith !== b.reportId, {
+    message: 'another report',
+    path: ['compareWith'],
+  });
+export type ConditionReportBody = z.infer<typeof ConditionReportBody>;
+
+export async function createConditionRun(
+  tx: Tx,
+  client: pg.ClientBase,
+  scope: Scope,
+  jobs: JobQueue,
+  body: ConditionReportBody,
+  requestId: string,
+): Promise<CreatedRun> {
+  const reportId = body.reportId.toLowerCase();
+  const compareWith = body.compareWith?.toLowerCase() ?? null;
+  const { rows: found } = await client.query<{ id: string; location_id: string }>(
+    'SELECT id, location_id FROM public.condition_reports WHERE id = ANY ($1::uuid[])',
+    [[reportId, ...(compareWith ? [compareWith] : [])]],
+  );
+  const locationId = found.find((r) => r.id === reportId)?.location_id;
+  if (!locationId) throw notFound();
+  if (compareWith && found.find((r) => r.id === compareWith)?.location_id !== locationId) {
+    throw notFound();
+  }
+  await requireMembership(client, locationId);
+  await checkRate(client);
+  const { rows: me } = await client.query<{ locale: string; digits: 'western' | 'eastern' }>(
+    'SELECT locale, digits FROM public.user_profiles WHERE user_id = kept.current_user_id()',
+  );
+  const locale = body.locale ?? reportLocaleOf(me[0]?.locale);
+  const options: ConditionReportOptions = {
+    kind: 'condition',
+    reportId,
+    compareWith,
+    include: { photos: body.include?.photos ?? true },
+    locale,
+    digits: body.digits ?? me[0]?.digits ?? (locale === 'ar' ? 'eastern' : 'western'),
+  };
+  const id = newId();
+  const { rows } = await client.query<{ expires_at: Date }>(
+    `INSERT INTO public.report_runs (id, kind, user_id, location_id, location_ids, options)
+     VALUES ($1, 'condition', kept.current_user_id(), $2, ARRAY[$2]::uuid[], $3::jsonb)
+     RETURNING expires_at`,
+    [id, locationId, JSON.stringify(options)],
+  );
+  await auditedMany(tx, [
+    {
+      locationId,
+      actor: { type: 'user' as const, id: scope.userId },
+      action: 'report.generate',
+      entity: { type: 'report', id },
+      after: {
+        kind: 'condition',
+        reportId,
+        compareWith,
+        include: options.include,
+        locale: options.locale,
+        digits: options.digits,
+      },
+      requestId,
+    },
+  ]);
+  await jobs.sendTenant(client, 'report', { runId: id });
+  const expiresAt = rows[0]?.expires_at ?? new Date(Date.now() + 24 * 3600 * 1000);
+  return { id, status: 'queued', expiresAt: expiresAt.toISOString() };
+}
+
+// ---------------------------------------------------------------------------------------------
 // GET /api/v1/reports/:id
 // ---------------------------------------------------------------------------------------------
 
@@ -581,10 +672,12 @@ const FILE_STEM: Record<RunRow['kind'], string> = {
   inventory: 'inventory',
   insurance: 'insurance',
   vehicle_history: 'vehicle-history',
+  condition: 'condition-report',
 };
 
-/** A download name: `kept-inventory-<date>.pdf`, `kept-insurance-<date>.pdf` or
- * `kept-vehicle-history-<date>.pdf`, ASCII (the header also carries it). */
+/** A download name: `kept-inventory-<date>.pdf`, `kept-insurance-<date>.pdf`,
+ * `kept-vehicle-history-<date>.pdf` or `kept-condition-report-<date>.pdf`, ASCII (the header also
+ * carries it). */
 function filenameOf(kind: RunRow['kind'], createdAt: Date): string {
   return `kept-${FILE_STEM[kind]}-${createdAt.toISOString().slice(0, 10)}.pdf`;
 }
@@ -720,6 +813,9 @@ export type PreparedReport = {
   things: readonly { id: string; thumbKey: string | null; shortCode: string | null }[];
   qr: boolean;
   view: (made: { withPhoto: ReadonlySet<string>; withQr: ReadonlySet<string> }) => unknown;
+  /** How each photo is made: THUMB_PX square, cropped (`cover`), unless the report needs more
+   * (the condition report: the whole photo, at most `px` a side). */
+  photo?: { px: number; fit: 'cover' | 'inside' };
 };
 
 type PrepareContext = { publicUrl: string; now: () => Date };
@@ -796,6 +892,31 @@ async function prepareVehicle(
   };
 }
 
+/** Printed at about 60 mm, 640 px is about 270 dpi. */
+const CONDITION_PHOTO_PX = 640;
+
+/** The condition report (reports/condition/): each printed photo by its attachment's id. */
+async function prepareCondition(
+  client: pg.PoolClient,
+  options: ConditionReportOptions,
+  ctx: PrepareContext,
+): Promise<PreparedReport> {
+  const g = await gatherCondition(client, options);
+  const photos = g.pairs.flatMap((p) => [...(p.a?.photos ?? []), ...(p.b?.photos ?? [])]);
+  return {
+    template: 'condition',
+    things: photos.map((p) => ({ id: p.id, thumbKey: p.key, shortCode: null })),
+    qr: false,
+    photo: { px: CONDITION_PHOTO_PX, fit: 'inside' },
+    view: ({ withPhoto }) =>
+      buildConditionView(g, options, {
+        instance: hostOf(ctx.publicUrl),
+        now: ctx.now(),
+        withPhoto,
+      }),
+  };
+}
+
 /** The insurance report (incidents/report.ts), for a report run and for a claim pack's PDF. */
 export async function prepareInsurance(
   tx: Tx,
@@ -842,11 +963,15 @@ export async function renderPrepared(
   const withQr = new Set<string>();
   let done = 0;
   let lastWrite = Date.now();
+  const photo = prepared.photo ?? { px: THUMB_PX, fit: 'cover' as const };
   await pool(prepared.things, THUMB_CONCURRENCY, async (t) => {
     if (t.thumbKey) {
       try {
         await sharp(await readBlob(files, t.thumbKey), { failOn: 'error' })
-          .resize(THUMB_PX, THUMB_PX, { fit: 'cover' })
+          .resize(photo.px, photo.px, {
+            fit: photo.fit,
+            withoutEnlargement: photo.fit === 'inside',
+          })
           .jpeg({ quality: 72, mozjpeg: true })
           .toFile(path.join(dir, 'thumbs', `${t.id}.jpg`));
         withPhoto.add(t.id);
@@ -913,7 +1038,9 @@ export async function runReport(
         ? prepareInsurance(tx, c, scope, run.options as InsuranceOptions, { publicUrl, now })
         : run.kind === 'vehicle_history'
           ? prepareVehicle(tx, c, scope, run.options as VehicleReportOptions, { publicUrl, now })
-          : prepareInventory(tx, c, scope, run, { publicUrl, now }),
+          : run.kind === 'condition'
+            ? prepareCondition(c, run.options as ConditionReportOptions, { publicUrl, now })
+            : prepareInventory(tx, c, scope, run, { publicUrl, now }),
     );
     const total = prepared.things.length + 1;
     await setProgress(deps, scope, runId, 0, total);
@@ -956,10 +1083,14 @@ export async function runReport(
       },
       'report rendered',
     );
-    if (run.email_when_done) {
-      await mailReport(deps, scope, run, rendered.file, rendered.bytes).catch((err: unknown) =>
-        deps.log.error({ err, runId }, 'report not mailed'),
-      );
+    if (run.email_when_done && run.kind !== 'condition') {
+      await mailReport(
+        deps,
+        scope,
+        run as RunRow & { kind: Exclude<RunRow['kind'], 'condition'> },
+        rendered.file,
+        rendered.bytes,
+      ).catch((err: unknown) => deps.log.error({ err, runId }, 'report not mailed'));
     }
     return {
       status: 'done',
@@ -987,7 +1118,8 @@ export async function runReport(
 async function mailReport(
   deps: ReportJobDeps,
   scope: Scope,
-  run: RunRow,
+  /** A condition report is never asked to be mailed (no `email` on its request). */
+  run: RunRow & { kind: Exclude<RunRow['kind'], 'condition'> },
   file: string,
   bytes: number,
 ): Promise<void> {

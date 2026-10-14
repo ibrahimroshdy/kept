@@ -18,6 +18,7 @@ import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppActivityRouteImport } from './routes/_app/activity'
 import { Route as AppAdminRouteImport } from './routes/_app/admin'
 import { Route as AppCaptureRouteImport } from './routes/_app/capture'
+import { Route as AppConditionReportsRouteImport } from './routes/_app/condition-reports'
 import { Route as AppConsumablesRouteImport } from './routes/_app/consumables'
 import { Route as AppExpiringRouteImport } from './routes/_app/expiring'
 import { Route as AppHelpRouteImport } from './routes/_app/help'
@@ -55,6 +56,7 @@ import { Route as AppAssistantIndexRouteImport } from './routes/_app/assistant.i
 import { Route as AppAssistantThreadIdRouteImport } from './routes/_app/assistant.$threadId'
 import { Route as AppBoxCheckIdRouteImport } from './routes/_app/box-check.$id'
 import { Route as AppBrandsIdRouteImport } from './routes/_app/brands.$id'
+import { Route as AppConditionReportsIdRouteImport } from './routes/_app/condition-reports.$id'
 import { Route as AppIncidentsIdRouteImport } from './routes/_app/incidents.$id'
 import { Route as AppItemUuidRouteImport } from './routes/_app/item.$uuid'
 import { Route as AppLCodeRouteImport } from './routes/_app/l.$code'
@@ -139,6 +141,11 @@ const AppAdminRoute = AppAdminRouteImport.update({
 const AppCaptureRoute = AppCaptureRouteImport.update({
   id: '/capture',
   path: '/capture',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppConditionReportsRoute = AppConditionReportsRouteImport.update({
+  id: '/condition-reports',
+  path: '/condition-reports',
   getParentRoute: () => AppRoute,
 } as any)
 const AppConsumablesRoute = AppConsumablesRouteImport.update({
@@ -325,6 +332,11 @@ const AppBrandsIdRoute = AppBrandsIdRouteImport.update({
   id: '/brands/$id',
   path: '/brands/$id',
   getParentRoute: () => AppRoute,
+} as any)
+const AppConditionReportsIdRoute = AppConditionReportsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppConditionReportsRoute,
 } as any)
 const AppIncidentsIdRoute = AppIncidentsIdRouteImport.update({
   id: '/$id',
@@ -558,6 +570,7 @@ export interface FileRoutesByFullPath {
   '/activity': typeof AppActivityRoute
   '/admin': typeof AppAdminRouteWithChildren
   '/capture': typeof AppCaptureRoute
+  '/condition-reports': typeof AppConditionReportsRouteWithChildren
   '/consumables': typeof AppConsumablesRoute
   '/expiring': typeof AppExpiringRoute
   '/help': typeof AppHelpRoute
@@ -593,6 +606,7 @@ export interface FileRoutesByFullPath {
   '/assistant/$threadId': typeof AppAssistantThreadIdRoute
   '/box-check/$id': typeof AppBoxCheckIdRoute
   '/brands/$id': typeof AppBrandsIdRoute
+  '/condition-reports/$id': typeof AppConditionReportsIdRoute
   '/incidents/$id': typeof AppIncidentsIdRoute
   '/item/$uuid': typeof AppItemUuidRoute
   '/l/$code': typeof AppLCodeRoute
@@ -645,6 +659,7 @@ export interface FileRoutesByTo {
   '/setup': typeof SetupRoute
   '/activity': typeof AppActivityRoute
   '/capture': typeof AppCaptureRoute
+  '/condition-reports': typeof AppConditionReportsRouteWithChildren
   '/consumables': typeof AppConsumablesRoute
   '/expiring': typeof AppExpiringRoute
   '/help': typeof AppHelpRoute
@@ -680,6 +695,7 @@ export interface FileRoutesByTo {
   '/assistant/$threadId': typeof AppAssistantThreadIdRoute
   '/box-check/$id': typeof AppBoxCheckIdRoute
   '/brands/$id': typeof AppBrandsIdRoute
+  '/condition-reports/$id': typeof AppConditionReportsIdRoute
   '/incidents/$id': typeof AppIncidentsIdRoute
   '/item/$uuid': typeof AppItemUuidRoute
   '/l/$code': typeof AppLCodeRoute
@@ -734,6 +750,7 @@ export interface FileRoutesById {
   '/_app/activity': typeof AppActivityRoute
   '/_app/admin': typeof AppAdminRouteWithChildren
   '/_app/capture': typeof AppCaptureRoute
+  '/_app/condition-reports': typeof AppConditionReportsRouteWithChildren
   '/_app/consumables': typeof AppConsumablesRoute
   '/_app/expiring': typeof AppExpiringRoute
   '/_app/help': typeof AppHelpRoute
@@ -770,6 +787,7 @@ export interface FileRoutesById {
   '/_app/assistant/$threadId': typeof AppAssistantThreadIdRoute
   '/_app/box-check/$id': typeof AppBoxCheckIdRoute
   '/_app/brands/$id': typeof AppBrandsIdRoute
+  '/_app/condition-reports/$id': typeof AppConditionReportsIdRoute
   '/_app/incidents/$id': typeof AppIncidentsIdRoute
   '/_app/item/$uuid': typeof AppItemUuidRoute
   '/_app/l/$code': typeof AppLCodeRoute
@@ -825,6 +843,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/admin'
     | '/capture'
+    | '/condition-reports'
     | '/consumables'
     | '/expiring'
     | '/help'
@@ -860,6 +879,7 @@ export interface FileRouteTypes {
     | '/assistant/$threadId'
     | '/box-check/$id'
     | '/brands/$id'
+    | '/condition-reports/$id'
     | '/incidents/$id'
     | '/item/$uuid'
     | '/l/$code'
@@ -912,6 +932,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/activity'
     | '/capture'
+    | '/condition-reports'
     | '/consumables'
     | '/expiring'
     | '/help'
@@ -947,6 +968,7 @@ export interface FileRouteTypes {
     | '/assistant/$threadId'
     | '/box-check/$id'
     | '/brands/$id'
+    | '/condition-reports/$id'
     | '/incidents/$id'
     | '/item/$uuid'
     | '/l/$code'
@@ -1000,6 +1022,7 @@ export interface FileRouteTypes {
     | '/_app/activity'
     | '/_app/admin'
     | '/_app/capture'
+    | '/_app/condition-reports'
     | '/_app/consumables'
     | '/_app/expiring'
     | '/_app/help'
@@ -1036,6 +1059,7 @@ export interface FileRouteTypes {
     | '/_app/assistant/$threadId'
     | '/_app/box-check/$id'
     | '/_app/brands/$id'
+    | '/_app/condition-reports/$id'
     | '/_app/incidents/$id'
     | '/_app/item/$uuid'
     | '/_app/l/$code'
@@ -1160,6 +1184,13 @@ declare module '@tanstack/react-router' {
       path: '/capture'
       fullPath: '/capture'
       preLoaderRoute: typeof AppCaptureRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/condition-reports': {
+      id: '/_app/condition-reports'
+      path: '/condition-reports'
+      fullPath: '/condition-reports'
+      preLoaderRoute: typeof AppConditionReportsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/consumables': {
@@ -1420,6 +1451,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/brands/$id'
       preLoaderRoute: typeof AppBrandsIdRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/_app/condition-reports/$id': {
+      id: '/_app/condition-reports/$id'
+      path: '/$id'
+      fullPath: '/condition-reports/$id'
+      preLoaderRoute: typeof AppConditionReportsIdRouteImport
+      parentRoute: typeof AppConditionReportsRoute
     }
     '/_app/incidents/$id': {
       id: '/_app/incidents/$id'
@@ -1760,6 +1798,17 @@ const AppAdminRouteWithChildren = AppAdminRoute._addFileChildren(
   AppAdminRouteChildren,
 )
 
+interface AppConditionReportsRouteChildren {
+  AppConditionReportsIdRoute: typeof AppConditionReportsIdRoute
+}
+
+const AppConditionReportsRouteChildren: AppConditionReportsRouteChildren = {
+  AppConditionReportsIdRoute: AppConditionReportsIdRoute,
+}
+
+const AppConditionReportsRouteWithChildren =
+  AppConditionReportsRoute._addFileChildren(AppConditionReportsRouteChildren)
+
 interface AppIncidentsRouteChildren {
   AppIncidentsIdRoute: typeof AppIncidentsIdRoute
 }
@@ -1815,6 +1864,7 @@ interface AppRouteChildren {
   AppActivityRoute: typeof AppActivityRoute
   AppAdminRoute: typeof AppAdminRouteWithChildren
   AppCaptureRoute: typeof AppCaptureRoute
+  AppConditionReportsRoute: typeof AppConditionReportsRouteWithChildren
   AppConsumablesRoute: typeof AppConsumablesRoute
   AppExpiringRoute: typeof AppExpiringRoute
   AppHelpRoute: typeof AppHelpRoute
@@ -1871,6 +1921,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppActivityRoute: AppActivityRoute,
   AppAdminRoute: AppAdminRouteWithChildren,
   AppCaptureRoute: AppCaptureRoute,
+  AppConditionReportsRoute: AppConditionReportsRouteWithChildren,
   AppConsumablesRoute: AppConsumablesRoute,
   AppExpiringRoute: AppExpiringRoute,
   AppHelpRoute: AppHelpRoute,

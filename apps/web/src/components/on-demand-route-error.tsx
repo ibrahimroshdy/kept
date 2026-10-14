@@ -77,3 +77,9 @@ export function TrashRouteError(props: ErrorComponentProps) {
   const { t } = useLingui();
   return <OnDemandError {...props} title={t`Trash`} />;
 }
+
+/** 1.x (D235): condition reports and one report. */
+export function ConditionRouteError(props: ErrorComponentProps) {
+  const { t } = useLingui();
+  return <OnDemandError {...props} title={t`Condition reports`} />;
+}

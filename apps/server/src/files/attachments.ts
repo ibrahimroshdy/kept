@@ -2,6 +2,7 @@ import type { Role } from '@kept/shared';
 import type pg from 'pg';
 import { audited } from '../audit/audited.js';
 import { lastChangedBy } from '../audit/undo.js';
+import { checkRoomOpen, checkRoomPhoto } from '../condition/service.js';
 import type { Pools } from '../db/pools.js';
 import { type Tx, withSystem } from '../db/scope.js';
 import { checkVersion, pageOf } from '../http/conventions.js';
@@ -86,6 +87,7 @@ const SUBJECT_TABLES: Readonly<Record<SubjectColumn, string>> = {
   service_record_id: 'public.service_records WHERE id = $1 AND location_id = $2',
   expiring_document_id: 'public.expiring_documents WHERE id = $1 AND location_id = $2',
   fuel_entry_id: 'public.fuel_entries WHERE id = $1 AND location_id = $2',
+  condition_room_id: 'public.condition_report_rooms WHERE id = $1 AND location_id = $2',
 };
 
 /** The subject's table and id, for the existence check; null for the location itself. */
@@ -178,6 +180,8 @@ export async function createAttachment(
     throw invalid('Check body.role: a loan takes condition_out or condition_in photos.');
   }
   await requireSubject(client, locationId, subject);
+  // 1.x (D235): a condition report's room takes photos, a dozen at most, while it is open.
+  if (subject.condition_room_id) await checkRoomPhoto(client, subject.condition_room_id, body.role);
   const fileId = body.fileId?.toLowerCase() ?? null;
   if (fileId) {
     // The file must be one the caller can see, in this location (D177): someone else's
@@ -239,6 +243,7 @@ export async function updateAttachment(
   // while it is checked and changed: two PATCHes from one version can't both pass the If-Match
   // check and the second overwrite the first (security review #13).
   const before = await readAttachment(client, id, true);
+  if (before.condition_room_id) await checkRoomOpen(client, before.condition_room_id);
   // A hidden receipt is not the caller's to see, let alone change; nor is a new one theirs to make.
   await refuseHiddenMoneyRole(gateOf, before.location_id, before.role);
   if (patch.role !== undefined) await refuseHiddenMoneyRole(gateOf, before.location_id, patch.role);
@@ -283,6 +288,7 @@ export async function deleteAttachment(
   const row = await readAttachment(client, id);
   const me = await requireMembership(client, row.location_id);
   requireOwnOrAny(me.role, row, userId);
+  if (row.condition_room_id) await checkRoomOpen(client, row.condition_room_id);
   await client.query('DELETE FROM public.attachments WHERE id = $1', [id]);
   await audited(tx, {
     locationId: row.location_id,

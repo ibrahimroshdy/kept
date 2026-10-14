@@ -208,7 +208,21 @@ export async function fillHousehold(c: pg.ClientBase, t: Tenant, label: string):
     createHash('sha256').update(`${label}-feed`).digest('hex'),
   ]);
 
+  // Condition reports (1.x, D235): a move-in report with one room and a photo of it.
+  const report = await one(
+    `INSERT INTO public.condition_reports (location_id, kind, held_on, notes, created_by)
+     VALUES ($1, 'move_in', '2026-09-01', $2, $3) RETURNING id`,
+    [t.locationId, `${label} keys handed over`, t.userId],
+  );
+  const conditionRoom = await one(
+    `INSERT INTO public.condition_report_rooms (location_id, report_id, name, condition, note,
+                                                created_by)
+     VALUES ($1, $2, $3, 'fair', 'Scuff by the door', $4) RETURNING id`,
+    [t.locationId, report, `${label} living room`, t.userId],
+  );
+
   for (const [column, subject] of [
+    ['condition_room_id', conditionRoom],
     ['warranty_id', warranty],
     ['claim_id', claim],
     ['loan_id', loan],
