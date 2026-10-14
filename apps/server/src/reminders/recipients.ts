@@ -43,6 +43,7 @@ export type RecipientDeps = {
 /** A person as a message addresses them, plus the times the engine needs. */
 export type UserInfo = ReminderRecipient & {
   managed: boolean;
+  /** Disabled (Better Auth's `banned`), or waiting to be deleted (D225): sent nothing. */
   banned: boolean;
   /** `HH:MM:SS`, their zone; null: the default (08:00, Q9). */
   digestTime: string | null;
@@ -79,7 +80,15 @@ export async function loadUsers(
     email: string;
     email_verified: boolean;
     banned: boolean | null;
-  }>('SELECT id, email, email_verified, banned FROM auth."user" WHERE id = ANY($1::uuid[])', [ids]);
+  }>(
+    // An account waiting to be deleted (D225) hears nothing, like a disabled one; keeping it
+    // brings its reminders back.
+    `SELECT u.id, u.email, u.email_verified,
+            coalesce(u.banned, false)
+              OR EXISTS (SELECT 1 FROM auth.user_deletion d WHERE d.user_id = u.id) AS banned
+       FROM auth."user" u WHERE u.id = ANY($1::uuid[])`,
+    [ids],
+  );
   const auth = new Map(users.map((u) => [u.id, u]));
   for (const p of profiles) {
     const u = auth.get(p.user_id);

@@ -520,6 +520,10 @@ export function useErrorText() {
         return t`This invite no longer works.`;
       case 'reauth_required':
         return t`Enter your password to confirm it's you.`;
+      case 'account_deletion_pending':
+        return t`Your account is going to be deleted. Keep it to use Kept again.`;
+      case 'account_deletion_blocked':
+        return t`Your account can't be deleted yet.`;
       case 'token_invalid':
         return t`This link no longer works. Links work once, and only for a while.`;
       case 'setup_code_invalid':

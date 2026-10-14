@@ -25,6 +25,9 @@ import { limiterKey, reserveInWindow } from './sign-in-limiter.js';
 // `config.allowMfaPending: true` lets a pending session
 // through a 'required' route with `req.authSession` set but `req.scope` null: for the few routes
 // that finish or abandon sign-in.
+// An account in its 30 days before deletion (D225) gets 403 `account_deletion_pending` from every
+// route except those with `config.allowDeletionPending: true` (/me, keeping the account), which
+// get the full scope; an 'optional' route sees no session.
 //
 // A handler reads `req.scope` ({userId, mfa}) and runs its queries in
 // `withScope(app.pools.app, req.scope, …)`; `requireScope(req)` narrows it for TypeScript.
@@ -38,6 +41,8 @@ declare module 'fastify' {
     auth?: AuthMode;
     /** Lets a session still waiting for its second factor reach a 'required' route. */
     allowMfaPending?: boolean;
+    /** Lets an account in its grace before deletion (D225) reach this route. */
+    allowDeletionPending?: boolean;
   }
   interface FastifyRequest {
     /** The resolved Better Auth session, when the route looked one up; null otherwise. */
@@ -154,6 +159,12 @@ export function sessionHook(opts: SessionHookOptions) {
     req.authSession = session;
     const decision = gateSession(session);
     if (decision.ok) {
+      if (session?.deletionPending && !req.routeOptions.config.allowDeletionPending) {
+        if (mode === 'optional') return;
+        throw new AppError('account_deletion_pending', 403, undefined, {
+          purgeAfter: session.deletionPending,
+        });
+      }
       req.scope = decision.scope;
       if (opts.onScope && headers) await opts.onScope(req, decision.scope, headers);
       return;

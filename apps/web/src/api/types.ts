@@ -108,6 +108,24 @@ export type Me = {
     /** Instance admins only (false until the kit is acknowledged, D193); null for others. */
     recoveryKitAcknowledged: boolean | null;
   };
+  /** Set while the account waits to be deleted (D225): when it goes. Only /me answers then. */
+  deletion: { purgeAfter: string } | null;
+};
+
+/** What stops the account from being deleted (D225). */
+export type AccountDeletionBlockers = {
+  /** Locations it owns besides its Personal one, not already deleted: transfer or delete them. */
+  locations: { id: string; name: string }[];
+  /** The instance's only admin who isn't leaving too. */
+  lastInstanceAdmin: boolean;
+  /** A managed account: its location's owner removes it (D47). */
+  managed: boolean;
+};
+
+/** GET /api/v1/me/deletion. */
+export type AccountDeletionState = {
+  purgeAfter: string | null;
+  blockers: AccountDeletionBlockers;
 };
 
 /** GET /api/v1/me/sessions (task 17: user agent, created, last active). */

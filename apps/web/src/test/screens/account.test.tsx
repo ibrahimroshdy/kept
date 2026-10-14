@@ -339,3 +339,74 @@ describe('Instance admin → Admins (D164)', () => {
     expectLogicalOnly();
   });
 });
+
+describe('Settings → Me → Delete my account (D225)', () => {
+  /** Ibrahim with nothing in the way: no location of his own but Personal, not an admin. */
+  const free = () => {
+    const state = ownerScenario();
+    state.locations = state.locations.filter((l) => l.kind === 'personal');
+    state.me.user.instanceAdmin = false;
+    return state;
+  };
+
+  it('lists what stops it, with a way to each location', async () => {
+    const r = await renderApp('/settings');
+    await r.user.click(await screen.findByRole('button', { name: 'Delete…' }));
+    const dialog = await screen.findByRole('dialog', { name: "Your account can't be deleted yet" });
+    expect(dialog).toHaveTextContent('You own these locations');
+    expect(within(dialog).getByText('Home')).toBeInTheDocument();
+    expect(within(dialog).getAllByRole('link', { name: 'Open' }).length).toBeGreaterThan(0);
+    expect(r.mock.lastCall('POST', paths.myDeletion)).toBeUndefined();
+  });
+
+  it('asks for the password, then shows only the date with Keep and Sign out; Keep brings it back', async () => {
+    const r = await renderApp('/settings', { state: free() });
+    await r.user.click(await screen.findByRole('button', { name: 'Delete…' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Delete your account' });
+    expect(within(dialog).getByRole('link', { name: 'Export my data' })).toBeInTheDocument();
+    await r.user.type(within(dialog).getByLabelText('Your password'), 'correct horse battery');
+    await r.user.click(within(dialog).getByRole('button', { name: 'Delete my account' }));
+
+    expect(
+      await screen.findByRole('heading', { name: /Your account will be deleted on/ }),
+    ).toBeInTheDocument();
+    expect(r.mock.lastCall('POST', paths.myDeletion)?.body).toEqual({
+      password: 'correct horse battery',
+    });
+    // Nothing else of the app is on screen.
+    expect(screen.queryByRole('navigation', { name: 'Main' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument();
+
+    await r.user.click(screen.getByRole('button', { name: 'Keep my account' }));
+    expect(await findHeading('Settings')).toBeInTheDocument();
+    expect(r.mock.lastCall('DELETE', paths.myDeletion)).toBeDefined();
+  });
+
+  it('a wrong password says so and deletes nothing', async () => {
+    const r = await renderApp('/settings', { state: free() });
+    await r.user.click(await screen.findByRole('button', { name: 'Delete…' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Delete your account' });
+    await r.user.type(within(dialog).getByLabelText('Your password'), 'not it');
+    await r.user.click(within(dialog).getByRole('button', { name: 'Delete my account' }));
+    expect(await within(dialog).findByText("That password isn't right.")).toBeInTheDocument();
+    expect(r.mock.state.me.deletion).toBeNull();
+  });
+
+  it('an account already waiting opens on the date', async () => {
+    const state = free();
+    state.me.deletion = { purgeAfter: '2026-11-13T10:00:00.000Z' };
+    await renderApp('/', { state });
+    expect(
+      await screen.findByRole('heading', { name: /Your account will be deleted on/ }),
+    ).toHaveTextContent(/Nov.*2026/);
+  });
+
+  it('the waiting screen in Arabic', async () => {
+    const state = free();
+    state.me.deletion = { purgeAfter: '2026-11-13T10:00:00.000Z' };
+    await renderApp('/', { state, locale: 'ar' });
+    expect(await screen.findByRole('heading', { name: /سيُحذف حسابك في/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'الإبقاء على حسابي' })).toBeInTheDocument();
+    expectLogicalOnly();
+  });
+});

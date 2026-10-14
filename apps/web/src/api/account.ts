@@ -2,6 +2,7 @@
 import { api } from './client';
 import { paths } from './paths';
 import type {
+  AccountDeletionState,
   DeviceSession,
   EmailChangeBody,
   EmailChangeStage,
@@ -32,3 +33,14 @@ export const revokeMySession = (id: string) => api.del(paths.mySession(id));
  */
 export const startEmailChange = (body: EmailChangeBody) =>
   api.post<EmailChangeStage>(paths.myEmailChange, body);
+
+/** What stops the account from being deleted, and when it goes if it was asked (D225). */
+export const getAccountDeletion = () => api.get<AccountDeletionState>(paths.myDeletion);
+/**
+ * Asks for the account to be deleted in 30 days (D225). 409 `account_deletion_blocked` with
+ * `blockers`; without `password`, 403 `reauth_required` as for an email change.
+ */
+export const requestAccountDeletion = (password: string | undefined) =>
+  api.post<{ purgeAfter: string }>(paths.myDeletion, password === undefined ? {} : { password });
+/** Keeps the account: the deletion is called off. */
+export const keepAccount = () => api.del<{ purgeAfter: null }>(paths.myDeletion);

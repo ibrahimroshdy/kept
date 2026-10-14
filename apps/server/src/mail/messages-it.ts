@@ -10,6 +10,7 @@ import {
   diskFacts,
   type Message,
   type MessageContext,
+  mailDay,
   num,
   page,
   tokens,
@@ -209,6 +210,18 @@ export const IT: CoreTable = {
     ],
     footnote: 'Se non hai fatto tu questa modifica, contatta chi gestisce la tua istanza di Kept.',
   }),
+  'account-deletion': (m) => {
+    const day = mailDay('it', m.purgeAfter, m.timezone);
+    return {
+      subject: `Il tuo account Kept sarà eliminato il ${day}`,
+      paragraphs: [
+        `Hai chiesto di eliminare il tuo account Kept. Sarà eliminato il ${day}, insieme al tuo luogo personale e a tutto ciò che contiene.`,
+        'Fino ad allora, accedendo vedrai questa data e potrai tenere l’account. Ciò che hai aggiunto ai luoghi degli altri resta lì.',
+      ],
+      footnote:
+        'Se non l’hai chiesto tu, accedi ora, scegli «Tieni il mio account» e cambia la password.',
+    };
+  },
   invite: (m) => ({
     subject: m.inviterName
       ? `${m.inviterName} ti ha invitato in «${m.locationName}» su Kept`

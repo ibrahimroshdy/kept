@@ -20,6 +20,8 @@ export type MailBody =
   | { kind: 'email-change-verify'; to: string; url: string }
   /** To the old address, after the change: it happened, and to what. */
   | { kind: 'email-changed'; to: string; newEmail: string }
+  /** D225: the account asked to be deleted; it goes at `purgeAfter` (ISO), shown in `timezone`. */
+  | { kind: 'account-deletion'; to: string; purgeAfter: string; timezone: string }
   /** An email invite (D33): the link, only ever mailed (task 20). */
   | {
       kind: 'invite';

@@ -34,8 +34,7 @@ keeps its own list of lows; step 7's are repeated below so they aren't lost.
   until …" when a cap pauses it (found by a search of `components/import/`).
 - [x] **History labels** for `thing.enrich`, `import.enrich` and `import.homebox_connect`
   (ef18b65, c9e4b30).
-- [ ] **Account deletion (D49) doesn't exist**, so its "Export first" has nothing to wire to; a
-  location's deletion has it.
+- [x] **Account deletion (D49)**: built in 1.2 (D225), with Export my data offered first.
 - [ ] **No Export on Search:** the CSV export needs a server route taking thing ids or the search's
   parameters. Optional.
 - [ ] **ExportRun's `expired` status:** `@kept/shared` leaves it out and the web derives it from

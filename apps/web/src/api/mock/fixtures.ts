@@ -477,6 +477,7 @@ function base(): MockState {
       profile: CAIRO_PROFILE,
       memberships: [],
       instance: { recoveryKitAcknowledged: false },
+      deletion: null,
     },
     locations: [personal(IDS.personal, 9), home(), garage(), familyLocation()],
     members: {
@@ -610,6 +611,7 @@ export function memberScenario(): MockState {
     profile: CAIRO_PROFILE,
     memberships: [],
     instance: { recoveryKitAcknowledged: null },
+    deletion: null,
   };
   s.locations = [
     personal(IDS.alfredPersonal, 4, MOCK_ACCOUNTS.alfred),

@@ -11,6 +11,7 @@ import { useNotificationCount } from '@/api/household/queries';
 import { useHome } from '@/api/inventory/queries';
 import { useLocations, useMe, useSetupStatus } from '@/api/queries';
 import { MainShell, sidebarWidth, useHasInbox } from '@/components/app-shell';
+import { AccountDeletionPending } from '@/components/delete-account';
 import { AppLockGate } from '@/components/device/app-lock';
 import { ErrorState, Skeleton } from '@/components/page';
 import { signedInGate } from '@/lib/signed-in-gate';
@@ -47,10 +48,13 @@ function SignedInFrame() {
   // The Inbox badge (D198, T22): the open items of every location you can write to, from Home's
   // counts. Nobody signed in yet, or a viewer everywhere: no count.
   const inboxOn = useHasInbox();
-  const home = useHome(!!me.data && !!setup.data && inboxOn);
+  // An account waiting to be deleted (D225) sees only AccountDeletionPending: nothing else asks.
+  const leaving = !!me.data?.deletion;
+  const home = useHome(!!me.data && !!setup.data && inboxOn && !leaving);
   const inbox = home.data?.counts?.inbox ?? 0;
   // The notifications' unread count (D198, T24): the same polled query as the header's bell.
-  const notifications = useNotificationCount(!!me.data && !!setup.data).data?.unread ?? 0;
+  const notifications =
+    useNotificationCount(!!me.data && !!setup.data && !leaving).data?.unread ?? 0;
   const counts = {
     ...(inbox > 0 ? { inbox } : {}),
     ...(notifications > 0 ? { notifications } : {}),
@@ -79,6 +83,13 @@ function SignedInFrame() {
     );
   }
   if (!me.data || !setup.data) return <ShellSkeleton />;
+  if (me.data.deletion) {
+    return (
+      <AppLockGate userId={me.data.user.id}>
+        <AccountDeletionPending purgeAfter={me.data.deletion.purgeAfter} />
+      </AppLockGate>
+    );
+  }
   // The app lock (step 8, D181): when on, nothing below shows until the PIN or the passkey.
   return (
     <AppLockGate userId={me.data.user.id}>

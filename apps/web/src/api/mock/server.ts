@@ -175,7 +175,7 @@ export function createMockApi(state: MockState): MockApi {
   );
 
   // ----- me --------------------------------------------------------------------------------------
-  add('GET', paths.me, () => requireSession() ?? state.me);
+  add('GET', paths.me, () => sessionGate(state, { allowDeletionPending: true }) ?? state.me);
   add('PATCH', paths.me, ({ body }) => {
     const gate = requireSession();
     if (gate) return gate;
@@ -205,6 +205,45 @@ export function createMockApi(state: MockState): MockApi {
         return err(403, 'reauth_required', 'That password is not right.');
     }
     return reply(202, { stage: 'confirm_old' });
+  });
+  // D225: deleting your own account, as the server answers it.
+  const deletionBlockers = () => ({
+    locations: state.locations
+      .filter((l) => l.role === 'owner' && l.kind !== 'personal')
+      .map((l) => ({ id: l.id, name: l.name })),
+    lastInstanceAdmin:
+      state.me.user.instanceAdmin &&
+      !state.admin.users.some((u) => u.instanceAdmin && u.id !== state.me.user.id),
+    managed: state.me.user.managed,
+  });
+  add('GET', paths.myDeletion, () => {
+    const gate = sessionGate(state, { allowDeletionPending: true });
+    if (gate) return gate;
+    return { purgeAfter: state.me.deletion?.purgeAfter ?? null, blockers: deletionBlockers() };
+  });
+  add('POST', paths.myDeletion, ({ body }) => {
+    const gate = requireSession();
+    if (gate) return gate;
+    const blockers = deletionBlockers();
+    if (blockers.locations.length > 0 || blockers.lastInstanceAdmin || blockers.managed)
+      return err(409, 'account_deletion_blocked', "This account can't be deleted yet.", undefined, {
+        blockers,
+      });
+    const password = (body as { password?: string }).password;
+    if (!state.freshSignIn) {
+      if (password === undefined) return err(403, 'reauth_required', 'Enter your password.');
+      if (password !== state.password)
+        return err(403, 'reauth_required', 'That password is not right.');
+    }
+    const purgeAfter = new Date(Date.now() + 30 * 86_400_000).toISOString();
+    state.me = { ...state.me, deletion: { purgeAfter } };
+    return reply(202, { purgeAfter });
+  });
+  add('DELETE', paths.myDeletion, () => {
+    const gate = sessionGate(state, { allowDeletionPending: true });
+    if (gate) return gate;
+    state.me = { ...state.me, deletion: null };
+    return { purgeAfter: null };
   });
   add('DELETE', paths.mySession(':id'), ({ params }) => {
     state.sessions = state.sessions.filter((s) => s.id !== params.id);

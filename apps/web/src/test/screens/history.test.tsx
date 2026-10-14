@@ -265,6 +265,37 @@ describe('activity', () => {
     ).toBeInTheDocument();
   });
 
+  it('a person whose name is gone reads "A former member", never "Kept" (D225)', async () => {
+    const state = ownerScenario();
+    const event = (n: number, actor: { type: 'user' | 'system'; displayName: null }) => ({
+      id: `01926f00-0000-7000-8000-0000000efb${n}0`,
+      at: new Date(Date.now() - 3_600_000).toISOString(),
+      location_id: INV_IDS.loc.garage,
+      action: 'thing.lifecycle',
+      actor: { ...actor, id: null },
+      entity: { type: 'thing', id: T.pump },
+      root_thing_id: T.pump,
+      diff: null,
+      undo_of: null,
+      undoable_until: null,
+      summaryKey: 'thing.lifecycle',
+      summaryParams: { name: n === 1 ? 'Old radio' : 'Old kettle', lifecycle: 'given_away' },
+      summary: 'English, never shown',
+    });
+    state.inventory.events.push(
+      event(1, { type: 'user', displayName: null }),
+      event(2, { type: 'system', displayName: null }),
+    );
+    await renderApp('/activity', { state });
+    const list = await feed();
+    expect(
+      within(list).getByRole('article', { name: 'Marked Old radio as given away' }),
+    ).toHaveTextContent('A former member');
+    expect(
+      within(list).getByRole('article', { name: 'Marked Old kettle as given away' }),
+    ).toHaveTextContent('Kept');
+  });
+
   it("leaves out an audit row's internal columns, and reads sizes and label IDs as people do", async () => {
     const state = ownerScenario();
     const event = (n: number, action: string, diff: Record<string, unknown>) => ({

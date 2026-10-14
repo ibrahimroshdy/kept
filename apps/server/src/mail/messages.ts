@@ -10,6 +10,7 @@ import {
   diskFacts,
   type Message,
   type MessageContext,
+  mailDay,
   num,
   page,
   type Table,
@@ -232,6 +233,18 @@ const EN: CoreTable = {
     ],
     footnote: 'If you didn’t make this change, contact the person who runs your Kept.',
   }),
+  'account-deletion': (m) => {
+    const day = mailDay('en', m.purgeAfter, m.timezone);
+    return {
+      subject: `Your Kept account will be deleted on ${day}`,
+      paragraphs: [
+        `You asked for your Kept account to be deleted. It goes on ${day}, with your Personal location and everything in it.`,
+        'Until then, signing in shows that date and lets you keep the account. What you added to other people’s locations stays there.',
+      ],
+      footnote:
+        'If you didn’t ask for this, sign in now, choose Keep my account, and change your password.',
+    };
+  },
   invite: (m) => ({
     subject: m.inviterName
       ? `${m.inviterName} invited you to ${m.locationName} on Kept`
@@ -615,6 +628,17 @@ const AR: CoreTable = {
     ],
     footnote: 'إذا لم تُجرِ هذا التغيير، فتواصل مع الشخص الذي يدير Kept لديك.',
   }),
+  'account-deletion': (m) => {
+    const day = mailDay('ar', m.purgeAfter, m.timezone);
+    return {
+      subject: `سيُحذف حسابك على Kept في ${day}`,
+      paragraphs: [
+        `طلبتَ حذف حسابك على Kept. سيُحذف في ${day}، ومعه موقعك الشخصي وكل ما فيه.`,
+        'وحتى ذلك الحين، يعرض لك تسجيل الدخول هذا التاريخ ويتيح لك الإبقاء على حسابك. أما ما أضفته إلى مواقع الآخرين فيبقى فيها.',
+      ],
+      footnote: 'إذا لم تطلب ذلك، فسجّل الدخول الآن واختر «الإبقاء على حسابي»، ثم غيّر كلمة المرور.',
+    };
+  },
   invite: (m) => ({
     subject: m.inviterName
       ? `${m.inviterName} يدعوك إلى «${m.locationName}» على Kept`

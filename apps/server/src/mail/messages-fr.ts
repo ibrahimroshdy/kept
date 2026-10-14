@@ -11,6 +11,7 @@ import {
   diskFacts,
   type Message,
   type MessageContext,
+  mailDay,
   num,
   page,
   tokens,
@@ -222,6 +223,18 @@ export const FR: CoreTable = {
     footnote:
       'Si vous n’êtes pas à l’origine de ce changement, contactez la personne qui gère votre instance de Kept.',
   }),
+  'account-deletion': (m) => {
+    const day = mailDay('fr', m.purgeAfter, m.timezone);
+    return {
+      subject: `Votre compte Kept sera supprimé le ${day}`,
+      paragraphs: [
+        `Vous avez demandé la suppression de votre compte Kept. Il sera supprimé le ${day}, avec votre lieu personnel et tout ce qu’il contient.`,
+        'D’ici là, en vous connectant, vous verrez cette date et pourrez garder le compte. Ce que vous avez ajouté aux lieux des autres y reste.',
+      ],
+      footnote:
+        'Si vous n’avez rien demandé, connectez-vous maintenant, choisissez « Garder mon compte » et changez votre mot de passe.',
+    };
+  },
   invite: (m) => ({
     subject: m.inviterName
       ? `${m.inviterName} vous invite à rejoindre « ${m.locationName} » sur Kept`

@@ -58,6 +58,8 @@ export const paths = {
   mySession: (id: string) => `${V1}/me/sessions/${seg(id)}`,
   /** Starts an email change (Better Auth's /change-email is off): 202 `{stage: 'confirm_old'}`. */
   myEmailChange: `${V1}/me/email-change`,
+  /** D225: GET what stops it, POST to ask (202 `{purgeAfter}`), DELETE to keep the account. */
+  myDeletion: `${V1}/me/deletion`,
   locations: `${V1}/locations`,
   /** The owner's deleted locations still in their grace period. */
   locationsDeleted: `${V1}/locations/deleted`,

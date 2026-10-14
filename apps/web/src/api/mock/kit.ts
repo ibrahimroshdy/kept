@@ -55,8 +55,20 @@ export const route = (method: string, template: string, handler: Handler): MockR
 });
 
 /** A 401 while signed out or mid-MFA, like the server's session gate; null when fine. */
-export function sessionGate(state: MockState): MockReply | null {
+export function sessionGate(
+  state: MockState,
+  opts: { allowDeletionPending?: boolean } = {},
+): MockReply | null {
   if (!state.signedIn) return err(401, 'unauthenticated', 'Sign in to continue.');
   if (state.mfaPending) return err(403, 'mfa_required', 'Confirm your second factor to continue.');
+  // D225: an account waiting to be deleted reaches only /me and keeping it, like the server.
+  if (state.me.deletion && !opts.allowDeletionPending)
+    return err(
+      403,
+      'account_deletion_pending',
+      'This account is going to be deleted. Keep it to use Kept again.',
+      undefined,
+      { purgeAfter: state.me.deletion.purgeAfter },
+    );
   return null;
 }

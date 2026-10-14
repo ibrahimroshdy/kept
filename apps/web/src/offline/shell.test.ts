@@ -40,6 +40,7 @@ const me = (id: string): Me => ({
     },
   ],
   instance: { recoveryKitAcknowledged: null },
+  deletion: null,
 });
 
 const home: LocationDetail = {

@@ -285,6 +285,11 @@ const KEPT_FUNCTION_EXECUTE: Record<string, string[]> = {
   'kept.revoke_tokens_in(uuid,uuid,text)': OWNER_ONLY,
   'kept.revoke_tokens_for(uuid,uuid,text)': APP_AND_SYSTEM,
   'kept.revoke_user_tokens(uuid,text)': SYSTEM_ONLY,
+  // 1.2 (0114, D225): deleting your own account; the purge is the system's.
+  'kept.account_deletion_blockers()': APP_ONLY,
+  'kept.request_account_deletion()': APP_ONLY,
+  'kept.cancel_account_deletion()': APP_ONLY,
+  'kept.purge_deleted_accounts(integer)': SYSTEM_ONLY,
   'kept.membership_access_ended()': OWNER_ONLY,
   // Step 5 (0074): an extraction follows its photo onto a new attachment.
   'kept.guard_extraction_attachment()': OWNER_ONLY,

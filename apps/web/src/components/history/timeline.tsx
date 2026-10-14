@@ -183,7 +183,10 @@ export function EventRow({
   const f = useFormat();
   const summarise = useSummary();
   const { canUndo, undo } = useUndo();
-  const who = event.actor.displayName ?? t`Kept`;
+  // No name: Kept itself, or a person whose name this viewer can no longer see (they left the
+  // location, or their account was deleted, D225). Never "Kept" for what a person did.
+  const who =
+    event.actor.displayName ?? (event.actor.type === 'user' ? t`A former member` : t`Kept`);
   const moved = event.movedInFromElsewhere === true;
   const line = summarise(event);
   const summary = plainText(line);
