@@ -24,6 +24,7 @@ import { Route as AppExpiringRouteImport } from './routes/_app/expiring'
 import { Route as AppHelpRouteImport } from './routes/_app/help'
 import { Route as AppInboxRouteImport } from './routes/_app/inbox'
 import { Route as AppIncidentsRouteImport } from './routes/_app/incidents'
+import { Route as AppInsightsRouteImport } from './routes/_app/insights'
 import { Route as AppLabelsRouteImport } from './routes/_app/labels'
 import { Route as AppLendingRouteImport } from './routes/_app/lending'
 import { Route as AppMoreRouteImport } from './routes/_app/more'
@@ -173,6 +174,11 @@ const AppInboxRoute = AppInboxRouteImport.update({
 const AppIncidentsRoute = AppIncidentsRouteImport.update({
   id: '/incidents',
   path: '/incidents',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInsightsRoute = AppInsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
   getParentRoute: () => AppRoute,
 } as any)
 const AppLabelsRoute = AppLabelsRouteImport.update({
@@ -589,6 +595,7 @@ export interface FileRoutesByFullPath {
   '/help': typeof AppHelpRoute
   '/inbox': typeof AppInboxRoute
   '/incidents': typeof AppIncidentsRouteWithChildren
+  '/insights': typeof AppInsightsRoute
   '/labels': typeof AppLabelsRoute
   '/lending': typeof AppLendingRoute
   '/more': typeof AppMoreRoute
@@ -680,6 +687,7 @@ export interface FileRoutesByTo {
   '/help': typeof AppHelpRoute
   '/inbox': typeof AppInboxRoute
   '/incidents': typeof AppIncidentsRouteWithChildren
+  '/insights': typeof AppInsightsRoute
   '/labels': typeof AppLabelsRoute
   '/lending': typeof AppLendingRoute
   '/more': typeof AppMoreRoute
@@ -773,6 +781,7 @@ export interface FileRoutesById {
   '/_app/help': typeof AppHelpRoute
   '/_app/inbox': typeof AppInboxRoute
   '/_app/incidents': typeof AppIncidentsRouteWithChildren
+  '/_app/insights': typeof AppInsightsRoute
   '/_app/labels': typeof AppLabelsRoute
   '/_app/lending': typeof AppLendingRoute
   '/_app/more': typeof AppMoreRoute
@@ -868,6 +877,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/inbox'
     | '/incidents'
+    | '/insights'
     | '/labels'
     | '/lending'
     | '/more'
@@ -959,6 +969,7 @@ export interface FileRouteTypes {
     | '/help'
     | '/inbox'
     | '/incidents'
+    | '/insights'
     | '/labels'
     | '/lending'
     | '/more'
@@ -1051,6 +1062,7 @@ export interface FileRouteTypes {
     | '/_app/help'
     | '/_app/inbox'
     | '/_app/incidents'
+    | '/_app/insights'
     | '/_app/labels'
     | '/_app/lending'
     | '/_app/more'
@@ -1252,6 +1264,13 @@ declare module '@tanstack/react-router' {
       path: '/incidents'
       fullPath: '/incidents'
       preLoaderRoute: typeof AppIncidentsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/insights': {
+      id: '/_app/insights'
+      path: '/insights'
+      fullPath: '/insights'
+      preLoaderRoute: typeof AppInsightsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/labels': {
@@ -1910,6 +1929,7 @@ interface AppRouteChildren {
   AppHelpRoute: typeof AppHelpRoute
   AppInboxRoute: typeof AppInboxRoute
   AppIncidentsRoute: typeof AppIncidentsRouteWithChildren
+  AppInsightsRoute: typeof AppInsightsRoute
   AppLabelsRoute: typeof AppLabelsRoute
   AppLendingRoute: typeof AppLendingRoute
   AppMoreRoute: typeof AppMoreRoute
@@ -1968,6 +1988,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppHelpRoute: AppHelpRoute,
   AppInboxRoute: AppInboxRoute,
   AppIncidentsRoute: AppIncidentsRouteWithChildren,
+  AppInsightsRoute: AppInsightsRoute,
   AppLabelsRoute: AppLabelsRoute,
   AppLendingRoute: AppLendingRoute,
   AppMoreRoute: AppMoreRoute,

@@ -219,3 +219,24 @@ when you moved out, for a deposit dispute.
 
 Everyone in the location can read the reports and make the PDF, viewers too; members and above
 record them. Condition reports aren't in a Kept export yet: keep the PDF.
+
+## Insights
+
+**Insights** (in the sidebar, and under More on a phone) shows, across your locations with Money
+on, or one location picked with the **Location** chip:
+
+- **Spending on things:** confirmed purchases by the year you bought them. A purchase counts its
+  total, or its priced lines when it has no total; one with neither is listed as having no amount.
+  This year is shown on its own, "so far", never as a bar beside full years.
+- **Value by place:** each thing in use at its latest valuation, per top-level place (a thing in a
+  box in a cupboard counts in the room). Things without a valuation are counted but add nothing:
+  Kept never guesses a value.
+- **Vehicle costs** (where Vehicles is on): fuel, service and fees across your vehicles for the
+  last 12 full months, and each vehicle's last two years and this year so far. The same figures as
+  a vehicle's Costs tab.
+- **Warranty coverage** (where Warranties & claims is on): how many things are under warranty,
+  ending soon, past their cover or without one, what ends soon, and the repairs resolved this year
+  and last.
+
+Amounts are per currency and never added across currencies or converted. Where money is hidden
+from you, Insights shows counts and says which locations' amounts it leaves out.

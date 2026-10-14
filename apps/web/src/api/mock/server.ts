@@ -12,6 +12,7 @@ import { AUDIT_EVENT_HEADER } from '../client';
 import { conditionMockRoutes } from '../condition/mock';
 import { connectionsMockRoutes } from '../connections/mock';
 import { householdMockRoutes } from '../household/mock';
+import { insightsMockRoutes } from '../insights/mock';
 import { inventoryMockRoutes } from '../inventory/mock';
 import { mailinMockRoutes } from '../mailin/mock';
 import { opsMockRoutes } from '../ops/mock';
@@ -612,6 +613,8 @@ export function createMockApi(state: MockState): MockApi {
   for (const r of conditionMockRoutes(state)) add(r.method, r.template, r.handler);
   // ----- 1.5: read-only share links and their public page (D233) --------------------------------
   for (const r of sharelinksMockRoutes(state)) add(r.method, r.template, r.handler);
+  // ----- 1.x: Insights (D234) -------------------------------------------------------------------
+  for (const r of insightsMockRoutes(state)) add(r.method, r.template, r.handler);
 
   const mockFetch: typeof fetch = async (input, init) => {
     const url = new URL(

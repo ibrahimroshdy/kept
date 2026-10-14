@@ -22363,3 +22363,175 @@ msgstr "{name} rimesso in scorta da un intervento su {service}"
 #: src/components/history/timeline.tsx
 msgid "Go to <0>{0}</0>"
 msgstr "Vai a <0>{0}</0>"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Amounts leave out {names}: money is hidden from you there."
+msgstr "Gli importi escludono {names}: lì il denaro ti è nascosto."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Insights is off in your locations"
+msgstr "Le statistiche sono disattivate nei tuoi luoghi"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Insights is part of Money. An owner or admin turns Money on in the location's settings, under What to track."
+msgstr "Le statistiche fanno parte di Denaro. Un proprietario o un amministratore attiva Denaro nelle impostazioni del luogo, in Cosa tenere traccia."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Loading insights"
+msgstr "Caricamento delle statistiche"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Money is off here"
+msgstr "Denaro è disattivato qui"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Insights shows the locations where Money is on. Pick another location."
+msgstr "Le statistiche mostrano i luoghi in cui Denaro è attivo. Scegli un altro luogo."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spending on things"
+msgstr "Spese per gli oggetti"
+
+#: src/components/insights/insights-screen.tsx
+msgid "No purchases yet"
+msgstr "Ancora nessun acquisto"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Capture a receipt"
+msgstr "Acquisisci una ricevuta"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Receipts you capture or add to things show up here, by the year you bought."
+msgstr "Le ricevute che acquisisci o aggiungi agli oggetti compaiono qui, per anno di acquisto."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spent"
+msgstr "Speso"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Purchases"
+msgstr "Acquisti"
+
+#: src/components/insights/insights-screen.tsx
+msgid "{0, plural, one {# purchase} other {# purchases}}"
+msgstr "{0, plural, one {# acquisto} other {# acquisti}}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "purchases"
+msgstr "acquisti"
+
+#: src/components/insights/insights-screen.tsx
+msgid "not compared with full years"
+msgstr "non confrontato con anni completi"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spent per year. Arrow keys move between years."
+msgstr "Speso per anno. I tasti freccia passano da un anno all’altro."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Purchases per year. Arrow keys move between years."
+msgstr "Acquisti per anno. I tasti freccia passano da un anno all’altro."
+
+#: src/components/insights/insights-screen.tsx
+msgid "No full years yet."
+msgstr "Ancora nessun anno completo."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spent per year, {currency}"
+msgstr "Speso per anno, {currency}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Purchases per year"
+msgstr "Acquisti per anno"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Year"
+msgstr "Anno"
+
+#: src/components/insights/insights-screen.tsx
+msgid "{unpriced, plural, one {# purchase has no amount and isn't in the totals.} other {# purchases have no amount and aren't in the totals.}}"
+msgstr "{unpriced, plural, one {# acquisto non ha un importo e non è nei totali.} other {# acquisti non hanno un importo e non sono nei totali.}}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Value by place"
+msgstr "Valore per posto"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Each thing in use at its latest valuation. Things without one count, but add nothing."
+msgstr "Ogni oggetto in uso alla sua ultima valutazione. Gli oggetti senza valutazione contano, ma non aggiungono nulla."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Valued: {0} of {1} things"
+msgstr "Valutati: {0} di {1} oggetti"
+
+#: src/components/insights/insights-screen.tsx
+msgid "No things yet."
+msgstr "Ancora nessun oggetto."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Other places ({0})"
+msgstr "Altri posti ({0})"
+
+#: src/components/insights/insights-screen.tsx
+msgid "{0} of {1} valued"
+msgstr "{0} di {1} valutati"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Vehicle costs"
+msgstr "Costi dei veicoli"
+
+#: src/components/insights/insights-screen.tsx
+msgid "No vehicles yet."
+msgstr "Ancora nessun veicolo."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Each vehicle per year, {currency}"
+msgstr "Ogni veicolo per anno, {currency}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Each vehicle per year"
+msgstr "Ogni veicolo per anno"
+
+#: src/components/insights/insights-screen.tsx
+msgid "(no longer in use)"
+msgstr "(non più in uso)"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Fills: {0}, services: {1}"
+msgstr "Rifornimenti: {0}, interventi: {1}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "See all vehicles ({0} more)"
+msgstr "Vedi tutti i veicoli (altri {0})"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Ending soon"
+msgstr "In scadenza"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Cover ended"
+msgstr "Garanzia scaduta"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Under warranty"
+msgstr "In garanzia"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Warranty coverage"
+msgstr "Copertura in garanzia"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Covered now: {0} of {1} things"
+msgstr "Coperti ora: {0} di {1} oggetti"
+
+#: src/components/insights/insights-screen.tsx
+msgid "See all on Expiring"
+msgstr "Vedi tutto in In scadenza"
+
+#: src/components/insights/insights-screen.tsx
+msgid "cost {0}, covered {1}"
+msgstr "costo {0}, coperto {1}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Repairs resolved, {year}: {0}"
+msgstr "Riparazioni risolte, {year}: {0}"

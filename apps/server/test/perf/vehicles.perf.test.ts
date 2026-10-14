@@ -45,6 +45,8 @@ import { timed } from './timing.js';
 // - The Corolla's running costs over the last 60 months (600 fills, 60 services): p95 < 200 ms.
 // - Its fuel summary over 600 fills: p95 < 100 ms.
 // - The compressor's thing page (GET /api/v1/things/:id) with 3 meters: p95 < 200 ms (§3.1).
+// - Insights (1.x, D234: GET /api/v1/insights) over every location, after a valuation on each of
+//   Home's things and 1,000 purchases are added: p95 < 300 ms (§3.1's search target).
 // - The Corolla's history report over the five years, with costs and fuel: the `report` job
 //   renders it (Typst in its child process, killed past RENDER_MEMORY_MB, render/render.ts).
 //   Passing means it rendered under that limit; its time and size are recorded.
@@ -60,6 +62,9 @@ const LIMITS = {
   costsP95Ms: 200,
   fuelSummaryP95Ms: 100,
   thingPageP95Ms: 200,
+  // 1.x (D234): Insights over every location, with a valuation on each of Home's 10,000 things
+  // and 1,000 purchases: the search target (§3.1).
+  insightsP95Ms: 300,
 };
 const CARS_IN_HOME = 49;
 const READINGS_PER_METER = 12;
@@ -318,6 +323,37 @@ describe('step-5 performance (plan T25, full mode only)', () => {
     });
     results.thingPage3Meters = s;
     expect(s.p95).toBeLessThan(LIMITS.thingPageP95Ms);
+  }, 300_000);
+
+  it(`answers Insights over 10,000 valued things with p95 under ${LIMITS.insightsP95Ms} ms`, async () => {
+    await own(
+      db,
+      `INSERT INTO public.valuations (location_id, thing_id, value, currency, valued_on, source,
+                                      created_by)
+       SELECT t.location_id, t.id, (100 + (row_number() OVER (ORDER BY t.id)) % 900)::numeric,
+              'EGP', current_date - 30, 'estimate', $2
+         FROM public.things t WHERE t.location_id = $1 AND t.deleted_at IS NULL`,
+      [home.id, ibrahim.userId],
+    );
+    await own(
+      db,
+      `INSERT INTO public.purchases (location_id, purchased_on, currency, total)
+       SELECT $1, current_date - (g * 3), 'EGP', g FROM generate_series(1, 1000) g`,
+      [home.id],
+    );
+    await own(db, 'ANALYZE public.valuations; ANALYZE public.purchases');
+    const r = ok(await call(t, '/api/v1/insights', { as: ibrahim })) as unknown as {
+      value: { locations: { locationId: string; valued?: number }[] };
+      vehicles: { items: unknown[] } | null;
+    };
+    expect(r.value.locations.find((l) => l.locationId === home.id)?.valued).toBeGreaterThan(9000);
+    expect(r.vehicles?.items.length).toBe(50);
+    const s = await timed(WARMUP, RUNS, async () => {
+      const res = await call(t, '/api/v1/insights', { as: ibrahim });
+      expect(res.statusCode, res.body).toBe(200);
+    });
+    results.insights = s;
+    expect(s.p95).toBeLessThan(LIMITS.insightsP95Ms);
   }, 300_000);
 
   it(`renders five years' history report under the renderer's ${RENDER_MEMORY_MB} MB limit`, async () => {

@@ -110,14 +110,16 @@ type NavEntry = {
     | '/lending'
     | '/paperwork'
     | '/consumables'
+    | '/insights'
     | '/notifications';
 };
 
 /**
  * Screens §1's entries, in order. Those without `to` arrive in later steps. An entry that belongs
  * to a module shows only when the module is on in at least one of your locations (§1): Vehicles,
- * Labels, Schedules, Lending, Paperwork and Consumables. Notifications is core: everyone has it. The Inbox is for
- * members and above (screens §5): a viewer everywhere has no entry for it.
+ * Labels, Schedules, Lending, Paperwork, Consumables, and Insights with Money (1.x, D234).
+ * Notifications is core: everyone has it. The Inbox is for members and above (screens §5): a
+ * viewer everywhere has no entry for it.
  */
 export function useNavEntries(): NavEntry[] {
   const { t } = useLingui();
@@ -163,7 +165,12 @@ export function useNavEntries(): NavEntry[] {
       icon: <BoxIcon />,
       to: '/consumables',
     }),
-    { key: 'insights', label: t`Insights`, icon: <ChartIcon /> },
+    ...gated(navOn('insights'), {
+      key: 'insights',
+      label: t`Insights`,
+      icon: <ChartIcon />,
+      to: '/insights',
+    }),
     ...gated(modulesOn.has('labels'), {
       key: 'labels',
       label: t`Labels`,

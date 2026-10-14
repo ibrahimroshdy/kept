@@ -22363,3 +22363,175 @@ msgstr "أُعيد {name} من صيانة {service}"
 #: src/components/history/timeline.tsx
 msgid "Go to <0>{0}</0>"
 msgstr "انتقل إلى <0>{0}</0>"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Amounts leave out {names}: money is hidden from you there."
+msgstr "المبالغ لا تشمل {names}: المال مخفي عنك هناك."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Insights is off in your locations"
+msgstr "الإحصاءات متوقفة في مواقعك"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Insights is part of Money. An owner or admin turns Money on in the location's settings, under What to track."
+msgstr "الإحصاءات جزء من المال. يشغّل المالك أو المشرف المال من إعدادات الموقع، ضمن «ما يُتابَع»."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Loading insights"
+msgstr "جارٍ تحميل الإحصاءات"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Money is off here"
+msgstr "المال متوقف هنا"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Insights shows the locations where Money is on. Pick another location."
+msgstr "تعرض الإحصاءات المواقع التي يعمل فيها المال. اختر موقعًا آخر."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spending on things"
+msgstr "الإنفاق على الأشياء"
+
+#: src/components/insights/insights-screen.tsx
+msgid "No purchases yet"
+msgstr "لا مشتريات بعد"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Capture a receipt"
+msgstr "التقط إيصالًا"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Receipts you capture or add to things show up here, by the year you bought."
+msgstr "تظهر هنا الإيصالات التي تلتقطها أو تضيفها إلى الأشياء، حسب سنة الشراء."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spent"
+msgstr "المُنفَق"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Purchases"
+msgstr "المشتريات"
+
+#: src/components/insights/insights-screen.tsx
+msgid "{0, plural, one {# purchase} other {# purchases}}"
+msgstr "{0, plural, zero {لا مشتريات} one {عملية شراء واحدة} two {عمليتا شراء} few {# عمليات شراء} many {# عملية شراء} other {# عملية شراء}}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "purchases"
+msgstr "مشتريات"
+
+#: src/components/insights/insights-screen.tsx
+msgid "not compared with full years"
+msgstr "لا تُقارَن بالسنوات الكاملة"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spent per year. Arrow keys move between years."
+msgstr "المُنفَق في كل سنة. تنقّل بين السنوات بمفاتيح الأسهم."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Purchases per year. Arrow keys move between years."
+msgstr "المشتريات في كل سنة. تنقّل بين السنوات بمفاتيح الأسهم."
+
+#: src/components/insights/insights-screen.tsx
+msgid "No full years yet."
+msgstr "لا سنوات كاملة بعد."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spent per year, {currency}"
+msgstr "المُنفَق في كل سنة، {currency}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Purchases per year"
+msgstr "المشتريات في كل سنة"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Year"
+msgstr "السنة"
+
+#: src/components/insights/insights-screen.tsx
+msgid "{unpriced, plural, one {# purchase has no amount and isn't in the totals.} other {# purchases have no amount and aren't in the totals.}}"
+msgstr "{unpriced, plural, zero {لا مشتريات بلا مبلغ.} one {عملية شراء واحدة بلا مبلغ وليست في الإجماليات.} two {عمليتا شراء بلا مبلغ وليستا في الإجماليات.} few {# عمليات شراء بلا مبلغ وليست في الإجماليات.} many {# عملية شراء بلا مبلغ وليست في الإجماليات.} other {# عملية شراء بلا مبلغ وليست في الإجماليات.}}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Value by place"
+msgstr "القيمة حسب المكان"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Each thing in use at its latest valuation. Things without one count, but add nothing."
+msgstr "كل شيء قيد الاستخدام بآخر تقييم له. الأشياء بلا تقييم تُعَدّ لكنها لا تضيف شيئًا."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Valued: {0} of {1} things"
+msgstr "مُقيَّمة: {0} من {1} شيء"
+
+#: src/components/insights/insights-screen.tsx
+msgid "No things yet."
+msgstr "لا أشياء بعد."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Other places ({0})"
+msgstr "أماكن أخرى ({0})"
+
+#: src/components/insights/insights-screen.tsx
+msgid "{0} of {1} valued"
+msgstr "{0} من {1} مُقيَّمة"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Vehicle costs"
+msgstr "تكاليف المركبات"
+
+#: src/components/insights/insights-screen.tsx
+msgid "No vehicles yet."
+msgstr "لا مركبات بعد."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Each vehicle per year, {currency}"
+msgstr "كل مركبة في كل سنة، {currency}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Each vehicle per year"
+msgstr "كل مركبة في كل سنة"
+
+#: src/components/insights/insights-screen.tsx
+msgid "(no longer in use)"
+msgstr "(لم تعد مستخدمة)"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Fills: {0}, services: {1}"
+msgstr "تعبئات: {0}، صيانات: {1}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "See all vehicles ({0} more)"
+msgstr "عرض كل المركبات ({0} أخرى)"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Ending soon"
+msgstr "ينتهي قريبًا"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Cover ended"
+msgstr "انتهى الضمان"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Under warranty"
+msgstr "تحت الضمان"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Warranty coverage"
+msgstr "التغطية بالضمان"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Covered now: {0} of {1} things"
+msgstr "المغطّى الآن: {0} من {1} شيء"
+
+#: src/components/insights/insights-screen.tsx
+msgid "See all on Expiring"
+msgstr "عرض الكل في قرب الانتهاء"
+
+#: src/components/insights/insights-screen.tsx
+msgid "cost {0}, covered {1}"
+msgstr "التكلفة {0}، المغطّى {1}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Repairs resolved, {year}: {0}"
+msgstr "الإصلاحات المنتهية، {year}: {0}"
