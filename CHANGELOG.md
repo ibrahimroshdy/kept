@@ -3,6 +3,18 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.3.0 (2026-10-14)
+
+### Features
+
+- **vehicles:** import a vehicle's history from LubeLogger (D229) (#59) (772a778)
+- **reports:** email a report, or have it sent every week or month (D228) (#58) (6baabd0)
+- **notify:** ntfy and Telegram channels (D227) (#57) (a9d998c)
+
+### Documentation
+
+- **release:** the 1.2.0 record (#55) (9706f22)
+
 ## 1.2.0 (2026-10-14)
 
 ### Features
