@@ -106,7 +106,7 @@ describe('from the URL to an endpoint', () => {
   });
 });
 
-describe('a saved view keeps the Display button’s state (D211)', () => {
+describe('a saved view keeps the Display button’s order and grouping, not the layout (D211, D223)', () => {
   const list = {
     q: '',
     filters: { type: ['t-cable'] },
@@ -119,7 +119,7 @@ describe('a saved view keeps the Display button’s state (D211)', () => {
   };
   const view: SavedView = {
     id: 'v-photos',
-    name: 'Oldest photos',
+    name: 'Oldest cables',
     surface: 'contents',
     query: queryOf(list, 'contents'),
     sharedLocationId: null,
@@ -128,25 +128,30 @@ describe('a saved view keeps the Display button’s state (D211)', () => {
     rowVersion: 1,
   };
 
-  it('saves the sort, its direction, the grouping and the layout', () => {
+  it('saves the sort, its direction and the grouping; the layout is the list’s own', () => {
     expect(view.query).toEqual({
       filters: { type: ['t-cable'] },
       group: 'type',
       sort: 'lastSeen',
       dir: 'asc',
-      layout: 'photos',
     });
   });
 
-  it('opening it puts them back in the URL, and a changed direction or layout shows', () => {
-    const opened = { ...list, ...stateOf(view, { ...list, group: undefined, sort: undefined }) };
-    expect(opened).toMatchObject({ sort: 'lastSeen', dir: 'asc', layout: 'photos', group: 'type' });
+  it('opening it puts them back in the URL and keeps the layout on screen; a layout change isn’t a change to the view', () => {
+    const opened = {
+      ...list,
+      ...stateOf(view, { ...list, group: undefined, sort: undefined, layout: 'grid' }),
+    };
+    expect(opened).toMatchObject({ sort: 'lastSeen', dir: 'asc', group: 'type', layout: 'photos' });
+    expect(stateOf(view, { ...list, layout: 'grid' })).not.toHaveProperty('layout');
     expect(isModified(view, opened)).toBe(false);
     expect(isModified(view, { ...opened, dir: '' })).toBe(true);
-    expect(isModified(view, { ...opened, layout: '' })).toBe(true);
-    // A view saved before D211 opens with the sort's own order and the default layout.
-    const old = stateOf({ ...view, query: { sort: 'name' } }, list);
-    expect(old).toMatchObject({ sort: 'name', dir: '', layout: '' });
+    expect(isModified(view, { ...opened, layout: '' })).toBe(false);
+    expect(isModified(view, { ...opened, layout: 'grid' })).toBe(false);
+    // A view saved with a layout (before D223) opens without changing the one on screen.
+    const old = stateOf({ ...view, query: { sort: 'name', layout: 'photos' } }, list);
+    expect(old).toMatchObject({ sort: 'name', dir: '' });
+    expect(old).not.toHaveProperty('layout');
   });
 });
 

@@ -36,7 +36,8 @@ export function useInvalidateViews() {
 }
 
 /** The query a view of `surface` keeps for `list`: its words, the filters that list offers,
- * which of them are "is none of", and the Display button's grouping, order and layout (D211). */
+ * which of them are "is none of", and the Display button's grouping and order (D211). Not the
+ * layout: list or grid is the list's own, and changing it never changes a view (D223). */
 export function queryOf(list: ListState, surface: ListSurface): SavedListQuery {
   const allowed = SURFACE_FILTER_KEYS[surface];
   const filters: Record<string, string[]> = {};
@@ -54,7 +55,6 @@ export function queryOf(list: ListState, surface: ListSurface): SavedListQuery {
     ...(list.group ? { group: list.group } : {}),
     ...(list.sort ? { sort: list.sort } : {}),
     ...(list.dir ? { dir: list.dir } : {}),
-    ...(list.layout ? { layout: list.layout } : {}),
   };
 }
 
@@ -62,7 +62,8 @@ export function queryOf(list: ListState, surface: ListSurface): SavedListQuery {
 export const hasQuery = (query: SavedListQuery): boolean =>
   !!query.q || Object.keys(query.filters ?? {}).length > 0;
 
-/** The list state that opens `view`: every filter the list offers is set, so none lingers. */
+/** The list state that opens `view`: every filter the list offers is set, so none lingers. The
+ * layout on screen stays (D223), whatever an older view saved. */
 export function stateOf(view: SavedView, current: ListState): Partial<ListState> {
   const filters: Record<string, string[]> = {};
   for (const key of [...SURFACE_FILTER_KEYS[view.surface], ...Object.keys(current.filters)])
@@ -75,7 +76,6 @@ export function stateOf(view: SavedView, current: ListState): Partial<ListState>
     group: view.query.group ?? '',
     sort: view.query.sort ?? '',
     dir: view.query.dir ?? '',
-    layout: view.query.layout ?? '',
     savedView: view.id,
   };
 }
@@ -105,12 +105,11 @@ function canonical(query: SavedListQuery): string {
     group: query.group ?? '',
     sort: query.sort ?? '',
     dir: query.dir ?? '',
-    layout: query.layout ?? '',
   });
 }
 
-/** The list no longer shows what `view` saved (a filter, the words, grouping, order or layout
- * changed). */
+/** The list no longer shows what `view` saved (a filter, the words, grouping or order changed;
+ * the layout isn't part of a view, D223). */
 export function isModified(view: SavedView, list: ListState): boolean {
   return canonical(queryOf(list, view.surface)) !== canonical(view.query);
 }
