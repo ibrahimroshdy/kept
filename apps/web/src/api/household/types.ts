@@ -454,6 +454,10 @@ export type ServiceRecord = {
     description: string;
     quantity: string | null;
     unitCost: GatedMoney | null;
+    /** D236: the consumable it used from the shelf, when it did. */
+    consumable?: { id: string; name: string | null };
+    /** D236: how much came off the shelf, when it isn't the line's quantity. */
+    consumedQuantity?: string;
   }>;
   completes: Array<{ scheduleId: string; name: string }>;
   notes: string | null;
@@ -469,6 +473,13 @@ export type ServiceLineInput = {
   description: string;
   quantity?: string;
   unitCost?: string;
+  /**
+   * D236: the consumable it used from the shelf; its count goes down by the quantity (1 when
+   * none). Not enough left is 409 `not_enough_stock` with `thing: {id, name}` and `left`.
+   */
+  consumableThingId?: string;
+  /** D236: how much came off the shelf when it isn't the quantity (needs `consumableThingId`). */
+  consumedQuantity?: string;
 };
 /** POST /api/v1/service-records ("Log a service"). Core; `completes` needs Schedules on. */
 export type CreateServiceRecordBody = {

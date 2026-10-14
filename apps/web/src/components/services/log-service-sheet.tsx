@@ -27,13 +27,18 @@
  *
  * Where money is hidden, an invoice can't make a draft (an invoice is money): it is uploaded and
  * attached to the record once it exists, as the record's `invoice`, as step 4 did.
+ *
+ * **From stock (D236).** Where Consumables is on, a line can say which consumable of the location
+ * it used ("Oil filter · 4 left"); picking one names the line after it when it has no words yet.
+ * Saving takes the line's quantity (1 when empty) off that thing's count; a draft takes nothing
+ * until it is saved. More than is left is refused on the line: "Only 1 left of Oil filter."
  */
 import { matchSchedules, newId, SERVICE_LINE_KINDS, type ServiceLineKind } from '@kept/shared';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { Checkbox, CheckboxGroup, FileTrigger, Label } from 'react-aria-components';
-import { api } from '@/api/client';
+import { api, isApiError } from '@/api/client';
 import { householdApi, useSubjectSchedules } from '@/api/household/queries';
 import type { CreateServiceRecordBody, ServiceLineInput, SubjectRef } from '@/api/household/types';
 import { inventoryPaths } from '@/api/inventory/paths';
@@ -121,7 +126,12 @@ type Line = {
   description: string;
   quantity: string;
   cost: string;
+  /** D236: the consumable it uses from the shelf, or null. */
+  consumableThingId: string | null;
 };
+
+/** "Not from stock": the picker's first choice. */
+const NO_STOCK = 'none';
 type Upload = {
   key: string;
   name: string;
@@ -136,6 +146,7 @@ const newLine = (): Line => ({
   description: '',
   quantity: '',
   cost: '',
+  consumableThingId: null,
 });
 
 /** A suggested line, as a typed one to change. */
@@ -145,6 +156,7 @@ const lineOf = (l: SuggestedLine): Line => ({
   description: l.description,
   quantity: l.quantity ?? '',
   cost: l.unitCost ?? '',
+  consumableThingId: null,
 });
 
 /** The line a schedule matches (`matchSchedules`, Q13), or null. */
@@ -191,6 +203,15 @@ function LogServiceForm({
   const money = useMoney();
   const online = useOnline();
   const schedulesOn = access.moduleOn('schedules');
+  const stockOn = access.moduleOn('consumables');
+  // D236: the location's consumables, for a line's "From stock".
+  const stockParams = { locationId, consumable: 1, lifecycle: 'in_use', limit: 200 } as const;
+  const stock = useQuery({
+    queryKey: inventoryKeys.things.list(stockParams),
+    queryFn: () => inventoryApi.things(stockParams),
+    enabled: stockOn,
+  });
+  const shelf = stock.data?.items ?? [];
 
   const thingId = 'thingId' in subject ? subject.thingId : '';
   const thing = useQuery({
@@ -365,6 +386,7 @@ function LogServiceForm({
         description: l.description.trim(),
         ...(q ? { quantity: q } : {}),
         ...(c ? { unitCost: c } : {}),
+        ...(l.consumableThingId ? { consumableThingId: l.consumableThingId } : {}),
       });
     }
     if (body.length > 50) next.lines = t`At most 50 lines.`;
@@ -406,7 +428,9 @@ function LogServiceForm({
     } catch (e) {
       setBusy(false);
       const why = meter ? refusal(e, meter.unit) : null;
+      const short = notEnough(e);
       if (why) setErrors({ reading: why });
+      else if (short) setErrors(short);
       else
         toast({ title: t`Couldn't save the service`, description: errorText(e), tone: 'danger' });
       return;
@@ -439,6 +463,29 @@ function LogServiceForm({
     await invalidate();
     setBusy(false);
     onClose();
+  };
+
+  /** A 409 `not_enough_stock` said on the lines that use that thing, or null. */
+  const notEnough = (e: unknown): Record<string, string> | null => {
+    if (!isApiError(e) || e.code !== 'not_enough_stock') return null;
+    const d = e.details as { thing?: { id?: unknown; name?: unknown }; left?: unknown };
+    const left = fmt.num(Number(d.left ?? 0));
+    const name = typeof d.thing?.name === 'string' ? d.thing.name : '';
+    const text = name ? t`Only ${left} left of ${name}.` : t`Only ${left} left.`;
+    const out: Record<string, string> = {};
+    for (const l of lines) if (l.consumableThingId === d.thing?.id) out[`line:${l.key}`] = text;
+    return Object.keys(out).length ? out : { lines: text };
+  };
+
+  /** A line's consumable: its name becomes the line's words while the line has none of its own. */
+  const pickStock = (l: Line, id: string | null) => {
+    const was = shelf.find((x) => x.id === l.consumableThingId)?.name ?? '';
+    const now = shelf.find((x) => x.id === id)?.name ?? '';
+    const words = !l.description.trim() || l.description === was;
+    setLine(l.key, {
+      consumableThingId: id,
+      ...(id && now && words ? { description: now } : {}),
+    });
   };
 
   const setLine = (key: string, patch: Partial<Line>) => {
@@ -643,6 +690,27 @@ function LogServiceForm({
                 inputProps={{ dir: 'auto' }}
               />
             </div>
+            {stockOn && shelf.length ? (
+              <Combobox
+                label={t`From stock`}
+                description={t`Optional. Saving takes the quantity off its count.`}
+                items={[
+                  { id: NO_STOCK, label: t`Not from stock` },
+                  ...shelf.map((x) => {
+                    const left = fmt.num(x.quantity);
+                    return {
+                      id: x.id,
+                      label: x.name ?? t`Unnamed thing`,
+                      description: t`${left} left`,
+                    };
+                  }),
+                ]}
+                selectedKey={l.consumableThingId ?? NO_STOCK}
+                onSelectionChange={(k) =>
+                  k !== null && pickStock(l, String(k) === NO_STOCK ? null : String(k))
+                }
+              />
+            ) : null}
             <div className={cn('grid gap-2', access.money ? 'grid-cols-2' : 'grid-cols-1')}>
               <TextField
                 label={t`Quantity`}

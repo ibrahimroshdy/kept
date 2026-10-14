@@ -20,11 +20,13 @@ import { createAttachment } from '../files/attachments.js';
 import { assertClientId } from '../http/conventions.js';
 import { conflict, invalid } from '../http/errors.js';
 import { type Ctx, type SubjectInput, subjectOfInput, todayIn } from '../schedules/service.js';
-import { serviceImage, serviceRow, serviceView } from '../schedules/services.js';
+import { serviceImage, serviceRow, serviceView, stockRecordOf } from '../schedules/services.js';
+import { insertLineImages } from '../schedules/undo.js';
 import type { ServiceRecord } from '../schedules/view.js';
 import { gateFor } from '../serialize/gates.js';
 import { requireRole } from '../things/service.js';
 import { moneyOff } from '../things/validate.js';
+import { moveStock } from './stock.js';
 
 // Service drafts from an invoice (step 5, T9; screens §5 "Log a service"; D19, D26, D29, D94,
 // D131; plan Q12). Step 4's POST /api/v1/service-records stays the one way a service is logged
@@ -182,6 +184,8 @@ type LineImage = {
   quantity: string | null;
   unit_cost: string | null;
   sort: number;
+  consumable_thing_id?: string;
+  consumed_quantity?: string;
 };
 
 /** The event's own bookkeeping, never compared with the record. */
@@ -243,14 +247,7 @@ async function undoConfirm(args: UndoArgs): Promise<void> {
   }
   await client.query('DELETE FROM public.service_completions WHERE service_record_id = $1', [id]);
   await client.query('DELETE FROM public.service_lines WHERE service_record_id = $1', [id]);
-  for (const l of (back.lines as LineImage[] | null) ?? []) {
-    await client.query(
-      `INSERT INTO public.service_lines (id, location_id, service_record_id, kind, description,
-                                         quantity, unit_cost, sort)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [l.id, event.locationId, id, l.kind, l.description, l.quantity, l.unit_cost, l.sort],
-    );
-  }
+  await insertLineImages(client, event.locationId, id, (back.lines as LineImage[] | null) ?? []);
   const cleared = (event.diff.cleared_schedules?.before as Cleared[] | null | undefined) ?? [];
   for (const c of cleared) {
     await client.query(
@@ -261,6 +258,13 @@ async function undoConfirm(args: UndoArgs): Promise<void> {
     );
   }
   const now = await serviceImage(client, await serviceRow(client, id));
+  // D236: what the confirm's lines took goes back (a draft takes nothing).
+  await moveStock(
+    { tx: args.tx, client, scope: args.scope, requestId: args.requestId },
+    stockRecordOf(row),
+    (image.lines as LineImage[] | null) ?? [],
+    now.lines,
+  );
   await args.audit({
     action: 'service_record.confirm',
     entity: { type: 'service_record', id },

@@ -188,6 +188,8 @@ export function useSummary() {
     'the location': t`the location`,
     something: t`something`,
   };
+  /** What a stock use was for: its name, or the server's noun when the reader can't see it. */
+  const serviceName = (raw: string | undefined) => nouns[raw ?? ''] ?? isolate(raw ?? '');
   return (e: Pick<HistoryEvent, 'summaryKey' | 'summaryParams' | 'summary'>) => {
     const raw = e.summaryParams.name ?? '';
     const name = nouns[raw] ?? isolate(raw);
@@ -252,6 +254,15 @@ export function useSummary() {
         return t`Changed a file on ${name}`;
       case 'attachment.delete':
         return t`Removed a file from ${name}`;
+      // D236: a service line took the consumable off the shelf, or gave it back.
+      case 'thing.stock_use': {
+        const service = serviceName(e.summaryParams.service);
+        return t`Used ${name} in a service of ${service}`;
+      }
+      case 'thing.stock_return': {
+        const service = serviceName(e.summaryParams.service);
+        return t`Put ${name} back from a service of ${service}`;
+      }
       case 'undo':
         return t`Undid a change to ${name}`;
       case 'event':

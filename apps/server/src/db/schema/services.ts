@@ -99,6 +99,15 @@ export const serviceLines = pgTable(
     quantity: numeric('quantity', { precision: 12, scale: 3 }),
     unitCost: numeric('unit_cost', { precision: 16, scale: 4 }),
     sort: integer('sort').notNull().default(0),
+    /**
+     * D236 (engineering spec §1.6, D170): the consumable this line used from the shelf (the oil
+     * filter), of the line's own location. Its key, ON UPDATE CASCADE ON DELETE SET NULL
+     * (consumable_thing_id), is in the custom migration that follows (drizzle can't declare a
+     * column list); so is the trigger that drops the link when a move separates them.
+     */
+    consumableThingId: uuid('consumable_thing_id'),
+    /** How much came off the shelf when it isn't the line's quantity (null: the quantity, or 1). */
+    consumedQuantity: numeric('consumed_quantity', { precision: 12, scale: 3 }),
     ...mutable(),
   },
   (t) => [
@@ -106,6 +115,7 @@ export const serviceLines = pgTable(
     check('service_lines_description_chk', sql`char_length(description) BETWEEN 1 AND 300`),
     check('service_lines_quantity_chk', sql`quantity > 0`),
     check('service_lines_unit_cost_chk', sql`unit_cost >= 0`),
+    check('service_lines_consumed_chk', sql`consumed_quantity > 0`),
     foreignKey({
       name: 'service_lines_record_fk',
       columns: [t.locationId, t.serviceRecordId],
@@ -114,5 +124,8 @@ export const serviceLines = pgTable(
       .onUpdate('cascade')
       .onDelete('cascade'),
     index('service_lines_record_idx').on(t.serviceRecordId, t.sort),
+    index('service_lines_consumable_idx')
+      .on(t.consumableThingId)
+      .where(sql`consumable_thing_id IS NOT NULL`),
   ],
 );

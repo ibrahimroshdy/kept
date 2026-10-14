@@ -176,6 +176,13 @@ export function thingsRoutes(state: MockState): MockRoute[] {
       rows = narrow(rows, query, 'brandId', (t, v) => t.brand?.id === v);
       if (f('vendorId')) rows = rows.filter((t) => t.purchase?.vendor?.id === f('vendorId'));
       if (f('lifecycle')) rows = rows.filter((t) => t.lifecycle === f('lifecycle'));
+      // D236: consumables only (a service line's "From stock" picker).
+      if (f('consumable') === '1')
+        rows = rows.filter((t) =>
+          inv()
+            .types.find((x) => x.id === t.type?.id)
+            ?.resolvedCapabilities.includes('consumable'),
+        );
       rows = narrow(rows, query, 'state', (t, v) =>
         derivedStateOf(t, inv()).includes(v as 'draft'),
       );

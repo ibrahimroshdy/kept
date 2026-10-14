@@ -485,6 +485,53 @@ export function serviceRecordView(state: MockState, r: StoredServiceRecord): Ser
   };
 }
 
+/**
+ * D236: what service lines take from the shelf, as the server does it (services/stock.ts): a
+ * line's quantity (1 when none) off its consumable's count. `sign` 1 takes, -1 gives back. A
+ * 409 `not_enough_stock` reply when a count would go below 0; nothing changes then.
+ */
+export function moveMockStock(
+  state: MockState,
+  lines: readonly { consumableThingId?: string; consumedQuantity?: string; quantity?: string }[],
+  sign: 1 | -1 = 1,
+): MockReply | null {
+  const use = new Map<string, number>();
+  for (const l of lines) {
+    if (!l.consumableThingId) continue;
+    const n = Number(l.consumedQuantity ?? l.quantity ?? '1');
+    use.set(l.consumableThingId, (use.get(l.consumableThingId) ?? 0) + n);
+  }
+  for (const [id, n] of use) {
+    const thing = state.inventory.things.find((x) => x.id === id && !x.deletedAt);
+    if (!thing) return notFound();
+    if (sign > 0 && thing.quantity < n)
+      return err(409, 'not_enough_stock', 'There is not that much left.', undefined, {
+        thing: { id, name: thing.name },
+        left: String(thing.quantity), // logical-css-ignore: the API's field, how many are left
+      });
+  }
+  for (const [id, n] of use) {
+    const thing = state.inventory.things.find((x) => x.id === id);
+    if (thing) thing.quantity = Math.round((thing.quantity - sign * n) * 1000) / 1000;
+  }
+  return null;
+}
+
+/** D236: a line's consumable as the record shows it. */
+export function stockRefOf(
+  state: MockState,
+  id: string | undefined,
+  consumed?: string,
+): { consumable?: { id: string; name: string | null }; consumedQuantity?: string } {
+  if (!id) return {};
+  const thing = state.inventory.things.find((x) => x.id === id);
+  if (!thing) return {};
+  return {
+    consumable: { id, name: thing.name },
+    ...(consumed ? { consumedQuantity: consumed } : {}),
+  };
+}
+
 export function documentView(state: MockState, d: StoredDocument): ExpiringDocument | null {
   const subject = resolveSubject(state, d.subject);
   if (!subject) return null;

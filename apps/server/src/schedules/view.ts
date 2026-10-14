@@ -305,6 +305,10 @@ export type ServiceLine = {
   description: string;
   quantity: string | null;
   unitCost: GatedMoney | null;
+  /** D236: the consumable it used from the shelf, when it did (null name: an unnamed thing). */
+  consumable?: { id: string; name: string | null };
+  /** D236: how much came off the shelf, when it isn't the line's quantity. */
+  consumedQuantity?: string;
 };
 
 export type ServiceRecord = {
@@ -362,6 +366,8 @@ export const ServiceRecordSchema = z.object({
       description: z.string(),
       quantity: z.string().nullable(),
       unitCost: GatedMoneySchema.nullable(),
+      consumable: z.object({ id: z.uuid(), name: z.string().nullable() }).optional(),
+      consumedQuantity: z.string().optional(),
     }),
   ),
   completes: z.array(z.object({ scheduleId: z.uuid(), name: z.string() })),
@@ -434,6 +440,9 @@ type LineRow = {
   quantity: string | null;
   unit_cost: string | null;
   sort: number;
+  consumable_thing_id: string | null;
+  stock_name: string | null;
+  consumed_quantity: string | null;
 };
 
 /** Views of service rows read with SERVICE_VIEW_COLUMNS, their lines, completions and files read
@@ -449,10 +458,13 @@ export async function serviceRecordsOf(
   const ids = records.map((r) => r.id);
   // One query at a time: a pg client runs them in turn anyway (and warns when asked at once).
   const lines = await client.query<LineRow>(
-    `SELECT id, service_record_id, kind, description, trim_scale(quantity)::text AS quantity,
-              trim_scale(unit_cost)::text AS unit_cost, sort
-         FROM public.service_lines WHERE service_record_id = ANY ($1::uuid[])
-        ORDER BY sort, created_at, id`,
+    `SELECT l.id, l.service_record_id, l.kind, l.description,
+            trim_scale(l.quantity)::text AS quantity, trim_scale(l.unit_cost)::text AS unit_cost,
+            l.sort, l.consumable_thing_id, st.name AS stock_name,
+            trim_scale(l.consumed_quantity)::text AS consumed_quantity
+       FROM public.service_lines l LEFT JOIN public.things st ON st.id = l.consumable_thing_id
+      WHERE l.service_record_id = ANY ($1::uuid[])
+      ORDER BY l.sort, l.created_at, l.id`,
     [ids],
   );
   const completes = await client.query<{
@@ -517,6 +529,12 @@ export async function serviceRecordsOf(
           l.unit_cost === null && gate.showMoney
             ? null
             : gatedMoney(gate, l.unit_cost, r.currency ?? null),
+        ...(l.consumable_thing_id
+          ? {
+              consumable: { id: l.consumable_thing_id, name: l.stock_name },
+              ...(l.consumed_quantity ? { consumedQuantity: l.consumed_quantity } : {}),
+            }
+          : {}),
       })),
       completes: completes.rows
         .filter((c) => c.service_record_id === r.id)

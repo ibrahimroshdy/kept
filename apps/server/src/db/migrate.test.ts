@@ -270,6 +270,8 @@ const KEPT_FUNCTION_EXECUTE: Record<string, string[]> = {
   // Step 5 (0065): a fill's reading is its own vehicle's; a vehicle report follows its car.
   'kept.guard_fuel_reading()': OWNER_ONLY,
   'kept.report_run_follows_thing()': OWNER_ONLY,
+  // 1.x (D236): a service line's consumable link drops when a move separates them.
+  'kept.service_line_consumable_follows()': OWNER_ONLY,
   // Step 5 (0066): the usage estimate, estimated due dates and vehicle types.
   'kept.meter_estimate(uuid,timestamp with time zone)': APP_AND_SYSTEM,
   'kept.meter_eta(uuid,numeric,timestamp with time zone)': APP_AND_SYSTEM,

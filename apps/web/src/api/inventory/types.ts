@@ -715,6 +715,8 @@ export type ThingListParams = {
   lifecycle?: Lifecycle;
   /** `1` ⇒ containers only (T26). */
   container?: 1;
+  /** `1` ⇒ things of a consumable type only (D236: a service line's "From stock" picker). */
+  consumable?: 1;
   /** The things an import run brought in ("Imported by", step-7 T16). Owners and admins; for
    * anyone else the server matches nothing. */
   importRunId?: string;

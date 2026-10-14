@@ -22327,3 +22327,39 @@ msgstr "Link condiviso creato"
 #: src/components/history/labels.ts
 msgid "Share link revoked"
 msgstr "Link condiviso revocato"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Only {left} left of {name}."
+msgstr "Di {name} ne restano solo {left}."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Only {left} left."
+msgstr "Ne restano solo {left}."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "From stock"
+msgstr "Dalla scorta"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Optional. Saving takes the quantity off its count."
+msgstr "Facoltativo. Salvando, la quantità viene tolta dalla sua scorta."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Not from stock"
+msgstr "Non dalla scorta"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "{left} left"
+msgstr "Restano {left}"
+
+#: src/components/history/labels.ts
+msgid "Used {name} in a service of {service}"
+msgstr "{name} usato in un intervento su {service}"
+
+#: src/components/history/labels.ts
+msgid "Put {name} back from a service of {service}"
+msgstr "{name} rimesso in scorta da un intervento su {service}"
+
+#: src/components/history/timeline.tsx
+msgid "Go to <0>{0}</0>"
+msgstr "Vai a <0>{0}</0>"

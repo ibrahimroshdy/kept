@@ -9,10 +9,12 @@ import { normalize, reconcileTotal } from '@kept/shared';
 import {
   ensureSeeded,
   hh,
+  moveMockStock,
   newId,
   recordHouseholdEvent,
   serviceRecordView,
   showsMoney,
+  stockRefOf,
   todayIn,
 } from '../../household/mock/db';
 import type { StoredServiceRecord } from '../../household/mock/state';
@@ -209,6 +211,9 @@ export function serviceDraftRoutes(state: MockState): MockRoute[] {
       const b = body as ConfirmServiceBody;
       const currency =
         b.currency ?? state.locations.find((l) => l.id === r.locationId)?.currency ?? 'EGP';
+      // D236: the lines take their stock now; a draft took nothing.
+      const short = moveMockStock(state, b.lines ?? []);
+      if (short) return short;
       if (b.reading && 'thingId' in r.subject) {
         const t = liveThing(state.inventory, r.subject.thingId);
         const meter = t ? mainMeter(t) : null;
@@ -257,6 +262,7 @@ export function serviceDraftRoutes(state: MockState): MockRoute[] {
           description: l.description,
           quantity: l.quantity ?? null,
           unitCost: l.unitCost !== undefined ? { amount: l.unitCost, currency } : null,
+          ...stockRefOf(state, l.consumableThingId, l.consumedQuantity),
         })),
         completes: (b.completes ?? []).map((scheduleId) => ({
           scheduleId,

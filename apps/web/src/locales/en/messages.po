@@ -22327,3 +22327,39 @@ msgstr "Share link made"
 #: src/components/history/labels.ts
 msgid "Share link revoked"
 msgstr "Share link revoked"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Only {left} left of {name}."
+msgstr "Only {left} left of {name}."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Only {left} left."
+msgstr "Only {left} left."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "From stock"
+msgstr "From stock"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Optional. Saving takes the quantity off its count."
+msgstr "Optional. Saving takes the quantity off its count."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Not from stock"
+msgstr "Not from stock"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "{left} left"
+msgstr "{left} left"
+
+#: src/components/history/labels.ts
+msgid "Used {name} in a service of {service}"
+msgstr "Used {name} in a service of {service}"
+
+#: src/components/history/labels.ts
+msgid "Put {name} back from a service of {service}"
+msgstr "Put {name} back from a service of {service}"
+
+#: src/components/history/timeline.tsx
+msgid "Go to <0>{0}</0>"
+msgstr "Go to <0>{0}</0>"

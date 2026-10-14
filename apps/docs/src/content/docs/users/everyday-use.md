@@ -126,6 +126,11 @@ costs and, on Complete, fuel.
   its neighbours is refused with the reason. A dashboard photo joins the vehicle's proof photos.
 - **Log a service**: date, the reading, the shop, the invoice (AI can fill the line items), the
   line items with costs, and which schedules it completes; saving restarts their count.
+- **From stock** on a line (where Consumables is on) picks a consumable of the same location: the
+  oil filter on the shelf. Saving takes the line's quantity (1 when empty) off its count, and Kept
+  refuses more than is left. Editing the line, removing it, deleting the service or undoing any of
+  these puts the count right again; an invoice still being read takes nothing until you save it.
+  The consumable's **History** shows "Used Oil filter in a service of Corolla", with a link.
 - **Add starter schedules** adds the usual ones: oil change, tyre rotation, brake fluid, air filter.
 - **Read the card** reads a registration card in Label mode: VIN, plate and licence expiry.
 - **History report** makes a PDF for a period: odometer history with proof photos, services with
