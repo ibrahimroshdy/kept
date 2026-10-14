@@ -3,6 +3,21 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.1.0 (2026-10-14)
+
+### Features
+
+- **locations:** places panel and readable location addresses (D224) (#47) (76bea1f)
+- **views:** the layout isn't part of a saved view (D223) (#46) (b59a01d)
+- **web:** a location's contents as a grid (#45) (8dc2b6d)
+- **web:** a location's contents fold by section (#44) (8571bb3)
+- **labels:** print a location's unprinted labels from its page (#43) (b2925ee)
+
+### Documentation
+
+- **release:** the 1.0.6 record (#49) (1093ca6)
+- **design:** the screens board shows 1.1's places panel, grid and folding sections (#48) (9873b61)
+
 ## 1.0.6 (2026-10-14)
 
 ### Fixes

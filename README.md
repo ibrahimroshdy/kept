@@ -64,12 +64,12 @@ default, and the AI provider is yours to choose.
 Docker with Compose v2:
 
 ```sh
-git clone --branch v1.0.6 --depth 1 https://github.com/ibrahimroshdy/kept.git && cd kept
+git clone --branch v1.1.0 --depth 1 https://github.com/ibrahimroshdy/kept.git && cd kept
 cp compose.env.example .env
 for v in SUPERUSER OWNER APP AUTH SYSTEM; do
   sed -i.bak "s/^KEPT_DB_${v}_PASSWORD=\$/KEPT_DB_${v}_PASSWORD=$(openssl rand -hex 32)/" .env
 done
-sed -i.bak 's|^KEPT_IMAGE=$|KEPT_IMAGE=ghcr.io/ibrahimroshdy/kept:1.0.6|' .env && rm .env.bak
+sed -i.bak 's|^KEPT_IMAGE=$|KEPT_IMAGE=ghcr.io/ibrahimroshdy/kept:1.1.0|' .env && rm .env.bak
 # Set KEPT_PUBLIC_URL in .env to the address you will open, e.g. http://<this host>:8080
 docker compose up -d
 docker compose logs kept | grep "KEPT SETUP CODE"
