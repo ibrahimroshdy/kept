@@ -3,7 +3,7 @@
  */
 import { act, screen, waitFor } from '@testing-library/react';
 import { useState } from 'react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Sheet } from '@/components/places/sheet';
 import { renderUI } from '@/test/render';
 
@@ -50,5 +50,33 @@ describe('CloseOnBack', () => {
     await back({ keptSheet: 1 });
     await waitFor(() => expect(screen.getByText('inner closed')).toBeInTheDocument());
     expect(screen.getByText('outer open')).toBeInTheDocument();
+  });
+
+  it('closed while the page is leaving, it leaves the history alone (a load in flight survives)', async () => {
+    function One() {
+      const [open, setOpen] = useState(true);
+      return (
+        <Sheet isOpen={open} onOpenChange={setOpen} title="Filters">
+          <button type="button" onClick={() => setOpen(false)}>
+            Done
+          </button>
+        </Sheet>
+      );
+    }
+    const backs = vi.spyOn(window.history, 'back');
+    try {
+      await renderUI(<One />);
+      await screen.findByRole('dialog', { name: 'Filters' });
+      // A full-page navigation has begun (page.goto, or location.href set): beforeunload fired.
+      act(() => {
+        window.dispatchEvent(new Event('beforeunload'));
+      });
+      screen.getByRole('button', { name: 'Done' }).click();
+      await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+      await new Promise((r) => setTimeout(r, 20));
+      expect(backs).not.toHaveBeenCalled();
+    } finally {
+      backs.mockRestore();
+    }
   });
 });
