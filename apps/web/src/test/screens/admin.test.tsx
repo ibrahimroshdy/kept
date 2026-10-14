@@ -242,7 +242,10 @@ describe('Instance admin', () => {
     state.admin.status.mail = { configured: false };
     await renderApp('/admin/status', { state });
     expect(await screen.findByText("Mail isn't configured")).toBeInTheDocument();
-    expect(screen.getByText('Not configured')).toBeInTheDocument();
+    // The Mail tile (Google sign-in's row says "Not configured" too).
+    expect(screen.getByText('Mail', { selector: 'div' }).parentElement).toHaveTextContent(
+      'Not configured',
+    );
   });
 
   it('Alerts: an open alert shows its latest figures', async () => {

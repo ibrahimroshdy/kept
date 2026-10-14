@@ -37,6 +37,7 @@ import {
   useErrorText,
 } from '@/components/page';
 import { SettingsTabs } from '@/components/settings-tabs';
+import { SignInMethods } from '@/components/sign-in-methods';
 import { SignOutButton } from '@/components/sign-out';
 import { Button } from '@/components/ui/button';
 import { useConfirm } from '@/components/ui/confirm';
@@ -44,11 +45,23 @@ import { toast } from '@/components/ui/toast';
 import { sep, useFormat } from '@/lib/format';
 import { describeUserAgent } from '@/lib/user-agent';
 
-export const Route = createFileRoute('/_app/settings/')({ component: MePage });
+/** `via` and `error`: a link to an outside sign-in that came back refused (D226). */
+const meSearch = (
+  search: Record<string, unknown>,
+): { via?: 'oidc' | 'google'; error?: string } => ({
+  ...(search.via === 'oidc' || search.via === 'google' ? { via: search.via } : {}),
+  ...(typeof search.error === 'string' ? { error: search.error.slice(0, 64) } : {}),
+});
+
+export const Route = createFileRoute('/_app/settings/')({
+  validateSearch: meSearch,
+  component: MePage,
+});
 
 function MePage() {
   const { t } = useLingui();
   const me = useMe();
+  const { via, error } = Route.useSearch();
   const user = me.data?.user;
   return (
     <Page title={t`Settings`}>
@@ -185,6 +198,8 @@ function MePage() {
           </li>
         </List>
       </Section>
+
+      <SignInMethods {...(via ? { via } : {})} {...(error ? { error } : {})} />
 
       <Section title={<Trans>Sessions and devices</Trans>}>
         <Sessions />

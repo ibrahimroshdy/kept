@@ -38,7 +38,21 @@ export type VersionInfo = {
  * in with <name>", when `KEPT_OIDC_ISSUER` is set and its discovery succeeded at boot; null or
  * absent otherwise (and on servers before step 6).
  */
-export type SetupStatus = { needed: boolean; oidc?: { name: string } | null };
+export type SetupStatus = {
+  needed: boolean;
+  oidc?: { name: string } | null;
+  /** 1.2 (D226): "Sign in with Google" is offered. */
+  google?: boolean;
+};
+
+/** One way into the account, as Better Auth lists it (never its tokens). `id` is Better Auth's
+ * row id (what unlinking takes); `accountId` the provider's subject. */
+export type SignInMethod = {
+  id: string;
+  providerId: string;
+  accountId: string;
+  createdAt: string;
+};
 export type SetupBody = { code: string; email: string; password: string; displayName: string };
 export type SetupResult = { userId: string };
 
@@ -500,6 +514,8 @@ export type AdminStatus = {
     /** `private_address`, `issuer_mismatch`, `insecure_endpoint`, `http_status`, or another code. */
     error: string | null;
   };
+  /** 1.2 (D226): Google sign-in, and the redirect URI to register with Google. */
+  google?: { configured: boolean; callbackUrl: string | null };
   /**
    * The MCP endpoint and OAuth connectors (step 6 T11, T12; D63, D125): connectors need an https
    * public URL, so without one they're `needs_https` and only personal tokens work.

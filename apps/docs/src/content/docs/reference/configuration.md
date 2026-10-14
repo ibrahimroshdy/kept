@@ -89,3 +89,5 @@ The Compose file passes the common ones through from `.env`; the rest go in a
 | `KEPT_OIDC_AUTOPROVISION_GROUPS` |  | OIDC sign-in: comma-separated groups (exact) whose members get an account on first sign-in; empty: invite only |
 | `KEPT_OIDC_GROUPS_CLAIM` | `groups` | OIDC sign-in: the ID token claim holding the groups |
 | `KEPT_OIDC_SCOPES` | `openid email profile` | OIDC sign-in: the scopes asked for, space-separated |
+| `KEPT_GOOGLE_CLIENT_ID` |  | Google sign-in: the OAuth client id from Google Cloud; set with the secret, Google sign-in is on (invite only, never autoprovision) |
+| `KEPT_GOOGLE_CLIENT_SECRET` |  | Google sign-in: the OAuth client secret; never logged |

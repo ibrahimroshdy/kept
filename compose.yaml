@@ -155,8 +155,8 @@ services:
       KEPT_VAPID_PUBLIC_KEY: ${KEPT_VAPID_PUBLIC_KEY:-}
       KEPT_VAPID_PRIVATE_KEY: ${KEPT_VAPID_PRIVATE_KEY:-}
       KEPT_VAPID_SUBJECT: ${KEPT_VAPID_SUBJECT:-}
-      # Semantic search (step 6, D207) and generic OIDC sign-in (step 6, D127): empty values
-      # fall back to the defaults (§7.11).
+      # Semantic search (step 6, D207), generic OIDC sign-in (step 6, D127) and Google sign-in
+      # (1.2, D226): empty values fall back to the defaults (§7.11).
       KEPT_EMBEDDINGS: ${KEPT_EMBEDDINGS:-}
       KEPT_OIDC_ISSUER: ${KEPT_OIDC_ISSUER:-}
       KEPT_OIDC_CLIENT_ID: ${KEPT_OIDC_CLIENT_ID:-}
@@ -166,6 +166,8 @@ services:
       KEPT_OIDC_AUTOPROVISION_GROUPS: ${KEPT_OIDC_AUTOPROVISION_GROUPS:-}
       KEPT_OIDC_GROUPS_CLAIM: ${KEPT_OIDC_GROUPS_CLAIM:-}
       KEPT_OIDC_SCOPES: ${KEPT_OIDC_SCOPES:-}
+      KEPT_GOOGLE_CLIENT_ID: ${KEPT_GOOGLE_CLIENT_ID:-}
+      KEPT_GOOGLE_CLIENT_SECRET: ${KEPT_GOOGLE_CLIENT_SECRET:-}
       # Check for new versions (D65): off by default and an admin setting; true or false locks it.
       KEPT_UPDATE_CHECK: ${KEPT_UPDATE_CHECK:-}
       # Tracing to your own OpenTelemetry collector (D84): unset, nothing is loaded or sent.

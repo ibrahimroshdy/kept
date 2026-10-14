@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { SIGNUP_OPEN_KEY } from '../accounts/sign-up.js';
 import { SSRF_ALLOW_PRIVATE_KEY } from '../ai/runtime.js';
 import { audited } from '../audit/audited.js';
+import { googleStatus } from '../auth/google.js';
 import { requireScope } from '../auth/http.js';
 import { oidcStatus } from '../auth/oidc.js';
 import { AdminOpsStatusShape, readOpsStatus } from '../backup/status.js';
@@ -146,6 +147,8 @@ const AdminStatus = z.object({
       error: z.string().nullable(),
     })
     .optional(),
+  /** 1.2 (D226): Google sign-in, and the redirect URI to register with Google. */
+  google: z.object({ configured: z.boolean(), callbackUrl: z.string().nullable() }).optional(),
   /** Step 6 (T14, D207): semantic search's index and its source (embeddings/status.ts). */
   embeddings: EmbeddingsStatusSchema.optional(),
 });
@@ -699,6 +702,7 @@ export async function adminRoutes(app: KeptApp, deps: AdminDeps): Promise<void> 
           version: deps.version,
           mail: { configured: deps.mailConfigured },
           oidc: oidcStatus(),
+          google: googleStatus(),
           connectors: connectorsStatus(env.KEPT_PUBLIC_URL),
         };
         try {

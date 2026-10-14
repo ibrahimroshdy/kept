@@ -19,7 +19,7 @@ import { useOpsStatus, useRecoveryKit } from '@/api/ops/queries';
 import { keys } from '@/api/queries';
 import type { AdminStatus } from '@/api/types';
 import { EmbeddingsSourceSection } from '@/components/admin/embeddings-source';
-import { ConnectorsStatus, OidcStatus } from '@/components/admin/oidc-status';
+import { ConnectorsStatus, GoogleStatus, OidcStatus } from '@/components/admin/oidc-status';
 import { KitDownloadButton } from '@/components/ops/kit-download';
 import { OpsNotices, OpsTiles, Tile } from '@/components/ops/status-tiles';
 import { ErrorState, LoadingRows, Notice, useErrorText } from '@/components/page';
@@ -238,6 +238,7 @@ function StatusPage() {
       {s.embeddings ? <EmbeddingsSourceSection embeddings={s.embeddings} /> : null}
       {s.connectors ? <ConnectorsStatus connectors={s.connectors} /> : null}
       {s.oidc ? <OidcStatus oidc={s.oidc} /> : null}
+      {s.google ? <GoogleStatus google={s.google} /> : null}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { PROVIDER_KINDS, type ProviderKind } from '@kept/shared';
 import type pg from 'pg';
 import { audited } from '../audit/audited.js';
 import { isUndeliverableEmail } from '../auth/emails.js';
+import type { GoogleConfig } from '../auth/google.js';
 import type { OidcConfig } from '../auth/oidc.js';
 import type { Pools } from '../db/pools.js';
 import { withSystem } from '../db/scope.js';
@@ -12,14 +13,16 @@ import type { SystemJobDeps } from '../jobs/system.js';
 import type { Mail, Mailer } from '../mail/mailer.js';
 
 // D180's configuration notices (step-6 plan T16, Q16, Q24): every active user is told when the
-// instance's OIDC sign-in, its outgoing mail, or its default AI provider changes.
+// instance's OIDC or Google sign-in (D226), its outgoing mail, or its default AI provider changes.
 //
 // - OIDC and SMTP are configured by the environment, so they can only change across a restart.
 //   At boot, checkConfigNotices() hashes each configuration (OIDC: issuer, client id, name, the
 //   autoprovision lists and the groups claim, the things that decide who gets in, never the client
-//   secret; SMTP: host and sender, never the password) and compares it with
-//   `instance_settings.oidc_config_hash` / `smtp_config_hash`. A different hash is stored, the
-//   change audited (`instance.oidc_changed`, `instance.smtp_changed`, as the system) and a
+//   secret; Google: its client id, never the secret; SMTP: host and sender, never the password)
+//   and compares it with
+//   `instance_settings.oidc_config_hash` / `google_config_hash` / `smtp_config_hash`. A different
+//   hash is stored, the change audited (`instance.oidc_changed`, `instance.google_changed`,
+//   `instance.smtp_changed`, as the system) and a
 //   `transparency-notice` job sent on the same transaction. Replicas booting together race on the
 //   row lock: one sends. The first boot with no stored hash only records it (an upgrade to step 6
 //   is not a change anyone made).
@@ -30,6 +33,7 @@ import type { Mail, Mailer } from '../mail/mailer.js';
 // worker's current transport, so an SMTP notice travels the new way.
 
 export const OIDC_CONFIG_HASH_KEY = 'oidc_config_hash';
+export const GOOGLE_CONFIG_HASH_KEY = 'google_config_hash';
 export const SMTP_CONFIG_HASH_KEY = 'smtp_config_hash';
 
 export const TRANSPARENCY_JOB = 'transparency-notice';
@@ -58,6 +62,15 @@ export function oidcFacts(cfg: OidcConfig | null): {
   };
 }
 
+/** What the Google hash covers (its client id, never the secret), and what the notice says. */
+export function googleFacts(cfg: GoogleConfig | null): {
+  hashed: unknown;
+  facts: { name: string | null };
+} {
+  if (!cfg) return { hashed: { off: true }, facts: { name: null } };
+  return { hashed: { clientId: cfg.clientId }, facts: { name: 'Google' } };
+}
+
 /** The SMTP host and sender from KEPT_SMTP_URL and KEPT_SMTP_FROM (never the password); null
  * when mail isn't configured. */
 export function smtpFacts(
@@ -82,6 +95,8 @@ export type ConfigNoticeDeps = {
   /** Sends a system job on the given transaction (jobs/boss.ts sendInTx). */
   send: Send;
   oidc: OidcConfig | null;
+  /** Absent: not checked (callers from before D226). */
+  google?: GoogleConfig | null;
   smtp: { host: string; sender: string } | null;
 };
 
@@ -135,6 +150,17 @@ export async function checkConfigNotices(deps: ConfigNoticeDeps): Promise<string
     oidc.facts,
   );
   if (o) out.push(o);
+  if (deps.google !== undefined) {
+    const google = googleFacts(deps.google);
+    const g = await checkOne(
+      deps,
+      GOOGLE_CONFIG_HASH_KEY,
+      configHash(google.hashed),
+      'instance.google_changed',
+      google.facts,
+    );
+    if (g) out.push(g);
+  }
   if (deps.smtp) {
     const s = await checkOne(
       deps,
@@ -165,7 +191,8 @@ export type Notice =
 
 export function noticeOf(action: string, diff: Diff): Notice | null {
   const after = (field: string) => diff[field]?.after;
-  if (action === 'instance.oidc_changed') {
+  // Google's says the same words with its name (D226); "off" when it was switched off.
+  if (action === 'instance.oidc_changed' || action === 'instance.google_changed') {
     const name = after('name');
     return { kind: 'oidc-changed', name: typeof name === 'string' ? name : null };
   }

@@ -82,6 +82,41 @@ describe('the boot check', () => {
     ).toEqual([]);
   });
 
+  it('Google sign-in (D226): a baseline, then a notice when it changes or goes, never the secret', async () => {
+    const g = (clientId: string) => ({ clientId, clientSecret: 'google-never-hashed' });
+    const withGoogle = (google: ReturnType<typeof g> | null) => ({
+      ...deps(sso('Home SSO')),
+      google,
+    });
+    expect(await checkConfigNotices(withGoogle(g('1.apps.googleusercontent.com')))).toEqual([]);
+    expect(await checkConfigNotices(withGoogle(g('1.apps.googleusercontent.com')))).toEqual([]);
+    const changed = await checkConfigNotices(withGoogle(g('2.apps.googleusercontent.com')));
+    const off = await checkConfigNotices(withGoogle(null));
+    const events = await ownerTx(
+      db,
+      async (c) =>
+        (
+          await c.query<{ action: string; diff: Record<string, { after?: unknown }> }>(
+            `SELECT action, diff FROM public.audit_events WHERE id = ANY($1) ORDER BY at`,
+            [[...changed, ...off]],
+          )
+        ).rows,
+    );
+    expect(events.map((e) => e.action)).toEqual([
+      'instance.google_changed',
+      'instance.google_changed',
+    ]);
+    expect(JSON.stringify(events)).not.toContain('google-never-hashed');
+    expect(noticeOf('instance.google_changed', events[0]?.diff ?? {})).toEqual({
+      kind: 'oidc-changed',
+      name: 'Google',
+    });
+    expect(noticeOf('instance.google_changed', events[1]?.diff ?? {})).toEqual({
+      kind: 'oidc-changed',
+      name: null,
+    });
+  });
+
   it('hashes what decides who gets in, never the client secret or the mail password', () => {
     const a = sso('Home SSO');
     expect(configHash(oidcFacts(a).hashed)).toBe(

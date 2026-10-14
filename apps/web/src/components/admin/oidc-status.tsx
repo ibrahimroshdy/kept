@@ -120,6 +120,49 @@ export function OidcStatus({ oidc }: { oidc: Oidc }) {
   );
 }
 
+/** Google sign-in (1.2, D226): on or not, and the redirect URI to register with Google. */
+export function GoogleStatus({ google }: { google: NonNullable<AdminStatus['google']> }) {
+  const { t } = useLingui();
+  return (
+    <Section title={<Trans>Sign-in with Google</Trans>}>
+      <List>
+        <Line label={<Trans>State</Trans>}>
+          {google.configured ? (
+            <Pill tone="ok">
+              <Trans>On</Trans>
+            </Pill>
+          ) : (
+            <span className="grid gap-1">
+              <Pill>
+                <Trans>Not configured</Trans>
+              </Pill>
+              <span className="text-small text-ink-2">
+                <Trans>
+                  Make an OAuth client in Google Cloud, set{' '}
+                  <code className="ltr whitespace-nowrap">KEPT_GOOGLE_CLIENT_ID</code> and{' '}
+                  <code className="ltr whitespace-nowrap">KEPT_GOOGLE_CLIENT_SECRET</code>, then
+                  restart Kept.
+                </Trans>
+              </span>
+            </span>
+          )}
+        </Line>
+        {google.callbackUrl ? (
+          <Line label={<Trans>Redirect URI to register with Google</Trans>}>
+            <UrlValue url={google.callbackUrl} copy={t`Copy`} />
+          </Line>
+        ) : null}
+      </List>
+      <p className="m-0 text-small text-ink-3">
+        <Trans>
+          Google sign-in reaches only an account already linked to it, or someone invited here.
+          Nobody gets in on their own.
+        </Trans>
+      </p>
+    </Section>
+  );
+}
+
 export function ConnectorsStatus({ connectors }: { connectors: Connectors }) {
   const { t } = useLingui();
   return (

@@ -16,7 +16,7 @@ import type { AcceptInviteBody, InvitePreview } from '@/api/types';
 import { AuthFrame } from '@/components/auth-frame';
 import { ClockIcon } from '@/components/icons';
 import { KindIcon } from '@/components/kind-icon';
-import { OidcSignInButton, useOidcName } from '@/components/oidc-sign-in';
+import { OidcSignInButton, useGoogleOn, useOidcName } from '@/components/oidc-sign-in';
 import { LinkButton, LoadingRows, Notice, Pill, useErrorText } from '@/components/page';
 import { Button } from '@/components/ui/button';
 import { PasswordField } from '@/components/ui/password-field';
@@ -103,8 +103,10 @@ function InviteBody({ token, invite }: { token: string; invite: InvitePreview })
   const role = roles.one[invite.role];
   const until = invite.membershipExpiresAt ? f.day(invite.membershipExpiresAt) : null;
   const signedIn = !!me.data;
-  // Step 6 (T22, D127): an invited person may join with the server's OIDC provider instead.
+  // Step 6 (T22, D127): an invited person may join with the server's OIDC provider instead, or
+  // with Google (1.2, D226).
   const oidcName = useOidcName();
+  const googleOn = useGoogleOn();
 
   const join = useMutation({
     mutationFn: async (body: AcceptInviteBody) => {
@@ -239,6 +241,15 @@ function InviteBody({ token, invite }: { token: string; invite: InvitePreview })
                   Join with <bdi>{oidcName}</bdi>
                 </Trans>
               }
+            />
+          ) : null}
+          {googleOn ? (
+            <OidcSignInButton
+              provider="google"
+              name="Google"
+              next={`/invite#${token}`}
+              inviteToken={token}
+              label={<Trans>Join with Google</Trans>}
             />
           ) : null}
           <LinkButton to="/signin" search={{ next: `/invite#${token}` }} variant="secondary">
