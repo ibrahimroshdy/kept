@@ -38,6 +38,7 @@ import { placeRoutes } from '../places/routes.js';
 import { purchaseRoutes } from '../purchases/routes.js';
 import { registryRoutes } from '../registries/routes.js';
 import { reportRoutes } from '../reports/routes.js';
+import { reportScheduleRoutes } from '../reports/schedules.js';
 import { scanRoutes } from '../scan/routes.js';
 import { scheduleRoutes } from '../schedules/routes.js';
 import { searchRoutes } from '../search/routes.js';
@@ -116,6 +117,7 @@ export const INVENTORY_ROUTE_MODULES = [
   homeRoutes,
   // T32 (D201): the inventory report.
   reportRoutes,
+  reportScheduleRoutes,
   // Step 3 (T2): capture, offline sync, AI, review, labels and scan, import, templates, undo.
   syncRoutes,
   captureRoutes,

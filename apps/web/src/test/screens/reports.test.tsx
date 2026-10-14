@@ -6,6 +6,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { INV_IDS } from '@/api/inventory/mock/fixtures';
+import { reportSchedulesOf } from '@/api/inventory/mock/reports';
 import { inventoryPaths as p } from '@/api/inventory/paths';
 import type { ReportRun } from '@/api/inventory/types';
 import { IDS, type MockState, ownerScenario } from '@/api/mock/fixtures';
@@ -177,5 +178,58 @@ describe('Print inventory (D201)', () => {
     await user.click(await screen.findByRole('button', { name: 'اطبع الجرد' }));
     await screen.findByRole('dialog', { name: 'اطبع الجرد' });
     expectLogicalOnly();
+  });
+});
+
+describe('Emailed and scheduled reports (D228)', () => {
+  it('emails the PDF too, and keeps a monthly schedule of the location', async () => {
+    const { user, mock } = await renderApp(`/loc/${IDS.home}`);
+    await findHeading('Home');
+    const dialog = await openSheet(user);
+    await user.click(within(dialog).getByRole('switch', { name: 'Email it to me' }));
+    await user.click(within(dialog).getByRole('radio', { name: 'Every month' }));
+    expect(within(dialog).getByText(/Stop it in Settings/)).toBeInTheDocument();
+    await user.click(within(dialog).getByRole('button', { name: 'Make the PDF' }));
+    await waitFor(() =>
+      expect(mock.lastCall('PUT', p.reportSchedules)?.body).toEqual({
+        locationId: IDS.home,
+        kind: 'inventory',
+        cadence: 'monthly',
+      }),
+    );
+    expect(mock.lastCall('POST', p.reportsInventory)?.body).toMatchObject({ email: true });
+    expect(
+      await within(dialog).findByText("It's also on its way to your email."),
+    ).toBeInTheDocument();
+  });
+
+  it('lists a schedule in Settings → Me → Notifications, and stops it after a confirm', async () => {
+    const state = ownerScenario();
+    reportSchedulesOf(state).push({
+      id: '01926f00-0000-7000-8000-00000000e301',
+      locationId: IDS.home,
+      locationName: 'Home',
+      kind: 'inventory',
+      cadence: 'weekly',
+      lastRunOn: '2026-10-12',
+      lastError: 'rate_limited',
+    });
+    const { user, mock } = await renderApp('/settings/me/notifications', { state });
+    const section = (await screen.findByRole('heading', { name: 'Scheduled reports' })).closest(
+      'section',
+    ) as HTMLElement;
+    expect(section).toHaveTextContent('Inventory of Home');
+    expect(section).toHaveTextContent('Every Monday');
+    expect(section).toHaveTextContent("Skipped: you'd made five reports that hour.");
+    await user.click(within(section).getByRole('button', { name: 'Stop' }));
+    await user.click(
+      within(await screen.findByRole('alertdialog')).getByRole('button', { name: 'Stop' }),
+    );
+    await waitFor(() =>
+      expect(screen.queryByRole('heading', { name: 'Scheduled reports' })).toBeNull(),
+    );
+    expect(
+      mock.lastCall('DELETE', p.reportSchedule('01926f00-0000-7000-8000-00000000e301')),
+    ).toBeDefined();
   });
 });

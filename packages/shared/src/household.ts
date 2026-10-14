@@ -80,6 +80,15 @@ export type ServiceLineKind = (typeof SERVICE_LINE_KINDS)[number];
 export const REPORT_KINDS = ['inventory', 'insurance', 'vehicle_history'] as const;
 export type ReportKind = (typeof REPORT_KINDS)[number];
 
+/** 1.3 (D228): the reports a person can have mailed on a schedule, per location. */
+export const SCHEDULED_REPORT_KINDS = ['inventory', 'insurance'] as const;
+export type ScheduledReportKind = (typeof SCHEDULED_REPORT_KINDS)[number];
+/** How often: weekly on Monday, monthly on the 1st, from 08:00 in the location's time zone. */
+export const REPORT_CADENCES = ['weekly', 'monthly'] as const;
+export type ReportCadence = (typeof REPORT_CADENCES)[number];
+/** A PDF larger than this is not attached; the mail says to print it from Kept instead. */
+export const REPORT_MAIL_MAX_BYTES = 10 * 1024 * 1024;
+
 /** `export_runs.kind` (§1.10, D158): step 4's claim pack, and step 7's Kept export of one
  * location (`location`) or of the requester's Personal location with their own data (`me`, plan
  * Q14). The API's `scope` (portability.ts EXPORT_SCOPES) is the last two. */

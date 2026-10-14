@@ -235,6 +235,23 @@ export const FR: CoreTable = {
         'Si vous n’avez rien demandé, connectez-vous maintenant, choisissez « Garder mon compte » et changez votre mot de passe.',
     };
   },
+  'report-ready': (m) => {
+    const name = {
+      inventory: 'Inventaire',
+      insurance: 'Rapport pour l’assurance',
+      vehicle_history: 'Historique du véhicule',
+    }[m.report];
+    return {
+      subject: m.place ? `${name} : ${m.place}` : name,
+      paragraphs: [
+        m.attached
+          ? 'Kept a préparé le rapport demandé. Il est joint en PDF.'
+          : 'Kept a préparé le rapport demandé, mais il est trop volumineux pour être joint. Imprimez-le à nouveau depuis Kept pour le télécharger.',
+      ],
+      footnote:
+        'Les rapports programmés sont dans Paramètres → Moi → Notifications, où vous pouvez les arrêter.',
+    };
+  },
   invite: (m) => ({
     subject: m.inviterName
       ? `${m.inviterName} vous invite à rejoindre « ${m.locationName} » sur Kept`

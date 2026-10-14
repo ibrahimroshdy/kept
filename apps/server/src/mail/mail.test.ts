@@ -68,6 +68,7 @@ const EVERY_MAIL: MailBody[] = [
     purgeAfter: '2026-11-13T09:00:00.000Z',
     timezone: 'Africa/Cairo',
   },
+  { kind: 'report-ready', to: 'a@x.test', report: 'inventory', place: 'Home', attached: true },
   ...(['admin', 'member', 'viewer'] as const).flatMap((role) =>
     ['Alfred', ''].map(
       (inviterName): MailBody => ({
@@ -332,6 +333,7 @@ describe('the message table', () => {
         'email-change-verify',
         'email-changed',
         'account-deletion',
+        'report-ready',
         'invite',
         'magic-link',
         'owner-new-member',

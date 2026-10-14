@@ -9,8 +9,10 @@ import { fixture, type TestFiles, testFiles, upload } from '../../test/files.js'
 import { call, join, type Person, peopleApp, person, type RecordedJob } from '../../test/people.js';
 import { createLocation, type Loc, ok, own, place, setDisplayName } from '../../test/things.js';
 import { runJob } from '../jobs/boss.js';
+import type { Mail } from '../mail/mailer.js';
 import { reportKey } from '../storage/blob-store.js';
 import { reportJobs } from './jobs.js';
+import { runReportSchedules } from './schedules.js';
 import { purgeExpiredReports, RATE_LIMIT } from './service.js';
 
 // T32 (D201): the inventory report, end to end through the front door. Each report is rendered
@@ -57,9 +59,11 @@ const log = {
   info: (obj: object, msg: string) => logs.push({ obj, msg }),
   error: (obj: object, msg: string) => logs.push({ obj, msg }),
 };
+/** Mails the report job sent (1.3, D228). */
+const mailed: Mail[] = [];
 const jobDeps = () => ({
   pools: db.pools,
-  mailer: { send: async () => {} },
+  mailer: { send: async (m: Mail) => void mailed.push(m) },
   publicUrl: 'https://kept.example',
   log,
   files,
@@ -541,5 +545,129 @@ describe('the report job and GET /api/v1/reports/:id', () => {
         garage.id,
       ]);
     }
+  });
+});
+
+describe('emailed and scheduled reports (D228)', () => {
+  const verify = (p: Person) =>
+    db.pools.auth.query('UPDATE auth."user" SET email_verified = true WHERE id = $1', [p.userId]);
+  const accountAudit = (p: Person) =>
+    own(
+      db,
+      `SELECT e.action FROM public.audit_events e
+         JOIN public.owner_accounts oa ON oa.id = e.owner_account_id
+        WHERE oa.user_id = $1 AND e.location_id IS NULL ORDER BY e.at, e.id`,
+      [p.userId],
+    ) as Promise<Array<{ action: string }>>;
+  const schedules = (as: Person) => call(t, '/api/v1/me/report-schedules', { as });
+  const tenantJobs: Array<{ name: string; data: object }> = [];
+  const scanDeps = () => ({
+    pools: db.pools,
+    log,
+    sendTenant: async (_c: unknown, name: string, data: object) =>
+      void tenantJobs.push({ name, data }),
+  });
+
+  it('mails the PDF to the requester when asked, attached', async () => {
+    mailed.length = 0;
+    await verify(ann);
+    const { id } = ok(await request(ann, { scope: { locationId: home.id }, email: true }), 202);
+    await work(ann, id);
+    expect((await runOf(ann, id)).status).toBe('done');
+    const mail = mailed.find((m) => m.kind === 'report-ready');
+    expect(mail).toMatchObject({
+      kind: 'report-ready',
+      to: ann.email,
+      report: 'inventory',
+      place: 'Home',
+      attached: true,
+    });
+    const pdf = mail?.attachments?.[0];
+    expect(pdf?.contentType).toBe('application/pdf');
+    expect(pdf?.filename).toMatch(/^kept-inventory-\d{4}-\d{2}-\d{2}\.pdf$/);
+    expect(pdf?.content.subarray(0, 5).toString()).toBe('%PDF-');
+  });
+
+  it('mails nothing when not asked, or to an unverified address', async () => {
+    mailed.length = 0;
+    const { id } = ok(await request(bob, { scope: { locationId: home.id }, email: true }), 202);
+    await work(bob, id);
+    const plain = ok(await request(ann, { scope: { locationId: home.id } }), 202);
+    await work(ann, plain.id);
+    expect(mailed.filter((m) => m.kind === 'report-ready')).toEqual([]);
+  });
+
+  // catalogue: PUT /api/v1/me/report-schedules
+  it('keeps one schedule per location and report, audited; a viewer gets no insurance one', async () => {
+    const put = (as: Person, body: object) =>
+      call(t, '/api/v1/me/report-schedules', { as, method: 'PUT', body });
+    const made = ok(await put(ann, { locationId: home.id, kind: 'inventory', cadence: 'weekly' }));
+    expect(made).toMatchObject({ locationName: 'Home', kind: 'inventory', cadence: 'weekly' });
+    const again = ok(
+      await put(ann, { locationId: home.id, kind: 'inventory', cadence: 'monthly' }),
+    );
+    expect(again).toMatchObject({ id: made.id, cadence: 'monthly' });
+    expect(
+      (ok(await schedules(ann)) as unknown as { schedules: unknown[] }).schedules,
+    ).toHaveLength(1);
+    expect(
+      (await accountAudit(ann)).map((e) => e.action).filter((a) => a.startsWith('report.')),
+    ).toEqual(['report.schedule', 'report.schedule']);
+    expect(
+      (await put(vic, { locationId: home.id, kind: 'insurance', cadence: 'weekly' })).statusCode,
+    ).toBe(403);
+    expect(
+      (await put(eve, { locationId: home.id, kind: 'inventory', cadence: 'weekly' })).statusCode,
+    ).toBe(404);
+  });
+
+  // catalogue: DELETE /api/v1/me/report-schedules/:id
+  it('removes a schedule, audited; someone else’s is a 404', async () => {
+    const made = ok(
+      await call(t, '/api/v1/me/report-schedules', {
+        as: ann,
+        method: 'PUT',
+        body: { locationId: home.id, kind: 'inventory', cadence: 'weekly' },
+      }),
+    );
+    const del = (as: Person) =>
+      call(t, `/api/v1/me/report-schedules/${made.id}`, { as, method: 'DELETE' });
+    expect((await del(bob)).statusCode).toBe(404);
+    expect((await del(ann)).statusCode).toBe(204);
+    expect((await accountAudit(ann)).map((e) => e.action)).toContain('report.unschedule');
+  });
+
+  it('requests a due run as its owner, emailed, once that local day; refusals are kept', async () => {
+    tenantJobs.length = 0;
+    await call(t, '/api/v1/me/report-schedules', {
+      as: ann,
+      method: 'PUT',
+      body: { locationId: home.id, kind: 'inventory', cadence: 'weekly' },
+    });
+    const monday = new Date('2026-10-19T12:00:00Z');
+    const tuesday = new Date('2026-10-20T12:00:00Z');
+    expect(await runReportSchedules(scanDeps(), tuesday)).toEqual({ requested: 0, refused: 0 });
+    expect(await runReportSchedules(scanDeps(), monday)).toEqual({ requested: 1, refused: 0 });
+    expect(tenantJobs.map((j) => j.name)).toEqual(['report']);
+    const [run] = (await own(
+      db,
+      `SELECT user_id, location_id, email_when_done FROM public.report_runs
+        WHERE user_id = $1 ORDER BY created_at DESC LIMIT 1`,
+      [ann.userId],
+    )) as Array<{ user_id: string; location_id: string; email_when_done: boolean }>;
+    expect(run).toEqual({ user_id: ann.userId, location_id: home.id, email_when_done: true });
+    // Once that day.
+    expect(await runReportSchedules(scanDeps(), monday)).toEqual({ requested: 0, refused: 0 });
+
+    // The next Monday, past the 5-an-hour limit (the scheduled run is one of them): refused,
+    // kept as last_error.
+    for (let i = 0; i < RATE_LIMIT - 1; i++)
+      ok(await request(ann, { scope: { locationId: home.id } }), 202);
+    const next = new Date('2026-10-26T12:00:00Z');
+    expect(await runReportSchedules(scanDeps(), next)).toEqual({ requested: 0, refused: 1 });
+    const listed = (
+      ok(await schedules(ann)) as unknown as { schedules: Array<{ lastError: string | null }> }
+    ).schedules[0];
+    expect(listed?.lastError).toBe('rate_limited');
   });
 });

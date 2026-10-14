@@ -21539,3 +21539,91 @@ msgstr "اختياري، للتمييز بينها."
 #: src/components/notifications/settings/channels.tsx
 msgid "Kept keeps these settings encrypted and never shows them again."
 msgstr "يحفظ Kept هذه الإعدادات مشفّرة ولا يعرضها مرة أخرى."
+
+#: src/components/reports/print-sheet.tsx
+msgid "It's also on its way to your email."
+msgstr "وهو في طريقه إلى بريدك الإلكتروني أيضًا."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Kept emails this location's inventory every Monday morning."
+msgstr "يرسل Kept جرد هذا الموقع بالبريد كل صباح اثنين."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Kept emails this location's inventory on the 1st of every month."
+msgstr "يرسل Kept جرد هذا الموقع بالبريد في اليوم الأول من كل شهر."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Email it to me"
+msgstr "أرسله إلى بريدي"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Send it again"
+msgstr "أرسله مجددًا"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Never"
+msgstr "أبدًا"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Every week"
+msgstr "كل أسبوع"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Every month"
+msgstr "كل شهر"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Emailed to you: the whole location, with photos, as it is that day. Stop it in Settings → Me → Notifications."
+msgstr "يُرسل إلى بريدك: الموقع كله، بالصور، كما هو في ذلك اليوم. أوقفه من الإعدادات ← أنا ← الإشعارات."
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Skipped: you'd made five reports that hour."
+msgstr "تخطّاه: كنت قد أعددت خمسة تقارير في تلك الساعة."
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Skipped: that part of Kept is off in this location."
+msgstr "تخطّاه: هذا الجزء من Kept متوقف في هذا الموقع."
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Skipped: you can't make this report there any more."
+msgstr "تخطّاه: لم يعد بإمكانك إعداد هذا التقرير هناك."
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Stop this report?"
+msgstr "إيقاف هذا التقرير؟"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Kept stops emailing it. You can print it any time."
+msgstr "يتوقف Kept عن إرساله بالبريد. يمكنك طباعته في أي وقت."
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Stop"
+msgstr "إيقاف"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Couldn't stop it"
+msgstr "تعذّر إيقافه"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Scheduled reports"
+msgstr "التقارير المجدولة"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Inventory of <0>{name}</0>"
+msgstr "جرد <0>{name}</0>"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Insurance report of <0>{name}</0>"
+msgstr "تقرير التأمين لـ<0>{name}</0>"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Every Monday"
+msgstr "كل اثنين"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "On the 1st of every month"
+msgstr "في اليوم الأول من كل شهر"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Last sent {0}"
+msgstr "آخر إرسال {0}"

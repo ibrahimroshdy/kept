@@ -65,6 +65,8 @@ export const JOB_POLICIES = {
   report: { retryLimit: 0, retryDelay: 0, retryBackoff: false, expireInSeconds: 180 },
   // Hourly: reports past their 24 hours, and their files.
   'purge-reports': { ...MAINTENANCE, expireInSeconds: 600 },
+  // 1.3 (D228): hourly, the scheduled reports due; each run is its own `report` job.
+  'report-schedules': { ...MAINTENANCE, expireInSeconds: 600 },
   // Step 3, alpha safety (T31c; §3.1b "backup: 2 attempts, 4 h"): the nightly backup. One retry
   // after 15 minutes (a target briefly away); each attempt is audited and recorded.
   backup: { retryLimit: 1, retryDelay: 900, retryBackoff: false, expireInSeconds: 14_400 },

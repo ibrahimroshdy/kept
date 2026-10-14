@@ -33,7 +33,8 @@ const SYSTEM_TABLES = [
 /** Tables the reminder jobs write across tenants (0055, step-4 T7): the ledger, the centre's
  * rows, and the channels, devices and preferences they send by; and the webhook jobs' (0078,
  * step-6 T7): the hooks they send to (read, and marked failing) and the deliveries they record;
- * and the worker's boot guard's (0091, step-8 T8): the release history it reads and stamps.
+ * and the worker's boot guard's (0091, step-8 T8): the release history it reads and stamps; and
+ * the `report-schedules` job's (1.3, D228): the schedules it reads and marks as run.
  * Each kept_system policy names its job in a comment. */
 const SYSTEM_JOB_TABLES = [
   'notification_channels',
@@ -43,6 +44,7 @@ const SYSTEM_JOB_TABLES = [
   'push_subscriptions',
   'release_history',
   'reminder_deliveries',
+  'report_schedules',
   'reminder_occurrences',
   'webhook_deliveries',
   'webhooks',

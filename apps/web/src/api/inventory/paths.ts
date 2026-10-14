@@ -130,6 +130,9 @@ export const inventoryPaths = {
   reportsInventory: `${V1}/reports/inventory`,
   /** GET: the run's status, progress and, once done, a five-minute `fileUrl`. */
   report: (id: string) => `${V1}/reports/${seg(id)}`,
+  /** 1.3 (D228): GET the person's scheduled reports, PUT one `{locationId, kind, cadence}`. */
+  reportSchedules: `${V1}/me/report-schedules`,
+  reportSchedule: (id: string) => `${V1}/me/report-schedules/${seg(id)}`,
 } as const;
 
 type Method = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
@@ -223,6 +226,8 @@ export const METHODS: Record<keyof typeof inventoryPaths, readonly Method[]> = {
   hint: ['PUT'],
   reportsInventory: ['POST'],
   report: ['GET'],
+  reportSchedules: ['GET', 'PUT'],
+  reportSchedule: ['DELETE'],
 };
 
 /**

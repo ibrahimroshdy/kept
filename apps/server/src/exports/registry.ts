@@ -537,6 +537,7 @@ export const NOT_EXPORTED: Readonly<Record<string, string>> = Object.freeze({
   thing_embeddings: 'derived: the semantic search index',
   export_runs: "this server's bookkeeping",
   report_runs: "this server's bookkeeping",
+  report_schedules: "each member's own scheduled reports on this server",
   import_runs: "this server's bookkeeping",
   import_source_ids: "this server's bookkeeping",
   extractions: 'derived from the attachments by AI',

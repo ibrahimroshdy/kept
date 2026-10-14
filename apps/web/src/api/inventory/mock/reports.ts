@@ -7,7 +7,7 @@
 import type { MockState } from '../../mock/fixtures';
 import { err, type MockRoute, notFound, reply, route, sessionGate } from '../../mock/kit';
 import { inventoryPaths as p } from '../paths';
-import type { InventoryReportBody, ReportRun } from '../types';
+import type { InventoryReportBody, ReportRun, ReportSchedule } from '../types';
 import { accessOf, newId, type StoredThing } from './db';
 
 const RATE_LIMIT = 5;
@@ -24,6 +24,16 @@ const BLANK_PDF = `data:application/pdf;base64,${btoa(
 
 type StoredRun = ReportRun & { userId: string };
 const RUNS = new WeakMap<MockState, Map<string, StoredRun>>();
+/** 1.3 (D228): scheduled reports, and the runs asked to be mailed. */
+const SCHEDULES = new WeakMap<MockState, ReportSchedule[]>();
+export function reportSchedulesOf(state: MockState): ReportSchedule[] {
+  let s = SCHEDULES.get(state);
+  if (!s) {
+    s = [];
+    SCHEDULES.set(state, s);
+  }
+  return s;
+}
 
 function runsOf(state: MockState): Map<string, StoredRun> {
   let map = RUNS.get(state);
@@ -145,6 +155,42 @@ export function reportsRoutes(state: MockState): MockRoute[] {
       }
       const { userId: _u, ...view } = run;
       return run.status === 'done' ? { ...view, fileUrl: BLANK_PDF, viewUrl: BLANK_PDF } : view;
+    }),
+
+    route('GET', p.reportSchedules, () => {
+      const gate = sessionGate(state);
+      return gate ?? { schedules: reportSchedulesOf(state) };
+    }),
+    route('PUT', p.reportSchedules, ({ body }) => {
+      const gate = sessionGate(state);
+      if (gate) return gate;
+      const b = body as Pick<ReportSchedule, 'locationId' | 'kind' | 'cadence'>;
+      const loc = state.locations.find((l) => l.id === b.locationId);
+      if (!loc) return notFound();
+      const all = reportSchedulesOf(state);
+      const had = all.find((s) => s.locationId === b.locationId && s.kind === b.kind);
+      if (had) {
+        had.cadence = b.cadence;
+        return had;
+      }
+      const made: ReportSchedule = {
+        id: newId(),
+        locationId: b.locationId,
+        locationName: loc.name,
+        kind: b.kind,
+        cadence: b.cadence,
+        lastRunOn: null,
+        lastError: null,
+      };
+      all.push(made);
+      return made;
+    }),
+    route('DELETE', p.reportSchedule(':id'), ({ params }) => {
+      const all = reportSchedulesOf(state);
+      const i = all.findIndex((s) => s.id === params.id);
+      if (i < 0) return notFound();
+      all.splice(i, 1);
+      return reply(204);
     }),
   ];
 }

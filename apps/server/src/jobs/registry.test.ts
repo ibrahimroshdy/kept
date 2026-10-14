@@ -166,6 +166,7 @@ describe('policies and schedules', () => {
       // Step 4 (Q35): last month's AI summary, early on the 1st (UTC, as the ledger's months).
       'ai-summary': '20 0 1 * *',
       'purge-reports': '41 * * * *',
+      'report-schedules': '27 * * * *',
       'reminder-scan': '*/15 * * * *',
       'reminder-digest': '*/15 * * * *',
       'purge-exports': '23 * * * *',

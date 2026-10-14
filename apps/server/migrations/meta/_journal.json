@@ -820,6 +820,20 @@
       "when": 1791945233472,
       "tag": "0116_relay_channel_caps",
       "breakpoints": true
+    },
+    {
+      "idx": 117,
+      "version": "7",
+      "when": 1791945292284,
+      "tag": "0117_report_schedules",
+      "breakpoints": true
+    },
+    {
+      "idx": 118,
+      "version": "7",
+      "when": 1791945294083,
+      "tag": "0118_report_schedules_rls",
+      "breakpoints": true
     }
   ]
 }

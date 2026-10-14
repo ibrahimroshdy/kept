@@ -1,6 +1,18 @@
-import { REPORT_KINDS } from '@kept/shared';
+import { REPORT_CADENCES, REPORT_KINDS, SCHEDULED_REPORT_KINDS } from '@kept/shared';
 import { sql } from 'drizzle-orm';
-import { bigint, check, index, integer, jsonb, pgTable, text, uuid } from 'drizzle-orm/pg-core';
+import {
+  bigint,
+  boolean,
+  check,
+  date,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  uniqueIndex,
+  uuid,
+} from 'drizzle-orm/pg-core';
 import { user } from './auth.js';
 import { id, textEnum, tstz } from './common.js';
 import { locations, ownerAccounts } from './tenancy.js';
@@ -48,6 +60,8 @@ export const reportRuns = pgTable(
     startedAt: tstz('started_at'),
     finishedAt: tstz('finished_at'),
     expiresAt: tstz('expires_at').notNull().default(sql`now() + interval '24 hours'`),
+    /** 1.3 (D228): mail the PDF to the requester when it is done (asked for, or a schedule's). */
+    emailWhenDone: boolean('email_when_done').notNull().default(false),
   },
   (t) => [
     status.check('report_runs'),
@@ -73,5 +87,41 @@ export const reportRuns = pgTable(
     // The per-user rate limit counts the last hour's runs; the purge walks the expired ones.
     index('report_runs_user_idx').on(t.userId, t.createdAt),
     index('report_runs_expires_idx').on(t.expiresAt),
+  ],
+);
+
+const scheduledKind = textEnum('kind', SCHEDULED_REPORT_KINDS);
+const cadence = textEnum('cadence', REPORT_CADENCES);
+
+/**
+ * 1.3 (D228): a report mailed to a person on a schedule, for one location: weekly (Mondays) or
+ * monthly (the 1st), from 08:00 in the location's time zone. The hourly `report-schedules` job
+ * (kept_system) finds the due ones and requests each run in its owner's scope, so the person's
+ * own rights and the 5-an-hour limit apply; `last_run_on` is the location's local day it last ran,
+ * `last_error` why that run couldn't be requested (no access, the module off, the limit). A
+ * person's own, for a location they can see; row-level security is in the custom migration.
+ */
+export const reportSchedules = pgTable(
+  'report_schedules',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    locationId: uuid('location_id')
+      .notNull()
+      .references(() => locations.id, { onDelete: 'cascade' }),
+    kind: scheduledKind.col().notNull(),
+    cadence: cadence.col().notNull(),
+    lastRunOn: date('last_run_on'),
+    lastError: text('last_error'),
+    createdAt: tstz('created_at').notNull().defaultNow(),
+  },
+  (t) => [
+    scheduledKind.check('report_schedules'),
+    cadence.check('report_schedules'),
+    check('report_schedules_error_chk', sql`last_error ~ '^[a-z_]{1,32}$'`),
+    uniqueIndex('report_schedules_uq').on(t.userId, t.locationId, t.kind),
+    index('report_schedules_location_idx').on(t.locationId),
   ],
 );

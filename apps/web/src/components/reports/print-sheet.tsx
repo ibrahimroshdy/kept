@@ -7,13 +7,17 @@
  *
  * Anyone who can see a location may make one, viewers too; what money it shows is the server's
  * decision (the same gates as the app). Offline the button is disabled and says why (screens §3).
+ *
+ * 1.3 (D228): "Email it to me" also mails the PDF when it's done, and for a location "Send it
+ * again" keeps a weekly or monthly schedule of the whole location (Settings → Me → Notifications
+ * lists and stops them).
  */
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, useSyncExternalStore } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 import { isApiError } from '@/api/client';
-import { reportsApi } from '@/api/inventory/reports';
+import { reportKeys, reportsApi } from '@/api/inventory/reports';
 import type { InventoryReportBody, ReportScope } from '@/api/inventory/types';
 import { FieldEditor } from '@/components/filters/panel';
 import { useFilterRegistry } from '@/components/filters/registry';
@@ -24,6 +28,7 @@ import { Notice, useErrorText } from '@/components/page';
 import { Sheet } from '@/components/places/sheet';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
+import { Segmented } from '@/components/ui/segmented';
 import { Switch } from '@/components/ui/switch';
 import type { ListState } from '@/lib/url-state';
 import { ReportProgress } from './progress';
@@ -107,7 +112,11 @@ function PrintForm({
   const [includeEnded, setIncludeEnded] = useState(false);
   const [includeTrashed, setIncludeTrashed] = useState(false);
   const [qr, setQr] = useState(false);
+  const [email, setEmail] = useState(false);
+  const [repeat, setRepeat] = useState<'never' | 'weekly' | 'monthly'>('never');
   const [runId, setRunId] = useState<string | null>(null);
+  const qc = useQueryClient();
+  const locationId = 'locationId' in scope ? scope.locationId : null;
 
   const chosen = (key: string) => list.filters[key] ?? [];
   const body = (): InventoryReportBody => {
@@ -125,10 +134,17 @@ function PrintForm({
         includeTrashed,
       },
       include: { qr },
+      ...(email ? { email: true } : {}),
     };
   };
   const start = useMutation({
-    mutationFn: (b: InventoryReportBody) => reportsApi.start(b),
+    mutationFn: async (b: InventoryReportBody) => {
+      if (locationId && repeat !== 'never') {
+        await reportsApi.schedule({ locationId, kind: 'inventory', cadence: repeat });
+        await qc.invalidateQueries({ queryKey: reportKeys.schedules });
+      }
+      return reportsApi.start(b);
+    },
     onSuccess: ({ id }) => setRunId(id),
   });
   const startError = (e: unknown) =>
@@ -148,6 +164,20 @@ function PrintForm({
           }}
         />
         {start.error ? <Notice tone="danger">{startError(start.error)}</Notice> : null}
+        {email ? (
+          <p className="m-0 text-small text-ink-2">
+            <Trans>It's also on its way to your email.</Trans>
+          </p>
+        ) : null}
+        {repeat !== 'never' ? (
+          <p className="m-0 text-small text-ink-2">
+            {repeat === 'weekly' ? (
+              <Trans>Kept emails this location's inventory every Monday morning.</Trans>
+            ) : (
+              <Trans>Kept emails this location's inventory on the 1st of every month.</Trans>
+            )}
+          </p>
+        ) : null}
         <DialogFooter>
           <Button variant="secondary" onPress={onClose}>
             <Trans>Close</Trans>
@@ -217,7 +247,32 @@ function PrintForm({
         <Switch isSelected={qr} onChange={setQr}>
           <Trans>QR codes</Trans>
         </Switch>
+        <Switch isSelected={email} onChange={setEmail}>
+          <Trans>Email it to me</Trans>
+        </Switch>
       </div>
+      {locationId ? (
+        <div className="grid gap-1.5">
+          <Segmented<'never' | 'weekly' | 'monthly'>
+            label={t`Send it again`}
+            value={repeat}
+            onChange={setRepeat}
+            options={[
+              { id: 'never', label: t`Never` },
+              { id: 'weekly', label: t`Every week` },
+              { id: 'monthly', label: t`Every month` },
+            ]}
+          />
+          {repeat !== 'never' ? (
+            <p className="m-0 text-small text-ink-3">
+              <Trans>
+                Emailed to you: the whole location, with photos, as it is that day. Stop it in
+                Settings → Me → Notifications.
+              </Trans>
+            </p>
+          ) : null}
+        </div>
+      ) : null}
       {start.error ? <Notice tone="danger">{startError(start.error)}</Notice> : null}
       <DialogFooter>
         <Button variant="secondary" onPress={onClose}>

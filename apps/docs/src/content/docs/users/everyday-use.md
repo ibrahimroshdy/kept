@@ -156,7 +156,10 @@ doesn't use Kept, print it (below).
 
 - **Print inventory** on a location makes a PDF of its things grouped by place, with photos and
   short IDs, optionally QR codes, ended things and the Trash. Prices appear only for people who can
-  see money. Anyone who can see the location can make one.
+  see money. Anyone who can see the location can make one. **Email it to me** also mails the PDF
+  when it's ready, and **Send it again** mails the whole location every Monday or on the 1st of the
+  month; Settings → Me → Notifications lists these and stops them. A report over 10 MB isn't
+  attached: print it from Kept instead.
 - **Insurance report** (where you can see money): every thing with its photo, brand, model,
   serial, purchase date, price, current value and receipts, with totals per place and per currency,
   as a PDF and a CSV. **Also total in** adds one converted total when your exchange rates cover

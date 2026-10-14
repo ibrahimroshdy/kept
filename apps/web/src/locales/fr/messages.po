@@ -21539,3 +21539,91 @@ msgstr "Facultatif, pour les distinguer."
 #: src/components/notifications/settings/channels.tsx
 msgid "Kept keeps these settings encrypted and never shows them again."
 msgstr "Kept garde ces réglages chiffrés et ne les montre plus jamais."
+
+#: src/components/reports/print-sheet.tsx
+msgid "It's also on its way to your email."
+msgstr "Il part aussi vers votre e-mail."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Kept emails this location's inventory every Monday morning."
+msgstr "Kept vous envoie l’inventaire de ce lieu chaque lundi matin."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Kept emails this location's inventory on the 1st of every month."
+msgstr "Kept vous envoie l’inventaire de ce lieu le 1er de chaque mois."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Email it to me"
+msgstr "Me l’envoyer par e-mail"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Send it again"
+msgstr "Le renvoyer"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Never"
+msgstr "Jamais"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Every week"
+msgstr "Chaque semaine"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Every month"
+msgstr "Chaque mois"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Emailed to you: the whole location, with photos, as it is that day. Stop it in Settings → Me → Notifications."
+msgstr "Envoyé par e-mail : tout le lieu, avec les photos, tel qu’il est ce jour-là. Arrêtez-le dans Paramètres → Moi → Notifications."
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Skipped: you'd made five reports that hour."
+msgstr "Ignoré : vous aviez déjà fait cinq rapports dans l’heure."
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Skipped: that part of Kept is off in this location."
+msgstr "Ignoré : cette partie de Kept est désactivée dans ce lieu."
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Skipped: you can't make this report there any more."
+msgstr "Ignoré : vous ne pouvez plus faire ce rapport là-bas."
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Stop this report?"
+msgstr "Arrêter ce rapport ?"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Kept stops emailing it. You can print it any time."
+msgstr "Kept cesse de l’envoyer. Vous pouvez l’imprimer quand vous voulez."
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Stop"
+msgstr "Arrêter"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Couldn't stop it"
+msgstr "Impossible de l’arrêter"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Scheduled reports"
+msgstr "Rapports programmés"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Inventory of <0>{name}</0>"
+msgstr "Inventaire de <0>{name}</0>"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Insurance report of <0>{name}</0>"
+msgstr "Rapport pour l’assurance de <0>{name}</0>"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Every Monday"
+msgstr "Chaque lundi"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "On the 1st of every month"
+msgstr "Le 1er de chaque mois"
+
+#: src/components/notifications/settings/scheduled-reports.tsx
+msgid "Last sent {0}"
+msgstr "Dernier envoi {0}"

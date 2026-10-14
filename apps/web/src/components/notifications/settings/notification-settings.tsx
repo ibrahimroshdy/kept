@@ -19,6 +19,7 @@ import { useOnline } from '@/lib/online';
 import { CalendarFeeds } from './calendar';
 import { Channels } from './channels';
 import { KindsByLocation } from './kinds';
+import { ScheduledReports } from './scheduled-reports';
 
 export function NotificationSettings() {
   const settings = useNotificationSettings();
@@ -45,6 +46,7 @@ export function NotificationSettings() {
       <Section title={<Trans>Calendar feed</Trans>}>
         <CalendarFeeds />
       </Section>
+      <ScheduledReports />
       <Section title={<Trans>Account</Trans>}>
         <AiSummary settings={s} />
       </Section>

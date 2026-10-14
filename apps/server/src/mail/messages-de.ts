@@ -225,6 +225,23 @@ export const DE: CoreTable = {
         'Falls du das nicht beantragt hast, melde dich jetzt an, wähle „Konto behalten“ und ändere dein Passwort.',
     };
   },
+  'report-ready': (m) => {
+    const name = {
+      inventory: 'Inventar',
+      insurance: 'Versicherungsbericht',
+      vehicle_history: 'Fahrzeughistorie',
+    }[m.report];
+    return {
+      subject: m.place ? `${name}: ${m.place}` : name,
+      paragraphs: [
+        m.attached
+          ? 'Kept hat den gewünschten Bericht erstellt. Er hängt als PDF an.'
+          : 'Kept hat den gewünschten Bericht erstellt, aber er ist zu groß für einen Anhang. Drucke ihn in Kept noch einmal, um ihn herunterzuladen.',
+      ],
+      footnote:
+        'Geplante Berichte stehen unter Einstellungen → Profil → Benachrichtigungen, wo du sie beenden kannst.',
+    };
+  },
   invite: (m) => ({
     subject: m.inviterName
       ? `${m.inviterName} hat dich zu „${m.locationName}“ auf Kept eingeladen`

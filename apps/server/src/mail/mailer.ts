@@ -22,6 +22,15 @@ export type MailBody =
   | { kind: 'email-changed'; to: string; newEmail: string }
   /** D225: the account asked to be deleted; it goes at `purgeAfter` (ISO), shown in `timezone`. */
   | { kind: 'account-deletion'; to: string; purgeAfter: string; timezone: string }
+  /** 1.3 (D228): a report the person asked to be mailed, or a scheduled one. `place` is its
+   * location's name (null for an account report); `attached` false when the PDF was too big. */
+  | {
+      kind: 'report-ready';
+      to: string;
+      report: 'inventory' | 'insurance' | 'vehicle_history';
+      place: string | null;
+      attached: boolean;
+    }
   /** An email invite (D33): the link, only ever mailed (task 20). */
   | {
       kind: 'invite';
@@ -112,7 +121,11 @@ export type AiCapFacts = {
 
 /** A mail, with the language it goes out in when the sender knows it (a BCP 47 tag such as
  * `ar-EG`). Without one the transport looks up the profile of the account at `to` (D81). */
-export type Mail = MailBody & { locale?: string | null };
+export type Mail = MailBody & {
+  locale?: string | null;
+  /** Files sent with the mail (1.3, D228: a report's PDF). Never logged. */
+  attachments?: Array<{ filename: string; content: Buffer; contentType: string }>;
+};
 
 export type MailKind = Mail['kind'];
 
