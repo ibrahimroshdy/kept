@@ -74,6 +74,8 @@ const HOUSEHOLD_ROUTES = [
   '/src/routes/_app/assistant.$threadId.tsx?tsr-split=component',
   '/src/routes/_app/settings.connections.tsx?tsr-split=component',
   '/src/routes/_app/settings.location.$id.webhooks.tsx?tsr-split=component',
+  // 1.5 (D233): a share link's public page needs the server; its error screen stays precached.
+  '/src/routes/s.$token.tsx?tsr-split=component',
   // Settings, admin, imports and history need a connection (screens §4), so they come on demand
   // too, reclaiming precache for steps 5–7 (components/on-demand-route-error.tsx). Settings → Me,
   // Diagnostics and Help stay precached: they're this device's own.
@@ -115,6 +117,8 @@ const HOUSEHOLD_ROUTES = [
     // 1.x (D235): condition reports and one report.
     'condition-reports',
     'condition-reports.$id',
+    // 1.5 (D233): a location's share links.
+    'settings.location.$id.share-links',
     'settings.two-factor',
     'activity',
     'trash',
@@ -142,6 +146,9 @@ const COMPONENT_ONLY_ROUTES = new Set<string>([
   '/_app/settings/location/$id/members',
   '/_app/settings/location/$id/track',
   '/_app/settings/location/$id/email-in',
+  '/_app/settings/location/$id/share-links',
+  // 1.5 (D233): the public page of a share link reads the server only.
+  '/s/$token',
   '/_app/settings/two-factor',
   '/_app/activity',
   '/_app/trash',

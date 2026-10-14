@@ -95,6 +95,7 @@ From spec §3.2, as built:
 | Other auth routes | 100 a minute per address and route |
 | API and MCP, per token | 120 reads and 30 writes a minute |
 | Password reset and magic link | 3 an hour per account |
+| A share link's page | 60 views a minute per link |
 
 Limits are kept in the database, so replicas share them. The client's address comes from the
 socket, or from `X-Forwarded-For` only when the connection is from an address in
@@ -145,6 +146,13 @@ Kept's own re-encoded JPEGs. Exported CSV cells that start like a formula are ne
   allows for the assistant, and descriptive fields for semantic search. **Never secret values**,
   and never money for search. Kept's own record of each call stores tokens and cost, never the
   prompt, the image, the reply or the key. See [AI providers](/users/ai-providers/).
+- **Share links** (`/s/<token>`) are the one page anyone can open without signing in. The token
+  is 32 random bytes, shown once and stored as its SHA-256; it never reaches a log line. The page
+  is read through one database function that takes the token's hash and returns only names,
+  types, where things are, quantities, condition, notes and photos, for the shared box, place or
+  search in that location. Photos are previews with GPS removed, as five-minute signed URLs, and
+  only for those things. A link stops when it is revoked or expires, or when its maker no longer
+  administers the location; it is checked on every view.
 - **Backups** are restic snapshots encrypted with a password of at least 12 characters before they
   leave; with no password there is no backup ([backups](/admin/backups/)).
 

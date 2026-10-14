@@ -144,6 +144,15 @@ export async function fillAssistant(c: pg.ClientBase, t: Tenant, label: string):
     [t.locationId, mailbox],
   );
 
+  // Share links (1.5, D233): a filtered list shared until next month (the token is fake).
+  await c.query(
+    `INSERT INTO public.share_links (location_id, scope_type, filter, title, token_hash,
+                                     expires_at, created_by)
+     VALUES ($1, 'view', '{"q": "drill"}', 'Tools', encode(sha256(convert_to($2, 'UTF8')), 'hex'),
+             now() + interval '30 days', $3)`,
+    [t.locationId, `share-${label}`, t.userId],
+  );
+
   // Webhooks (T7): a hook with a (fake) sealed secret, and one delivery of an event to it.
   const hook = await one(
     `INSERT INTO public.webhooks (location_id, url, secret_ciphertext, key_version, events,

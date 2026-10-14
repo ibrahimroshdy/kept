@@ -442,6 +442,10 @@ const FUNCTIONS: Record<string, { roles: string[]; definer: boolean }> = {
   'kept.webhook_secret(uuid)': { roles: SYS, definer: true },
   // (0120, 1.4 D231) The mail-in job's view of a mailbox with its sealed connection.
   'kept.mailbox_config(uuid)': { roles: SYS, definer: true },
+  // (0127, 1.5 D233) Share links: the public page's door by the token's hash, and the location
+  // admins' "Preview as recipient". Both return the D116 whitelist only.
+  'kept.share_link_open(text,integer)': { roles: SYS, definer: true },
+  'kept.share_link_preview(uuid,integer)': { roles: APP, definer: true },
   'kept.webhooks_listening(uuid,text)': { roles: APP, definer: true },
   'kept.disable_webhooks_for(uuid,uuid)': { roles: BOTH, definer: true },
   // (0080, step-7 T4) An archive import's target, set once by its creator; the prune-imports
@@ -936,6 +940,8 @@ describe('catalogue', () => {
                    has_column_privilege(r, 'public.webhooks', 'secret_ciphertext', 'SELECT')),
                   ('SELECT mailboxes.config_ciphertext',
                    has_column_privilege(r, 'public.mailboxes', 'config_ciphertext', 'SELECT')),
+                  ('SELECT share_links.token_hash',
+                   has_column_privilege(r, 'public.share_links', 'token_hash', 'SELECT')),
                   ('INSERT llm_calls', has_table_privilege(r, 'public.llm_calls', 'INSERT')),
                   ('UPDATE llm_calls', has_table_privilege(r, 'public.llm_calls', 'UPDATE')),
                   ('DELETE llm_calls', has_table_privilege(r, 'public.llm_calls', 'DELETE'))
@@ -1662,7 +1668,8 @@ type Ids = Record<
   | 'exportRun'
   | 'importDraft'
   | 'keptImport'
-  | 'token',
+  | 'token'
+  | 'shareLink',
   string
 >;
 
@@ -1709,6 +1716,9 @@ async function victimIds(t: Tenant, label: string): Promise<Ids> {
     ),
     token: await one(`SELECT id FROM public.api_tokens WHERE user_id = $1 AND kind = 'personal'`, [
       t.userId,
+    ]),
+    shareLink: await one('SELECT id FROM public.share_links WHERE location_id = $1 LIMIT 1', [
+      t.locationId,
     ]),
   };
 }
@@ -2178,6 +2188,14 @@ const PROBES: Probe[] = [
     sql: `SELECT kept.apply_field_conversion($1, '{"toSecret": false}', '[]', true) AS v`,
     args: (i) => [i.pin],
     viewer: 'refused',
+  },
+  // (0127, 1.5 D233) "Preview as recipient": the location's owners and admins only; a viewer of
+  // the victim's location gets nothing either.
+  {
+    name: 'share_link_preview',
+    sql: 'SELECT p FROM (SELECT kept.share_link_preview($1, 0) AS p) x WHERE p IS NOT NULL',
+    args: (i) => [i.shareLink],
+    viewer: 'empty',
   },
 ];
 

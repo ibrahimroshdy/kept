@@ -48,6 +48,7 @@ import { scheduleRoutes } from '../schedules/routes.js';
 import { searchRoutes } from '../search/routes.js';
 import { secretRoutes } from '../secrets/routes.js';
 import { serviceDraftRoutes } from '../services/routes.js';
+import { shareLinkRoutes } from '../sharelinks/routes.js';
 import type { FileStorage } from '../storage/blob-store.js';
 import { syncExtrasRoutes } from '../sync/extras.js';
 import { syncRoutes } from '../sync/routes.js';
@@ -180,6 +181,8 @@ export const INVENTORY_ROUTE_MODULES = [
   mailboxRoutes,
   // 1.x (D235): renters' condition reports.
   conditionRoutes,
+  // 1.5 (D233): read-only share links, and their public page.
+  shareLinkRoutes,
 ] as const satisfies readonly ((app: KeptApp, deps: InventoryDeps) => Promise<void>)[];
 
 export async function registerInventoryRoutes(app: KeptApp, deps: InventoryDeps): Promise<void> {

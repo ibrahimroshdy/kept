@@ -41,7 +41,9 @@ async function start() {
   // The service worker exists only in a build (vite.config.ts); it registers only in a secure
   // context (pwa/register.ts). The install prompt is caught before the browser offers its own.
   captureInstallPrompt();
-  if (import.meta.env.PROD) registerServiceWorker();
+  // A share link's page (`/s/<token>`, D233) is for someone without an account: no offline app
+  // is installed for them.
+  if (import.meta.env.PROD && !window.location.pathname.startsWith('/s/')) registerServiceWorker();
   const locale = initialLocale();
   // Offline, a catalogue that was never loaded online isn't cached (sw.ts): fall back to English,
   // then to no catalogue, so the shell still renders.

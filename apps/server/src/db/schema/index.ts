@@ -27,6 +27,7 @@ export * from './reports.js';
 export * from './schedules.js';
 export * from './secrets.js';
 export * from './services.js';
+export * from './share-links.js';
 export * from './sync.js';
 export * from './tenancy.js';
 export * from './things.js';

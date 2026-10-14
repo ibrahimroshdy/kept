@@ -66,8 +66,8 @@ export const TOKEN_ROUTES: Readonly<Record<string, Exclude<TokenAccess, 'none'>>
 /**
  * Never open to a token, whatever the table says (D63, D71, D180; plan ground rules): sign-in,
  * the person's own settings and profile, tokens and OAuth grants, the assistant, AI keys and
- * providers, secret values, exports, admin, setup, invites, members and webhooks. The test fails
- * if an entry above matches one.
+ * providers, secret values, exports, admin, setup, invites, members, webhooks and share links.
+ * The test fails if an entry above matches one.
  */
 export const NEVER_FOR_TOKENS: readonly RegExp[] = [
   /^\/api\/v1\/auth(\/|$)/,
@@ -85,6 +85,8 @@ export const NEVER_FOR_TOKENS: readonly RegExp[] = [
   /\/members(\/|$)/,
   /\/managed-accounts(\/|$)/,
   /\/webhooks(\/|$)/,
+  // 1.5 (D233): share links are made and revoked in the app only.
+  /\/share-links(\/|$)/,
   /^\/mcp(\/|$)/,
 ];
 

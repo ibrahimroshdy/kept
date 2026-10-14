@@ -158,8 +158,24 @@ yourself.
 A location is shared by inviting people to it, each with a role and an optional end date
 ([invites and roles](/users/first-run/#5-invite-people)). Owners and admins manage the
 **Members** page in Location settings; anyone but the owner can **Leave this location**. Your
-Personal location is never shared. Kept has no public share links: to show someone a list who
-doesn't use Kept, print it (below).
+Personal location is never shared.
+
+**Share links** show someone without an account what's in a box, a place or a search, read-only.
+Owners and admins make one from a box's **Actions → Share a read-only link**, a place's **Manage**
+section, or **Share this list** on Search (a search filtered to one location, without state or
+price filters). Choose how long it works: a day, a week, 30 days (the default), 90 days or a year.
+The link is shown once: copy it then.
+
+- **What they see:** each thing's name, photo, type, where it is, quantity, condition and notes,
+  A to Z. Never prices, serial numbers, secret fields, people, loans or documents. Things in the
+  Trash, drafts and things you sold or lost don't show.
+- **It stays current:** the page shows the box, place or search as it is when it's opened. A
+  search's link matches its words and its place, type and tag filters.
+- **Location settings → Share links** lists every link with its state and how often it was
+  opened. **Preview as recipient** shows the page; **Revoke** ends it at once. A link also stops
+  when it expires, and when the person who made it no longer runs the location.
+
+To hand someone a list on paper instead, print it (below).
 
 ## Reports: the inventory, insurance and claims
 
