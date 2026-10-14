@@ -3,6 +3,17 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.4.0 (2026-10-14)
+
+### Features
+
+- **capture:** email-in, receipts from a location's IMAP mailbox (D231) (#63) (174180d)
+- **capture:** several things in one photo, behind an admin switch (D230) (#62) (364520a)
+
+### Documentation
+
+- **release:** the 1.3.0 record (#61) (80e3dfa)
+
 ## 1.3.0 (2026-10-14)
 
 ### Features
