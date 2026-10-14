@@ -94,7 +94,8 @@ FRAMES = {
     # Browse & things
     'f-loc': ('Location, filter strip', ['f-search', 'More: Locations', 'f-home-ar'], ['f-views', 'f-thing', 'f-tray-pick']),
     'f-views': ('Saved views', ['f-loc'], ['f-loc']),
-    'f-loc-desk': ('Location, Display menu', ['Sidebar: Locations', 'f-home-desk'], ['f-thing-desk', 'f-labels']),
+    'f-loc-desk': ('Location, Display menu', ['Sidebar: Locations', 'f-home-desk'], ['f-loc-panel', 'f-thing-desk', 'f-labels']),
+    'f-loc-panel': ('Place: places panel, grid', ['f-loc-desk', 'Sidebar: a location'], ['f-thing-desk']),
     'f-thing': ('Thing page', ['f-loc', 'f-search', 'f-scan'], ['f-thing-scroll', 'f-thing-menu', 'f-secret']),
     'f-thing-scroll': ('Thing page, scrolled', ['f-thing'], ['f-activity']),
     'f-thing-menu': ('Thing action menu', ['f-thing'], ['f-labels', 'f-tray-pick']),
