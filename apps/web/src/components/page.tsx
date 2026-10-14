@@ -132,9 +132,9 @@ export function Page({
         <SectionTabsContext.Provider value={countTabs}>
           {aside ? (
             <div className="grid min-w-0 grid-cols-[15rem_minmax(0,1fr)] items-start gap-6">
-              <aside className="sticky top-20 max-h-[calc(100dvh-6rem)] overflow-y-auto">
-                {aside}
-              </aside>
+              {/* Not an <aside>: beside the sidebar's, a second complementary landmark fails axe's
+                  landmark-unique; the panel's own <nav> names it. */}
+              <div className="sticky top-20 max-h-[calc(100dvh-6rem)] overflow-y-auto">{aside}</div>
               <div className="grid min-w-0 content-start gap-5">{children}</div>
             </div>
           ) : (

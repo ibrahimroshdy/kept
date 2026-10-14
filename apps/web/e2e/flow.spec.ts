@@ -97,7 +97,8 @@ test('setup → create a home → invite by link → the invitee joins as a view
     await invitee.getByRole('button', { name: 'Create account and join' }).click();
 
     // Signed in and joined: the page opens the home.
-    await expect(invitee).toHaveURL(/\/loc\/[0-9a-f-]{36}$/);
+    // D224: the location's address reads as its name, with its id's last 8 hex characters.
+    await expect(invitee).toHaveURL(/\/loc\/[^/?#]+-[0-9a-f]{8}$/);
     await expect(heading(invitee, HOME)).toBeVisible();
 
     // As a viewer: the server says so, and Home lists the location.
