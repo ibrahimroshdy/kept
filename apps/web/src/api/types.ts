@@ -395,6 +395,9 @@ export type AdminSettings = {
   barcodeContact: AdminSetting<string | null>;
   formerHostnames: string[];
   ssrfAllowPrivate: boolean;
+  /** 1.4 (D230): find several things in one THING photo, each its own draft. Off by default; no
+   * environment variable sets it. Absent from servers before 1.4. */
+  multiItem?: boolean;
   /** Step 8 (T11, D65): "Check for new versions", off by default; KEPT_UPDATE_CHECK locks it.
    * Absent from servers before step 8. */
   updateCheck?: AdminSetting<boolean>;
@@ -407,6 +410,7 @@ export type AdminSettingsBody = {
   barcodeContact?: string | null;
   formerHostnames?: string[];
   ssrfAllowPrivate?: boolean;
+  multiItem?: boolean;
   updateCheck?: boolean;
 };
 /** The server's MAX_FORMER_HOSTNAMES (labels/former-hosts.ts). */

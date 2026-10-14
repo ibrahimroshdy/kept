@@ -321,7 +321,7 @@ export async function resendOwnWaiting(
   return rows.length;
 }
 
-type InboxInsert = {
+export type InboxInsert = {
   locationId: string;
   kind: 'draft' | 'receipt' | 'reading';
   thingId?: string;
@@ -333,7 +333,10 @@ type InboxInsert = {
 
 /** Opens an inbox item, unless one is already open for the same subject (inbox_open_subject_uq):
  * answers its id, or null when one was open already. */
-async function openInboxItem(client: pg.ClientBase, item: InboxInsert): Promise<string | null> {
+export async function openInboxItem(
+  client: pg.ClientBase,
+  item: InboxInsert,
+): Promise<string | null> {
   const { rows } = await client.query<{ id: string }>(
     `INSERT INTO public.inbox_items (id, location_id, kind, thing_id, purchase_id, extraction_id,
                                      batch_id, created_by, payload)

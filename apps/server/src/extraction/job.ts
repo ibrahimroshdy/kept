@@ -38,12 +38,13 @@ import { type CaptureMode, can, type Role } from '@kept/shared';
 import type pg from 'pg';
 import sharp from 'sharp';
 import { FOREVER } from '../ai/breaker.js';
-import type { CallResult } from '../ai/call.js';
+import type { CallResult, ImageInput } from '../ai/call.js';
 import { toDbTime } from '../ai/db-run.js';
 import { type Extracted, extract } from '../ai/extract.js';
 import type { AiDeps } from '../ai/routes.js';
 import { audited } from '../audit/audited.js';
 import { aiCaptureState, NO_PROVIDER } from '../capture/service.js';
+import { type ExtraObject, multiItemOn, splitDrafts } from '../capture/split.js';
 import type { Pools } from '../db/pools.js';
 import { type Scope, withScope } from '../db/scope.js';
 import { lockBlobKeys } from '../files/blob-locks.js';
@@ -56,7 +57,7 @@ import { type ApplyResult, apply, type ExtractionRow } from './apply.js';
 import { type CheckContext, type Checked, check } from './checks.js';
 import { openDuplicate } from './duplicates.js';
 import { MAX_RECEIPT_PAGES, partsFor, type SourceFile } from './image.js';
-import { PROMPT_VERSIONS, promptFor } from './prompts/index.js';
+import { PROMPT_VERSIONS, promptFor, THING_MANY_VERSION } from './prompts/index.js';
 import {
   PROMPT_VERSION as SERVICE_INVOICE_VERSION,
   serviceInvoicePrompt,
@@ -449,6 +450,9 @@ export async function runExtraction(
 
   let result: CallResult<Extracted<CaptureMode>> | { status: 'no_provider' };
   let sent: { attachmentIds: string[]; fromDisplay: boolean[] };
+  // Several things in one THING photo (D230): asked for only when the admin turned it on.
+  const many = mode === 'thing' && (await multiItemOn(deps.pools));
+  let image: ImageInput | undefined;
   try {
     if (!deps.files) throw new Error('extraction: the worker has no file storage');
     const parts = await partsFor(mode, claimed.files, {
@@ -478,7 +482,10 @@ export async function runExtraction(
       ...(parts.documentText !== undefined ? { documentText: parts.documentText } : {}),
       meter: claimed.meter,
     };
-    const prompt = invoice ? serviceInvoicePrompt(promptCtx) : promptFor(mode, promptCtx);
+    image = parts.images[0];
+    const prompt = invoice
+      ? serviceInvoicePrompt(promptCtx)
+      : promptFor(mode, promptCtx, many ? THING_MANY_VERSION : undefined);
     const rt = await ai.runtime(scope);
     result = await extract(rt, {
       mode,
@@ -491,6 +498,7 @@ export async function runExtraction(
       attempt: Math.min(20, (job?.retryCount ?? 0) + 1),
       jobId: job?.id ?? ex.id,
       ...(invoice ? { schema: 'service-invoice' as const } : {}),
+      ...(many ? { schema: 'thing-many' as const } : {}),
     });
   } catch (e) {
     if (e instanceof RetryExtraction) throw e;
@@ -539,7 +547,20 @@ export async function runExtraction(
       [ex.id],
     );
     if (rows[0]?.status !== 'running') return null;
-    const checked = check(mode, ok.value.value as never, ok.value.dropped, claimed.checkCtx);
+    const value = ok.value.value as { objects?: unknown[] };
+    const objects = many && Array.isArray(value.objects) ? value.objects : null;
+    const checked = check(
+      mode,
+      (objects ? { objects: objects.slice(0, 1) } : value) as never,
+      ok.value.dropped,
+      claimed.checkCtx,
+    );
+    // The other objects, each checked as a capture of its own; split into drafts after commit.
+    const extras: ExtraObject[] = (objects ?? []).slice(1).flatMap((o) => {
+      const c = check('thing', { objects: [o] } as never, [], claimed.checkCtx);
+      const bbox = (o as { bbox?: ExtraObject['bbox'] }).bbox;
+      return c.mode === 'thing' && bbox ? [{ bbox, fields: c.fields }] : [];
+    });
     const applyCtx = { tx, client, scope, requestId: job?.id ?? ex.id };
     const applied = await apply(applyCtx, ex, checked, sent);
     if ((checked.mode === 'thing' || checked.mode === 'label') && ex.thing_id) {
@@ -561,7 +582,12 @@ export async function runExtraction(
       callId: ok.callId,
       result: {
         mode,
-        promptVersion: invoice ? SERVICE_INVOICE_VERSION : PROMPT_VERSIONS[mode],
+        promptVersion: invoice
+          ? SERVICE_INVOICE_VERSION
+          : many
+            ? THING_MANY_VERSION
+            : PROMPT_VERSIONS[mode],
+        ...(extras.length > 0 ? { found: extras.length + 1 } : {}),
         attachmentIds: sent.attachmentIds,
         fields: checked.fields,
         dropped: checked.dropped,
@@ -570,7 +596,7 @@ export async function runExtraction(
       },
       applied: applied.applied,
     });
-    return { checked, applied };
+    return { checked, applied, extras };
   });
   if (!done) return { status: 'skipped', why: 'not_runnable' };
   if (done.applied.crop && deps.cropToPaper) {
@@ -578,6 +604,19 @@ export async function runExtraction(
       await cropToPaper(deps, scope, ex.location_id, done.applied.crop);
     } catch (e) {
       deps.log.error({ err: e, extractionId: ex.id }, 'receipt crop failed');
+    }
+  }
+  if (done.extras.length > 0 && image && ex.thing_id) {
+    try {
+      await splitDrafts(
+        { pools: deps.pools, files: deps.files, log: deps.log },
+        scope,
+        { id: ex.id, location_id: ex.location_id, thing_id: ex.thing_id },
+        done.extras,
+        image,
+      );
+    } catch (e) {
+      deps.log.error({ err: e, extractionId: ex.id }, 'multi-item split failed');
     }
   }
   return { status: 'succeeded', callId: ok.callId, result: done.applied, checked: done.checked };

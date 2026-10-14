@@ -15,6 +15,7 @@ import {
   parseLenient,
   type ReasoningLevel,
   ServiceInvoiceExtraction,
+  ThingManyExtraction,
 } from '@kept/shared';
 import type { z } from 'zod';
 import { type AiRuntime, type CallResult, callModel, type ImageInput } from './call.js';
@@ -23,6 +24,7 @@ import type { Reasoning } from './providers.js';
 import {
   ledgerPromptVersion,
   serviceInvoiceWire,
+  thingManyWire,
   WIRE_IN_USE,
   type WireVariant,
   wireName,
@@ -52,7 +54,7 @@ export type ExtractRequest<M extends CaptureMode> = {
   wire?: WireVariant;
   /** Step 5 (Q12): a RECEIPT read as a service invoice, each line with its kind
    * (`ServiceInvoiceExtraction`). Same ledger task and output allowance as RECEIPT. */
-  schema?: 'service-invoice';
+  schema?: 'service-invoice' | 'thing-many';
 };
 
 export type ExtractResult<M extends CaptureMode> =
@@ -79,7 +81,12 @@ export async function extract<M extends CaptureMode>(
     }));
   if (!resolved) return { status: 'no_provider' };
   const invoice = req.schema === 'service-invoice' && req.mode === 'receipt';
-  const schema = invoice ? ServiceInvoiceExtraction : EXTRACTION_SCHEMAS[req.mode];
+  const many = req.schema === 'thing-many' && req.mode === 'thing';
+  const schema = invoice
+    ? ServiceInvoiceExtraction
+    : many
+      ? ThingManyExtraction
+      : EXTRACTION_SCHEMAS[req.mode];
   return callModel<Extracted<M>>(rt, {
     resolved,
     task: `extract_${req.mode}` as LedgerTask,
@@ -93,7 +100,9 @@ export async function extract<M extends CaptureMode>(
       name: wireName(req.mode),
       schema: invoice
         ? serviceInvoiceWire(req.wire ?? WIRE_IN_USE)
-        : wireSchema(req.mode, req.wire ?? WIRE_IN_USE),
+        : many
+          ? thingManyWire()
+          : wireSchema(req.mode, req.wire ?? WIRE_IN_USE),
       parse: (raw) => parseLenient(schema, raw) as Extracted<M> | null,
     },
     maxOutputTokens: outputTokenCap(req.mode, allowanceLevel(resolved.provider.reasoning)),

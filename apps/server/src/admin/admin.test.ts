@@ -6,6 +6,7 @@ import { type TestDb, testDb } from '../../test/db.js';
 import { call, join, PASSWORD, type Person, peopleApp, person } from '../../test/people.js';
 import { asOwner, ownerTx } from '../../test/tenancy.js';
 import { allowPrivateAddresses } from '../ai/runtime.js';
+import { multiItemOn } from '../capture/split.js';
 
 // Task 23: instance admin routes (D164, D165, D180, §7.11, §7.14), through the front door.
 
@@ -335,6 +336,42 @@ describe('settings: private addresses (Q9, D83)', () => {
       body: { ssrfAllowPrivate: 'yes' },
     });
     expect(bad.statusCode).toBe(400);
+  });
+});
+
+describe('settings: multi-item photos (D230)', () => {
+  it('is off by default; an instance admin turns it on, audited, and the capture job reads it', async () => {
+    expect((await call(t, '/api/v1/admin/settings', { as: admin })).json()).toMatchObject({
+      multiItem: false,
+    });
+    expect(await multiItemOn(db.pools)).toBe(false);
+    const on = await call(t, '/api/v1/admin/settings', {
+      as: admin,
+      method: 'PUT',
+      body: { multiItem: true },
+    });
+    expect(on.statusCode, on.body).toBe(200);
+    expect(on.json()).toMatchObject({ multiItem: true });
+    expect(await multiItemOn(db.pools)).toBe(true);
+    const { rows } = await asOwner(db, (c) =>
+      c.query<{ diff: unknown }>(
+        `SELECT diff FROM public.audit_events
+          WHERE action = 'instance.settings_update' ORDER BY at DESC, id DESC LIMIT 1`,
+      ),
+    );
+    expect(rows[0]).toMatchObject({ diff: { ai_multi_item: { before: false, after: true } } });
+    const refused = await call(t, '/api/v1/admin/settings', {
+      as: bob,
+      method: 'PUT',
+      body: { multiItem: false },
+    });
+    expect(refused.statusCode).toBe(403);
+    await call(t, '/api/v1/admin/settings', {
+      as: admin,
+      method: 'PUT',
+      body: { multiItem: false },
+    });
+    expect(await multiItemOn(db.pools)).toBe(false);
   });
 });
 

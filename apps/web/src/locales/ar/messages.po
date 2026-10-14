@@ -21731,3 +21731,23 @@ msgstr "سيُضاف {0}. موجود مسبقًا: {1}. لا يمكن إضافت
 #: src/components/vehicles/lubelogger-import.tsx
 msgid "Row {0}: {1}"
 msgstr "الصف {0}: {1}"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Several things in one photo"
+msgstr "عدة أشياء في صورة واحدة"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Find several things in a photo"
+msgstr "العثور على عدة أشياء في صورة"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "On. Each thing AI finds in a photo becomes its own draft, with its own picture cut from the photo."
+msgstr "مفعّل. كل شيء يجده الذكاء الاصطناعي في صورة يصبح مسودة خاصة به، بصورة مقتطعة من الصورة."
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Off. One photo, one thing."
+msgstr "متوقف. صورة واحدة، شيء واحد."
+
+#: src/routes/_app/admin.settings.tsx
+msgid "How well the pictures are cut depends on the AI provider. Check a few drafts after turning this on."
+msgstr "تعتمد دقة اقتطاع الصور على مزوّد الذكاء الاصطناعي. راجع بعض المسودات بعد تفعيله."

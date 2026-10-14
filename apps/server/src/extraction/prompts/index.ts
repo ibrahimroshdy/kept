@@ -8,9 +8,15 @@ import {
   type ReceiptVersion,
   receiptPrompt,
 } from './receipt.js';
-import { PROMPT_VERSION as THING_VERSION, thingPrompt } from './thing.js';
+import {
+  MANY_VERSION as THING_MANY_VERSION,
+  PROMPT_VERSION as THING_VERSION,
+  thingManyPrompt,
+  thingPrompt,
+} from './thing.js';
 
 export type { BuiltPrompt, PromptContext } from './common.js';
+export { THING_MANY_VERSION };
 
 /** Each mode's prompt version in use, as `llm_calls.prompt_version` stores it. */
 export const PROMPT_VERSIONS: Readonly<Record<CaptureMode, string>> = Object.freeze({
@@ -26,7 +32,7 @@ export const PROMPT_VERSIONS: Readonly<Record<CaptureMode, string>> = Object.fre
  * always uses `PROMPT_VERSIONS`.
  */
 export const PROMPT_CHOICES: Readonly<Record<CaptureMode, readonly string[]>> = Object.freeze({
-  thing: [THING_VERSION],
+  thing: [THING_VERSION, THING_MANY_VERSION],
   receipt: RECEIPT_VERSIONS,
   label: [LABEL_VERSION],
   reading: [READING_VERSION],
@@ -41,7 +47,7 @@ export function promptFor(mode: CaptureMode, ctx: PromptContext, version?: strin
   }
   switch (mode) {
     case 'thing':
-      return thingPrompt(ctx);
+      return v === THING_MANY_VERSION ? thingManyPrompt(ctx) : thingPrompt(ctx);
     case 'receipt':
       return receiptPrompt(ctx, v as ReceiptVersion);
     case 'label':

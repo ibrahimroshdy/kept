@@ -521,6 +521,7 @@ function base(): MockState {
         barcodeContact: { value: null, locked: false },
         formerHostnames: [],
         ssrfAllowPrivate: false,
+        multiItem: false,
       },
       jobs: [
         {

@@ -21731,3 +21731,23 @@ msgstr "Add {0}. Already here: {1}. Can't add: {2}."
 #: src/components/vehicles/lubelogger-import.tsx
 msgid "Row {0}: {1}"
 msgstr "Row {0}: {1}"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Several things in one photo"
+msgstr "Several things in one photo"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Find several things in a photo"
+msgstr "Find several things in a photo"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "On. Each thing AI finds in a photo becomes its own draft, with its own picture cut from the photo."
+msgstr "On. Each thing AI finds in a photo becomes its own draft, with its own picture cut from the photo."
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Off. One photo, one thing."
+msgstr "Off. One photo, one thing."
+
+#: src/routes/_app/admin.settings.tsx
+msgid "How well the pictures are cut depends on the AI provider. Check a few drafts after turning this on."
+msgstr "How well the pictures are cut depends on the AI provider. Check a few drafts after turning this on."
