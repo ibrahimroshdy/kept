@@ -3,6 +3,18 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.4.1 (2026-10-14)
+
+### Fixes
+
+- **web:** a sheet closed while the page is leaving doesn't cancel the next load (#69) (87ecf32)
+- **assistant:** size each request under the provider's per-minute token limit (#68) (e8fc276)
+- **reports:** a render that peaks past its memory limit between samples fails as memory (#66) (69ffb35)
+
+### Documentation
+
+- **release:** the 1.4.0 record (#65) (17a53e7)
+
 ## 1.4.0 (2026-10-14)
 
 ### Features
