@@ -21731,3 +21731,23 @@ msgstr "Da aggiungere: {0}. Già presenti: {1}. Non aggiungibili: {2}."
 #: src/components/vehicles/lubelogger-import.tsx
 msgid "Row {0}: {1}"
 msgstr "Riga {0}: {1}"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Several things in one photo"
+msgstr "Più oggetti in una foto"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Find several things in a photo"
+msgstr "Trova più oggetti in una foto"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "On. Each thing AI finds in a photo becomes its own draft, with its own picture cut from the photo."
+msgstr "Attivo. Ogni oggetto che l’IA trova in una foto diventa una bozza a sé, con la propria immagine ritagliata dalla foto."
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Off. One photo, one thing."
+msgstr "Disattivo. Una foto, un oggetto."
+
+#: src/routes/_app/admin.settings.tsx
+msgid "How well the pictures are cut depends on the AI provider. Check a few drafts after turning this on."
+msgstr "La qualità del ritaglio dipende dal fornitore di IA. Controlla qualche bozza dopo averlo attivato."

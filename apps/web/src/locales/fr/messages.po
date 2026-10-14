@@ -21731,3 +21731,23 @@ msgstr "À ajouter : {0}. Déjà là : {1}. Impossible : {2}."
 #: src/components/vehicles/lubelogger-import.tsx
 msgid "Row {0}: {1}"
 msgstr "Ligne {0} : {1}"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Several things in one photo"
+msgstr "Plusieurs objets sur une photo"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Find several things in a photo"
+msgstr "Trouver plusieurs objets sur une photo"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "On. Each thing AI finds in a photo becomes its own draft, with its own picture cut from the photo."
+msgstr "Activé. Chaque objet que l’IA trouve sur une photo devient son propre brouillon, avec sa propre image découpée dans la photo."
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Off. One photo, one thing."
+msgstr "Désactivé. Une photo, un objet."
+
+#: src/routes/_app/admin.settings.tsx
+msgid "How well the pictures are cut depends on the AI provider. Check a few drafts after turning this on."
+msgstr "La qualité du découpage dépend du fournisseur d’IA. Vérifiez quelques brouillons après l’activation."

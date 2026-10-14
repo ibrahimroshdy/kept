@@ -520,6 +520,7 @@ export function createMockApi(state: MockState): MockApi {
       'barcodeContact',
       'formerHostnames',
       'ssrfAllowPrivate',
+      'multiItem',
       'updateCheck',
     ];
     if (Object.keys(b).some((k) => !known.includes(k)))
@@ -557,6 +558,7 @@ export function createMockApi(state: MockState): MockApi {
     }
     if (hosts) s.formerHostnames = [...new Set(hosts)];
     if (b.ssrfAllowPrivate !== undefined) s.ssrfAllowPrivate = b.ssrfAllowPrivate;
+    if (b.multiItem !== undefined) s.multiItem = b.multiItem;
     if (b.updateCheck !== undefined) {
       const u = ops(state).updates;
       if (u.locked) return err(409, 'conflict', 'Set by the environment.');

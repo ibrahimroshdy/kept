@@ -21731,3 +21731,23 @@ msgstr "Hinzu kommen {0}. Schon da: {1}. Nicht möglich: {2}."
 #: src/components/vehicles/lubelogger-import.tsx
 msgid "Row {0}: {1}"
 msgstr "Zeile {0}: {1}"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Several things in one photo"
+msgstr "Mehrere Dinge auf einem Foto"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Find several things in a photo"
+msgstr "Mehrere Dinge auf einem Foto finden"
+
+#: src/routes/_app/admin.settings.tsx
+msgid "On. Each thing AI finds in a photo becomes its own draft, with its own picture cut from the photo."
+msgstr "An. Jedes Ding, das die KI auf einem Foto findet, wird ein eigener Entwurf, mit einem eigenen Bild aus dem Foto ausgeschnitten."
+
+#: src/routes/_app/admin.settings.tsx
+msgid "Off. One photo, one thing."
+msgstr "Aus. Ein Foto, ein Ding."
+
+#: src/routes/_app/admin.settings.tsx
+msgid "How well the pictures are cut depends on the AI provider. Check a few drafts after turning this on."
+msgstr "Wie gut die Bilder ausgeschnitten werden, hängt vom KI-Anbieter ab. Prüfen Sie nach dem Einschalten ein paar Entwürfe."

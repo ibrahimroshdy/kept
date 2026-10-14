@@ -85,6 +85,7 @@ function SettingsPage() {
     barcodeContact,
     formerHostnames,
     ssrfAllowPrivate,
+    multiItem,
     updateCheck,
   } = settings.data;
   return (
@@ -184,6 +185,43 @@ function SettingsPage() {
                 </span>
               </Switch>
               {updateCheck.locked ? <Locked /> : null}
+            </li>
+          </List>
+        </Section>
+      ) : null}
+
+      {multiItem !== undefined ? (
+        <Section title={<Trans>Several things in one photo</Trans>}>
+          <List>
+            <li className="grid gap-2 px-3.5 py-2">
+              <Switch
+                isSelected={multiItem}
+                isDisabled={save.isPending}
+                onChange={(v) => save.mutate({ multiItem: v })}
+                className="w-full flex-row-reverse justify-between"
+              >
+                <span className="grid gap-0.5 py-1">
+                  <span className="font-semibold">
+                    <Trans>Find several things in a photo</Trans>
+                  </span>
+                  <span className="text-small text-ink-3">
+                    {multiItem ? (
+                      <Trans>
+                        On. Each thing AI finds in a photo becomes its own draft, with its own
+                        picture cut from the photo.
+                      </Trans>
+                    ) : (
+                      <Trans>Off. One photo, one thing.</Trans>
+                    )}
+                  </span>
+                </span>
+              </Switch>
+              <Notice tone="info" className="mb-1.5">
+                <Trans>
+                  How well the pictures are cut depends on the AI provider. Check a few drafts after
+                  turning this on.
+                </Trans>
+              </Notice>
             </li>
           </List>
         </Section>

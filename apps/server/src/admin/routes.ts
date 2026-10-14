@@ -9,6 +9,7 @@ import { googleStatus } from '../auth/google.js';
 import { requireScope } from '../auth/http.js';
 import { oidcStatus } from '../auth/oidc.js';
 import { AdminOpsStatusShape, readOpsStatus } from '../backup/status.js';
+import { MULTI_ITEM_KEY } from '../capture/split.js';
 import type { Pools } from '../db/pools.js';
 import { type Tx, withScope, withSystem } from '../db/scope.js';
 import { EmbeddingsStatusSchema, embeddingsStatus } from '../embeddings/status.js';
@@ -165,6 +166,9 @@ const Settings = z.object({
   barcodeContact: Locked(z.string().nullable()),
   formerHostnames: z.array(z.string()),
   ssrfAllowPrivate: z.boolean(),
+  /** 1.4 (D230): several things found in one THING photo, each its own draft. Off by default
+   * until a provider's boxes are shown right (D129); no environment variable, never locked. */
+  multiItem: z.boolean(),
   /** Step 8 (T11, D65): "Check for new versions", off by default; KEPT_UPDATE_CHECK locks it. */
   updateCheck: Locked(z.boolean()),
 });
@@ -175,6 +179,7 @@ const SettingsBody = z
     barcodeContact: z.email().max(254).nullable().optional(),
     formerHostnames: FormerHostnames.optional(),
     ssrfAllowPrivate: z.boolean().optional(),
+    multiItem: z.boolean().optional(),
     updateCheck: z.boolean().optional(),
   })
   .strict();
@@ -240,7 +245,7 @@ export async function adminRoutes(app: KeptApp, deps: AdminDeps): Promise<void> 
     const more = await tx.execute<{ key: string; value: unknown }>(
       sql`SELECT key, value FROM public.instance_settings
            WHERE key IN (${BARCODE_LOOKUP_KEY}, ${BARCODE_CONTACT_KEY}, ${FORMER_HOSTNAMES_KEY},
-                         ${SSRF_ALLOW_PRIVATE_KEY}, ${UPDATE_CHECK_ENABLED_KEY})`,
+                         ${SSRF_ALLOW_PRIVATE_KEY}, ${MULTI_ITEM_KEY}, ${UPDATE_CHECK_ENABLED_KEY})`,
     );
     const extra = new Map(more.rows.map((r) => [r.key, r.value]));
     const barcode = barcodeSettingsFrom(extra, env);
@@ -252,6 +257,7 @@ export async function adminRoutes(app: KeptApp, deps: AdminDeps): Promise<void> 
       formerHostnames: hosts.success ? hosts.data : [],
       // As ai/runtime.ts reads it: only a stored `true` allows.
       ssrfAllowPrivate: extra.get(SSRF_ALLOW_PRIVATE_KEY) === true,
+      multiItem: extra.get(MULTI_ITEM_KEY) === true,
       updateCheck: updateCheckSwitch(env, extra.get(UPDATE_CHECK_ENABLED_KEY) === true),
     };
   }
@@ -439,6 +445,7 @@ export async function adminRoutes(app: KeptApp, deps: AdminDeps): Promise<void> 
             barcodeContact,
             formerHostnames,
             ssrfAllowPrivate,
+            multiItem,
             updateCheck,
           } = req.body;
           const put = (key: string, value: unknown) =>
@@ -477,6 +484,7 @@ export async function adminRoutes(app: KeptApp, deps: AdminDeps): Promise<void> 
             await put(FORMER_HOSTNAMES_KEY, [...new Set(formerHostnames)]);
           }
           if (ssrfAllowPrivate !== undefined) await put(SSRF_ALLOW_PRIVATE_KEY, ssrfAllowPrivate);
+          if (multiItem !== undefined) await put(MULTI_ITEM_KEY, multiItem);
           if (updateCheck !== undefined) {
             if (before.updateCheck.locked) {
               throw conflict(
@@ -492,6 +500,7 @@ export async function adminRoutes(app: KeptApp, deps: AdminDeps): Promise<void> 
             ['barcode_contact', before.barcodeContact.value, after.barcodeContact.value],
             ['former_hostnames', before.formerHostnames, after.formerHostnames],
             ['ssrf_allow_private', before.ssrfAllowPrivate, after.ssrfAllowPrivate],
+            ['ai_multi_item', before.multiItem, after.multiItem],
             ['update_check', before.updateCheck.value, after.updateCheck.value],
           ];
           const changed = changes.filter(([, a, b]) => JSON.stringify(a) !== JSON.stringify(b));

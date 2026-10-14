@@ -12,7 +12,12 @@
  * object comes back and `parseLenient` against the full zod schema drops only what fails (L52);
  * with the zod schema itself, one bad optional field loses the whole answer.
  */
-import { type CaptureMode, EXTRACTION_SCHEMAS, ServiceInvoiceExtraction } from '@kept/shared';
+import {
+  type CaptureMode,
+  EXTRACTION_SCHEMAS,
+  ServiceInvoiceExtraction,
+  ThingManyExtraction,
+} from '@kept/shared';
 import type { JSONSchema7 } from 'ai';
 import { z } from 'zod';
 
@@ -143,3 +148,17 @@ export function ledgerPromptVersion(
 
 /** The structured-output name each mode is sent under (`kept_receipt` …); the mock reads it. */
 export const wireName = (mode: CaptureMode) => `kept_${mode}` as const;
+
+/** THING with several things in the photo (1.4, D230): each object with its box, sent under
+ * THING's name (`kept_thing`), as the ledger task is THING's. */
+export function thingManyWire(): JSONSchema7 {
+  const id = 'thing-many:simple';
+  let s = cache.get(id);
+  if (!s) {
+    s = simplify(
+      z.toJSONSchema(ThingManyExtraction, { target: 'draft-07', io: 'output' }),
+    ) as JSONSchema7;
+    cache.set(id, s);
+  }
+  return s;
+}

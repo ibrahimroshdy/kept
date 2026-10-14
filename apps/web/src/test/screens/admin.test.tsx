@@ -170,6 +170,18 @@ describe('Instance admin', () => {
     expect(mock.state.admin.settings.ssrfAllowPrivate).toBe(true);
   });
 
+  it('Several things in one photo: off by default, and the switch saves (D230)', async () => {
+    const { user, mock } = await renderApp('/admin/settings');
+    const toggle = await screen.findByRole('switch', { name: /Find several things in a photo/ });
+    expect(toggle).not.toBeChecked();
+    expect(screen.getByText('Off. One photo, one thing.')).toBeInTheDocument();
+    await user.click(toggle);
+    await waitFor(() =>
+      expect(mock.lastCall('PUT', paths.admin.settings)?.body).toEqual({ multiItem: true }),
+    );
+    expect(await screen.findByText(/Each thing AI finds in a photo/)).toBeInTheDocument();
+  });
+
   it('Failed jobs: never a location (D164), and a job with no message says so', async () => {
     await renderApp('/admin/jobs');
     await screen.findByText('repair-orphans');

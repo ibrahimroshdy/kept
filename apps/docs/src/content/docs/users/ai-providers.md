@@ -59,6 +59,11 @@ some. Under **This month**, a bar per limit shows the spend so far.
   and types are filled in; prices, dates, serials and readings wait in the Inbox as suggested
   values for you to accept. Each AI-filled draft carries a line such as "Read by qwen/qwen3.8-27b
   (Groq) · 2,502 tokens", with its cost and who paid.
+- **Several things in one photo** (Thing mode; Admin → Settings, off by default): the same one
+  call names up to 12 things in the photo. The first fills in the capture's own draft and keeps
+  the photo; each other one becomes a draft beside it, in the same place and batch, with its
+  own picture cut from the photo, to confirm, merge or discard in the Inbox. How well the
+  pictures are cut depends on the provider's boxes, so check a few drafts after turning it on.
 - **The assistant** answers from your inventory within your role, and each tool it uses adds a
   call. Changes it proposes show as a confirmation card that you approve; for viewers it is
   read-only.

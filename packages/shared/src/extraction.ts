@@ -66,6 +66,14 @@ export const ThingObject = z.object({
 /** THING: one object in 1.0; many objects is 1.x (D20). */
 export const ThingExtraction = z.object({ objects: z.array(ThingObject).max(1) });
 
+/** 1.4 (D20, D230): at most this many things found in one THING photo. */
+export const MULTI_ITEM_MAX = 12;
+/** THING when the instance finds several things in a photo (D230): each with its box. */
+export const ThingManyExtraction = z.object({
+  objects: z.array(ThingObject.extend({ bbox })).max(MULTI_ITEM_MAX),
+});
+export type ThingManyExtraction = z.infer<typeof ThingManyExtraction>;
+
 const ReceiptLine = z.object({
   description: conf(text(300)),
   quantity: conf(count).optional(),

@@ -341,6 +341,105 @@ describe('THING', () => {
   });
 });
 
+describe('several things in one photo (1.4, D230)', () => {
+  const setMulti = (on: boolean) =>
+    own(
+      db,
+      `INSERT INTO public.instance_settings (key, value) VALUES ('ai_multi_item', $1::jsonb)
+       ON CONFLICT (key) DO UPDATE SET value = excluded.value`,
+      [JSON.stringify(on)],
+    );
+  afterEach(() => setMulti(false));
+
+  /** A photo big enough to cut boxes from. */
+  const bigJpeg = async () => {
+    const { default: sharp } = await import('sharp');
+    return sharp({ create: { width: 400, height: 300, channels: 3, background: '#7a5c3e' } })
+      .jpeg({ quality: 70 })
+      .withExif({ IFD0: { ImageDescription: newId() } })
+      .toBuffer();
+  };
+  const manyAnswer = () => ({
+    objects: [
+      { bbox: [0, 0, 0.5, 1], name: c('Cordless drill', 0.93), aliases: { en: ['drill'] } },
+      { bbox: [0.5, 0, 0.5, 0.5], name: c('Tape measure', 0.86), quantity: c(2), aliases: {} },
+      { bbox: [0.5, 0.5, 0.5, 0.5], name: c('Spirit level', 0.81), aliases: {} },
+      // Too small to cut a picture from: no draft.
+      { bbox: [0, 0, 0.01, 0.01], name: c('Screw', 0.7), aliases: {} },
+    ],
+  });
+
+  it('turned on, makes a draft per extra object in the same batch, each with its own picture', async () => {
+    await setMulti(true);
+    const fileId = await up(louis, await bigJpeg());
+    const batchId = newId();
+    const out = await capture(louis, { batchId, files: [{ fileId, role: 'photo' }] });
+    const thingId = out.thing?.id as string;
+    const { key } = await keyOf(fileId, 'thing');
+    answers[key] = { output: manyAnswer(), usage: { input: 2000, output: 400 } };
+
+    expect((await run(louis, out.extraction.id)).status).toBe('succeeded');
+    const things = await own<{
+      id: string;
+      name: string;
+      quantity: number;
+      review_state: string;
+      place_id: string | null;
+      field_status: Record<string, unknown>;
+    }>(
+      db,
+      `SELECT id, name, quantity::float8 AS quantity, review_state, place_id, field_status FROM public.things
+        WHERE capture_batch_id = $1 ORDER BY name`,
+      [batchId],
+    );
+    expect(things.map((x) => [x.name, x.quantity, x.review_state])).toEqual([
+      ['Cordless drill', 1, 'draft'],
+      ['Spirit level', 1, 'draft'],
+      ['Tape measure', 2, 'draft'],
+    ]);
+    const first = things.find((x) => x.id === thingId);
+    expect(first?.name).toBe('Cordless drill');
+    for (const x of things.filter((y) => y.id !== thingId)) {
+      expect(x.place_id).toBe(first?.place_id);
+      expect(x.field_status.name).toEqual({
+        state: 'extracted',
+        confidence: x.name === 'Tape measure' ? 0.86 : 0.81,
+        extraction_id: out.extraction.id,
+      });
+      expect((await inbox(x.id)).map((i) => i.kind)).toEqual(['draft']);
+      const photos = await own<{ width: number; height: number }>(
+        db,
+        `SELECT f.width, f.height FROM public.attachments a JOIN public.files f ON f.id = a.file_id
+          WHERE a.thing_id = $1 AND a.role = 'photo'`,
+        [x.id],
+      );
+      expect(photos).toHaveLength(1);
+      expect(photos[0]?.width).toBeLessThan(400);
+    }
+    const ex = await extraction(out.extraction.id);
+    expect(ex?.result).toMatchObject({ promptVersion: 'thing-many-v1', found: 4 });
+    expect((await calls(out.extraction.id))[0]).toMatchObject({ prompt_version: 'thing-many-v1' });
+    const split = (await auditOf(db, home.id)).filter(
+      (e) => e.action === 'thing.capture' && (e.diff as Json | null)?.split_from !== undefined,
+    );
+    expect(split).toHaveLength(2);
+  });
+
+  it('turned off (the default), asks for one object and makes one thing', async () => {
+    const fileId = await up(louis, await bigJpeg());
+    const batchId = newId();
+    const out = await capture(louis, { batchId, files: [{ fileId, role: 'photo' }] });
+    const { key } = await keyOf(fileId, 'thing');
+    answers[key] = { output: thingAnswer(), usage: { input: 2000, output: 300 } };
+    expect((await run(louis, out.extraction.id)).status).toBe('succeeded');
+    const things = await own(db, 'SELECT id FROM public.things WHERE capture_batch_id = $1', [
+      batchId,
+    ]);
+    expect(things).toHaveLength(1);
+    expect((await calls(out.extraction.id))[0]).toMatchObject({ prompt_version: 'thing-v1' });
+  });
+});
+
 describe('a thing’s history shows its AI calls (step 6, T18; D206, §7.15)', () => {
   it('merges the ledger row into the history, newest first; kind=ai is the calls only', async () => {
     const fileId = await up(louis);
