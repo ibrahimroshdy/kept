@@ -43,6 +43,9 @@ if (result.hasError()) {
 }
 const pdf = compiler.pdf(result.result, { creationTimestamp: Math.floor(Date.now() / 1000) });
 writeFileSync(path.join(dir, 'out.pdf'), pdf);
+// Its own peak resident size (Node reports maxRSS in kilobytes): the parent samples every 100 ms,
+// and a render that peaks between two samples and ends is still held to the limit.
+const peakMb = Math.round(process.resourceUsage().maxRSS / 1024);
 process.stdout.write(
-  `${JSON.stringify({ ms: Math.round(performance.now() - started), bytes: pdf.length })}\n`,
+  `${JSON.stringify({ ms: Math.round(performance.now() - started), bytes: pdf.length, peakMb })}\n`,
 );

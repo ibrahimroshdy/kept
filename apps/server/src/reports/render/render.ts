@@ -10,7 +10,8 @@ import { ensureFonts } from './fonts.js';
 // only the child's exit hands it back. The parent therefore:
 // - starts child.mjs with its own small V8 heap (the child's JavaScript is a few lines);
 // - watches the child's resident memory every POLL_MS (/proc on Linux, `ps` elsewhere) and kills
-//   it past `memoryMb` (error `memory`);
+//   it past `memoryMb` (error `memory`); a child that peaked past it between two samples and
+//   finished is failed the same way, from the peak it reports itself;
 // - kills it past `timeoutMs` of wall-clock time (error `timeout`).
 // The spike measured 500 things with photos in Arabic at 1.5–1.9 s and 248–278 MB peak, so the
 // defaults (512 MB, 60 s) leave room and still stop a runaway on a Pi (engineering spec §3.1).
@@ -107,7 +108,11 @@ export async function renderPdf(
   child.stderr.on('data', (chunk: string) => {
     if (stderr.length < 4000) stderr += chunk;
   });
-  child.stdout.resume();
+  let stdout = '';
+  child.stdout.setEncoding('utf8');
+  child.stdout.on('data', (chunk: string) => {
+    if (stdout.length < 4000) stdout += chunk;
+  });
 
   let killedFor: RenderErrorCode | null = null;
   let peakMb = 0;
@@ -153,6 +158,18 @@ export async function renderPdf(
       'render',
       `the renderer failed (${exit.code ?? exit.signal}): ${stderr.trim().slice(0, 1000)}`,
     );
+  }
+  // The child's own peak (child.mjs): a render can rise past the limit and end between samples.
+  let reported = Number.NaN;
+  try {
+    const last = JSON.parse(stdout.trim().split('\n').at(-1) ?? '') as { peakMb?: unknown };
+    reported = Number(last.peakMb);
+  } catch {
+    // No line from the child: the samples are all there is.
+  }
+  if (Number.isFinite(reported)) peakMb = Math.max(peakMb, reported);
+  if (peakMb > memoryMb) {
+    throw new RenderError('memory', `the report needed more than ${memoryMb} MB to render`);
   }
   const file = path.join(dir, 'out.pdf');
   const { size } = await stat(file);
