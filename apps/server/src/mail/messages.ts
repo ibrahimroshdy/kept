@@ -245,6 +245,23 @@ const EN: CoreTable = {
         'If you didn’t ask for this, sign in now, choose Keep my account, and change your password.',
     };
   },
+  'report-ready': (m) => {
+    const name = {
+      inventory: 'Inventory',
+      insurance: 'Insurance report',
+      vehicle_history: 'Vehicle history',
+    }[m.report];
+    return {
+      subject: m.place ? `${name}: ${m.place}` : name,
+      paragraphs: [
+        m.attached
+          ? 'Kept made the report you asked for. It is attached as a PDF.'
+          : 'Kept made the report you asked for, but it is too large to attach. Print it again from Kept to download it.',
+      ],
+      footnote:
+        'Scheduled reports are listed in Settings → Me → Notifications, where you can stop them.',
+    };
+  },
   invite: (m) => ({
     subject: m.inviterName
       ? `${m.inviterName} invited you to ${m.locationName} on Kept`
@@ -637,6 +654,20 @@ const AR: CoreTable = {
         'وحتى ذلك الحين، يعرض لك تسجيل الدخول هذا التاريخ ويتيح لك الإبقاء على حسابك. أما ما أضفته إلى مواقع الآخرين فيبقى فيها.',
       ],
       footnote: 'إذا لم تطلب ذلك، فسجّل الدخول الآن واختر «الإبقاء على حسابي»، ثم غيّر كلمة المرور.',
+    };
+  },
+  'report-ready': (m) => {
+    const name = { inventory: 'الجرد', insurance: 'تقرير التأمين', vehicle_history: 'سجل المركبة' }[
+      m.report
+    ];
+    return {
+      subject: m.place ? `${name}: ${m.place}` : name,
+      paragraphs: [
+        m.attached
+          ? 'أعدّ Kept التقرير الذي طلبته، وهو مرفق بصيغة PDF.'
+          : 'أعدّ Kept التقرير الذي طلبته، لكنه أكبر من أن يُرفق. اطبعه مجددًا من Kept لتنزيله.',
+      ],
+      footnote: 'التقارير المجدولة موجودة في الإعدادات ← أنا ← الإشعارات، ويمكنك إيقافها من هناك.',
     };
   },
   invite: (m) => ({

@@ -1,6 +1,6 @@
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { can, newId } from '@kept/shared';
+import { can, newId, REPORT_MAIL_MAX_BYTES } from '@kept/shared';
 import type pg from 'pg';
 import sharp from 'sharp';
 import { renderSVG } from 'uqr';
@@ -19,6 +19,7 @@ import {
 } from '../incidents/report.js';
 import type { JobQueue } from '../jobs/queue.js';
 import { requireMembership } from '../locations/access.js';
+import type { Mailer } from '../mail/mailer.js';
 import { gateFor } from '../serialize/gates.js';
 import { type FileStorage, reportKey } from '../storage/blob-store.js';
 import { SIGNED_URL_TTL_SECONDS } from '../storage/signed-url.js';
@@ -116,6 +117,8 @@ export const InventoryReportBody = z
     locale: z.enum(['en', 'ar']).optional(),
     /** Omitted: the requester's own setting (D143). Applies to Arabic only. */
     digits: z.enum(['western', 'eastern']).optional(),
+    /** 1.3 (D228): mail the PDF to the requester when it is done. */
+    email: z.boolean().optional(),
   })
   .strict();
 export type InventoryReportBody = z.infer<typeof InventoryReportBody>;
@@ -157,10 +160,12 @@ type RunRow = {
   created_at: Date;
   started_at: Date | null;
   expires_at: Date;
+  email_when_done: boolean;
 };
 
 const RUN_COLUMNS = `id, kind, location_id, owner_account_id, location_ids, options, status,
-  progress_done, progress_total, bytes, error, created_at, started_at, expires_at`;
+  progress_done, progress_total, bytes, error, created_at, started_at, expires_at,
+  email_when_done`;
 
 const scopeOf = (r: Pick<RunRow, 'location_id' | 'owner_account_id'>): RunScope =>
   r.location_id ? { locationId: r.location_id } : { accountId: r.owner_account_id as string };
@@ -268,8 +273,9 @@ export async function createInventoryRun(
   const options = await optionsOf(client, body);
   const id = newId();
   const { rows } = await client.query<{ expires_at: Date }>(
-    `INSERT INTO public.report_runs (id, user_id, location_id, owner_account_id, location_ids, options)
-     VALUES ($1, kept.current_user_id(), $2, $3, $4::uuid[], $5::jsonb)
+    `INSERT INTO public.report_runs
+       (id, user_id, location_id, owner_account_id, location_ids, options, email_when_done)
+     VALUES ($1, kept.current_user_id(), $2, $3, $4::uuid[], $5::jsonb, $6)
      RETURNING expires_at`,
     [
       id,
@@ -277,6 +283,7 @@ export async function createInventoryRun(
       'accountId' in runScope ? runScope.accountId : null,
       locationIds,
       JSON.stringify(options),
+      body.email === true,
     ],
   );
   // One event in every location the report covers, so each location's history says who printed
@@ -329,6 +336,8 @@ export const InsuranceReportBody = z
      * and Italian readers get English. Omitted: the requester's own. */
     locale: z.enum(['en', 'ar', 'fr', 'de', 'it']).optional(),
     digits: z.enum(['western', 'eastern']).optional(),
+    /** 1.3 (D228): mail the PDF to the requester when it is done. */
+    email: z.boolean().optional(),
   })
   .strict();
 export type InsuranceReportBody = z.infer<typeof InsuranceReportBody>;
@@ -437,10 +446,11 @@ export async function createInsuranceRun(
   await checkRate(client);
   const id = newId();
   const { rows } = await client.query<{ expires_at: Date }>(
-    `INSERT INTO public.report_runs (id, kind, user_id, location_id, location_ids, options)
-     VALUES ($1, 'insurance', kept.current_user_id(), $2, ARRAY[$2]::uuid[], $3::jsonb)
+    `INSERT INTO public.report_runs
+       (id, kind, user_id, location_id, location_ids, options, email_when_done)
+     VALUES ($1, 'insurance', kept.current_user_id(), $2, ARRAY[$2]::uuid[], $3::jsonb, $4)
      RETURNING expires_at`,
-    [id, at.locationId, JSON.stringify(options)],
+    [id, at.locationId, JSON.stringify(options), body.email === true],
   );
   await auditedMany(tx, [
     {
@@ -637,6 +647,13 @@ export type ReportJobDeps = {
   /** Render limits (tests). */
   render?: { memoryMb?: number; timeoutMs?: number };
   now?: () => Date;
+  /** 1.3 (D228): how a finished run asked to be mailed reaches its requester. Omitted: it isn't
+   * mailed (the run is still there to download). */
+  mail?: {
+    send: Mailer['send'];
+    /** The requester's deliverable address and language, or null (managed, unverified). */
+    addressOf: (userId: string) => Promise<{ email: string; locale: string | null } | null>;
+  };
 };
 
 export type ReportOutcome =
@@ -939,6 +956,11 @@ export async function runReport(
       },
       'report rendered',
     );
+    if (run.email_when_done) {
+      await mailReport(deps, scope, run, rendered.file, rendered.bytes).catch((err: unknown) =>
+        deps.log.error({ err, runId }, 'report not mailed'),
+      );
+    }
     return {
       status: 'done',
       bytes: rendered.bytes,
@@ -959,6 +981,48 @@ export async function runReport(
   } finally {
     if (dir) await rm(dir, { recursive: true, force: true });
   }
+}
+
+/** 1.3 (D228): the finished PDF to its requester, attached up to REPORT_MAIL_MAX_BYTES. */
+async function mailReport(
+  deps: ReportJobDeps,
+  scope: Scope,
+  run: RunRow,
+  file: string,
+  bytes: number,
+): Promise<void> {
+  if (!deps.mail) return;
+  const to = await deps.mail.addressOf(scope.userId);
+  if (!to) return;
+  const place = run.location_id
+    ? await inScope(deps, scope, async (_tx, c) => {
+        const { rows } = await c.query<{ name: string }>(
+          'SELECT name FROM public.locations WHERE id = $1',
+          [run.location_id],
+        );
+        return rows[0]?.name ?? null;
+      })
+    : null;
+  const attach = bytes <= REPORT_MAIL_MAX_BYTES;
+  await deps.mail.send({
+    kind: 'report-ready',
+    to: to.email,
+    locale: to.locale,
+    report: run.kind,
+    place,
+    attached: attach,
+    ...(attach
+      ? {
+          attachments: [
+            {
+              filename: filenameOf(run.kind, run.created_at),
+              content: await readFile(file),
+              contentType: 'application/pdf',
+            },
+          ],
+        }
+      : {}),
+  });
 }
 
 function hostOf(url: string): string {

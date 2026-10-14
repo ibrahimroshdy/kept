@@ -222,6 +222,23 @@ export const IT: CoreTable = {
         'Se non l’hai chiesto tu, accedi ora, scegli «Tieni il mio account» e cambia la password.',
     };
   },
+  'report-ready': (m) => {
+    const name = {
+      inventory: 'Inventario',
+      insurance: 'Report per l’assicurazione',
+      vehicle_history: 'Storico del veicolo',
+    }[m.report];
+    return {
+      subject: m.place ? `${name}: ${m.place}` : name,
+      paragraphs: [
+        m.attached
+          ? 'Kept ha preparato il report richiesto. È allegato in PDF.'
+          : 'Kept ha preparato il report richiesto, ma è troppo grande per allegarlo. Stampalo di nuovo da Kept per scaricarlo.',
+      ],
+      footnote:
+        'I report programmati sono in Impostazioni → Profilo → Notifiche, dove puoi interromperli.',
+    };
+  },
   invite: (m) => ({
     subject: m.inviterName
       ? `${m.inviterName} ti ha invitato in «${m.locationName}» su Kept`

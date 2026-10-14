@@ -208,4 +208,10 @@ export async function fillInventory(
      VALUES ($1, $2, ARRAY[$3::uuid])`,
     [t.userId, t.accountId, t.locationId],
   );
+  // A scheduled report (1.3, D228).
+  await c.query(
+    `INSERT INTO public.report_schedules (user_id, location_id, kind, cadence)
+     VALUES ($1, $2, 'inventory', 'weekly')`,
+    [t.userId, t.locationId],
+  );
 }

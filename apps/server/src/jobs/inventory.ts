@@ -1,5 +1,6 @@
 import { fileJobs } from '../files/jobs.js';
 import { reportJobs } from '../reports/jobs.js';
+import { reportScheduleJobs } from '../reports/schedules.js';
 import { searchJobs } from '../search/jobs.js';
 import { trashJobs } from '../trash/jobs.js';
 import type { JobDefinition } from './boss.js';
@@ -12,5 +13,11 @@ import type { SystemJobDeps } from './system.js';
 // (§7.14); SYSTEM_TABLES does not grow.
 
 export function inventoryJobs(deps: SystemJobDeps): JobDefinition[] {
-  return [...fileJobs(deps), ...searchJobs(deps), ...trashJobs(deps), ...reportJobs(deps)];
+  return [
+    ...fileJobs(deps),
+    ...searchJobs(deps),
+    ...trashJobs(deps),
+    ...reportJobs(deps),
+    ...reportScheduleJobs(deps),
+  ];
 }

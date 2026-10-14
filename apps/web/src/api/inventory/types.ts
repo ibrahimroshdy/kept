@@ -1324,6 +1324,21 @@ export type InventoryReportBody = {
   include?: { photos?: boolean; qr?: boolean; money?: boolean };
   locale?: 'en' | 'ar';
   digits?: 'western' | 'eastern';
+  /** 1.3 (D228): also mail the PDF to me when it's done. */
+  email?: boolean;
+};
+
+/** 1.3 (D228): a report mailed to the person, weekly (Mondays) or monthly (the 1st). */
+export type ReportSchedule = {
+  id: string;
+  locationId: string;
+  locationName: string;
+  kind: 'inventory' | 'insurance';
+  cadence: 'weekly' | 'monthly';
+  /** The location's local day it last ran, or null. */
+  lastRunOn: string | null;
+  /** Why the last one couldn't be made: `not_found`, `forbidden`, `module_off`, `rate_limited`. */
+  lastError: string | null;
 };
 
 /** 202 from POST /api/v1/reports/inventory. */

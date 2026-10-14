@@ -1,6 +1,7 @@
 import { defineJob, type JobDefinition } from '../jobs/boss.js';
 import { JOB_POLICIES } from '../jobs/policies.js';
 import type { SystemJobDeps } from '../jobs/system.js';
+import { mailAddressOf } from './schedules.js';
 import { purgeExpiredReports, runReport } from './service.js';
 
 // The report's jobs (D201), aggregated by jobs/inventory.ts:
@@ -31,7 +32,14 @@ export function reportJobs(deps: SystemJobDeps): JobDefinition[] {
         // pool's 30 s idle-in-transaction limit the server would end it and fail the job.
         await client.query(`SET LOCAL idle_in_transaction_session_timeout = '180s'`);
         await runReport(
-          { pools: { app }, files: deps.files ?? null, publicUrl: deps.publicUrl, log: deps.log },
+          {
+            pools: { app },
+            files: deps.files ?? null,
+            publicUrl: deps.publicUrl,
+            log: deps.log,
+            // 1.3 (D228): a run asked to be mailed goes to the requester's verified address.
+            mail: { send: (m) => deps.mailer.send(m), addressOf: (id) => mailAddressOf(deps, id) },
+          },
           scope,
           runId,
         );

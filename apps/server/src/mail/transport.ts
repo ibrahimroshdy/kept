@@ -70,6 +70,7 @@ export function smtpMailer(opts: SmtpOptions): SmtpMailer {
         text: rendered.text,
         html: rendered.html,
         headers: { 'Content-Language': locale, 'X-Kept-Mail': mail.kind },
+        ...(mail.attachments ? { attachments: mail.attachments } : {}),
       });
     },
     close: () => transport.close(),

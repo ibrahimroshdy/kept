@@ -10,15 +10,21 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../client';
 import { inventoryPaths as p } from './paths';
-import type { InventoryReportBody, ReportCreated, ReportRun } from './types';
+import type { InventoryReportBody, ReportCreated, ReportRun, ReportSchedule } from './types';
 
 export const reportsApi = {
   start: (body: InventoryReportBody) => api.post<ReportCreated>(p.reportsInventory, body),
   run: (id: string) => api.get<ReportRun>(p.report(id)),
+  /** 1.3 (D228): the person's scheduled reports. */
+  schedules: () => api.get<{ schedules: ReportSchedule[] }>(p.reportSchedules),
+  schedule: (body: Pick<ReportSchedule, 'locationId' | 'kind' | 'cadence'>) =>
+    api.put<ReportSchedule>(p.reportSchedules, body),
+  unschedule: (id: string) => api.del(p.reportSchedule(id)),
 };
 
 export const reportKeys = {
   run: (id: string) => ['reports', 'run', id] as const,
+  schedules: ['reports', 'schedules'] as const,
 };
 
 /** How often a run is read: every second while it's being made. */
