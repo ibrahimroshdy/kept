@@ -3,6 +3,17 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.2.0 (2026-10-14)
+
+### Features
+
+- **auth:** Google sign-in, and linking outside sign-ins from Settings (D226) (#53) (84cade8)
+- **accounts:** delete your own account, with 30 days to keep it (D225) (#52) (2366e50)
+
+### Documentation
+
+- **release:** the 1.1.0 record (#51) (b3876a8)
+
 ## 1.1.0 (2026-10-14)
 
 ### Features
