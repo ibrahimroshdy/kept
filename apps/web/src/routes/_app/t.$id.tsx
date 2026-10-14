@@ -68,6 +68,7 @@ export const Route = createFileRoute('/_app/t/$id')({
       'template',
       'lend',
       'return',
+      'share',
     ]),
   }),
   component: ThingPage,

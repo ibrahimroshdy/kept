@@ -570,6 +570,7 @@ export const NOT_EXPORTED: Readonly<Record<string, string>> = Object.freeze({
   // and photos back yet; its PDF is the copy that travels.
   condition_reports: "not in a Kept export yet; a report's PDF is its portable copy",
   condition_report_rooms: "not in a Kept export yet; a report's PDF is its portable copy",
+  share_links: "links to this server's pages, whose tokens are never shown again",
 });
 
 const SNAKE = /_([a-z0-9])/g;

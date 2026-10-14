@@ -387,6 +387,9 @@ export function useSummary() {
       'webhook.update': t`Webhook changed`,
       'webhook.delete': t`Webhook removed`,
       'webhook.rotate_secret': t`Webhook secret replaced`,
+      // 1.5 (D233): read-only share links.
+      'share_link.create': t`Share link made`,
+      'share_link.revoke': t`Share link revoked`,
       'purchase.reextract': t`Receipt read again`,
       'thing.enrich': t`Other names added`,
       'import.enrich': t`Other names requested for an import`,

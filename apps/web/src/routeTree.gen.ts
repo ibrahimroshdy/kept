@@ -38,6 +38,7 @@ import { Route as AuthConfirmRouteImport } from './routes/auth/confirm'
 import { Route as AuthEmailChangeRouteImport } from './routes/auth/email-change'
 import { Route as AuthResetRouteImport } from './routes/auth/reset'
 import { Route as OauthConsentRouteImport } from './routes/oauth/consent'
+import { Route as STokenRouteImport } from './routes/s.$token'
 import { Route as SigninIndexRouteImport } from './routes/signin/index'
 import { Route as SigninCodeRouteImport } from './routes/signin/code'
 import { Route as SigninTwoFactorRouteImport } from './routes/signin/two-factor'
@@ -97,6 +98,7 @@ import { Route as AppSettingsLocationIdEmailInRouteImport } from './routes/_app/
 import { Route as AppSettingsLocationIdGeneralRouteImport } from './routes/_app/settings.location.$id.general'
 import { Route as AppSettingsLocationIdInviteRouteImport } from './routes/_app/settings.location.$id.invite'
 import { Route as AppSettingsLocationIdMembersRouteImport } from './routes/_app/settings.location.$id.members'
+import { Route as AppSettingsLocationIdShareLinksRouteImport } from './routes/_app/settings.location.$id.share-links'
 import { Route as AppSettingsLocationIdTrackRouteImport } from './routes/_app/settings.location.$id.track'
 import { Route as AppSettingsLocationIdWebhooksRouteImport } from './routes/_app/settings.location.$id.webhooks'
 
@@ -241,6 +243,11 @@ const AuthResetRoute = AuthResetRouteImport.update({
 const OauthConsentRoute = OauthConsentRouteImport.update({
   id: '/oauth/consent',
   path: '/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const STokenRoute = STokenRouteImport.update({
+  id: '/s/$token',
+  path: '/s/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SigninIndexRoute = SigninIndexRouteImport.update({
@@ -549,6 +556,12 @@ const AppSettingsLocationIdMembersRoute =
     path: '/settings/location/$id/members',
     getParentRoute: () => AppRoute,
   } as any)
+const AppSettingsLocationIdShareLinksRoute =
+  AppSettingsLocationIdShareLinksRouteImport.update({
+    id: '/settings/location/$id/share-links',
+    path: '/settings/location/$id/share-links',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppSettingsLocationIdTrackRoute =
   AppSettingsLocationIdTrackRouteImport.update({
     id: '/settings/location/$id/track',
@@ -590,6 +603,7 @@ export interface FileRoutesByFullPath {
   '/auth/email-change': typeof AuthEmailChangeRoute
   '/auth/reset': typeof AuthResetRoute
   '/oauth/consent': typeof OauthConsentRoute
+  '/s/$token': typeof STokenRoute
   '/signin/code': typeof SigninCodeRoute
   '/signin/two-factor': typeof SigninTwoFactorRoute
   '/signin/': typeof SigninIndexRoute
@@ -649,6 +663,7 @@ export interface FileRoutesByFullPath {
   '/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
   '/settings/location/$id/members': typeof AppSettingsLocationIdMembersRoute
+  '/settings/location/$id/share-links': typeof AppSettingsLocationIdShareLinksRoute
   '/settings/location/$id/track': typeof AppSettingsLocationIdTrackRoute
   '/settings/location/$id/webhooks': typeof AppSettingsLocationIdWebhooksRoute
 }
@@ -679,6 +694,7 @@ export interface FileRoutesByTo {
   '/auth/email-change': typeof AuthEmailChangeRoute
   '/auth/reset': typeof AuthResetRoute
   '/oauth/consent': typeof OauthConsentRoute
+  '/s/$token': typeof STokenRoute
   '/signin/code': typeof SigninCodeRoute
   '/signin/two-factor': typeof SigninTwoFactorRoute
   '/signin': typeof SigninIndexRoute
@@ -737,6 +753,7 @@ export interface FileRoutesByTo {
   '/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
   '/settings/location/$id/members': typeof AppSettingsLocationIdMembersRoute
+  '/settings/location/$id/share-links': typeof AppSettingsLocationIdShareLinksRoute
   '/settings/location/$id/track': typeof AppSettingsLocationIdTrackRoute
   '/settings/location/$id/webhooks': typeof AppSettingsLocationIdWebhooksRoute
 }
@@ -770,6 +787,7 @@ export interface FileRoutesById {
   '/auth/email-change': typeof AuthEmailChangeRoute
   '/auth/reset': typeof AuthResetRoute
   '/oauth/consent': typeof OauthConsentRoute
+  '/s/$token': typeof STokenRoute
   '/signin/code': typeof SigninCodeRoute
   '/signin/two-factor': typeof SigninTwoFactorRoute
   '/_app/': typeof AppIndexRoute
@@ -830,6 +848,7 @@ export interface FileRoutesById {
   '/_app/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/_app/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
   '/_app/settings/location/$id/members': typeof AppSettingsLocationIdMembersRoute
+  '/_app/settings/location/$id/share-links': typeof AppSettingsLocationIdShareLinksRoute
   '/_app/settings/location/$id/track': typeof AppSettingsLocationIdTrackRoute
   '/_app/settings/location/$id/webhooks': typeof AppSettingsLocationIdWebhooksRoute
 }
@@ -863,6 +882,7 @@ export interface FileRouteTypes {
     | '/auth/email-change'
     | '/auth/reset'
     | '/oauth/consent'
+    | '/s/$token'
     | '/signin/code'
     | '/signin/two-factor'
     | '/signin/'
@@ -922,6 +942,7 @@ export interface FileRouteTypes {
     | '/settings/location/$id/general'
     | '/settings/location/$id/invite'
     | '/settings/location/$id/members'
+    | '/settings/location/$id/share-links'
     | '/settings/location/$id/track'
     | '/settings/location/$id/webhooks'
   fileRoutesByTo: FileRoutesByTo
@@ -952,6 +973,7 @@ export interface FileRouteTypes {
     | '/auth/email-change'
     | '/auth/reset'
     | '/oauth/consent'
+    | '/s/$token'
     | '/signin/code'
     | '/signin/two-factor'
     | '/signin'
@@ -1010,6 +1032,7 @@ export interface FileRouteTypes {
     | '/settings/location/$id/general'
     | '/settings/location/$id/invite'
     | '/settings/location/$id/members'
+    | '/settings/location/$id/share-links'
     | '/settings/location/$id/track'
     | '/settings/location/$id/webhooks'
   id:
@@ -1042,6 +1065,7 @@ export interface FileRouteTypes {
     | '/auth/email-change'
     | '/auth/reset'
     | '/oauth/consent'
+    | '/s/$token'
     | '/signin/code'
     | '/signin/two-factor'
     | '/_app/'
@@ -1102,6 +1126,7 @@ export interface FileRouteTypes {
     | '/_app/settings/location/$id/general'
     | '/_app/settings/location/$id/invite'
     | '/_app/settings/location/$id/members'
+    | '/_app/settings/location/$id/share-links'
     | '/_app/settings/location/$id/track'
     | '/_app/settings/location/$id/webhooks'
   fileRoutesById: FileRoutesById
@@ -1116,6 +1141,7 @@ export interface RootRouteChildren {
   AuthEmailChangeRoute: typeof AuthEmailChangeRoute
   AuthResetRoute: typeof AuthResetRoute
   OauthConsentRoute: typeof OauthConsentRoute
+  STokenRoute: typeof STokenRoute
   SigninCodeRoute: typeof SigninCodeRoute
   SigninTwoFactorRoute: typeof SigninTwoFactorRoute
   SigninIndexRoute: typeof SigninIndexRoute
@@ -1324,6 +1350,13 @@ declare module '@tanstack/react-router' {
       path: '/oauth/consent'
       fullPath: '/oauth/consent'
       preLoaderRoute: typeof OauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/s/$token': {
+      id: '/s/$token'
+      path: '/s/$token'
+      fullPath: '/s/$token'
+      preLoaderRoute: typeof STokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signin/': {
@@ -1739,6 +1772,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsLocationIdMembersRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings/location/$id/share-links': {
+      id: '/_app/settings/location/$id/share-links'
+      path: '/settings/location/$id/share-links'
+      fullPath: '/settings/location/$id/share-links'
+      preLoaderRoute: typeof AppSettingsLocationIdShareLinksRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/settings/location/$id/track': {
       id: '/_app/settings/location/$id/track'
       path: '/settings/location/$id/track'
@@ -1913,6 +1953,7 @@ interface AppRouteChildren {
   AppSettingsLocationIdGeneralRoute: typeof AppSettingsLocationIdGeneralRoute
   AppSettingsLocationIdInviteRoute: typeof AppSettingsLocationIdInviteRoute
   AppSettingsLocationIdMembersRoute: typeof AppSettingsLocationIdMembersRoute
+  AppSettingsLocationIdShareLinksRoute: typeof AppSettingsLocationIdShareLinksRoute
   AppSettingsLocationIdTrackRoute: typeof AppSettingsLocationIdTrackRoute
   AppSettingsLocationIdWebhooksRoute: typeof AppSettingsLocationIdWebhooksRoute
 }
@@ -1970,6 +2011,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSettingsLocationIdGeneralRoute: AppSettingsLocationIdGeneralRoute,
   AppSettingsLocationIdInviteRoute: AppSettingsLocationIdInviteRoute,
   AppSettingsLocationIdMembersRoute: AppSettingsLocationIdMembersRoute,
+  AppSettingsLocationIdShareLinksRoute: AppSettingsLocationIdShareLinksRoute,
   AppSettingsLocationIdTrackRoute: AppSettingsLocationIdTrackRoute,
   AppSettingsLocationIdWebhooksRoute: AppSettingsLocationIdWebhooksRoute,
 }
@@ -1996,6 +2038,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthEmailChangeRoute: AuthEmailChangeRoute,
   AuthResetRoute: AuthResetRoute,
   OauthConsentRoute: OauthConsentRoute,
+  STokenRoute: STokenRoute,
   SigninCodeRoute: SigninCodeRoute,
   SigninTwoFactorRoute: SigninTwoFactorRoute,
   SigninIndexRoute: SigninIndexRoute,

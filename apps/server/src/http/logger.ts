@@ -13,8 +13,9 @@ const SENSITIVE_PARAM = /token|secret|password|passwd|code|key|signature|sig|aut
 
 /** Paths that carry a token as a segment: the invite preview and accept routes (task 20), a
  * signed file URL, whose whole path is its token (Q16; security review #11), a claim pack's
- * download link (step 4, T18: `/x/<token>`) and a calendar feed (T17: `/cal/<token>.ics`). */
-const TOKEN_PATH = /^(\/api\/v1\/invites\/|\/f\/|\/x\/|\/cal\/)[^/?#]+/;
+ * download link (step 4, T18: `/x/<token>`), a calendar feed (T17: `/cal/<token>.ics`) and a
+ * share link's page and its API (1.5, D233: `/s/<token>`, `/api/v1/shared/<token>`). */
+const TOKEN_PATH = /^(\/api\/v1\/invites\/|\/api\/v1\/shared\/|\/f\/|\/x\/|\/cal\/|\/s\/)[^/?#]+/;
 
 /** The URL with every sensitive query parameter's value, and a token path segment, replaced. */
 export function redactUrl(raw: string): string {

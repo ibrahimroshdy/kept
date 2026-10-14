@@ -395,6 +395,8 @@ describe('activity', () => {
       'webhook.update': 'Webhook changed',
       'webhook.delete': 'Webhook removed',
       'webhook.rotate_secret': 'Webhook secret replaced',
+      'share_link.create': 'Share link made',
+      'share_link.revoke': 'Share link revoked',
       'purchase.reextract': 'Receipt read again',
       'thing.enrich': 'Other names added',
       'import.enrich': 'Other names requested for an import',

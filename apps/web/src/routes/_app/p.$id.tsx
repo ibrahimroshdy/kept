@@ -2,7 +2,8 @@
  * A place's page (screens §5 Place, D160): the breadcrumb, its label ID, "Add here", its fields,
  * then what's in it (places first, then things) under the list standard, its attachments, and
  * every place operation: rename, move (re-parent within the location), merge, turn into a box,
- * label, and trash with a choice for what's inside (D45).
+ * label, share as a read-only link (owners and admins, never in Personal; 1.5, D233), and trash
+ * with a choice for what's inside (D45).
  *
  * Controls follow screens §3: hidden for a role that can't use them; the label action shows
  * "Off in this location" when the Labels module is off. The Unplaced area (D118) is a place too,
@@ -67,6 +68,7 @@ import { Sheet } from '@/components/places/sheet';
 import { TrashPlaceDialog } from '@/components/places/trash-contents-dialog';
 import { PlacesPanel, PlaceTree } from '@/components/places/tree';
 import { SortUnplaced } from '@/components/places/unplaced-sort';
+import { ShareLinkSheet } from '@/components/sharelinks/share-sheet';
 import { useOriginalFile } from '@/components/things/original-file';
 import { TypeIcon } from '@/components/type-icon';
 import { Button } from '@/components/ui/button';
@@ -135,7 +137,7 @@ function PlaceScreen({ id, param }: { id: string; param: string }) {
   return <PlaceBody key={place.data.id} place={place.data} location={location.data} />;
 }
 
-type Open = 'rename' | 'move' | 'merge' | 'convert' | 'trash' | 'sort' | null;
+type Open = 'rename' | 'move' | 'merge' | 'convert' | 'trash' | 'sort' | 'share' | null;
 
 function PlaceBody({ place, location }: { place: PlaceView; location: LocationDetail }) {
   const navigate = useNavigate();
@@ -308,6 +310,14 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
               />
             ) : null}
             <LabelRow place={place} location={location} />
+            {admin && location.kind !== 'personal' ? (
+              <ActionRow
+                icon={<ShareIcon />}
+                title={<Trans>Share a read-only link</Trans>}
+                subtitle={<Trans>For someone without an account; it expires</Trans>}
+                onPress={() => setOpen('share')}
+              />
+            ) : null}
             <ActionRow
               icon={<TrashIcon />}
               title={<Trans>Move to trash</Trans>}
@@ -339,6 +349,14 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
         onOpenChange={(o) => !o && close()}
         onTrashed={toParent}
       />
+      {admin && location.kind !== 'personal' && !place.isUnplaced ? (
+        <ShareLinkSheet
+          isOpen={open === 'share'}
+          onClose={close}
+          locationId={location.id}
+          target={{ kind: 'place', id: place.id, name }}
+        />
+      ) : null}
       {open === 'sort' ? (
         <SortUnplaced unplacedId={place.id} locationId={location.id} onClose={close} />
       ) : null}

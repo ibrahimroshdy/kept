@@ -32,6 +32,7 @@ export * from './reminders.js';
 export * from './roles.js';
 export * from './scan.js';
 export * from './services.js';
+export * from './share-links.js';
 export * from './short-code.js';
 export * from './sync.js';
 export * from './tokens.js';

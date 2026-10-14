@@ -52,7 +52,9 @@ export function limiterKey(
     // Step 7 (T14): a Kept import's passphrase tries, per run.
     | 'import-passphrase'
     // 1.4 (D231): signing in to a location's mailbox to check it, per person.
-    | 'mailbox-check',
+    | 'mailbox-check'
+    // 1.5 (D233): a share link's page views, per link.
+    | 'share-link',
   ...parts: string[]
 ): string {
   const normalised = parts.map((p) => p.trim().toLowerCase());

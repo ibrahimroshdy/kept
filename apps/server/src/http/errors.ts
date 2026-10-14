@@ -191,6 +191,7 @@ const CONFLICT_HINTS: Record<string, string> = {
   account_deletion_blocked:
     'Something still stops this account being deleted: a location you own, or being the only instance admin.',
   calendar_feeds_cap: 'You already have 3 calendar links; revoke one first.',
+  share_links_cap: 'This location already has 100 live share links; revoke one first.',
   // Step 5 (plan T2): the unique names Phase A declares (T5, T6). One reading has one owner, a
   // fill or a service (Q11); the API refuses first, these are the answer when one slips past.
   fuel_entries_reading_uq: 'That reading already belongs to another fuel entry.',

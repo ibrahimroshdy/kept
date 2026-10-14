@@ -325,6 +325,15 @@ const KEPT_FUNCTION_EXECUTE: Record<string, string[]> = {
   'kept.webhook_secret(uuid)': SYSTEM_ONLY,
   // 1.4 (0120, D231): the mail-in job's view of a mailbox with its sealed connection.
   'kept.mailbox_config(uuid)': SYSTEM_ONLY,
+  // 1.5 (0127, D233): share links' cap, what a link shows (owner-only), and the public page's
+  // and the admins' preview doors.
+  'kept.guard_share_link_cap()': OWNER_ONLY,
+  'kept.share_path(uuid,uuid)': OWNER_ONLY,
+  'kept.share_thing_json(things)': OWNER_ONLY,
+  'kept.share_link_contents(uuid,integer)': OWNER_ONLY,
+  'kept.share_link_backed(uuid)': OWNER_ONLY,
+  'kept.share_link_open(text,integer)': SYSTEM_ONLY,
+  'kept.share_link_preview(uuid,integer)': APP_ONLY,
   'kept.webhooks_listening(uuid,text)': APP_ONLY,
   'kept.disable_webhooks_in(uuid,uuid)': OWNER_ONLY,
   'kept.disable_webhooks_for(uuid,uuid)': APP_AND_SYSTEM,

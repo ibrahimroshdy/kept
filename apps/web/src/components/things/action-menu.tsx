@@ -1,7 +1,8 @@
 /**
  * The thing's actions (screens §5): Move · Lend or Mark returned (step 4) · Pick up (the carrying tray, D175) · Box check
  * (containers, D40) · Label · Split · Duplicate · Save as template (D76) · Mark seen · Not here · Change lifecycle ·
- * Re-type · Convert to place (containers) · Trash, plus Copy link. On a phone
+ * Re-type · Convert to place (containers) · Share a read-only link (containers, owners and admins,
+ * never in Personal; 1.5, D233) · Trash, plus Copy link. On a phone
  * they open as a bottom sheet; from `md` up, as a menu. Both are a React Aria Menu: arrow keys
  * move, Enter chooses, Escape closes.
  *
@@ -31,6 +32,7 @@ import {
   PencilIcon,
   QrIcon,
   QuestionIcon,
+  ShareIcon,
   TrashIcon,
 } from '@/components/icons';
 import { useErrorText } from '@/components/page';
@@ -55,7 +57,8 @@ export type SheetName =
   | 'trash'
   | 'template'
   | 'lend'
-  | 'return';
+  | 'return'
+  | 'share';
 
 export type Item = {
   id: string;
@@ -85,7 +88,7 @@ export function useCopyLink() {
 }
 
 function useItems(extra: Item[] = []): Item[] {
-  const { thing, can, moduleOn } = useThingCtx();
+  const { thing, can, moduleOn, location } = useThingCtx();
   const { t } = useLingui();
   const items: Item[] = [];
   const edit = can('things.edit');
@@ -138,6 +141,9 @@ function useItems(extra: Item[] = []): Item[] {
       items.push({ id: 'convert', label: t`Convert to a room or spot`, icon: <MoveGlyph /> });
   }
   items.push(...extra);
+  // A box as a read-only link for someone without an account (1.5, D233; D39, D114).
+  if (thing.isContainer && can('share-links.create') && location.kind !== 'personal')
+    items.push({ id: 'share', label: t`Share a read-only link`, icon: <ShareIcon /> });
   items.push({ id: 'copy-link', label: t`Copy link`, icon: <LinkIcon /> });
   if (can('things.trash'))
     items.push({ id: 'trash', label: t`Move to Trash`, icon: <TrashIcon />, danger: true });
@@ -203,6 +209,7 @@ export function useRunAction(openSheet: (s: SheetName) => void) {
         case 'template':
         case 'lend':
         case 'return':
+        case 'share':
           openSheet(id);
           return;
         case 'copy-link':

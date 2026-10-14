@@ -24,6 +24,7 @@ import { ChevronStartIcon, LinkIcon, PencilIcon } from '@/components/icons';
 import { ErrorState, LinkButton, LoadingRows, Page, Pill } from '@/components/page';
 import { usePlaceTree } from '@/components/places/api';
 import { PlacesPanel, PlaceTree } from '@/components/places/tree';
+import { ShareLinkSheet } from '@/components/sharelinks/share-sheet';
 import { SaveAsTemplateSheet } from '@/components/templates/template-sheet';
 import { Button } from '@/components/ui/button';
 import { Tab, TabList, TabPanel, Tabs } from '@/components/ui/tabs';
@@ -103,6 +104,7 @@ export const SHEETS: readonly SheetName[] = [
   'template',
   'lend',
   'return',
+  'share',
 ];
 
 /** `(min-width: 768px)`, the app's phone/desktop line (the sidebar appears at `md`). */
@@ -471,6 +473,14 @@ function Loaded({ tab, sheet }: { tab: ThingTab | undefined; sheet: SheetName | 
         ) : null}
         {asVehicle ? (
           <VehicleReportSheet open={reportOpen} onClose={() => setReportOpen(false)} />
+        ) : null}
+        {can('share-links.create') && location.kind !== 'personal' && thing.isContainer ? (
+          <ShareLinkSheet
+            isOpen={sheet === 'share'}
+            onClose={closeSheet}
+            locationId={thing.locationId}
+            target={{ kind: 'thing', id: thing.id, name: thing.name ?? '' }}
+          />
         ) : null}
       </Page>
     </VehicleNavProvider>

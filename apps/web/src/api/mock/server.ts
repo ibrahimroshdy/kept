@@ -18,6 +18,7 @@ import { opsMockRoutes } from '../ops/mock';
 import { ops } from '../ops/mock/state';
 import { paths } from '../paths';
 import { portabilityMockRoutes } from '../portability/mock';
+import { sharelinksMockRoutes } from '../sharelinks/mock';
 import {
   type AcceptInviteBody,
   type AdminSettings,
@@ -609,6 +610,8 @@ export function createMockApi(state: MockState): MockApi {
   for (const r of mailinMockRoutes(state)) add(r.method, r.template, r.handler);
   // ----- 1.x: renters' condition reports (D235) --------------------------------------------------
   for (const r of conditionMockRoutes(state)) add(r.method, r.template, r.handler);
+  // ----- 1.5: read-only share links and their public page (D233) --------------------------------
+  for (const r of sharelinksMockRoutes(state)) add(r.method, r.template, r.handler);
 
   const mockFetch: typeof fetch = async (input, init) => {
     const url = new URL(

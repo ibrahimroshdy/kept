@@ -4,7 +4,8 @@
  * Everything is URL state (`?q=`, `f.<filter>` and `not`), so any search can be linked and Back
  * restores it. The box and the filters are the filter strip (D205): location, place, type, tag,
  * state and, for readers who can see money, price; each "is any of" or "is none of", with saved
- * views.
+ * views. A list narrowed to one location its reader runs can be shared as a read-only link
+ * (1.5, D233).
  *
  * Matching is the server's (normalised Arabic, prefixes, aliases, short IDs, typos through
  * did-you-mean); this page only shows what came back. Recent searches stay on this device, per
@@ -24,6 +25,7 @@ import { useRecentSearches } from '@/components/search/recent';
 import { SearchResults } from '@/components/search/results';
 import { SavedViews } from '@/components/search/saved-views';
 import { searchSearch } from '@/components/search/search-url';
+import { ShareSearch } from '@/components/sharelinks/share-search';
 import { isNot, useListState } from '@/lib/url-state';
 
 export const Route = createFileRoute('/_app/search')({
@@ -103,7 +105,11 @@ function SearchPage() {
       ) : null}
 
       {searching ? (
-        <SearchResults params={params} onOpen={remember_} onSuggest={(q) => setList({ q })} />
+        <>
+          {/* 1.5 (D233): the list as a read-only link, for its location's owners and admins. */}
+          <ShareSearch list={list} />
+          <SearchResults params={params} onOpen={remember_} onSuggest={(q) => setList({ q })} />
+        </>
       ) : (
         <>
           <SavedViews onOpen={(view) => setList(stateOf(view, list))} />

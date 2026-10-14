@@ -22135,3 +22135,195 @@ msgstr "Il commence avec les pièces du lieu. Ajoutez celles qui manquent, et no
 #: src/components/condition/reports-screen.tsx
 msgid "Day of the walk-through"
 msgstr "Jour de l’état des lieux"
+
+#: src/routes/s.$token.tsx
+msgid "Shared from Kept · read-only"
+msgstr "Partagé depuis Kept · lecture seule"
+
+#: src/routes/s.$token.tsx
+msgid "Shared with you"
+msgstr "Partagé avec vous"
+
+#: src/routes/s.$token.tsx
+msgid "This link has expired"
+msgstr "Ce lien a expiré"
+
+#: src/routes/s.$token.tsx
+msgid "Ask the person who shared it for a new one."
+msgstr "Demandez-en un nouveau à la personne qui l’a partagé."
+
+#: src/routes/s.$token.tsx
+msgid "Couldn't open this link"
+msgstr "Impossible d’ouvrir ce lien"
+
+#: src/components/sharelinks/share-sheet.tsx
+msgid "Share a read-only link"
+msgstr "Partager un lien en lecture seule"
+
+#: src/routes/_app/p.$id.tsx
+msgid "For someone without an account; it expires"
+msgstr "Pour quelqu’un sans compte ; il expire"
+
+#: src/components/location-settings.tsx
+msgid "Share links"
+msgstr "Liens de partage"
+
+#: src/components/sharelinks/list.tsx
+msgid "No longer here"
+msgstr "N’est plus ici"
+
+#: src/components/sharelinks/list.tsx
+msgid "Read-only links to a box, a place or a list, for someone without an account. Make one from a box's or a place's page, or from Search."
+msgstr "Des liens en lecture seule vers une boîte, un lieu ou une liste, pour quelqu’un sans compte. Créez-en un depuis la page d’une boîte ou d’un lieu, ou depuis la Recherche."
+
+#: src/components/sharelinks/list.tsx
+msgid "Search share links"
+msgstr "Rechercher dans les liens de partage"
+
+#: src/components/sharelinks/list.tsx
+msgid "No share links here"
+msgstr "Aucun lien de partage ici"
+
+#: src/components/sharelinks/list.tsx
+msgid "Open a box or a place and choose Share a read-only link, or share a search's list from Search."
+msgstr "Ouvrez une boîte ou un lieu et choisissez « Partager un lien en lecture seule », ou partagez la liste d’une recherche depuis la Recherche."
+
+#: src/components/sharelinks/list.tsx
+msgid "Revoked {revokedOn}"
+msgstr "Révoqué le {revokedOn}"
+
+#: src/components/sharelinks/list.tsx
+msgid "Expired {until}"
+msgstr "Expiré le {until}"
+
+#: src/components/sharelinks/list.tsx
+msgid "{0, plural, =0 {Not opened yet} one {Opened once} other {Opened # times}}"
+msgstr "{0, plural, =0 {Pas encore ouvert} one {Ouvert # fois} other {Ouvert # fois}}"
+
+#: src/components/sharelinks/list.tsx
+msgid "Last opened {opened}"
+msgstr "Dernière ouverture {opened}"
+
+#: src/components/sharelinks/list.tsx
+msgid "It stopped because <0>{0}</0> no longer runs this location."
+msgstr "Il s’est arrêté, car <0>{0}</0> ne gère plus cet emplacement."
+
+#: src/components/sharelinks/list.tsx
+msgid "Shared by <0>{0}</0>"
+msgstr "Partagé par <0>{0}</0>"
+
+#: src/components/sharelinks/list.tsx
+msgid "Preview as recipient"
+msgstr "Aperçu comme le destinataire"
+
+#: src/components/sharelinks/list.tsx
+msgid "Revoke this link?"
+msgstr "Révoquer ce lien ?"
+
+#: src/components/sharelinks/list.tsx
+msgid "Anyone who opens it sees \"This link has expired\" from now on. It can't be turned back on."
+msgstr "Quiconque l’ouvre voit désormais « Ce lien a expiré ». Il ne peut pas être réactivé."
+
+#: src/components/sharelinks/share-search.tsx
+msgid "Remove the state and price filters to share this list."
+msgstr "Retirez les filtres d’état et de prix pour partager cette liste."
+
+#: src/components/sharelinks/share-search.tsx
+msgid "Filter it to one location you run to share this list."
+msgstr "Filtrez-la sur un seul emplacement que vous gérez pour partager cette liste."
+
+#: src/components/sharelinks/share-search.tsx
+msgid "Share this list"
+msgstr "Partager cette liste"
+
+#: src/components/sharelinks/share-sheet.tsx
+msgid "Give the list a name."
+msgstr "Donnez un nom à la liste."
+
+#: src/components/sharelinks/share-sheet.tsx
+msgid "Anyone with the link sees what this search finds in <0>{locationName}</0> when they open it. No account needed."
+msgstr "Toute personne qui a le lien voit ce que cette recherche trouve dans <0>{locationName}</0> au moment où elle l’ouvre. Aucun compte requis."
+
+#: src/components/sharelinks/share-sheet.tsx
+msgid "Anyone with the link sees <0>{name}</0> and everything in it. No account needed."
+msgstr "Toute personne qui a le lien voit <0>{name}</0> et tout ce qu’il contient. Aucun compte requis."
+
+#: src/components/sharelinks/share-sheet.tsx
+msgid "Name on the page"
+msgstr "Nom sur la page"
+
+#: src/components/sharelinks/share-sheet.tsx
+msgid "Works for"
+msgstr "Valable"
+
+#: src/components/sharelinks/share-sheet.tsx
+msgid "Make link"
+msgstr "Créer le lien"
+
+#: src/components/sharelinks/share-sheet.tsx
+msgid "Anyone with this link can open it until {until}."
+msgstr "Toute personne qui a ce lien peut l’ouvrir jusqu’au {until}."
+
+#: src/components/sharelinks/share-sheet.tsx
+msgid "Copy it now. Kept shows this link once; make a new one if it's lost."
+msgstr "Copiez-le maintenant. Kept n’affiche ce lien qu’une fois ; créez-en un nouveau s’il est perdu."
+
+#: src/components/sharelinks/share-sheet.tsx
+msgid "See this location's share links"
+msgstr "Voir les liens de partage de cet emplacement"
+
+#: src/components/sharelinks/shared-view.tsx
+msgid "This link works until {until}."
+msgstr "Ce lien fonctionne jusqu’au {until}."
+
+#: src/components/sharelinks/shared-view.tsx
+msgid "A link shows the first {0} of them, A to Z."
+msgstr "Un lien en montre les {0} premiers, de A à Z."
+
+#: src/components/sharelinks/shared-view.tsx
+msgid "Quantity {quantity}"
+msgstr "Quantité {quantity}"
+
+#: src/components/sharelinks/shared-view.tsx
+msgid "Search this list"
+msgstr "Rechercher dans cette liste"
+
+#: src/components/sharelinks/shared-view.tsx
+msgid "by where"
+msgstr "par emplacement"
+
+#: src/components/sharelinks/words.tsx
+msgid "Box"
+msgstr "Boîte"
+
+#: src/components/sharelinks/words.tsx
+msgid "A day"
+msgstr "Un jour"
+
+#: src/components/sharelinks/words.tsx
+msgid "A week"
+msgstr "Une semaine"
+
+#: src/components/sharelinks/words.tsx
+msgid "30 days"
+msgstr "30 jours"
+
+#: src/components/sharelinks/words.tsx
+msgid "90 days"
+msgstr "90 jours"
+
+#: src/components/sharelinks/words.tsx
+msgid "A year"
+msgstr "Un an"
+
+#: src/components/sharelinks/words.tsx
+msgid "They see names, photos, types, where things are, quantities, condition and notes. Never prices, serial numbers, secrets, people, loans or documents."
+msgstr "Ils voient les noms, les photos, les types, l’emplacement des objets, les quantités, l’état et les notes. Jamais les prix, les numéros de série, les secrets, les personnes, les prêts ni les documents."
+
+#: src/components/history/labels.ts
+msgid "Share link made"
+msgstr "Lien de partage créé"
+
+#: src/components/history/labels.ts
+msgid "Share link revoked"
+msgstr "Lien de partage révoqué"
