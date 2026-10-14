@@ -185,6 +185,8 @@ const CONFLICT_HINTS: Record<string, string> = {
   // Step 4 (plan T7): the caps its triggers enforce. The plan names no constraint for them; these
   // are the names T2 proposes, and T7 raises them or renames them here.
   notification_channels_webhook_cap: 'You already have 5 webhooks; remove one first.',
+  // 1.3 (D227): at most 3 ntfy and 3 Telegram channels a person.
+  notification_channels_relay_cap: 'You already have 3 channels of that kind; remove one first.',
   // 1.2 (D225): deleting your own account while something still stops it.
   account_deletion_blocked:
     'Something still stops this account being deleted: a location you own, or being the only instance admin.',

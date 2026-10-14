@@ -12,6 +12,7 @@ import type {
   ReminderRecipient,
   SendOutcome,
 } from '../reminders/channel.js';
+import { markRelay } from './channels.js';
 import type { WebhookJobData } from './jobs.js';
 import {
   digestPush,
@@ -22,6 +23,7 @@ import {
   reminderPush,
   testPush,
 } from './push.js';
+import { fromPush, openRelayConfig, type RelayFetch, relayChannel, sendRelay } from './relay.js';
 import type { PushSource } from './vapid.js';
 import {
   openWebhookConfig,
@@ -43,6 +45,9 @@ import type { ReminderFacts } from './words.js';
 //   alerts reach the instance admins' devices too (step-1 carry-over, D166).
 // - webhook: queues one `channel-webhook` job per reminder (jobs.ts), whose own ten attempts over
 //   a day are the channel's; a test is sent at once.
+// - ntfy, telegram (1.3, D227): a push's words, sent at once (relay.ts). A failure fails the
+//   delivery, which `reminder-deliver` retries; the channel is marked failing until one gets
+//   through. Admin alerts don't go to them.
 
 export type SenderDeps = {
   pools: Pick<Pools, 'system'>;
@@ -53,8 +58,8 @@ export type SenderDeps = {
   publicUrl: string;
   /** Queues a `channel-webhook` job (the worker's pg-boss). */
   enqueue: (name: 'channel-webhook', data: WebhookJobData) => Promise<void>;
-  /** Tests: how a push or a webhook leaves the process. */
-  transport?: { push?: PushTransport; webhookFetch?: WebhookFetch };
+  /** Tests: how a push, a webhook or an ntfy or Telegram message leaves the process. */
+  transport?: { push?: PushTransport; webhookFetch?: WebhookFetch; relayFetch?: RelayFetch };
 };
 
 /** The words a template needs, from the engine's item (L113). */
@@ -197,11 +202,43 @@ function webhookSender(deps: SenderDeps): ChannelSender {
   };
 }
 
+function relaySender(deps: SenderDeps): ChannelSender {
+  return {
+    async send(target, to, message): Promise<SendOutcome> {
+      if (message.mode === 'alert') return { status: 'skipped', error: 'alerts_not_relayed' };
+      const channel = await withSystem(deps.pools.system, (_t, c) =>
+        relayChannel(c, target.id, target.userId),
+      );
+      if (!channel) return { status: 'skipped', error: 'channel_gone' };
+      const locale = mailLocale(to.locale);
+      const payload =
+        message.mode === 'immediate'
+          ? reminderPush(locale, factsOf(message.item), pushTopic(message.item.key))
+          : message.mode === 'digest'
+            ? digestPush(locale, message.items.map(factsOf), message.digestOn)
+            : testPush(locale);
+      const urgent = message.mode === 'immediate' && message.item.kind === 'overdue';
+      const res = await sendRelay(
+        openRelayConfig(deps.keyring(), channel.id, channel.kind, channel.sealed),
+        fromPush(payload, deps.publicUrl, urgent),
+        {
+          allowPrivate: await webhookAllowsPrivate(deps.pools),
+          ...(deps.transport?.relayFetch ? { fetchFor: deps.transport.relayFetch } : {}),
+        },
+      );
+      await markRelay(deps.pools, channel.id, res.ok);
+      return res.ok ? { status: 'sent' } : { status: 'failed', error: res.error };
+    },
+  };
+}
+
 /** Every sender this instance has: email only when mail goes out. */
 export function createChannelSenders(deps: SenderDeps): ChannelSenders {
   return {
     ...(deps.mailer ? { email: emailSender(deps.mailer) } : {}),
     webpush: pushSender(deps),
     webhook: webhookSender(deps),
+    ntfy: relaySender(deps),
+    telegram: relaySender(deps),
   };
 }

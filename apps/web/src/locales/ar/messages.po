@@ -21467,3 +21467,75 @@ msgstr "عنوان إعادة التوجيه لتسجيله لدى Google"
 #: src/components/admin/oidc-status.tsx
 msgid "Google sign-in reaches only an account already linked to it, or someone invited here. Nobody gets in on their own."
 msgstr "لا يصل تسجيل الدخول عبر Google إلا إلى حساب مرتبط به مسبقًا، أو إلى شخص مدعو هنا. لا يدخل أحد من تلقاء نفسه."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "That server is on a private network, which this Kept doesn't allow. An instance admin can allow it."
+msgstr "هذا الخادم على شبكة خاصة، ولا يسمح Kept هذا بذلك. يمكن لمسؤول الخادم السماح به."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Kept stops sending to it, and forgets its settings."
+msgstr "يتوقف Kept عن الإرسال إليه وينسى إعداداته."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Add ntfy"
+msgstr "إضافة ntfy"
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Add Telegram"
+msgstr "إضافة Telegram"
+
+#: src/components/notifications/settings/channels.tsx
+msgid "You have {MAX_RELAY_CHANNELS}, the most Kept allows."
+msgstr "لديك {MAX_RELAY_CHANNELS}، وهو الحد الأقصى في Kept."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Reminders on your phone through ntfy.sh or your own ntfy server."
+msgstr "تذكيرات على هاتفك عبر ntfy.sh أو خادم ntfy الخاص بك."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Reminders in a Telegram chat, sent by a bot you make."
+msgstr "تذكيرات في محادثة Telegram يرسلها بوت تنشئه."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "ntfy.sh, or the address of your own ntfy server."
+msgstr "ntfy.sh، أو عنوان خادم ntfy الخاص بك."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Topic"
+msgstr "الموضوع"
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Letters, digits, - and _. On ntfy.sh anyone who knows it can read it, so make it hard to guess."
+msgstr "حروف وأرقام و- و_. على ntfy.sh يستطيع قراءته كل من يعرفه، فاجعله صعب التخمين."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Access token"
+msgstr "رمز الوصول"
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Optional: for a topic that needs one."
+msgstr "اختياري: لموضوع يتطلبه."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Bot token"
+msgstr "رمز البوت"
+
+#: src/components/notifications/settings/channels.tsx
+msgid "From @BotFather in Telegram, when you make the bot."
+msgstr "من @BotFather في Telegram عند إنشاء البوت."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Chat ID"
+msgstr "معرّف المحادثة"
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Your chat with the bot, a group's number, or a channel's @name. Send the bot a message first."
+msgstr "محادثتك مع البوت، أو رقم مجموعة، أو @اسم قناة. أرسل إلى البوت رسالة أولًا."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Optional, to tell them apart."
+msgstr "اختياري، للتمييز بينها."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Kept keeps these settings encrypted and never shows them again."
+msgstr "يحفظ Kept هذه الإعدادات مشفّرة ولا يعرضها مرة أخرى."

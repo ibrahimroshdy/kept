@@ -1,4 +1,4 @@
-import type { ChannelKind10 } from '@kept/shared';
+import type { ChannelKindBuilt } from '@kept/shared';
 import type pg from 'pg';
 import { withSystem } from '../db/scope.js';
 import { type ChannelMessage, type ChannelTarget, errorCode, type SendOutcome } from './channel.js';
@@ -51,7 +51,7 @@ export function parseDeliverData(data: unknown): DeliverData | null {
 export type DeliverResult = SendOutcome['status'] | 'nothing';
 
 async function channelOf(client: pg.ClientBase, channelId: string): Promise<ChannelTarget | null> {
-  const { rows } = await client.query<{ id: string; kind: ChannelKind10; user_id: string }>(
+  const { rows } = await client.query<{ id: string; kind: ChannelKindBuilt; user_id: string }>(
     'SELECT id, kind, user_id FROM public.notification_channels WHERE id = $1',
     [channelId],
   );

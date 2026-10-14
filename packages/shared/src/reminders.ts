@@ -170,7 +170,8 @@ export const NOTIFICATION_KINDS = [
 ] as const;
 export type NotificationKind = (typeof NOTIFICATION_KINDS)[number];
 
-/** Every channel kind in the spec (§1.9, D30). ntfy, Telegram and Apprise are 1.x (D130). */
+/** Every channel kind in the spec (§1.9, D30). ntfy and Telegram came in 1.3 (D227); Apprise
+ * is still to come (D130). */
 export const CHANNEL_KINDS = [
   'email',
   'webpush',
@@ -181,19 +182,26 @@ export const CHANNEL_KINDS = [
 ] as const;
 export type ChannelKind = (typeof CHANNEL_KINDS)[number];
 
-/** The channels 1.0 builds: `notification_channels.kind`'s CHECK. */
-export const CHANNEL_KINDS_1_0 = [
+/** The channels built: `notification_channels.kind`'s CHECK. 1.0 had email, web push and the
+ * webhook; 1.3 adds ntfy and Telegram (D227). */
+export const CHANNEL_KINDS_BUILT = [
   'email',
   'webpush',
   'webhook',
+  'ntfy',
+  'telegram',
 ] as const satisfies readonly ChannelKind[];
-export type ChannelKind10 = (typeof CHANNEL_KINDS_1_0)[number];
+export type ChannelKindBuilt = (typeof CHANNEL_KINDS_BUILT)[number];
+
+/** The built channels a person adds themselves, each with a sealed config (D227). */
+export const RELAY_CHANNEL_KINDS = ['ntfy', 'telegram'] as const satisfies readonly ChannelKind[];
+export type RelayChannelKind = (typeof RELAY_CHANNEL_KINDS)[number];
 
 /**
- * `notification_preferences.channel`: the 1.0 channels plus `inapp`. The centre isn't a channel
+ * `notification_preferences.channel`: the built channels plus `inapp`. The centre isn't a channel
  * (every enabled kind lands there), but an `inapp` row lets a person silence a kind entirely (Q10).
  */
-export const PREFERENCE_CHANNELS = ['inapp', ...CHANNEL_KINDS_1_0] as const;
+export const PREFERENCE_CHANNELS = ['inapp', ...CHANNEL_KINDS_BUILT] as const;
 export type PreferenceChannel = (typeof PREFERENCE_CHANNELS)[number];
 
 /** `reminder_deliveries.status` (§7.13): `digest` waits for the person's digest; `skipped` was
@@ -210,6 +218,9 @@ export type DeliveryStatus = (typeof DELIVERY_STATUSES)[number];
 
 /** At most this many webhook channels per person (T7's trigger). */
 export const MAX_WEBHOOK_CHANNELS = 5;
+
+/** At most this many ntfy, and this many Telegram, channels per person (D227; 0055's trigger). */
+export const MAX_RELAY_CHANNELS = 3;
 
 /** At most this many live calendar feed links per person (Q23; T7's trigger). */
 export const MAX_CALENDAR_FEEDS = 3;

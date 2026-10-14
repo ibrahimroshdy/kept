@@ -19,7 +19,7 @@ import {
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQueryClient } from '@tanstack/react-query';
 import { householdApi, householdKeys } from '@/api/household/queries';
-import type { KindPreference, NotificationSettings } from '@/api/household/types';
+import type { Channel, KindPreference, NotificationSettings } from '@/api/household/types';
 import { useLocations } from '@/api/queries';
 import { useErrorText } from '@/components/page';
 import { accessOf } from '@/components/schedules/access';
@@ -47,7 +47,14 @@ export function useNotifyKindLabels(): Record<NotifyKind, string> {
 
 export function useChannelLabels(): Record<PreferenceChannel, string> {
   const { t } = useLingui();
-  return { inapp: t`In Kept`, email: t`Email`, webpush: t`Push`, webhook: t`Webhook` };
+  return {
+    inapp: t`In Kept`,
+    email: t`Email`,
+    webpush: t`Push`,
+    webhook: t`Webhook`,
+    ntfy: 'ntfy',
+    telegram: 'Telegram',
+  };
 }
 
 /** The module a kind belongs to, if any: off in a location, the kind pauses there. */
@@ -63,12 +70,15 @@ export function KindsByLocation({ settings }: { settings: NotificationSettings }
   const channelLabels = useChannelLabels();
   const errorText = useErrorText();
   const online = useOnline();
-  const hasWebhook = settings.channels.some((c) => c.kind === 'webhook');
+  // A column only for a channel the person has (D227: ntfy and Telegram too).
+  const has = (kind: Channel['kind']) => settings.channels.some((c) => c.kind === kind);
   const channels: PreferenceChannel[] = [
     'inapp',
     'email',
     'webpush',
-    ...(hasWebhook ? (['webhook'] as const) : []),
+    ...(has('webhook') ? (['webhook'] as const) : []),
+    ...(has('ntfy') ? (['ntfy'] as const) : []),
+    ...(has('telegram') ? (['telegram'] as const) : []),
   ];
 
   const set = async (

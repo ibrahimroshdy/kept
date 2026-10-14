@@ -11,6 +11,7 @@ import type { InventoryDeps } from '../http/routes.js';
 import { scopedRead, scopedWrite } from '../http/write.js';
 import { logMailer } from '../mail/mailer.js';
 import {
+  createRelayChannel,
   createWebhook,
   deleteChannel,
   deleteSubscription,
@@ -20,6 +21,7 @@ import {
   type NotifyDeps,
   testEmailSend,
   testPushSend,
+  testRelaySend,
   testWebhookSend,
   upsertSubscription,
 } from './channels.js';
@@ -42,6 +44,9 @@ import {
 // PUT    /api/v1/me/notification-settings        {digestTime?, quietFrom?, quietTo?} → the same
 // PUT    /api/v1/me/notification-preferences     {items: [...] (≤ 200)} → the same settings
 // POST   /api/v1/me/channels                     {kind: 'webhook', url, label?} → 201 {channel, secret}
+//                                                 {kind: 'ntfy', server, topic, token?, label?}
+//                                                 {kind: 'telegram', botToken, chatId, label?}
+//                                                 → 201 {channel, secret: ''} (D227)
 // DELETE /api/v1/me/channels/:id                 → 204 (the email channel: 400)
 // POST   /api/v1/me/channels/:id/test            → {ok, status?, error?}
 // POST   /api/v1/me/push-subscriptions           {endpoint, keys, label?} → 201 {id}
@@ -60,7 +65,7 @@ const Iso = z.iso.datetime({ offset: true });
 
 const ChannelSchema = z.object({
   id: z.uuid(),
-  kind: z.enum(['email', 'webpush', 'webhook']),
+  kind: z.enum(['email', 'webpush', 'webhook', 'ntfy', 'telegram']),
   label: z.string().nullable(),
   displayHost: z.string().nullable(),
   verifiedAt: Iso.nullable(),
@@ -82,6 +87,8 @@ const KindPreferenceSchema = z.object({
   email: z.boolean(),
   webpush: z.boolean(),
   webhook: z.boolean(),
+  ntfy: z.boolean(),
+  telegram: z.boolean(),
   isDefault: z.boolean(),
 });
 
@@ -134,13 +141,33 @@ const PutPreferencesBody = z
   })
   .strict();
 
-const CreateChannelBody = z
-  .object({
-    kind: z.literal('webhook'),
-    url: z.string().min(1).max(2000),
-    label: z.string().max(60).optional(),
-  })
-  .strict();
+const CreateChannelBody = z.discriminatedUnion('kind', [
+  z
+    .object({
+      kind: z.literal('webhook'),
+      url: z.string().min(1).max(2000),
+      label: z.string().max(60).optional(),
+    })
+    .strict(),
+  // 1.3 (D227): the settings are sealed and never shown again.
+  z
+    .object({
+      kind: z.literal('ntfy'),
+      server: z.string().min(1).max(500),
+      topic: z.string().min(1).max(64),
+      token: z.string().max(200).optional(),
+      label: z.string().max(60).optional(),
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal('telegram'),
+      botToken: z.string().min(1).max(200),
+      chatId: z.string().min(1).max(40),
+      label: z.string().max(60).optional(),
+    })
+    .strict(),
+]);
 
 const SubscriptionBody = z
   .object({
@@ -252,7 +279,10 @@ export async function channelRoutes(app: KeptApp, deps: InventoryDeps): Promise<
         reply,
         async (tx, client, scope) => ({
           status: 201,
-          body: await createWebhook(tx, client, master, scope.userId, req.body, req.id),
+          body:
+            req.body.kind === 'webhook'
+              ? await createWebhook(tx, client, master, scope.userId, req.body, req.id)
+              : await createRelayChannel(tx, client, master, scope.userId, req.body, req.id),
         }),
         // The secret is shown once: a replay says the channel was made, without it.
         { redact: (body) => ({ channel: (body as { channel: unknown }).channel, secret: '' }) },
@@ -285,6 +315,17 @@ export async function channelRoutes(app: KeptApp, deps: InventoryDeps): Promise<
       if (channel.kind === 'email') return testEmailSend(notify, who);
       if (channel.kind === 'webpush') {
         return testPushSend(notify, pools, scope.userId, who?.locale ?? null);
+      }
+      if (channel.kind === 'ntfy' || channel.kind === 'telegram') {
+        return testRelaySend(
+          notify,
+          pools,
+          keysOf(deps).get().keyring,
+          deps.env.KEPT_PUBLIC_URL,
+          scope.userId,
+          channel.id,
+          who?.locale ?? null,
+        );
       }
       return testWebhookSend(
         notify,

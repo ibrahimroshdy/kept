@@ -1,5 +1,5 @@
 import { Writable } from 'node:stream';
-import { newId } from '@kept/shared';
+import { newId, PREFERENCE_CHANNELS } from '@kept/shared';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import type { TestApp } from '../../test/app.js';
 import { type TestDb, testDb } from '../../test/db.js';
@@ -191,7 +191,7 @@ describe('GET /cal/:token.ics', () => {
     expect(await count(talia)).toBe(0);
 
     // Every channel off for thing expiries: gone.
-    const off = ['inapp', 'email', 'webpush', 'webhook'].map((channel) => ({
+    const off = PREFERENCE_CHANNELS.map((channel) => ({
       locationId: home.id,
       kind: 'thing_expiry',
       channel,

@@ -13,7 +13,7 @@
  *   no names): add with a URL and a label, then the signing secret **shown once** with Copy; Test
  *   and Remove. Its URL is never shown again, only its host.
  */
-import { MAX_WEBHOOK_CHANNELS } from '@kept/shared';
+import { MAX_RELAY_CHANNELS, MAX_WEBHOOK_CHANNELS, type RelayChannelKind } from '@kept/shared';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -24,6 +24,7 @@ import { useMe } from '@/api/queries';
 import { InstallSheet } from '@/components/home/install-sheet';
 import {
   AlertIcon,
+  BellIcon,
   CheckCircleIcon,
   CodeIcon,
   LaptopIcon,
@@ -94,6 +95,8 @@ function useTest() {
         return t`Mail isn't configured on this server.`;
       case 'mail_failed':
         return t`The mail server didn't take it. Try again later.`;
+      case 'private_address':
+        return t`That server is on a private network, which this Kept doesn't allow. An instance admin can allow it.`;
       case undefined:
         return code ? t`It answered ${code}.` : '';
       default:
@@ -126,6 +129,8 @@ export function Channels({ settings }: { settings: NotificationSettings }) {
       <ThisDevice settings={settings} />
       <OtherDevices settings={settings} />
       <Webhooks settings={settings} />
+      <RelayChannels settings={settings} kind="ntfy" />
+      <RelayChannels settings={settings} kind="telegram" />
     </List>
   );
 }
@@ -622,6 +627,241 @@ function AddWebhookForm({ onDone }: { onDone: () => void }) {
         maxLength={60}
         description={t`Optional, to tell your webhooks apart.`}
       />
+      <DialogFooter>
+        <Button variant="secondary" onPress={onDone}>
+          <Trans>Cancel</Trans>
+        </Button>
+        <Button type="submit" variant="primary" isPending={busy} isDisabled={!online}>
+          <Trans>Add</Trans>
+        </Button>
+      </DialogFooter>
+    </form>
+  );
+}
+
+// ----- ntfy and Telegram (1.3, D227) -------------------------------------------------------------
+
+/** A person's ntfy or Telegram channels: what they are, a test, remove, and add (at most 3). */
+function RelayChannels({
+  settings,
+  kind,
+}: {
+  settings: NotificationSettings;
+  kind: RelayChannelKind;
+}) {
+  const { t } = useLingui();
+  const f = useFormat();
+  const qc = useQueryClient();
+  const confirm = useConfirm();
+  const errorText = useErrorText();
+  const test = useTest();
+  const online = useOnline();
+  const [adding, setAdding] = useState(false);
+  const mine = settings.channels.filter((c) => c.kind === kind);
+  const full = mine.length >= MAX_RELAY_CHANNELS;
+  const brand = kind === 'ntfy' ? 'ntfy' : 'Telegram';
+
+  const remove = async (c: Channel, name: string) => {
+    const ok = await confirm({
+      title: t`Remove ${name}?`,
+      body: t`Kept stops sending to it, and forgets its settings.`,
+      confirmLabel: t`Remove`,
+      destructive: true,
+    });
+    if (!ok) return;
+    try {
+      await householdApi.deleteChannel(c.id);
+      await qc.invalidateQueries({ queryKey: householdKeys.notificationSettings });
+    } catch (e) {
+      toast({ title: t`Couldn't remove it`, description: errorText(e), tone: 'danger' });
+    }
+  };
+
+  return (
+    <>
+      {mine.map((c) => {
+        const name = c.label ?? brand;
+        const since = c.failingSince ? f.day(c.failingSince) : null;
+        return (
+          <Item
+            key={c.id}
+            icon={<BellIcon />}
+            title={<bdi>{name}</bdi>}
+            actions={
+              <>
+                <Button
+                  size="small"
+                  variant="secondary"
+                  isDisabled={!online}
+                  aria-label={t`Send a test to ${name}`}
+                  onPress={() => void test(() => householdApi.testChannel(c.id))}
+                >
+                  <Trans>Test</Trans>
+                </Button>
+                <Button
+                  size="small"
+                  variant="secondary"
+                  isDisabled={!online}
+                  aria-label={t`Remove ${name}`}
+                  onPress={() => void remove(c, name)}
+                >
+                  <Trans>Remove</Trans>
+                </Button>
+              </>
+            }
+          >
+            {c.displayHost ? <span className="ltr text-start">{c.displayHost}</span> : null}
+            {since ? (
+              <span className="flex items-center gap-1.5 text-danger">
+                <AlertIcon aria-hidden="true" className="size-4 shrink-0" />
+                <Trans>Failing since {since}</Trans>
+              </span>
+            ) : null}
+          </Item>
+        );
+      })}
+      <Item
+        icon={<BellIcon />}
+        title={brand}
+        actions={
+          <Button
+            size="small"
+            variant="secondary"
+            isDisabled={!online || full}
+            onPress={() => setAdding(true)}
+          >
+            <PlusIcon />
+            {kind === 'ntfy' ? <Trans>Add ntfy</Trans> : <Trans>Add Telegram</Trans>}
+          </Button>
+        }
+      >
+        <span>
+          {full ? (
+            <Trans>You have {MAX_RELAY_CHANNELS}, the most Kept allows.</Trans>
+          ) : kind === 'ntfy' ? (
+            <Trans>Reminders on your phone through ntfy.sh or your own ntfy server.</Trans>
+          ) : (
+            <Trans>Reminders in a Telegram chat, sent by a bot you make.</Trans>
+          )}
+        </span>
+      </Item>
+      <Sheet
+        isOpen={adding}
+        onOpenChange={(o) => !o && setAdding(false)}
+        title={kind === 'ntfy' ? t`Add ntfy` : t`Add Telegram`}
+      >
+        {({ close }) => <AddRelayForm kind={kind} onDone={close} />}
+      </Sheet>
+    </>
+  );
+}
+
+function AddRelayForm({ kind, onDone }: { kind: RelayChannelKind; onDone: () => void }) {
+  const { t } = useLingui();
+  const qc = useQueryClient();
+  const errorText = useErrorText();
+  const online = useOnline();
+  const [server, setServer] = useState('https://ntfy.sh');
+  const [topic, setTopic] = useState('');
+  const [token, setToken] = useState('');
+  const [botToken, setBotToken] = useState('');
+  const [chatId, setChatId] = useState('');
+  const [label, setLabel] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const save = async () => {
+    setBusy(true);
+    setError(null);
+    const named = label.trim() ? { label: label.trim() } : {};
+    try {
+      await householdApi.createChannel(
+        kind === 'ntfy'
+          ? {
+              kind,
+              server: server.trim(),
+              topic: topic.trim(),
+              ...(token.trim() ? { token: token.trim() } : {}),
+              ...named,
+            }
+          : { kind, botToken: botToken.trim(), chatId: chatId.trim(), ...named },
+      );
+      await qc.invalidateQueries({ queryKey: householdKeys.notificationSettings });
+      onDone();
+    } catch (e) {
+      setError(errorText(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <form
+      className="grid gap-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void save();
+      }}
+    >
+      {kind === 'ntfy' ? (
+        <>
+          <TextField
+            label={t`Server`}
+            value={server}
+            onChange={setServer}
+            autoComplete="off"
+            inputProps={{ inputMode: 'url', dir: 'ltr' }}
+            description={t`ntfy.sh, or the address of your own ntfy server.`}
+          />
+          <TextField
+            label={t`Topic`}
+            value={topic}
+            onChange={setTopic}
+            autoComplete="off"
+            maxLength={64}
+            inputProps={{ dir: 'ltr' }}
+            description={t`Letters, digits, - and _. On ntfy.sh anyone who knows it can read it, so make it hard to guess.`}
+          />
+          <TextField
+            label={t`Access token`}
+            value={token}
+            onChange={setToken}
+            autoComplete="off"
+            inputProps={{ dir: 'ltr' }}
+            description={t`Optional: for a topic that needs one.`}
+          />
+        </>
+      ) : (
+        <>
+          <TextField
+            label={t`Bot token`}
+            value={botToken}
+            onChange={setBotToken}
+            autoComplete="off"
+            inputProps={{ dir: 'ltr' }}
+            description={t`From @BotFather in Telegram, when you make the bot.`}
+          />
+          <TextField
+            label={t`Chat ID`}
+            value={chatId}
+            onChange={setChatId}
+            autoComplete="off"
+            inputProps={{ dir: 'ltr' }}
+            description={t`Your chat with the bot, a group's number, or a channel's @name. Send the bot a message first.`}
+          />
+        </>
+      )}
+      <TextField
+        label={t`Label`}
+        value={label}
+        onChange={setLabel}
+        maxLength={60}
+        description={t`Optional, to tell them apart.`}
+      />
+      {error ? <Notice tone="danger">{error}</Notice> : null}
+      <p className="m-0 text-small text-ink-3">
+        <Trans>Kept keeps these settings encrypted and never shows them again.</Trans>
+      </p>
       <DialogFooter>
         <Button variant="secondary" onPress={onDone}>
           <Trans>Cancel</Trans>

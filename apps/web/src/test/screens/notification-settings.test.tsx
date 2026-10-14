@@ -165,6 +165,46 @@ describe('channels', () => {
     ).toBeInTheDocument();
   });
 
+  it('adds an ntfy channel: settings sent once, never shown, and its column (D227)', async () => {
+    const { user, mock } = await renderApp(PATH);
+    await channels();
+    await user.click(await screen.findByRole('button', { name: 'Add ntfy' }));
+    const sheet = within(await screen.findByRole('dialog', { name: 'Add ntfy' }));
+    expect(sheet.getByRole('textbox', { name: 'Server' })).toHaveValue('https://ntfy.sh');
+    await user.type(sheet.getByRole('textbox', { name: 'Topic' }), 'kept-home-7f3k');
+    await user.type(sheet.getByRole('textbox', { name: 'Access token' }), 'tk_abc');
+    await user.click(sheet.getByRole('button', { name: 'Add' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(mock.lastCall('POST', '/api/v1/me/channels')?.body).toEqual({
+      kind: 'ntfy',
+      server: 'https://ntfy.sh',
+      topic: 'kept-home-7f3k',
+      token: 'tk_abc',
+    });
+    expect(screen.getByText('ntfy.sh')).toBeInTheDocument();
+    expect(screen.queryByText('kept-home-7f3k')).toBeNull();
+    expect(
+      screen.getByRole('switch', { name: 'Schedules due by ntfy in Home' }),
+    ).toBeInTheDocument();
+  });
+
+  it('adds a Telegram channel, and says what is wrong with a bad token', async () => {
+    const { user, mock } = await renderApp(PATH);
+    await channels();
+    await user.click(await screen.findByRole('button', { name: 'Add Telegram' }));
+    const sheet = within(await screen.findByRole('dialog', { name: 'Add Telegram' }));
+    await user.type(sheet.getByRole('textbox', { name: 'Bot token' }), 'nope');
+    await user.type(sheet.getByRole('textbox', { name: 'Chat ID' }), '42');
+    await user.click(sheet.getByRole('button', { name: 'Add' }));
+    expect(await sheet.findByText(/isn't valid/)).toBeInTheDocument();
+    await user.clear(sheet.getByRole('textbox', { name: 'Bot token' }));
+    await user.type(sheet.getByRole('textbox', { name: 'Bot token' }), `123456:${'A'.repeat(35)}`);
+    await user.click(sheet.getByRole('button', { name: 'Add' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(mock.state.household.channels.filter((c) => c.kind === 'telegram')).toHaveLength(1);
+    expect(screen.getByText('api.telegram.org')).toBeInTheDocument();
+  });
+
   it('refuses a webhook address that is not a URL', async () => {
     const { user } = await renderApp(PATH);
     await channels();

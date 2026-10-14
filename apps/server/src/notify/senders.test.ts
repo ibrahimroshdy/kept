@@ -14,6 +14,7 @@ import { type SmtpMailer, smtpMailer } from '../mail/transport.js';
 import type { ChannelTarget, ReminderItem, ReminderRecipient } from '../reminders/channel.js';
 import type { WebhookJobData } from './jobs.js';
 import { pushTopic } from './push.js';
+import { type RelayConfig, sealRelayConfig } from './relay.js';
 import { createChannelSenders, factsOf, type SenderDeps } from './senders.js';
 import { fixedPushSource } from './vapid.js';
 
@@ -276,5 +277,93 @@ describe('the webhook sender', () => {
     expect(
       await hook?.send(tgt, to, { mode: 'alert', alert: 'backup_failed', details: {} }),
     ).toMatchObject({ status: 'skipped' });
+  });
+});
+
+describe('the ntfy and Telegram senders (D227)', () => {
+  const master = { key: randomBytes(32), keyVersion: 1 };
+  const keyring = new Map([[1, master.key]]) as Keyring;
+
+  async function relayChannelOf(userId: string, config: RelayConfig): Promise<ChannelTarget> {
+    const id = newId();
+    await ownerTx(db, (c) =>
+      c.query(
+        `INSERT INTO public.notification_channels
+           (id, user_id, kind, display_host, config_ciphertext, key_version)
+         VALUES ($1, $2, $3, 'x', $4::jsonb, 1)`,
+        [id, userId, config.kind, JSON.stringify(sealRelayConfig(master, id, config))],
+      ),
+    );
+    return { id, kind: config.kind, userId };
+  }
+
+  it('sends an overdue reminder to ntfy as JSON (urgent, in Arabic), a digest to Telegram, never an alert', async () => {
+    const calls: Array<{ url: string; body: Record<string, unknown> }> = [];
+    let status = 200;
+    const senders = createChannelSenders(
+      deps({
+        keyring: () => keyring,
+        transport: {
+          relayFetch: () =>
+            (async (input: string | URL | Request, init?: RequestInit) => {
+              calls.push({ url: String(input), body: JSON.parse(String(init?.body)) });
+              return Response.json({ ok: status === 200 }, { status });
+            }) as typeof fetch,
+        },
+      }),
+    );
+    const user = await seedUser(db, 'relay');
+    const to = recipient({ userId: user, locale: 'ar' });
+    const ntfy = await relayChannelOf(user, {
+      kind: 'ntfy',
+      server: 'https://ntfy.example.org/',
+      topic: 'kept',
+      token: null,
+    });
+    const tg = await relayChannelOf(user, {
+      kind: 'telegram',
+      botToken: `42:${'b'.repeat(35)}`,
+      chatId: '42',
+    });
+
+    expect(await senders.ntfy?.send(ntfy, to, { mode: 'immediate', item: item() })).toEqual({
+      status: 'sent',
+    });
+    expect(calls[0]?.url).toBe('https://ntfy.example.org/');
+    expect(calls[0]?.body).toMatchObject({ topic: 'kept', priority: 4 });
+    expect(String(calls[0]?.body.title)).toMatch(/[؀-ۿ]/);
+    expect(String(calls[0]?.body.click)).toBe(
+      `${PUBLIC_URL}/t/0192f0c3-7c55-7000-8000-000000000002?tab=loans`,
+    );
+
+    expect(
+      await senders.telegram?.send(tg, to, {
+        mode: 'digest',
+        digestOn: '2026-10-18',
+        items: [item(), item({ kind: 'due' })],
+      }),
+    ).toEqual({ status: 'sent' });
+    expect(calls[1]?.url).toBe(`https://api.telegram.org/bot42:${'b'.repeat(35)}/sendMessage`);
+    expect(calls[1]?.body).toMatchObject({ chat_id: '42' });
+
+    expect(
+      await senders.telegram?.send(tg, to, { mode: 'alert', alert: 'backup_failed', details: {} }),
+    ).toMatchObject({ status: 'skipped' });
+
+    // A refusal fails the delivery (retried) and marks the channel failing.
+    status = 403;
+    expect(await senders.ntfy?.send(ntfy, to, { mode: 'test' })).toEqual({
+      status: 'failed',
+      error: 'http_403',
+    });
+    const [row] = (
+      await ownerTx(db, (c) =>
+        c.query<{ failing_since: Date | null }>(
+          'SELECT failing_since FROM public.notification_channels WHERE id = $1',
+          [ntfy.id],
+        ),
+      )
+    ).rows;
+    expect(row?.failing_since).not.toBeNull();
   });
 });
