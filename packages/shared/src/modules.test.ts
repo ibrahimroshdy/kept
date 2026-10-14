@@ -83,8 +83,15 @@ describe('presets (D75 re-cut by D191)', () => {
     );
   });
 
-  it('Complete is everything', () => {
-    expect(presetModules('complete')).toEqual(all);
+  it('Complete is everything that is built (Moving mode is coming later)', () => {
+    expect(presetModules('complete')).toEqual(new Set([...all].filter((id) => id !== 'moving')));
+  });
+
+  it('never counts a module that is coming later as on, even where it was enabled', () => {
+    expect(MODULES.moving.soon).toBe(true);
+    expect(effectiveModules(['labels', 'moving'], { providerResolved: true })).toEqual(
+      new Set(['labels']),
+    );
   });
 
   it('each module lists the presets that include it', () => {

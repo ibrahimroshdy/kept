@@ -8,8 +8,7 @@
 | The minor release before it | for 90 days after the latest one is published |
 | Anything older | no: upgrade |
 
-**Critical** vulnerabilities are fixed within 7 days of a confirmed report. Kept has no release
-yet; this policy applies from 1.0.
+**Critical** vulnerabilities are fixed within 7 days of a confirmed report.
 
 ## Reporting a vulnerability
 
@@ -33,14 +32,13 @@ on someone else's.
 
 Release images are signed with a key the maintainer holds (cosign, key-based), and each ships with
 an SBOM and a third-party notices file. The public key, `cosign.pub`, is committed to this
-repository when signing starts. Check an image before running it:
+repository. Check an image before running it:
 
 ```sh
-cosign verify --key cosign.pub --insecure-ignore-tlog ghcr.io/ibrahimroshdy/kept:X.Y.Z
+cosign verify --key cosign.pub ghcr.io/ibrahimroshdy/kept:X.Y.Z
 ```
 
-and run it by the digest that printed. `--insecure-ignore-tlog` is needed while releases are signed
-without the public transparency log (the repository is private); it is dropped once they are, and
+and run it by the digest that printed. Signatures are recorded in the public transparency log, and
 each release's notes give the exact command.
 
 Every release is signed. The docs site's

@@ -147,6 +147,23 @@ describe('What to track (D191)', () => {
     expect(body.modules).not.toContain('ai_capture');
   });
 
+  it('lists Moving house as coming soon, with no switch, and Complete leaves it out', async () => {
+    const { user, mock } = await renderApp(url);
+    await findHeading('What to track');
+    expect(screen.queryByRole('switch', { name: /Moving house/ })).toBeNull();
+    const row = screen.getByText('Moving house').closest('li') as HTMLElement;
+    expect(within(row).getByText('Coming soon')).toBeInTheDocument();
+    await user.click(screen.getByRole('radio', { name: /^Complete/ }));
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() =>
+      expect(mock.lastCall('POST', paths.locationModules(IDS.garage))).toBeTruthy(),
+    );
+    const body = mock.lastCall('POST', paths.locationModules(IDS.garage))?.body as {
+      modules: string[];
+    };
+    expect(body.modules).not.toContain('moving');
+  });
+
   it('Fuel needs Vehicles: off and disabled until Vehicles is on', async () => {
     const { user } = await renderApp(url);
     await findHeading('What to track');

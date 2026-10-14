@@ -97,6 +97,6 @@ you run it.
 ## Licence
 
 Kept is free software under the GNU Affero General Public License, version 3
-([`LICENSE`](LICENSE)). If you run a modified Kept for other people, you must offer them its
-source. The image carries the third-party notices of everything inside it, served at
+([`LICENSE`](LICENSE)), and every feature ships in it: nothing is held back. If you run a modified
+Kept for other people, you must offer them its source. The image carries the third-party notices of everything inside it, served at
 `/notices.txt`.

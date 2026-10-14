@@ -93,8 +93,8 @@ text is in the repository's
 
 ## Is there a release?
 
-Yes: `1.0.0` is the first signed release, on GHCR as `ghcr.io/ibrahimroshdy/kept`. Its images stay
-private until the repository is public, so until then Compose builds the image from a checkout of
-the repository. Upgrades run their migrations once, take a snapshot of the database first, and can
+Yes: `1.0.0` was the first signed release, on GHCR as `ghcr.io/ibrahimroshdy/kept`, and every
+release since is listed on the [releases page](https://github.com/ibrahimroshdy/kept/releases).
+Upgrades run their migrations once, take a snapshot of the database first, and can
 go back one version. See [install with Docker Compose](/install/compose/) and
 [upgrades](/admin/upgrades/).

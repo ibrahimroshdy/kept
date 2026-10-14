@@ -3,8 +3,8 @@ title: Triage
 description: How issues and pull requests reach Kept, which checks run on a pull request, and what the go-public plan adds.
 ---
 
-Kept's repository is private until the go-public flip, so this page has two parts: what is in the
-repository today, and what the
+Kept's repository went public on 2026-10-07. This page has two parts: what is in the repository
+today, and what the
 [go-public plan](https://github.com/ibrahimroshdy/kept/blob/main/docs/release/go-public-plan.md)
 intends. Anything in the second part is a plan, not a setting that exists yet.
 

@@ -92,12 +92,10 @@ signature first (below).
 ## Verify a released chart
 
 ```sh
-cosign verify --key cosign.pub --insecure-ignore-tlog <registry>/charts/kept@sha256:<digest>
+cosign verify --key cosign.pub <registry>/charts/kept@sha256:<digest>
 ```
 
-`--insecure-ignore-tlog` while releases are signed without the public transparency log (the
-repository is private, plan Q14); drop it once they are. The digest and the command are in the
-release's `docs/releases/X.Y.Z.md`.
+The digest and the command are in the release's `docs/releases/X.Y.Z.md`.
 
 ## Changing the chart
 

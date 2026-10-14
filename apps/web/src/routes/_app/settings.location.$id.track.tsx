@@ -13,6 +13,7 @@ import { setModules } from '@/api/locations';
 import { keys } from '@/api/queries';
 import type { LocationDetail } from '@/api/types';
 import { AiHere } from '@/components/ai/ai-here';
+import { SoonBadge } from '@/components/coming-later';
 import { LocationSettingsPage } from '@/components/location-settings';
 import { SettingsRouteError } from '@/components/on-demand-route-error';
 import { List, Notice, Section, useErrorText } from '@/components/page';
@@ -106,6 +107,19 @@ function TrackForm({ location }: { location: LocationDetail }) {
       <Section title={<Trans>Fine-tune</Trans>}>
         <List>
           {TUNABLE.map((id) => {
+            if (MODULES[id].soon) {
+              // Not built yet (1.x): listed so the plan is visible, never switchable.
+              return (
+                <li
+                  key={id}
+                  aria-disabled="true"
+                  className="flex items-center justify-between gap-3 px-3.5 py-2.5"
+                >
+                  <span className="font-semibold text-ink-3">{labels[id]}</span>
+                  <SoonBadge />
+                </li>
+              );
+            }
             const missing = MODULES[id].deps.filter((d) => !on.has(d));
             const needs = MODULES[id].deps.map((d) => labels[d]).join(t`, `);
             return (
