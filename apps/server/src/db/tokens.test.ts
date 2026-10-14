@@ -532,6 +532,42 @@ describe('the doors', () => {
     expect(await oauth()).toEqual([{ token_id: grant }]);
   });
 
+  it('kept.token_verify() and token_oauth_for(): nothing while the account waits to be deleted, back once kept (D225)', async () => {
+    const h = hash();
+    const l = lookup();
+    const id = await token(bruce, 'write', [ibrahim.locationId], { hash: h, lookup: l });
+    const client = 'https://claude.example/.well-known/client.json';
+    const grant = await as(
+      user(bruce),
+      async (c) =>
+        (
+          await c.query<{ id: string }>(
+            `SELECT kept.token_oauth_grant($1, $2, 'read', $3, 'Claude') AS id`,
+            [bruce, client, [ibrahim.locationId]],
+          )
+        ).rows[0]?.id,
+    );
+    const verify = async () =>
+      (await db.pools.app.query('SELECT token_id FROM kept.token_verify($1, $2)', [l, h])).rows;
+    const oauth = async () =>
+      (
+        await db.pools.app.query('SELECT token_id FROM kept.token_oauth_for($1, $2)', [
+          bruce,
+          client,
+        ])
+      ).rows;
+
+    await own(
+      `INSERT INTO auth.user_deletion (user_id, purge_after) VALUES ($1, now() + interval '30 days')`,
+      [bruce],
+    );
+    expect(await verify()).toEqual([]);
+    expect(await oauth()).toEqual([]);
+    await own('DELETE FROM auth.user_deletion WHERE user_id = $1', [bruce]);
+    expect(await verify()).toEqual([{ token_id: id }]);
+    expect(await oauth()).toEqual([{ token_id: grant }]);
+  });
+
   it('kept.revoke_user_tokens(): the system ends every live token of a claimed account (D197)', async () => {
     const a = await token(bruce, 'write', [ibrahim.locationId]);
     const b = await token(bruce, 'read', [garage.locationId]);

@@ -398,6 +398,12 @@ const FUNCTIONS: Record<string, { roles: string[]; definer: boolean }> = {
   'kept.revoke_tokens_for(uuid,uuid,text)': { roles: BOTH, definer: true },
   // (0109) D197's claim ends every token of the claimed account; the system only.
   'kept.revoke_user_tokens(uuid,text)': { roles: SYS, definer: true },
+  // (0114, D225) Deleting your own account: the person's own blockers, asking and keeping it;
+  // the purge is the system's.
+  'kept.account_deletion_blockers()': { roles: APP, definer: true },
+  'kept.request_account_deletion()': { roles: APP, definer: true },
+  'kept.cancel_account_deletion()': { roles: APP, definer: true },
+  'kept.purge_deleted_accounts(integer)': { roles: SYS, definer: true },
   'kept.guard_token_location()': { roles: NOBODY, definer: true },
   'kept.token_last_location()': { roles: NOBODY, definer: true },
   'kept.membership_access_ended()': { roles: NOBODY, definer: true },
@@ -2188,6 +2194,10 @@ const UNPROBED_DOORS: Record<string, string> = {
     'checks the caller administers the location itself (0010)',
   'kept.create_managed_profile(uuid,text)': 'checks the caller administers a location (0006)',
   'kept.delete_location(uuid)': 'owner only, checked inside (0006 §5)',
+  'kept.account_deletion_blockers()':
+    "the caller's own account only, never a token (0114, D225): its own locations' names and two booleans",
+  'kept.request_account_deletion()': "the caller's own account only, never a token (0114, D225)",
+  'kept.cancel_account_deletion()': "the caller's own account only, never a token (0114, D225)",
   'kept.restore_location(uuid)': 'owner only, checked inside (0006 §5)',
   'kept.set_location_require_2fa(uuid,boolean)': 'owner only, checked inside (0006 §5)',
   'kept.set_location_successor(uuid,uuid)': 'owner only, checked inside (0006 §5)',

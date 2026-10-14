@@ -16,6 +16,15 @@ On your server: the database in Postgres, and the files (photos, receipts, docum
 data volume or in an S3 bucket you choose. Your phone keeps a copy for offline use, without
 secret values. See [file storage](/admin/storage/) and [the phone app](/users/phone-app/).
 
+## How do I delete my account?
+
+Settings → Me → Delete my account, with your password. First hand each location you own (other
+than Personal) to someone else, or delete it; the instance's only admin has to make another admin
+first. The account then waits 30 days: signing in shows the date and a way to keep it, and nothing
+else opens. After that it is deleted with your Personal location. What you added to other people's
+locations stays there. [Export your data](/users/import-export/#exporting) first if you want a
+copy.
+
 ## Can I use it without AI?
 
 Yes. Everything works except naming things from photos, reading receipts, the assistant and search

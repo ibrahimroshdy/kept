@@ -65,6 +65,7 @@ describe('GET /api/v1/me', () => {
         },
       ],
       instance: { recoveryKitAcknowledged: null },
+      deletion: null,
     });
   });
 

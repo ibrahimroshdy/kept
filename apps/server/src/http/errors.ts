@@ -39,6 +39,8 @@ const MESSAGES: Record<ErrorCode, string> = {
   reauth_required: 'Confirm it is you to continue.',
   token_invalid: 'That link is invalid or has expired.',
   recovery_kit_required: 'Save the recovery kit first.',
+  account_deletion_pending: 'This account is going to be deleted. Keep it to use Kept again.',
+  account_deletion_blocked: "This account can't be deleted yet.",
   in_use: 'It is still in use.',
   contents_choice_required: 'Choose what happens to what is inside first.',
   payload_too_large: 'That file is too large.',
@@ -183,6 +185,9 @@ const CONFLICT_HINTS: Record<string, string> = {
   // Step 4 (plan T7): the caps its triggers enforce. The plan names no constraint for them; these
   // are the names T2 proposes, and T7 raises them or renames them here.
   notification_channels_webhook_cap: 'You already have 5 webhooks; remove one first.',
+  // 1.2 (D225): deleting your own account while something still stops it.
+  account_deletion_blocked:
+    'Something still stops this account being deleted: a location you own, or being the only instance admin.',
   calendar_feeds_cap: 'You already have 3 calendar links; revoke one first.',
   // Step 5 (plan T2): the unique names Phase A declares (T5, T6). One reading has one owner, a
   // fill or a service (Q11); the API refuses first, these are the answer when one slips past.

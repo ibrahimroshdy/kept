@@ -1,5 +1,6 @@
 /**
- * Re-authentication before a sensitive action (D176; step-8 T22): the recovery kit's download.
+ * Re-authentication before a sensitive action (D176; step-8 T22): the recovery kit's download,
+ * and deleting the account (D225).
  * The password again, or, for an account without one (passkey or magic link only) whose sign-in
  * is over ten minutes old, "Sign in again". The server says which (403 `reauth_required` with
  * `details.reauth`: `password` or `sign_in`); a wrong password keeps the sheet open with the
@@ -10,7 +11,7 @@ import { type FormEvent, type ReactNode, useState } from 'react';
 import { isApiError } from '@/api/client';
 import { Notice, useErrorText } from '@/components/page';
 import { useSignOut } from '@/components/sign-out';
-import { Button } from '@/components/ui/button';
+import { Button, type ButtonVariant } from '@/components/ui/button';
 import { Dialog, DialogFooter, Modal } from '@/components/ui/dialog';
 import { PasswordField } from '@/components/ui/password-field';
 
@@ -21,6 +22,8 @@ export type ReauthSheetProps = {
   /** What the action does and what it hands out; extra choices (a format) go here too. */
   children: ReactNode;
   submitLabel: ReactNode;
+  /** `danger` for an action that destroys something (deleting the account, D225). */
+  submitVariant?: ButtonVariant;
   /** Runs with the typed password (undefined when the field is empty). Throws to refuse. */
   onSubmit: (password: string | undefined) => Promise<void>;
   onClose: () => void;
@@ -32,6 +35,7 @@ export function ReauthSheet({
   title,
   children,
   submitLabel,
+  submitVariant = 'primary',
   onSubmit,
   onClose,
   returnTo,
@@ -112,7 +116,12 @@ export function ReauthSheet({
             <Button variant="secondary" onPress={onClose}>
               <Trans>Cancel</Trans>
             </Button>
-            <Button type="submit" isPending={pending} isDisabled={refusal === 'sign_in'}>
+            <Button
+              type="submit"
+              variant={submitVariant}
+              isPending={pending}
+              isDisabled={refusal === 'sign_in'}
+            >
               {submitLabel}
             </Button>
           </DialogFooter>

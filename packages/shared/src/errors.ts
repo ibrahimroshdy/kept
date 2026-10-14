@@ -26,6 +26,11 @@ export const ErrorCode = Object.freeze({
   /** The instance admin has not yet acknowledged the recovery kit (D193): needed before the
    * first secret value, AI key or backup setup. */
   recovery_kit_required: 'recovery_kit_required',
+  /** 1.2 (D225): the account is in its 30 days before deletion; only /me, keeping it and
+   * signing out answer. The body carries `purgeAfter`. */
+  account_deletion_pending: 'account_deletion_pending',
+  /** 1.2 (D225): the account can't be deleted yet; the body carries `blockers`. */
+  account_deletion_blocked: 'account_deletion_blocked',
   /** Step 2: a registry row (type, place kind, brand, vendor, person, tag) is still referenced;
    * archive or merge it instead (D92, D160). */
   in_use: 'in_use',

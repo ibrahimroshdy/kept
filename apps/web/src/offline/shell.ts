@@ -54,6 +54,7 @@ export function shellMe(me: Me): Me {
       expiresAt: m.expiresAt,
     })),
     instance: { recoveryKitAcknowledged: me.instance.recoveryKitAcknowledged },
+    deletion: me.deletion ?? null,
   };
 }
 

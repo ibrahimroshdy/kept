@@ -173,6 +173,18 @@ export const sessionMfa = authSchema.table('session_mfa', {
   satisfiedAt: tstz('satisfied_at').defaultNow().notNull(),
 });
 
+/** An account in its 30 days before deletion (D225): written only by
+ * kept.request_account_deletion() and kept.cancel_account_deletion(), read by the session gate
+ * (kept_auth, auth/session.ts) and the token doors, and gone with the user when
+ * kept.purge_deleted_accounts() deletes it. */
+export const userDeletion = authSchema.table('user_deletion', {
+  userId: uuid('user_id')
+    .primaryKey()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  requestedAt: tstz('requested_at').defaultNow().notNull(),
+  purgeAfter: tstz('purge_after').notNull(),
+});
+
 /** Failed credential attempts keyed on account + IP (D172, engineering spec §3.2): 20 per hour
  * with progressive delays, so nobody can lock someone else out. `key` is a SHA-256 of the
  * normalised account identifier and the client IP, never the raw email. */

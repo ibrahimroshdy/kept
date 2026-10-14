@@ -15,16 +15,19 @@ import type { BlobStore } from '../storage/blob-store.js';
 // 2. kept.purge_deleted_locations(10), again while a round fills its limit: locations past
 //    their 30-day grace, with everything in them. It returns the storage keys nothing else
 //    references.
+// 2b. kept.purge_deleted_accounts(10), again while a round fills its limit: accounts past their
+//    30 days before deletion (D225), with their Personal location and any of their own still in
+//    grace, then the sign-in user and what is only theirs. It returns the storage keys too.
 // 3. kept.purge_orphan_files(now() - 1 day, now() - 90 days, 500), again while a round returns
 //    keys: files no attachment holds. One attached once and let go (the files of what step 1
 //    purged) goes after a day; one never attached may be a phone's upload whose op is still
 //    queued (a held-back queue, D148, D210), so it waits out the sync op window first.
-// The blobs of steps 2 and 3 are deleted from the BlobStore after their transaction commits, so
+// The blobs of steps 2, 2b and 3 are deleted from the BlobStore after their transaction commits, so
 // a rolled-back purge never loses a blob a row still names. A blob that won't delete is logged
 // and fails the job once the rest is done (it shows in the failed-jobs view); its row is already
 // gone, so a retry can't find the key again, which is why the error names it.
 //
-// Without file storage (a worker started with none configured) steps 2 and 3 are skipped
+// Without file storage (a worker started with none configured) steps 2, 2b and 3 are skipped
 // outright and logged: running them would delete the rows and orphan their blobs for good.
 
 /** How long something stays in the trash before it is purged (D162, §3.3). */
@@ -32,6 +35,7 @@ export const TRASH_DAYS = 30;
 
 const TRASH_BATCH = 500;
 const LOCATION_BATCH = 10;
+const ACCOUNT_BATCH = 10;
 const FILE_BATCH = 500;
 /** Rounds per step and run: enough for any real backlog, and a bound on a runaway loop. */
 const MAX_ROUNDS = 100;
@@ -39,6 +43,7 @@ const MAX_ROUNDS = 100;
 export type PurgeReport = {
   trashed: number;
   locations: number;
+  accounts: number;
   blobs: number;
   failedBlobs: string[];
   skippedFiles: boolean;
@@ -71,6 +76,7 @@ export async function runPurge(deps: PurgeDeps): Promise<PurgeReport> {
   const report: PurgeReport = {
     trashed: 0,
     locations: 0,
+    accounts: 0,
     blobs: 0,
     failedBlobs: [],
     skippedFiles: !deps.blobs,
@@ -91,7 +97,7 @@ export async function runPurge(deps: PurgeDeps): Promise<PurgeReport> {
   if (!deps.blobs) {
     deps.log.info(
       {},
-      'purge: no file storage configured for this worker; deleted locations and unattached files are left for a worker that has it',
+      'purge: no file storage configured for this worker; deleted locations and accounts and unattached files are left for a worker that has it',
     );
     return report;
   }
@@ -108,6 +114,20 @@ export async function runPurge(deps: PurgeDeps): Promise<PurgeReport> {
     const keys = purged.flatMap((r) => r.storage_keys ?? []);
     report.blobs += await deleteBlobs(deps, keys, report.failedBlobs);
     if (purged.length < LOCATION_BATCH) break;
+  }
+
+  for (let round = 0; round < MAX_ROUNDS; round++) {
+    const purged = await once(deps.pools, async (c) => {
+      const { rows } = await c.query<{ user_id: string; storage_keys: string[] }>(
+        'SELECT user_id, storage_keys FROM kept.purge_deleted_accounts($1)',
+        [ACCOUNT_BATCH],
+      );
+      return rows;
+    });
+    report.accounts += purged.length;
+    const keys = purged.flatMap((r) => r.storage_keys ?? []);
+    report.blobs += await deleteBlobs(deps, keys, report.failedBlobs);
+    if (purged.length < ACCOUNT_BATCH) break;
   }
 
   for (let round = 0; round < MAX_ROUNDS; round++) {

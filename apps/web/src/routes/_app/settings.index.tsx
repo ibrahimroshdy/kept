@@ -10,6 +10,7 @@ import { revokeMySession } from '@/api/account';
 import { keys, useMe, useMySessions } from '@/api/queries';
 import type { DeviceSession } from '@/api/types';
 import { ChangeEmail } from '@/components/change-email';
+import { DeleteAccount } from '@/components/delete-account';
 import { DisplayPrefs } from '@/components/display-prefs';
 import {
   BellIcon,
@@ -20,6 +21,7 @@ import {
   ShareIcon,
   ShieldCheckIcon,
   ShieldIcon,
+  TrashIcon,
 } from '@/components/icons';
 import {
   Avatar,
@@ -115,6 +117,22 @@ function MePage() {
                   <Trans>Export</Trans>
                 </LinkButton>
               }
+            />
+          </li>
+          <li>
+            <Row
+              leading={
+                <IconTile>
+                  <TrashIcon />
+                </IconTile>
+              }
+              title={<Trans>Delete my account</Trans>}
+              subtitle={
+                <Trans>
+                  After 30 days, with your Personal location. You can keep it until then.
+                </Trans>
+              }
+              trailing={<DeleteAccount />}
             />
           </li>
         </List>

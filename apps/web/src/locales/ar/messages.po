@@ -21318,3 +21318,84 @@ msgstr "وجد الفحص الأسبوعي للنسخ الاحتياطية مش�
 #: src/components/ops/ops-words.ts
 msgid "Some files are missing from the file storage, so no backup holds them. The server's log names them."
 msgstr "بعض الملفات مفقودة من مخزن الملفات، فلا تحويها أي نسخة احتياطية. سجل الخادم يذكرها بأسمائها."
+
+#: src/components/delete-account.tsx
+#: src/routes/_app/settings.index.tsx
+msgid "Delete my account"
+msgstr "حذف حسابي"
+
+#: src/routes/_app/settings.index.tsx
+msgid "After 30 days, with your Personal location. You can keep it until then."
+msgstr "بعد ٣٠ يومًا، ومعه موقعك الشخصي. يمكنك الإبقاء عليه حتى ذلك الحين."
+
+#: src/components/delete-account.tsx
+msgid "Delete…"
+msgstr "حذف…"
+
+#: src/components/delete-account.tsx
+msgid "Delete your account"
+msgstr "حذف حسابك"
+
+#: src/components/delete-account.tsx
+msgid "Checking your account…"
+msgstr "جارٍ التحقق من حسابك…"
+
+#: src/components/delete-account.tsx
+msgid "Your account can't be deleted yet"
+msgstr "لا يمكن حذف حسابك بعد"
+
+#: src/components/delete-account.tsx
+msgid "This account was made for you by someone who runs a location. Ask them to remove it."
+msgstr "أنشأ هذا الحساب لك شخصٌ يدير موقعًا. اطلب منه إزالته."
+
+#: src/components/delete-account.tsx
+msgid "You're the only person who runs this Kept. Make someone else an instance admin first."
+msgstr "أنت الوحيد الذي يدير Kept هذا. امنح شخصًا آخر إدارة الخادم أولًا."
+
+#: src/components/delete-account.tsx
+msgid "You own these locations. Hand each one to someone else, or delete it, first."
+msgstr "أنت مالك هذه المواقع. سلّم كلًّا منها لشخص آخر أو احذفه أولًا."
+
+#: src/components/delete-account.tsx
+msgid "Your account, your Personal location and everything in it are deleted 30 days from now. Until then you can sign in and keep the account; nothing else opens."
+msgstr "يُحذف حسابك وموقعك الشخصي وكل ما فيه بعد ٣٠ يومًا من الآن. وحتى ذلك الحين يمكنك تسجيل الدخول والإبقاء على الحساب، ولا يُفتح شيء غير ذلك."
+
+#: src/components/delete-account.tsx
+msgid "What you added to other people's locations stays there. Your other devices are signed out now."
+msgstr "ما أضفته إلى مواقع الآخرين يبقى فيها. وتُسجَّل أجهزتك الأخرى خروجًا الآن."
+
+#: src/components/delete-account.tsx
+msgid "Keep a copy first?"
+msgstr "هل تحتفظ بنسخة أولًا؟"
+
+#: src/components/delete-account.tsx
+msgid "Your Personal location, profile and preferences, as one file."
+msgstr "موقعك الشخصي وملفك الشخصي وتفضيلاتك، في ملف واحد."
+
+#: src/components/delete-account.tsx
+msgid "Your account stays"
+msgstr "سيبقى حسابك"
+
+#: src/components/delete-account.tsx
+msgid "Your account will be deleted on {day}"
+msgstr "سيُحذف حسابك في {day}"
+
+#: src/components/delete-account.tsx
+msgid "You asked for it, with your Personal location and everything in it. Until then nothing else in Kept opens. Keep the account to go back to it as it was."
+msgstr "طلبتَ ذلك، ومعه موقعك الشخصي وكل ما فيه. وحتى ذلك الحين لا يُفتح شيء آخر في Kept. أبقِ على الحساب لتعود إليه كما كان."
+
+#: src/components/delete-account.tsx
+msgid "Keep my account"
+msgstr "الإبقاء على حسابي"
+
+#: src/components/page.tsx
+msgid "Your account is going to be deleted. Keep it to use Kept again."
+msgstr "سيُحذف حسابك. أبقِ عليه لتستخدم Kept مجددًا."
+
+#: src/components/page.tsx
+msgid "Your account can't be deleted yet."
+msgstr "لا يمكن حذف حسابك بعد."
+
+#: src/components/history/timeline.tsx
+msgid "A former member"
+msgstr "عضو سابق"

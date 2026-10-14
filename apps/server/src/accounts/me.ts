@@ -14,6 +14,9 @@ import { RECOVERY_KIT_KEY } from '../setup/recovery-kit.js';
 // PATCH /api/v1/me {suggestLocation} (step-3 carry-over, T19): "Suggest where I am" (the phone's
 // location suggestion) is the person's, across devices, in user_profiles.suggest_location.
 // Audited `me.preferences` on the person's own account. → 200 {suggestLocation}.
+//
+// GET /me also answers an account in its 30 days before deletion (D225), with `deletion` set: the
+// web shows only "this account will be deleted" with Keep it and Sign out (accounts/deletion.ts).
 
 const Me = z.object({
   user: z.object({
@@ -54,6 +57,8 @@ const Me = z.object({
     /** Instance admins only; null for everyone else (task 22 writes it, D193). */
     recoveryKitAcknowledged: z.boolean().nullable(),
   }),
+  /** Set while the account waits to be deleted (D225): the moment it goes. */
+  deletion: z.object({ purgeAfter: Iso }).nullable(),
 });
 
 export async function meRoutes(
@@ -62,92 +67,101 @@ export async function meRoutes(
 ): Promise<void> {
   const { pools } = opts;
 
-  app.get('/api/v1/me', { schema: { response: { 200: Me } } }, async (req) => {
-    const kept = await scopedRead(pools, req, async (_tx, client) => {
-      const profile = await client.query<{
-        display_name: string;
-        timezone: string;
-        locale: string;
-        units: (typeof UNITS)[number];
-        theme: (typeof THEMES)[number];
-        digits: (typeof DIGITS)[number];
-        suggest_location: boolean;
-        managed: boolean;
-      }>(
-        `SELECT display_name, timezone, locale, units, theme, digits, suggest_location, managed
+  app.get(
+    '/api/v1/me',
+    { config: { allowDeletionPending: true }, schema: { response: { 200: Me } } },
+    async (req) => {
+      const kept = await scopedRead(pools, req, async (_tx, client) => {
+        const profile = await client.query<{
+          display_name: string;
+          timezone: string;
+          locale: string;
+          units: (typeof UNITS)[number];
+          theme: (typeof THEMES)[number];
+          digits: (typeof DIGITS)[number];
+          suggest_location: boolean;
+          managed: boolean;
+        }>(
+          `SELECT display_name, timezone, locale, units, theme, digits, suggest_location, managed
            FROM public.user_profiles WHERE user_id = kept.current_user_id()`,
-      );
-      const memberships = await client.query<{
-        location_id: string;
-        name: string;
-        kind: z.infer<typeof LocationKind>;
-        role: z.infer<typeof RoleSchema>;
-        expires_at: Date | null;
-      }>(
-        `SELECT l.id AS location_id, l.name, l.kind, m.role, m.expires_at
+        );
+        const memberships = await client.query<{
+          location_id: string;
+          name: string;
+          kind: z.infer<typeof LocationKind>;
+          role: z.infer<typeof RoleSchema>;
+          expires_at: Date | null;
+        }>(
+          `SELECT l.id AS location_id, l.name, l.kind, m.role, m.expires_at
            FROM public.memberships m JOIN public.locations l ON l.id = m.location_id
           WHERE m.user_id = kept.current_user_id()
           ORDER BY (l.kind = 'personal') DESC, lower(l.name), l.id`,
-      );
-      const admin = await client.query<{ admin: boolean }>(
-        'SELECT kept.is_instance_admin() AS admin',
-      );
-      const instanceAdmin = admin.rows[0]?.admin === true;
-      let recoveryKitAcknowledged: boolean | null = null;
-      if (instanceAdmin) {
-        const kit = await client.query('SELECT 1 FROM public.instance_settings WHERE key = $1', [
-          RECOVERY_KIT_KEY,
-        ]);
-        recoveryKitAcknowledged = (kit.rowCount ?? 0) > 0;
-      }
+        );
+        const admin = await client.query<{ admin: boolean }>(
+          'SELECT kept.is_instance_admin() AS admin',
+        );
+        const instanceAdmin = admin.rows[0]?.admin === true;
+        let recoveryKitAcknowledged: boolean | null = null;
+        if (instanceAdmin) {
+          const kit = await client.query('SELECT 1 FROM public.instance_settings WHERE key = $1', [
+            RECOVERY_KIT_KEY,
+          ]);
+          recoveryKitAcknowledged = (kit.rowCount ?? 0) > 0;
+        }
+        return {
+          profile: profile.rows[0],
+          memberships: memberships.rows,
+          instanceAdmin,
+          recoveryKitAcknowledged,
+        };
+      });
+      const scope = req.scope;
+      if (!scope) throw unauthenticated();
+      const { rows } = await pools.auth.query<{
+        email: string;
+        username: string | null;
+        two_factor_enabled: boolean | null;
+      }>('SELECT email, username, two_factor_enabled FROM auth."user" WHERE id = $1', [
+        scope.userId,
+      ]);
+      const user = rows[0];
+      if (!user) throw unauthenticated();
+      const managed = kept.profile?.managed === true;
+      const personal = kept.memberships.find((m) => m.kind === 'personal' && m.role === 'owner');
       return {
-        profile: profile.rows[0],
-        memberships: memberships.rows,
-        instanceAdmin,
-        recoveryKitAcknowledged,
+        user: {
+          id: scope.userId,
+          displayName: kept.profile?.display_name ?? '',
+          email: managed ? null : user.email,
+          username: managed ? user.username : null,
+          twoFactorEnabled: user.two_factor_enabled === true,
+          managed,
+          instanceAdmin: kept.instanceAdmin,
+        },
+        mfa: scope.mfa,
+        personalLocationId: personal?.location_id ?? null,
+        profile: {
+          timezone: kept.profile?.timezone ?? 'UTC',
+          locale: kept.profile?.locale ?? 'en',
+          units: kept.profile?.units ?? 'metric',
+          theme: kept.profile?.theme ?? 'system',
+          digits: kept.profile?.digits ?? 'western',
+          suggestLocation: kept.profile?.suggest_location === true,
+        },
+        memberships: kept.memberships.map((m) => ({
+          locationId: m.location_id,
+          name: m.name,
+          kind: m.kind,
+          role: m.role,
+          expiresAt: m.expires_at?.toISOString() ?? null,
+        })),
+        instance: { recoveryKitAcknowledged: kept.recoveryKitAcknowledged },
+        deletion: req.authSession?.deletionPending
+          ? { purgeAfter: req.authSession.deletionPending }
+          : null,
       };
-    });
-    const scope = req.scope;
-    if (!scope) throw unauthenticated();
-    const { rows } = await pools.auth.query<{
-      email: string;
-      username: string | null;
-      two_factor_enabled: boolean | null;
-    }>('SELECT email, username, two_factor_enabled FROM auth."user" WHERE id = $1', [scope.userId]);
-    const user = rows[0];
-    if (!user) throw unauthenticated();
-    const managed = kept.profile?.managed === true;
-    const personal = kept.memberships.find((m) => m.kind === 'personal' && m.role === 'owner');
-    return {
-      user: {
-        id: scope.userId,
-        displayName: kept.profile?.display_name ?? '',
-        email: managed ? null : user.email,
-        username: managed ? user.username : null,
-        twoFactorEnabled: user.two_factor_enabled === true,
-        managed,
-        instanceAdmin: kept.instanceAdmin,
-      },
-      mfa: scope.mfa,
-      personalLocationId: personal?.location_id ?? null,
-      profile: {
-        timezone: kept.profile?.timezone ?? 'UTC',
-        locale: kept.profile?.locale ?? 'en',
-        units: kept.profile?.units ?? 'metric',
-        theme: kept.profile?.theme ?? 'system',
-        digits: kept.profile?.digits ?? 'western',
-        suggestLocation: kept.profile?.suggest_location === true,
-      },
-      memberships: kept.memberships.map((m) => ({
-        locationId: m.location_id,
-        name: m.name,
-        kind: m.kind,
-        role: m.role,
-        expiresAt: m.expires_at?.toISOString() ?? null,
-      })),
-      instance: { recoveryKitAcknowledged: kept.recoveryKitAcknowledged },
-    };
-  });
+    },
+  );
 
   const Patch = z.object({ suggestLocation: z.boolean() }).strict();
   app.patch(

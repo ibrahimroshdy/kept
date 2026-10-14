@@ -90,5 +90,17 @@ export function capFactsOf(details: Record<string, unknown>): AiCapFacts | null 
 export const tokens = (tag: string, value: string) =>
   new Intl.NumberFormat(tag === 'ar' ? 'en' : tag).format(Number(value) || 0);
 
+/** "14 November 2026" in `tag`, on the person's own calendar (Arabic mail keeps Western digits). */
+export function mailDay(tag: string, iso: string, timeZone: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  const locale = tag === 'ar' ? 'ar-u-nu-latn' : tag === 'en' ? 'en-GB' : tag;
+  try {
+    return new Intl.DateTimeFormat(locale, { dateStyle: 'long', timeZone }).format(d);
+  } catch {
+    return new Intl.DateTimeFormat(locale, { dateStyle: 'long', timeZone: 'UTC' }).format(d);
+  }
+}
+
 /** A phrase with its first letter capitalised, for the start of a sentence. */
 export const capitalise = (s: string) => s.charAt(0).toLocaleUpperCase() + s.slice(1);

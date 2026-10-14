@@ -33,6 +33,8 @@ describe('ErrorCode', () => {
       'reauth_required',
       'token_invalid',
       'recovery_kit_required',
+      'account_deletion_pending',
+      'account_deletion_blocked',
       'in_use',
       'contents_choice_required',
       'payload_too_large',

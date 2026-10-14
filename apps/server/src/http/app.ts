@@ -10,6 +10,7 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from 'fastify-type-provider-zod';
+import { accountDeletionRoutes } from '../accounts/deletion.js';
 import { meRoutes } from '../accounts/me.js';
 import { signUpRoutes } from '../accounts/sign-up.js';
 import { adminRoutes } from '../admin/routes.js';
@@ -344,6 +345,13 @@ export async function buildApp(opts: AppOptions): Promise<KeptApp> {
       pools: opts.pools,
       mailer,
       publicUrl,
+      trustedProxies,
+      onMailError: (err) => app.log.error({ err }, 'mail failed'),
+    });
+    await accountDeletionRoutes(app, {
+      auth,
+      pools: opts.pools,
+      mailer,
       trustedProxies,
       onMailError: (err) => app.log.error({ err }, 'mail failed'),
     });

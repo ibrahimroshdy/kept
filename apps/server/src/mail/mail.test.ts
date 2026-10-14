@@ -62,6 +62,12 @@ const EVERY_MAIL: MailBody[] = [
   { kind: 'email-change-confirm', to: 'a@x.test', url: `${PUBLIC_URL}/e#t`, newEmail: 'b@x.test' },
   { kind: 'email-change-verify', to: 'b@x.test', url: `${PUBLIC_URL}/e#t` },
   { kind: 'email-changed', to: 'a@x.test', newEmail: 'b@x.test' },
+  {
+    kind: 'account-deletion',
+    to: 'a@x.test',
+    purgeAfter: '2026-11-13T09:00:00.000Z',
+    timezone: 'Africa/Cairo',
+  },
   ...(['admin', 'member', 'viewer'] as const).flatMap((role) =>
     ['Alfred', ''].map(
       (inviterName): MailBody => ({
@@ -325,6 +331,7 @@ describe('the message table', () => {
         'email-change-confirm',
         'email-change-verify',
         'email-changed',
+        'account-deletion',
         'invite',
         'magic-link',
         'owner-new-member',
