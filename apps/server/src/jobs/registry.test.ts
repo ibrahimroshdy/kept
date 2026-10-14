@@ -447,9 +447,10 @@ describe('the maintenance jobs', () => {
            ($1, 'old', 'h', now() - interval '31 days'), ($1, 'new', 'h', now())`,
         [user],
       );
-      // Step 3 (T4): the sync ledger, 30 days too.
+      // Step 3 (T4): the sync ledger, 91 days: as long as a client may resend an op.
       for (const [key, age] of [
-        ['op-old-00001', '31 days'],
+        ['op-old-00001', '92 days'],
+        ['op-mid-00001', '31 days'],
         ['op-new-00001', '0 days'],
       ]) {
         await c.query(
@@ -538,14 +539,15 @@ describe('the maintenance jobs', () => {
       failures: (await c.query('SELECT key FROM auth.sign_in_failures ORDER BY key')).rows,
       mfa: (await c.query('SELECT count(*)::int AS n FROM auth.session_mfa')).rows[0].n,
       keys: (await c.query('SELECT key FROM public.idempotency_keys')).rows,
-      ops: (await c.query('SELECT idempotency_key FROM public.sync_ops')).rows,
+      ops: (await c.query('SELECT idempotency_key FROM public.sync_ops ORDER BY idempotency_key'))
+        .rows,
       inbox: (await c.query('SELECT code FROM public.inbox_items ORDER BY code')).rows,
     }));
     expect(left).toEqual({
       failures: [{ key: 'fresh' }, { key: 'recent-window' }],
       mfa: 1,
       keys: [{ key: 'new' }],
-      ops: [{ idempotency_key: 'op-new-00001' }],
+      ops: [{ idempotency_key: 'op-mid-00001' }, { idempotency_key: 'op-new-00001' }],
       inbox: [{ code: 'BBBBBB' }, { code: 'CCCCCC' }],
     });
   });

@@ -778,6 +778,13 @@
       "when": 1791932263473,
       "tag": "0110_alert_backup_verify_failed",
       "breakpoints": true
+    },
+    {
+      "idx": 111,
+      "version": "7",
+      "when": 1791932812074,
+      "tag": "0111_sync_ledger_keeps_the_op_window",
+      "breakpoints": true
     }
   ]
 }
