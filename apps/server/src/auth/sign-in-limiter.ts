@@ -50,7 +50,9 @@ export function limiterKey(
     // Step 6 (T15): a location webhook's test ping.
     | 'webhook-test'
     // Step 7 (T14): a Kept import's passphrase tries, per run.
-    | 'import-passphrase',
+    | 'import-passphrase'
+    // 1.4 (D231): signing in to a location's mailbox to check it, per person.
+    | 'mailbox-check',
   ...parts: string[]
 ): string {
   const normalised = parts.map((p) => p.trim().toLowerCase());

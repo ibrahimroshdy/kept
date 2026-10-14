@@ -319,6 +319,8 @@ const KEPT_FUNCTION_EXECUTE: Record<string, string[]> = {
   'kept.ai_provider_for_system(uuid,text)': SYSTEM_ONLY,
   // Step 6 (0078): webhooks' secret, fan-out check, and D180's switch-off.
   'kept.webhook_secret(uuid)': SYSTEM_ONLY,
+  // 1.4 (0120, D231): the mail-in job's view of a mailbox with its sealed connection.
+  'kept.mailbox_config(uuid)': SYSTEM_ONLY,
   'kept.webhooks_listening(uuid,text)': APP_ONLY,
   'kept.disable_webhooks_in(uuid,uuid)': OWNER_ONLY,
   'kept.disable_webhooks_for(uuid,uuid)': APP_AND_SYSTEM,

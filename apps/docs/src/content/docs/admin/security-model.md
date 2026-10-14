@@ -33,7 +33,8 @@ why the database itself must stay private to the server.
 ## Keys and encryption
 
 - **`KEPT_SECRET_KEY`** seals every secret value: secret fields on things, AI keys, notification
-  channel settings, webhook secrets, the web push private key, the backup password. AES-256-GCM
+  channel settings, webhook secrets, email-in mailbox passwords, the web push private key, the
+  backup password. AES-256-GCM
   with a per-row data key, each ciphertext bound to its table, row and field, so one can't be
   swapped for another (spec §7.3).
 - **`KEPT_AUTH_SECRET`** signs sessions and tokens. It is separate so either can be rotated alone.
@@ -46,6 +47,8 @@ why the database itself must stay private to the server.
   the old key is kept as a retired version so older backups still open. `--resume` finishes an
   interrupted run, `--drop <version>` removes a retired key nothing uses
   ([the CLI](/admin/cli/#commands)).
+- **Mailbox passwords are write-only:** an email-in mailbox's server, user name and password are
+  sealed together; the page shows the server and user name, never the password.
 - **AI keys are write-only:** once saved, Kept shows only their last four characters.
 
 ## Signing in
@@ -100,8 +103,8 @@ socket, or from `X-Forwarded-For` only when the connection is from an address in
 ## Outbound requests (SSRF)
 
 Kept fetches only addresses someone configured: an AI provider's base URL, webhooks, push,
-an OIDC issuer, an OAuth client's metadata, a Homebox server to import from, barcode lookups and
-the update check. Each goes through one guarded fetch
+an OIDC issuer, an OAuth client's metadata, a Homebox server to import from, barcode lookups,
+the update check and a location's email-in mailbox (IMAP). Each goes through the same guard
 ([`apps/server/src/net/ssrf.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/net/ssrf.ts)):
 
 - the address is checked **when the connection is made**, after the name resolves, so a name that

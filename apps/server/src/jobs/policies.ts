@@ -130,6 +130,9 @@ export const JOB_POLICIES = {
   // Weekly: `restic check` and, with S3 file storage, the manifest against the bucket (T7). Long
   // like the backup itself (§3.1b "backup: 2 attempts, 4 h").
   'backup-verify': { retryLimit: 1, retryDelay: 900, retryBackoff: false, expireInSeconds: 14_400 },
+  // 1.4 (D231): every 10 minutes, each mailbox's new mail (mailin/poll.ts). Never retried: the
+  // next run is 10 minutes away, and a mailbox's mark keeps what it already read.
+  'mail-in': { retryLimit: 0, retryDelay: 0, retryBackoff: false, expireInSeconds: 540 },
 } as const satisfies Record<string, JobPolicy>;
 
 export type JobName = keyof typeof JOB_POLICIES;

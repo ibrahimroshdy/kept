@@ -1,7 +1,7 @@
 /**
  * The frame for Location settings pages (screens §5): the location's name, the section tabs
  * (General · What to track · Members; Personal has no Members, D114; Webhooks for its owner and
- * admins, step 6) and the owner/admin gate.
+ * admins, step 6; Email-in for them too, 1.4) and the owner/admin gate.
  */
 import { Trans, useLingui } from '@lingui/react/macro';
 import type { ReactNode } from 'react';
@@ -19,7 +19,7 @@ export function LocationSettingsPage({
 }: {
   id: string;
   /** Which tab a sub-page belongs to (Invite belongs to Members). */
-  section?: 'general' | 'members' | 'track' | 'webhooks';
+  section?: 'general' | 'members' | 'track' | 'webhooks' | 'email-in';
   /** The page title; defaults to "Location settings". */
   title?: (location: LocationDetail) => ReactNode;
   children: (location: LocationDetail) => ReactNode;
@@ -82,6 +82,12 @@ export function LocationSettingsPage({
                   key: 'webhooks',
                   label: <Trans>Webhooks</Trans>,
                   link: { to: '/settings/location/$id/webhooks' as const, params: { id } },
+                },
+                // Email-in (1.4, D231): the location's mailbox for receipts.
+                {
+                  key: 'email-in',
+                  label: <Trans>Email-in</Trans>,
+                  link: { to: '/settings/location/$id/email-in' as const, params: { id } },
                 },
               ]
             : []),

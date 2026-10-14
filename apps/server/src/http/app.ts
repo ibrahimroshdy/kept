@@ -34,6 +34,7 @@ import type { JobQueue } from '../jobs/queue.js';
 import { memberRoutes } from '../locations/members.js';
 import { locationRoutes } from '../locations/routes.js';
 import { logMailer, type Mailer } from '../mail/mailer.js';
+import type { MailSource } from '../mailin/source.js';
 import { managedRoutes } from '../managed/routes.js';
 import type { NotifyDeps } from '../notify/channels.js';
 import {
@@ -116,6 +117,8 @@ export type AppOptions = {
   files?: FileStorage | null;
   /** The keyring for secret values (crypto/keyring.ts). Omit for an app that stores none. */
   secretKeys?: SecretKeys | null;
+  /** 1.4 (D231): where the mailbox routes sign in; omit for imapflow (tests pass a fake). */
+  mailSource?: MailSource | null;
   /** Step 3's AI layer (ai/routes.ts). Omit for an app without AI (the routes say no provider). */
   ai?: AiDeps | null;
   /** The key that signs sync cursors (sync/cursor.ts syncCursorKey); omit for a key of the
@@ -324,6 +327,7 @@ export async function buildApp(opts: AppOptions): Promise<KeptApp> {
     jobs: opts.jobs ?? null,
     files: opts.files ?? null,
     secretKeys: opts.secretKeys ?? null,
+    mailSource: opts.mailSource ?? null,
     ai: opts.ai ?? null,
     syncKey: opts.syncKey ?? null,
     tokenKey,

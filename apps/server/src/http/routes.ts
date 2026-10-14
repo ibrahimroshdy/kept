@@ -28,6 +28,8 @@ import { incidentRoutes } from '../incidents/routes.js';
 import type { JobQueue } from '../jobs/queue.js';
 import { labelRoutes } from '../labels/routes.js';
 import { lendingRoutes } from '../lending/routes.js';
+import { mailboxRoutes } from '../mailin/routes.js';
+import type { MailSource } from '../mailin/source.js';
 import { mcpRoutes } from '../mcp/routes.js';
 import { meterRoutes } from '../meters/routes.js';
 import { moneyRoutes } from '../money/routes.js';
@@ -99,6 +101,9 @@ export type InventoryDeps = {
   /** Step 6 (T11, T12): Better Auth, for the OAuth connectors and `/mcp`'s OAuth tokens. Absent:
    * OAuth is off and `/mcp` takes personal tokens only. */
   auth?: Auth | null;
+  /** 1.4 (D231): where the mailbox routes sign in to check a mailbox; absent: imapflow. Tests
+   * pass a fake. */
+  mailSource?: MailSource | null;
 };
 
 /** The route modules, in registration order. */
@@ -170,6 +175,8 @@ export const INVENTORY_ROUTE_MODULES = [
   recoveryKitRoutes,
   // T11 (D65): the update check's "Check now".
   updateRoutes,
+  // 1.4 (D231): a location's mailbox for email-in.
+  mailboxRoutes,
 ] as const satisfies readonly ((app: KeptApp, deps: InventoryDeps) => Promise<void>)[];
 
 export async function registerInventoryRoutes(app: KeptApp, deps: InventoryDeps): Promise<void> {

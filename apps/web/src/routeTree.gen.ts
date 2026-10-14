@@ -91,6 +91,7 @@ import { Route as AppSettingsAccountVendorsRouteImport } from './routes/_app/set
 import { Route as AppSettingsAiUsageRouteImport } from './routes/_app/settings.ai.usage'
 import { Route as AppSettingsMeAiRouteImport } from './routes/_app/settings.me.ai'
 import { Route as AppSettingsMeNotificationsRouteImport } from './routes/_app/settings.me.notifications'
+import { Route as AppSettingsLocationIdEmailInRouteImport } from './routes/_app/settings.location.$id.email-in'
 import { Route as AppSettingsLocationIdGeneralRouteImport } from './routes/_app/settings.location.$id.general'
 import { Route as AppSettingsLocationIdInviteRouteImport } from './routes/_app/settings.location.$id.invite'
 import { Route as AppSettingsLocationIdMembersRouteImport } from './routes/_app/settings.location.$id.members'
@@ -512,6 +513,12 @@ const AppSettingsMeNotificationsRoute =
     path: '/settings/me/notifications',
     getParentRoute: () => AppRoute,
   } as any)
+const AppSettingsLocationIdEmailInRoute =
+  AppSettingsLocationIdEmailInRouteImport.update({
+    id: '/settings/location/$id/email-in',
+    path: '/settings/location/$id/email-in',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppSettingsLocationIdGeneralRoute =
   AppSettingsLocationIdGeneralRouteImport.update({
     id: '/settings/location/$id/general',
@@ -624,6 +631,7 @@ export interface FileRoutesByFullPath {
   '/settings/me/ai': typeof AppSettingsMeAiRoute
   '/settings/me/notifications': typeof AppSettingsMeNotificationsRoute
   '/settings/account/': typeof AppSettingsAccountIndexRoute
+  '/settings/location/$id/email-in': typeof AppSettingsLocationIdEmailInRoute
   '/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
   '/settings/location/$id/members': typeof AppSettingsLocationIdMembersRoute
@@ -709,6 +717,7 @@ export interface FileRoutesByTo {
   '/settings/me/ai': typeof AppSettingsMeAiRoute
   '/settings/me/notifications': typeof AppSettingsMeNotificationsRoute
   '/settings/account': typeof AppSettingsAccountIndexRoute
+  '/settings/location/$id/email-in': typeof AppSettingsLocationIdEmailInRoute
   '/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
   '/settings/location/$id/members': typeof AppSettingsLocationIdMembersRoute
@@ -799,6 +808,7 @@ export interface FileRoutesById {
   '/_app/settings/me/ai': typeof AppSettingsMeAiRoute
   '/_app/settings/me/notifications': typeof AppSettingsMeNotificationsRoute
   '/_app/settings/account/': typeof AppSettingsAccountIndexRoute
+  '/_app/settings/location/$id/email-in': typeof AppSettingsLocationIdEmailInRoute
   '/_app/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/_app/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
   '/_app/settings/location/$id/members': typeof AppSettingsLocationIdMembersRoute
@@ -888,6 +898,7 @@ export interface FileRouteTypes {
     | '/settings/me/ai'
     | '/settings/me/notifications'
     | '/settings/account/'
+    | '/settings/location/$id/email-in'
     | '/settings/location/$id/general'
     | '/settings/location/$id/invite'
     | '/settings/location/$id/members'
@@ -973,6 +984,7 @@ export interface FileRouteTypes {
     | '/settings/me/ai'
     | '/settings/me/notifications'
     | '/settings/account'
+    | '/settings/location/$id/email-in'
     | '/settings/location/$id/general'
     | '/settings/location/$id/invite'
     | '/settings/location/$id/members'
@@ -1062,6 +1074,7 @@ export interface FileRouteTypes {
     | '/_app/settings/me/ai'
     | '/_app/settings/me/notifications'
     | '/_app/settings/account/'
+    | '/_app/settings/location/$id/email-in'
     | '/_app/settings/location/$id/general'
     | '/_app/settings/location/$id/invite'
     | '/_app/settings/location/$id/members'
@@ -1660,6 +1673,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsMeNotificationsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings/location/$id/email-in': {
+      id: '/_app/settings/location/$id/email-in'
+      path: '/settings/location/$id/email-in'
+      fullPath: '/settings/location/$id/email-in'
+      preLoaderRoute: typeof AppSettingsLocationIdEmailInRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/settings/location/$id/general': {
       id: '/_app/settings/location/$id/general'
       path: '/settings/location/$id/general'
@@ -1839,6 +1859,7 @@ interface AppRouteChildren {
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
   AppSettingsMeAiRoute: typeof AppSettingsMeAiRoute
   AppSettingsMeNotificationsRoute: typeof AppSettingsMeNotificationsRoute
+  AppSettingsLocationIdEmailInRoute: typeof AppSettingsLocationIdEmailInRoute
   AppSettingsLocationIdGeneralRoute: typeof AppSettingsLocationIdGeneralRoute
   AppSettingsLocationIdInviteRoute: typeof AppSettingsLocationIdInviteRoute
   AppSettingsLocationIdMembersRoute: typeof AppSettingsLocationIdMembersRoute
@@ -1894,6 +1915,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSettingsIndexRoute: AppSettingsIndexRoute,
   AppSettingsMeAiRoute: AppSettingsMeAiRoute,
   AppSettingsMeNotificationsRoute: AppSettingsMeNotificationsRoute,
+  AppSettingsLocationIdEmailInRoute: AppSettingsLocationIdEmailInRoute,
   AppSettingsLocationIdGeneralRoute: AppSettingsLocationIdGeneralRoute,
   AppSettingsLocationIdInviteRoute: AppSettingsLocationIdInviteRoute,
   AppSettingsLocationIdMembersRoute: AppSettingsLocationIdMembersRoute,

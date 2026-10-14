@@ -21751,3 +21751,187 @@ msgstr "Off. One photo, one thing."
 #: src/routes/_app/admin.settings.tsx
 msgid "How well the pictures are cut depends on the AI provider. Check a few drafts after turning this on."
 msgstr "How well the pictures are cut depends on the AI provider. Check a few drafts after turning this on."
+
+#: src/components/location-settings.tsx
+msgid "Email-in"
+msgstr "Email-in"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "That address is on a private network. An instance admin can allow it in Admin → Settings."
+msgstr "That address is on a private network. An instance admin can allow it in Admin → Settings."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept couldn't reach that server. Check the host and port."
+msgstr "Kept couldn't reach that server. Check the host and port."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The server's encryption didn't check out. Check the host and the security."
+msgstr "The server's encryption didn't check out. Check the host and the security."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The mailbox refused the user name or password."
+msgstr "The mailbox refused the user name or password."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "That folder doesn't exist in the mailbox."
+msgstr "That folder doesn't exist in the mailbox."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The server took too long to answer."
+msgstr "The server took too long to answer."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept couldn't sign in to the mailbox."
+msgstr "Kept couldn't sign in to the mailbox."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The person who connected it no longer administers this location."
+msgstr "The person who connected it no longer administers this location."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Draft receipt"
+msgstr "Draft receipt"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "No receipt in it"
+msgstr "No receipt in it"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Sender not allowed"
+msgstr "Sender not allowed"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Too large"
+msgstr "Too large"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Couldn't be read"
+msgstr "Couldn't be read"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The mailbox works"
+msgstr "The mailbox works"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Mailbox removed"
+msgstr "Mailbox removed"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Remove this mailbox?"
+msgstr "Remove this mailbox?"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept stops checking it. The receipts it already made stay."
+msgstr "Kept stops checking it. The receipts it already made stay."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Mailbox"
+msgstr "Mailbox"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept stopped checking this mailbox"
+msgstr "Kept stopped checking this mailbox"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Save it again to turn it back on."
+msgstr "Save it again to turn it back on."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The last check failed"
+msgstr "The last check failed"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "<0>{0}</0> · folder <1>{1}</1>"
+msgstr "<0>{0}</0> · folder <1>{1}</1>"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Checked {0}"
+msgstr "Checked {0}"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Not checked yet. Kept checks every 10 minutes."
+msgstr "Not checked yet. Kept checks every 10 minutes."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Connected by {0}"
+msgstr "Connected by {0}"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Mailbox saved"
+msgstr "Mailbox saved"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Mailbox connected"
+msgstr "Mailbox connected"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Change the mailbox"
+msgstr "Change the mailbox"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Connect a mailbox"
+msgstr "Connect a mailbox"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept checks a folder in a mailbox you already have, every 10 minutes. Each message's photos and PDFs, or its text when it has none, become a draft receipt in the Inbox. Only mail that arrives after you connect is read, and nothing in the mailbox is changed."
+msgstr "Kept checks a folder in a mailbox you already have, every 10 minutes. Each message's photos and PDFs, or its text when it has none, become a draft receipt in the Inbox. Only mail that arrives after you connect is read, and nothing in the mailbox is changed."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "IMAP server"
+msgstr "IMAP server"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "For example imap.gmail.com or imap.fastmail.com."
+msgstr "For example imap.gmail.com or imap.fastmail.com."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "TLS (993)"
+msgstr "TLS (993)"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "STARTTLS (143)"
+msgstr "STARTTLS (143)"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "User name"
+msgstr "User name"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Saved. Leave it empty to keep it."
+msgstr "Saved. Leave it empty to keep it."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "An app password, if your provider has them."
+msgstr "An app password, if your provider has them."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Make a folder for receipts and send them there with a filter."
+msgstr "Make a folder for receipts and send them there with a filter."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Only from these senders"
+msgstr "Only from these senders"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Optional, comma-separated. A filter against noise, not a security check: a From address can be forged."
+msgstr "Optional, comma-separated. A filter against noise, not a security check: a From address can be forged."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept couldn't connect"
+msgstr "Kept couldn't connect"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Recent mail"
+msgstr "Recent mail"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Open the Inbox"
+msgstr "Open the Inbox"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "No mail read yet"
+msgstr "No mail read yet"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Messages that arrive in the folder show here once Kept has read them."
+msgstr "Messages that arrive in the folder show here once Kept has read them."

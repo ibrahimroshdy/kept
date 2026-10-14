@@ -110,6 +110,8 @@ const HOUSEHOLD_ROUTES = [
     'settings.location.$id.invite',
     'settings.location.$id.members',
     'settings.location.$id.track',
+    // 1.4 (D231): a location's mailbox for email-in.
+    'settings.location.$id.email-in',
     'settings.two-factor',
     'activity',
     'trash',
@@ -136,6 +138,7 @@ const COMPONENT_ONLY_ROUTES = new Set<string>([
   '/_app/settings/location/$id/invite',
   '/_app/settings/location/$id/members',
   '/_app/settings/location/$id/track',
+  '/_app/settings/location/$id/email-in',
   '/_app/settings/two-factor',
   '/_app/activity',
   '/_app/trash',

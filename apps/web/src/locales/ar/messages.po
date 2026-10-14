@@ -21751,3 +21751,187 @@ msgstr "متوقف. صورة واحدة، شيء واحد."
 #: src/routes/_app/admin.settings.tsx
 msgid "How well the pictures are cut depends on the AI provider. Check a few drafts after turning this on."
 msgstr "تعتمد دقة اقتطاع الصور على مزوّد الذكاء الاصطناعي. راجع بعض المسودات بعد تفعيله."
+
+#: src/components/location-settings.tsx
+msgid "Email-in"
+msgstr "البريد الوارد"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "That address is on a private network. An instance admin can allow it in Admin → Settings."
+msgstr "هذا العنوان على شبكة خاصة. يمكن لمسؤول الخادم السماح به من الإدارة ← الإعدادات."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept couldn't reach that server. Check the host and port."
+msgstr "تعذّر على Kept الوصول إلى هذا الخادم. تحقق من الخادم والمنفذ."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The server's encryption didn't check out. Check the host and the security."
+msgstr "لم يجتز تشفير الخادم الفحص. تحقق من الخادم ونوع الأمان."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The mailbox refused the user name or password."
+msgstr "رفض صندوق البريد اسم المستخدم أو كلمة المرور."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "That folder doesn't exist in the mailbox."
+msgstr "هذا المجلد غير موجود في صندوق البريد."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The server took too long to answer."
+msgstr "استغرق الخادم وقتًا طويلًا للرد."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept couldn't sign in to the mailbox."
+msgstr "تعذّر على Kept تسجيل الدخول إلى صندوق البريد."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The person who connected it no longer administers this location."
+msgstr "الشخص الذي ربطه لم يعد مسؤولًا عن هذا الموقع."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Draft receipt"
+msgstr "إيصال مسودة"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "No receipt in it"
+msgstr "لا إيصال فيه"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Sender not allowed"
+msgstr "المرسل غير مسموح"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Too large"
+msgstr "كبير جدًا"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Couldn't be read"
+msgstr "تعذّرت قراءته"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The mailbox works"
+msgstr "صندوق البريد يعمل"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Mailbox removed"
+msgstr "أُزيل صندوق البريد"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Remove this mailbox?"
+msgstr "إزالة صندوق البريد هذا؟"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept stops checking it. The receipts it already made stay."
+msgstr "يتوقف Kept عن فحصه. تبقى الإيصالات التي أنشأها."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Mailbox"
+msgstr "صندوق البريد"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept stopped checking this mailbox"
+msgstr "توقف Kept عن فحص صندوق البريد هذا"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Save it again to turn it back on."
+msgstr "احفظه مجددًا لإعادة تشغيله."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "The last check failed"
+msgstr "فشل آخر فحص"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "<0>{0}</0> · folder <1>{1}</1>"
+msgstr "<0>{0}</0> · المجلد <1>{1}</1>"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Checked {0}"
+msgstr "فُحص {0}"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Not checked yet. Kept checks every 10 minutes."
+msgstr "لم يُفحص بعد. يفحص Kept كل 10 دقائق."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Connected by {0}"
+msgstr "ربطه {0}"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Mailbox saved"
+msgstr "حُفظ صندوق البريد"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Mailbox connected"
+msgstr "رُبط صندوق البريد"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Change the mailbox"
+msgstr "تغيير صندوق البريد"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Connect a mailbox"
+msgstr "ربط صندوق بريد"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept checks a folder in a mailbox you already have, every 10 minutes. Each message's photos and PDFs, or its text when it has none, become a draft receipt in the Inbox. Only mail that arrives after you connect is read, and nothing in the mailbox is changed."
+msgstr "يفحص Kept مجلدًا في صندوق بريد لديك كل 10 دقائق. تصبح صور كل رسالة وملفات PDF فيها، أو نصّها إن لم يكن فيها شيء منها، إيصالًا مسودة في الوارد. لا يُقرأ إلا البريد الذي يصل بعد الربط، ولا يتغير شيء في صندوق البريد."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "IMAP server"
+msgstr "خادم IMAP"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "For example imap.gmail.com or imap.fastmail.com."
+msgstr "مثل imap.gmail.com أو imap.fastmail.com."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "TLS (993)"
+msgstr "TLS (993)"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "STARTTLS (143)"
+msgstr "STARTTLS (143)"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "User name"
+msgstr "اسم المستخدم"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Saved. Leave it empty to keep it."
+msgstr "محفوظة. اتركها فارغة للإبقاء عليها."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "An app password, if your provider has them."
+msgstr "كلمة مرور تطبيق، إن كان مزوّدك يوفرها."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Make a folder for receipts and send them there with a filter."
+msgstr "أنشئ مجلدًا للإيصالات ووجّهها إليه بفلتر."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Only from these senders"
+msgstr "من هؤلاء المرسلين فقط"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Optional, comma-separated. A filter against noise, not a security check: a From address can be forged."
+msgstr "اختياري، مفصول بفواصل. فلتر ضد الإزعاج وليس فحصًا أمنيًا: يمكن تزوير عنوان المرسل."
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Kept couldn't connect"
+msgstr "تعذّر على Kept الاتصال"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Recent mail"
+msgstr "البريد الأخير"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Open the Inbox"
+msgstr "فتح الوارد"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "No mail read yet"
+msgstr "لم يُقرأ أي بريد بعد"
+
+#: src/components/mailin/mailbox-settings.tsx
+msgid "Messages that arrive in the folder show here once Kept has read them."
+msgstr "تظهر هنا الرسائل التي تصل إلى المجلد بعد أن يقرأها Kept."
