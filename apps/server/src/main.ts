@@ -221,6 +221,7 @@ export async function startKept(env: Env, opts: StartOptions = {}): Promise<Runn
             push,
             keyring: () => secretKeys.get().keyring,
             publicUrl: env.KEPT_PUBLIC_URL,
+            appriseUrl: env.KEPT_APPRISE_URL ?? null,
             enqueue: async (name, data) => {
               await (boss as PgBoss).send(name, data);
             },
@@ -340,7 +341,7 @@ export async function startKept(env: Env, opts: StartOptions = {}): Promise<Runn
         ai,
         syncKey: syncCursorKey(env.authSecret),
         tokenKey: tokenHashKey(env.authSecret),
-        notify: { push },
+        notify: { push, appriseUrl: env.KEPT_APPRISE_URL ?? null },
       });
       address = await app.listen({
         port: opts.port ?? env.KEPT_PORT ?? PORT,

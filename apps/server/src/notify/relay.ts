@@ -22,12 +22,25 @@ import { webhookAad } from './webhook.js';
 //   `text` (1–4096 characters) at https://api.telegram.org/bot<token>/sendMessage; the answer is
 //   `{ok, description?}`. Plain text, no parse mode, so nothing in a thing's name is markup. The
 //   host is fixed, still fetched through the guard (never private).
-// A failure returns a short code (`http_401`, `timeout`, `private_address`, `telegram_400`), never
-// the token or the topic.
+// - Apprise (1.5, D232; caronc/apprise-api's README and apprise_api/api/views.py, read
+//   2026-10-14): JSON POSTed to the stateless `<KEPT_APPRISE_URL>/notify/` with `{urls, title,
+//   body, type, format}`; `urls` is the person's Apprise URLs, comma-separated (Apprise's own
+//   `add()` splits them). 200 is sent, 424 means a destination failed, 400 a bad request. The
+//   Apprise API server is the operator's (KEPT_APPRISE_URL, usually a container beside Kept), so
+//   it is reached on the private network on purpose, still with no redirects. Apprise itself
+//   then reaches the services the URLs name; the generic ones (`json://`, `xml://`, `form://`
+//   and their `s` forms) can point at any host, so they are refused unless the instance allows
+//   private addresses, as for every other user-supplied target (D128).
+// A failure returns a short code (`http_401`, `timeout`, `private_address`, `telegram_400`,
+// `apprise_424`), never the token, the topic or a URL.
 
 export type NtfyConfig = { server: string; topic: string; token: string | null };
 export type TelegramConfig = { botToken: string; chatId: string };
-export type RelayConfig = ({ kind: 'ntfy' } & NtfyConfig) | ({ kind: 'telegram' } & TelegramConfig);
+export type AppriseConfig = { urls: string[] };
+export type RelayConfig =
+  | ({ kind: 'ntfy' } & NtfyConfig)
+  | ({ kind: 'telegram' } & TelegramConfig)
+  | ({ kind: 'apprise' } & AppriseConfig);
 
 export const TELEGRAM_API = 'https://api.telegram.org';
 const TOPIC = /^[-_A-Za-z0-9]{1,64}$/;
@@ -37,6 +50,18 @@ const BOT_TOKEN = /^\d{1,20}:[A-Za-z0-9_-]{20,100}$/;
 const CHAT_ID = /^(-?\d{1,20}|@[A-Za-z0-9_]{5,32})$/;
 const NTFY_TOKEN = /^[\x21-\x7e]{1,200}$/;
 const RELAY_TIMEOUT_MS = 10_000;
+/** Apprise fans out to every URL before it answers: give it longer. */
+const APPRISE_TIMEOUT_MS = 20_000;
+export const MAX_APPRISE_URLS = 10;
+/** An Apprise URL: a service scheme, `://`, then the service's own part. */
+const APPRISE_URL = /^([a-z][a-z0-9+.-]{0,31}):\/\/\S{1,480}$/i;
+/** Apprise's generic schemes, which reach any host (json://, xml://, form://, and https forms). */
+const GENERIC_SCHEMES = new Set(['json', 'jsons', 'xml', 'xmls', 'form', 'forms']);
+
+const schemeOf = (url: string) => (APPRISE_URL.exec(url)?.[1] ?? '').toLowerCase();
+/** Whether these Apprise URLs need the instance to allow private addresses. */
+export const appriseNeedsPrivate = (urls: readonly string[]) =>
+  urls.some((u) => GENERIC_SCHEMES.has(schemeOf(u)));
 const TELEGRAM_MAX = 4096;
 /** ntfy's message limit is 4,096 bytes before it turns the text into an attachment. */
 const NTFY_MAX_BYTES = 4000;
@@ -63,8 +88,31 @@ export function ntfyServer(raw: string): URL {
 export function relayConfigFrom(
   body:
     | { kind: 'ntfy'; server: string; topic: string; token?: string | undefined }
-    | { kind: 'telegram'; botToken: string; chatId: string },
+    | { kind: 'telegram'; botToken: string; chatId: string }
+    | { kind: 'apprise'; urls: string },
+  opts: { allowPrivate: boolean } = { allowPrivate: false },
 ): RelayConfig {
+  if (body.kind === 'apprise') {
+    const urls = body.urls
+      .split(/[\s,]+/)
+      .map((u) => u.trim())
+      .filter(Boolean);
+    if (urls.length === 0) throw invalid('urls: at least one Apprise URL, like discord://….');
+    if (urls.length > MAX_APPRISE_URLS) {
+      throw invalid(`urls: at most ${MAX_APPRISE_URLS} Apprise URLs.`);
+    }
+    for (const u of urls) {
+      if (!APPRISE_URL.test(u)) {
+        throw invalid('urls: each one a service URL, like discord://… or mailto://….');
+      }
+    }
+    if (!opts.allowPrivate && appriseNeedsPrivate(urls)) {
+      throw invalid(
+        "urls: json://, xml:// and form:// URLs can reach this server's own network. An instance admin can allow private addresses in Admin → Settings.",
+      );
+    }
+    return { kind: 'apprise', urls };
+  }
   if (body.kind === 'ntfy') {
     const server = ntfyServer(body.server).toString();
     const topic = body.topic.trim();
@@ -84,8 +132,12 @@ export function relayConfigFrom(
   return { kind: 'telegram', botToken, chatId };
 }
 
-/** What a channel shows instead of its secrets: the ntfy server's host, Telegram's API host. */
+/** What a channel shows instead of its secrets: the ntfy server's host, Telegram's API host, the
+ * services an Apprise channel's URLs name. */
 export function relayDisplayHost(config: RelayConfig): string {
+  if (config.kind === 'apprise') {
+    return [...new Set(config.urls.map(schemeOf))].join(', ').slice(0, 255);
+  }
   return config.kind === 'ntfy' ? new URL(config.server).host : new URL(TELEGRAM_API).host;
 }
 
@@ -100,6 +152,9 @@ export function openRelayConfig(
   sealed: Sealed,
 ): RelayConfig {
   const p = JSON.parse(open(keyring, sealed, webhookAad(channelId)).toString('utf8'));
+  if (kind === 'apprise') {
+    return { kind, urls: Array.isArray(p.urls) ? p.urls.map(String) : [] };
+  }
   return kind === 'ntfy'
     ? { kind, server: String(p.server), topic: String(p.topic), token: p.token ?? null }
     : { kind, botToken: String(p.botToken), chatId: String(p.chatId) };
@@ -117,7 +172,7 @@ export async function relayChannel(
     config_ciphertext: Sealed;
   }>(
     `SELECT id, kind, config_ciphertext FROM public.notification_channels
-      WHERE id = $1 AND user_id = $2 AND kind IN ('ntfy', 'telegram')`,
+      WHERE id = $1 AND user_id = $2 AND kind IN ('ntfy', 'telegram', 'apprise')`,
     [channelId, userId],
   );
   const r = rows[0];
@@ -154,12 +209,47 @@ function truncateBytes(text: string, max: number): string {
 export async function sendRelay(
   config: RelayConfig,
   text: RelayText,
-  opts: { allowPrivate: boolean; fetchFor?: RelayFetch },
+  opts: {
+    allowPrivate: boolean;
+    fetchFor?: RelayFetch;
+    /** KEPT_APPRISE_URL: the Apprise API server; null when the operator hasn't set one. */
+    appriseUrl?: string | null;
+  },
 ): Promise<RelayResult> {
-  const fetcher = (opts.fetchFor ?? ((allow) => guardedFetch({ allowPrivate: allow })))(
-    config.kind === 'ntfy' ? opts.allowPrivate : false,
+  const fetchFor = opts.fetchFor ?? ((allow) => guardedFetch({ allowPrivate: allow }));
+  if (config.kind === 'apprise') {
+    if (!opts.appriseUrl) return { ok: false, error: 'apprise_not_set_up' };
+    // Allowed when the channel was made, maybe not any more.
+    if (!opts.allowPrivate && appriseNeedsPrivate(config.urls)) {
+      return { ok: false, error: 'private_address' };
+    }
+  }
+  // The operator's Apprise server is on the private network by design; the person's ntfy server
+  // only when the instance allows it; Telegram never.
+  const fetcher = fetchFor(
+    config.kind === 'apprise' ? true : config.kind === 'ntfy' ? opts.allowPrivate : false,
   );
   try {
+    if (config.kind === 'apprise') {
+      const base = new URL(opts.appriseUrl as string);
+      if (!base.pathname.endsWith('/')) base.pathname = `${base.pathname}/`;
+      const res = await fetcher(new URL('notify/', base), {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'user-agent': 'Kept-Notify/1' },
+        body: JSON.stringify({
+          urls: config.urls.join(','),
+          title: text.title,
+          body: `${text.body}\n${text.url}`,
+          type: text.urgent ? 'warning' : 'info',
+          format: 'text',
+        }),
+        signal: AbortSignal.timeout(APPRISE_TIMEOUT_MS),
+      });
+      await res.body?.cancel().catch(() => {});
+      return res.ok
+        ? { ok: true, status: res.status }
+        : { ok: false, status: res.status, error: `apprise_${res.status}` };
+    }
     if (config.kind === 'ntfy') {
       const res = await fetcher(config.server, {
         method: 'POST',

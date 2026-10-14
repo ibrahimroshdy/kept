@@ -2,11 +2,12 @@ import { NOTIFY_KINDS, PREFERENCE_CHANNELS, ROLES } from '@kept/shared';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type pg from 'pg';
 import { z } from 'zod';
+import { allowPrivateAddresses } from '../ai/runtime.js';
 import { rateLimited, requireScope } from '../auth/http.js';
 import { limiterKey, reserveInWindow } from '../auth/sign-in-limiter.js';
 import type { SecretKeys } from '../crypto/keyring.js';
 import type { KeptApp } from '../http/app.js';
-import { AppError, notFound } from '../http/errors.js';
+import { AppError, invalid, notFound } from '../http/errors.js';
 import type { InventoryDeps } from '../http/routes.js';
 import { scopedRead, scopedWrite } from '../http/write.js';
 import { logMailer } from '../mail/mailer.js';
@@ -46,6 +47,7 @@ import {
 // POST   /api/v1/me/channels                     {kind: 'webhook', url, label?} → 201 {channel, secret}
 //                                                 {kind: 'ntfy', server, topic, token?, label?}
 //                                                 {kind: 'telegram', botToken, chatId, label?}
+//                                                 {kind: 'apprise', urls, label?} (D232)
 //                                                 → 201 {channel, secret: ''} (D227)
 // DELETE /api/v1/me/channels/:id                 → 204 (the email channel: 400)
 // POST   /api/v1/me/channels/:id/test            → {ok, status?, error?}
@@ -65,7 +67,7 @@ const Iso = z.iso.datetime({ offset: true });
 
 const ChannelSchema = z.object({
   id: z.uuid(),
-  kind: z.enum(['email', 'webpush', 'webhook', 'ntfy', 'telegram']),
+  kind: z.enum(['email', 'webpush', 'webhook', 'ntfy', 'telegram', 'apprise']),
   label: z.string().nullable(),
   displayHost: z.string().nullable(),
   verifiedAt: Iso.nullable(),
@@ -89,6 +91,7 @@ const KindPreferenceSchema = z.object({
   webhook: z.boolean(),
   ntfy: z.boolean(),
   telegram: z.boolean(),
+  apprise: z.boolean(),
   isDefault: z.boolean(),
 });
 
@@ -103,6 +106,8 @@ const SettingsSchema = z.object({
     publicKey: z.string().nullable(),
     reason: z.enum(['no_https', 'no_subject']).optional(),
   }),
+  /** 1.5 (D232): the operator runs an Apprise API server (KEPT_APPRISE_URL). */
+  apprise: z.object({ available: z.boolean() }),
   channels: z.array(ChannelSchema),
   locations: z.array(
     z.object({
@@ -167,6 +172,14 @@ const CreateChannelBody = z.discriminatedUnion('kind', [
       label: z.string().max(60).optional(),
     })
     .strict(),
+  // 1.5 (D232): one or more Apprise URLs, comma- or space-separated; sealed like the others.
+  z
+    .object({
+      kind: z.literal('apprise'),
+      urls: z.string().min(1).max(5000),
+      label: z.string().max(60).optional(),
+    })
+    .strict(),
 ]);
 
 const SubscriptionBody = z
@@ -220,6 +233,7 @@ export async function channelRoutes(app: KeptApp, deps: InventoryDeps): Promise<
       push: setup?.available
         ? { available: true, publicKey: setup.publicKey }
         : { available: false, publicKey: null, reason: setup?.reason ?? 'no_subject' },
+      apprise: { available: !!notify.appriseUrl },
       channels,
       locations: locations.map((l) => ({ ...l, kinds: kindsFor(l.role, l.locationId, prefs) })),
       account: { aiSummary: { email: aiSummaryEmail(prefs) } },
@@ -271,7 +285,13 @@ export async function channelRoutes(app: KeptApp, deps: InventoryDeps): Promise<
         response: { 201: z.object({ channel: ChannelSchema, secret: z.string() }) },
       },
     },
-    (req, reply) => {
+    async (req, reply) => {
+      if (req.body.kind === 'apprise' && !notify.appriseUrl) {
+        throw invalid(
+          'kind: Apprise needs an Apprise API server; ask the instance admin to set KEPT_APPRISE_URL.',
+        );
+      }
+      const allowPrivate = req.body.kind === 'apprise' ? await allowPrivateAddresses(pools) : false;
       const master = keysOf(deps).get().current;
       return scopedWrite(
         pools,
@@ -282,7 +302,15 @@ export async function channelRoutes(app: KeptApp, deps: InventoryDeps): Promise<
           body:
             req.body.kind === 'webhook'
               ? await createWebhook(tx, client, master, scope.userId, req.body, req.id)
-              : await createRelayChannel(tx, client, master, scope.userId, req.body, req.id),
+              : await createRelayChannel(
+                  tx,
+                  client,
+                  master,
+                  scope.userId,
+                  req.body,
+                  req.id,
+                  allowPrivate,
+                ),
         }),
         // The secret is shown once: a replay says the channel was made, without it.
         { redact: (body) => ({ channel: (body as { channel: unknown }).channel, secret: '' }) },
@@ -316,7 +344,7 @@ export async function channelRoutes(app: KeptApp, deps: InventoryDeps): Promise<
       if (channel.kind === 'webpush') {
         return testPushSend(notify, pools, scope.userId, who?.locale ?? null);
       }
-      if (channel.kind === 'ntfy' || channel.kind === 'telegram') {
+      if (channel.kind === 'ntfy' || channel.kind === 'telegram' || channel.kind === 'apprise') {
         return testRelaySend(
           notify,
           pools,

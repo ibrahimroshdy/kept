@@ -91,3 +91,4 @@ The Compose file passes the common ones through from `.env`; the rest go in a
 | `KEPT_OIDC_SCOPES` | `openid email profile` | OIDC sign-in: the scopes asked for, space-separated |
 | `KEPT_GOOGLE_CLIENT_ID` |  | Google sign-in: the OAuth client id from Google Cloud; set with the secret, Google sign-in is on (invite only, never autoprovision) |
 | `KEPT_GOOGLE_CLIENT_SECRET` |  | Google sign-in: the OAuth client secret; never logged |
+| `KEPT_APPRISE_URL` |  | Apprise channels: the Apprise API server, e.g. `http://apprise:8000`; unset, people can’t add Apprise channels |

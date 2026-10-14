@@ -72,6 +72,7 @@ export function notifyRoutes(state: MockState): MockRoute[] {
       quietTo: s.quietTo,
       smtpConfigured: s.smtpConfigured,
       push: s.push,
+      apprise: s.apprise,
       channels: h().channels,
       locations: state.locations.map((l) => {
         const kinds: Partial<Record<NotifyKind, KindPreference>> = {};
@@ -155,12 +156,23 @@ export function notifyRoutes(state: MockState): MockRoute[] {
     }),
     route('POST', p.channels, ({ body }) => {
       const b = body as CreateChannelBody;
-      // ntfy and Telegram (D227): checked as the server does, the settings never returned.
-      if (b.kind === 'ntfy' || b.kind === 'telegram') {
+      // ntfy, Telegram (D227) and Apprise (D232): checked as the server does, the settings never
+      // returned.
+      if (b.kind === 'ntfy' || b.kind === 'telegram' || b.kind === 'apprise') {
         if (h().channels.filter((c) => c.kind === b.kind).length >= MAX_RELAY_CHANNELS)
           return err(409, 'conflict', `At most ${MAX_RELAY_CHANNELS}.`);
         let host = 'api.telegram.org';
-        if (b.kind === 'ntfy') {
+        if (b.kind === 'apprise') {
+          if (!h().settings.apprise.available) return invalid('kind: no Apprise server.');
+          const urls = b.urls.split(/[\s,]+/).filter(Boolean);
+          if (urls.length === 0 || urls.some((u) => !/^[a-z][a-z0-9+.-]*:\/\/\S+$/i.test(u)))
+            return invalid('urls: each one a service URL, like discord://… or mailto://….');
+          if (urls.some((u) => /^(json|jsons|xml|xmls|form|forms):/i.test(u)))
+            return invalid(
+              "urls: json://, xml:// and form:// URLs can reach this server's own network. An instance admin can allow private addresses in Admin → Settings.",
+            );
+          host = [...new Set(urls.map((u) => (u.split(':')[0] ?? '').toLowerCase()))].join(', ');
+        } else if (b.kind === 'ntfy') {
           if (!/^[-_A-Za-z0-9]{1,64}$/.test(b.topic.trim()))
             return invalid('topic: letters, digits, - and _, at most 64 characters.');
           try {

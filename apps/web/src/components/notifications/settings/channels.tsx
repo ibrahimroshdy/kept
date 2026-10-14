@@ -131,6 +131,9 @@ export function Channels({ settings }: { settings: NotificationSettings }) {
       <Webhooks settings={settings} />
       <RelayChannels settings={settings} kind="ntfy" />
       <RelayChannels settings={settings} kind="telegram" />
+      {settings.apprise?.available || settings.channels.some((c) => c.kind === 'apprise') ? (
+        <RelayChannels settings={settings} kind="apprise" />
+      ) : null}
     </List>
   );
 }
@@ -639,9 +642,10 @@ function AddWebhookForm({ onDone }: { onDone: () => void }) {
   );
 }
 
-// ----- ntfy and Telegram (1.3, D227) -------------------------------------------------------------
+// ----- ntfy and Telegram (1.3, D227), Apprise (1.5, D232) -----------------------------------------
 
-/** A person's ntfy or Telegram channels: what they are, a test, remove, and add (at most 3). */
+/** A person's ntfy, Telegram or Apprise channels: what they are, a test, remove, and add (at most
+ * 3 of each). Apprise only when the operator runs an Apprise API server. */
 function RelayChannels({
   settings,
   kind,
@@ -659,7 +663,7 @@ function RelayChannels({
   const [adding, setAdding] = useState(false);
   const mine = settings.channels.filter((c) => c.kind === kind);
   const full = mine.length >= MAX_RELAY_CHANNELS;
-  const brand = kind === 'ntfy' ? 'ntfy' : 'Telegram';
+  const brand = kind === 'ntfy' ? 'ntfy' : kind === 'telegram' ? 'Telegram' : 'Apprise';
 
   const remove = async (c: Channel, name: string) => {
     const ok = await confirm({
@@ -731,7 +735,13 @@ function RelayChannels({
             onPress={() => setAdding(true)}
           >
             <PlusIcon />
-            {kind === 'ntfy' ? <Trans>Add ntfy</Trans> : <Trans>Add Telegram</Trans>}
+            {kind === 'ntfy' ? (
+              <Trans>Add ntfy</Trans>
+            ) : kind === 'telegram' ? (
+              <Trans>Add Telegram</Trans>
+            ) : (
+              <Trans>Add Apprise</Trans>
+            )}
           </Button>
         }
       >
@@ -740,15 +750,22 @@ function RelayChannels({
             <Trans>You have {MAX_RELAY_CHANNELS}, the most Kept allows.</Trans>
           ) : kind === 'ntfy' ? (
             <Trans>Reminders on your phone through ntfy.sh or your own ntfy server.</Trans>
-          ) : (
+          ) : kind === 'telegram' ? (
             <Trans>Reminders in a Telegram chat, sent by a bot you make.</Trans>
+          ) : (
+            <Trans>
+              Reminders to Discord, Slack, Matrix, Signal and over 100 other services, through this
+              server's Apprise.
+            </Trans>
           )}
         </span>
       </Item>
       <Sheet
         isOpen={adding}
         onOpenChange={(o) => !o && setAdding(false)}
-        title={kind === 'ntfy' ? t`Add ntfy` : t`Add Telegram`}
+        title={
+          kind === 'ntfy' ? t`Add ntfy` : kind === 'telegram' ? t`Add Telegram` : t`Add Apprise`
+        }
       >
         {({ close }) => <AddRelayForm kind={kind} onDone={close} />}
       </Sheet>
@@ -766,6 +783,7 @@ function AddRelayForm({ kind, onDone }: { kind: RelayChannelKind; onDone: () => 
   const [token, setToken] = useState('');
   const [botToken, setBotToken] = useState('');
   const [chatId, setChatId] = useState('');
+  const [urls, setUrls] = useState('');
   const [label, setLabel] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -784,7 +802,9 @@ function AddRelayForm({ kind, onDone }: { kind: RelayChannelKind; onDone: () => 
               ...(token.trim() ? { token: token.trim() } : {}),
               ...named,
             }
-          : { kind, botToken: botToken.trim(), chatId: chatId.trim(), ...named },
+          : kind === 'telegram'
+            ? { kind, botToken: botToken.trim(), chatId: chatId.trim(), ...named }
+            : { kind, urls: urls.trim(), ...named },
       );
       await qc.invalidateQueries({ queryKey: householdKeys.notificationSettings });
       onDone();
@@ -831,6 +851,15 @@ function AddRelayForm({ kind, onDone }: { kind: RelayChannelKind; onDone: () => 
             description={t`Optional: for a topic that needs one.`}
           />
         </>
+      ) : kind === 'apprise' ? (
+        <TextField
+          label={t`Apprise URLs`}
+          value={urls}
+          onChange={setUrls}
+          autoComplete="off"
+          inputProps={{ dir: 'ltr' }}
+          description={t`One or more, separated by spaces or commas, like discord://… or mailto://…. Apprise's documentation lists every service.`}
+        />
       ) : (
         <>
           <TextField

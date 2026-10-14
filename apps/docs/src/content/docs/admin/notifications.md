@@ -4,7 +4,7 @@ description: Set up outgoing mail and web push for a Kept server, and what opera
 ---
 
 Kept reaches people outside the app by **email**, **web push** to a browser or the installed app,
-**ntfy** and **Telegram**, and a **calendar feed** their calendar app subscribes to. Everything also lands in
+**ntfy**, **Telegram** and **Apprise**, and a **calendar feed** their calendar app subscribes to. Everything also lands in
 the in-app notification centre, which needs no setup. People choose what reaches them in
 **Settings → Notifications** (Reminders and alerts → **Open**). This page is the operator's side.
 Every variable is listed in the [configuration reference](/reference/configuration/).
@@ -105,6 +105,34 @@ redirects are refused. Their settings (an ntfy topic and token, a Telegram bot t
 encrypted like a webhook's secret and covered by [key rotation](/admin/recovery-kit/). A failed
 send is retried with the reminder and marks the channel "Failing since"; the next send that gets
 through clears it. Admin alerts don't go to them.
+
+## Apprise
+
+[Apprise](https://github.com/caronc/apprise) reaches Discord, Slack, Matrix, Signal, Pushover and
+over 100 other services. Kept talks to an **Apprise API** server you run beside it, and offers
+**Add Apprise** to people only when `KEPT_APPRISE_URL` points at one:
+
+```yaml
+# compose.yaml, beside the kept service
+  apprise:
+    image: caronc/apprise:2.0.0
+    restart: unless-stopped
+
+# and in the kept service's environment
+KEPT_APPRISE_URL: http://apprise:8000
+```
+
+- Each person adds their own **Apprise URLs** (one or more, like `discord://…` or `mailto://…`).
+  They are encrypted like a webhook's secret, never shown again, and covered by
+  [key rotation](/admin/recovery-kit/).
+- Kept uses Apprise API's stateless `POST /notify/` and sends the URLs with each message, so the
+  Apprise server keeps nothing. It is reached on your private network on purpose, with redirects
+  refused.
+- Apprise's generic `json://`, `xml://` and `form://` URLs (and their `s` forms) can point at any
+  host, including machines on your network, so Kept refuses them unless **Allow private
+  addresses** is on (Admin → Settings).
+- A failed send (Apprise answers 424 when a service refused) is retried with the reminder and marks
+  the channel "Failing since". Admin alerts don't go to Apprise.
 
 ## The calendar feed
 

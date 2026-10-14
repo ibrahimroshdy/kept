@@ -366,4 +366,43 @@ describe('the ntfy and Telegram senders (D227)', () => {
     ).rows;
     expect(row?.failing_since).not.toBeNull();
   });
+  it('sends to Apprise through the operator’s server, and only when there is one (D232)', async () => {
+    const calls: Array<{ url: string; body: Record<string, unknown> }> = [];
+    const fetchFor = () =>
+      (async (input: string | URL | Request, init?: RequestInit) => {
+        calls.push({ url: String(input), body: JSON.parse(String(init?.body)) });
+        return new Response(null, { status: 200 });
+      }) as typeof fetch;
+    const user = await seedUser(db, 'apprise');
+    const to = recipient({ userId: user });
+    const ch = await relayChannelOf(user, {
+      kind: 'apprise',
+      urls: ['discord://a/b', 'tgram://c/d'],
+    });
+
+    const none = createChannelSenders(
+      deps({ keyring: () => keyring, transport: { relayFetch: fetchFor } }),
+    );
+    expect(none.apprise).toBeUndefined();
+
+    const senders = createChannelSenders(
+      deps({
+        keyring: () => keyring,
+        appriseUrl: 'http://apprise:8000',
+        transport: { relayFetch: fetchFor },
+      }),
+    );
+    expect(await senders.apprise?.send(ch, to, { mode: 'immediate', item: item() })).toEqual({
+      status: 'sent',
+    });
+    expect(calls[0]?.url).toBe('http://apprise:8000/notify/');
+    expect(calls[0]?.body).toMatchObject({
+      urls: 'discord://a/b,tgram://c/d',
+      type: 'warning',
+      format: 'text',
+    });
+    expect(
+      await senders.apprise?.send(ch, to, { mode: 'alert', alert: 'backup_failed', details: {} }),
+    ).toMatchObject({ status: 'skipped' });
+  });
 });

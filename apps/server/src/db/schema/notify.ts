@@ -35,11 +35,12 @@ const preferenceChannel = textEnum('channel', PREFERENCE_CHANNELS);
 /**
  * Where a user's notices go (D30; Q13): one email channel (made lazily; managed accounts never
  * get one), one web-push channel (its devices are push_subscriptions), up to 5 webhooks, and up
- * to 3 ntfy and 3 Telegram channels (1.3, D227; triggers, 0055 and later). A webhook's
- * `{url, secret}`, an ntfy channel's server, topic and token and a Telegram bot's token and chat
- * are sealed (§7.3: table 'notification_channels', row id, field 'config'); kept_app can't SELECT
+ * to 3 ntfy, 3 Telegram and 3 Apprise channels (1.3, D227; 1.5, D232; triggers, 0055 and later).
+ * A webhook's `{url, secret}`, an ntfy channel's server, topic and token, a Telegram bot's token and
+ * chat, and an Apprise channel's URLs are sealed (§7.3: table 'notification_channels', row id, field 'config'); kept_app can't SELECT
  * them, only the system side opens them (notify/webhook.ts, notify/relay.ts). `display_host` is
- * what to show: the webhook's or ntfy server's host, `api.telegram.org` for Telegram.
+ * what to show: the webhook's or ntfy server's host, `api.telegram.org` for Telegram, the services
+ * an Apprise channel's URLs name (`discord, mailto`).
  */
 export const notificationChannels = pgTable(
   'notification_channels',
@@ -63,7 +64,7 @@ export const notificationChannels = pgTable(
     check('notification_channels_display_host_chk', sql`char_length(display_host) <= 255`),
     check(
       'notification_channels_config_chk',
-      sql`(kind IN ('webhook', 'ntfy', 'telegram')) = (config_ciphertext IS NOT NULL)
+      sql`(kind IN ('webhook', 'ntfy', 'telegram', 'apprise')) = (config_ciphertext IS NOT NULL)
           AND (config_ciphertext IS NULL) = (key_version IS NULL)`,
     ),
     uniqueIndex('notification_channels_email_uq').on(t.userId).where(sql`kind = 'email'`),
