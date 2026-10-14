@@ -24,7 +24,8 @@
 #                                                         release_merge), then stages 5–9
 #
 # Stages, each stopping the run on failure:
-#   1. preconditions: a clean tree on `main`, a version newer than the last v* tag, disk room, and
+#   1. preconditions: a clean tree on `main`, a version newer than the last v* tag on a commit of
+#      its own, README.md's quick start installing it, disk room, and
 #      a gate record for this exact commit (optional in a dry run; with --ci, the tag at HEAD and
 #      its commit on origin/main instead); a real run also refuses a version the registry already
 #      holds, as an image or as a chart, before it builds anything;
@@ -181,6 +182,16 @@ while IFS= read -r t; do [[ -n $t && ( -z $ci || $t != "v$version" ) ]] && exist
 why=$(node scripts/release/version.mjs check "$version" ${existing_tags[@]+"${existing_tags[@]}"} 2>&1) || die "$why"
 last_tag=$(node scripts/release/version.mjs last ${existing_tags[@]+"${existing_tags[@]}"})
 note "version $version is newer than ${last_tag:-every tag (there are none)}"
+# A tag on the last release's commit is that release again under a new number (1.0.4 was 1.0.3).
+if [[ -n $last_tag && $(git rev-list -n1 "$last_tag") == "$commit" ]]; then
+  die "v$version is $last_tag's commit (${commit:0:12}): nothing changed since, so there is nothing to release"
+fi
+# The README's quick start installs this version: it stayed on 1.0.0 through five releases, one of
+# them a security fix. Bump both pins (the clone's --branch and KEPT_IMAGE) before tagging.
+if ! grep -qF -- "--branch v$version " README.md || ! grep -qF "/kept:$version|" README.md; then
+  [[ -n $dry ]] || die "README.md's quick start doesn't install $version: set its --branch v$version and kept:$version first"
+  warn "README.md's quick start doesn't install $version (a dry run goes on)"
+fi
 if [[ -n $unsigned ]]; then
   why=$(node scripts/release/version.mjs unsigned "$version" 2>&1) || die "$why"
   warn "UNSIGNED release (KEPT_RELEASE_UNSIGNED=1): no cosign signature on the image or the chart; the record says so"
