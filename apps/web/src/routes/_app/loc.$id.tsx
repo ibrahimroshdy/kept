@@ -21,6 +21,7 @@ import {
   PeopleIcon,
   PrinterIcon,
   ShieldIcon,
+  TagIcon,
 } from '@/components/icons';
 import { KindIcon } from '@/components/kind-icon';
 import { LeaveLocation } from '@/components/leave-location';
@@ -129,6 +130,17 @@ function LocationBody({ location }: { location: LocationDetail }) {
           {/* D201: every role that can see the location, viewers too. */}
           <div className="flex flex-wrap items-center gap-2">
             <PrintInventory scope={{ locationId: location.id }} locationIds={[location.id]} />
+            {/* 1.1: what was never labelled here; a place's own page narrows it to that place. */}
+            {access.moduleOn('labels') && access.can('labels.use') ? (
+              <Link
+                to="/labels"
+                search={{ loc: location.id, unprinted: 1 }}
+                className={buttonClass('secondary', 'small')}
+              >
+                <TagIcon className="size-4" />
+                <Trans>Print labels</Trans>
+              </Link>
+            ) : null}
             {/* D158 (T26): the insurance report where money shows; incidents for their managers. */}
             {access.money ? (
               <Link

@@ -268,6 +268,23 @@ describe('select and pick up (D175, frame 7a)', () => {
   });
 });
 
+describe('labels from a location (1.1)', () => {
+  it('offers Print labels for what was never labelled there, to whoever may print', async () => {
+    await renderApp(`/loc/${IDS.home}`);
+    await list('Contents of Home');
+    const link = screen.getByRole('link', { name: 'Print labels' });
+    const url = new URL(link.getAttribute('href') ?? '', 'http://x');
+    expect(url.pathname).toBe('/labels');
+    expect(Object.fromEntries(url.searchParams)).toEqual({ loc: IDS.home, unprinted: '1' });
+  });
+
+  it('offers nothing to a viewer, who can’t print', async () => {
+    await renderApp(`/loc/${IDS.home}`, { state: asRole('viewer') });
+    await list('Contents of Home');
+    expect(screen.queryByRole('link', { name: 'Print labels' })).toBeNull();
+  });
+});
+
 describe('switching locations (review finding, 2026-10-14)', () => {
   it('starts the next location with nothing selected, even one already visited', async () => {
     const { user, router } = await renderApp(`/loc/${IDS.garage}`);
