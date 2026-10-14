@@ -20,6 +20,7 @@ import { captureApi } from '@/api/capture/queries';
 import { inventoryApi } from '@/api/inventory/queries';
 import { deleteLocation, listLocations } from '@/api/locations';
 import { keys, useLocations } from '@/api/queries';
+import { locationAddress } from '@/lib/address';
 import type { Shown } from './driver-kit';
 import { useGuidedTourCopy, useTourCopy } from './hint-copy';
 import { pageIsRtl, prefersReducedMotion } from './placement';
@@ -533,9 +534,12 @@ export function useGuidedTour() {
         // Something can change somewhere: the inbox, and the capture write, exist for you.
         hasInbox: known.some((l) => l.role !== 'viewer'),
       };
+      // The location's readable address (D224): the page would replace an id with it, and a
+      // navigation the tour didn't make ends the tour.
+      const first = known[0];
       const sections = resolveGuidedSections(
         GUIDED_SECTIONS.filter((s) => isGuidedSectionAvailable(s.id, gating)),
-        known[0]?.id ?? null,
+        first ? locationAddress({ id: first.id, name: first.name, kind: first.kind }) : null,
       );
       if (sections.length === 0) return false;
       const run: GuidedRun = {

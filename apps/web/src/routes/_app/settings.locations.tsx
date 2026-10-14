@@ -25,6 +25,7 @@ import {
 import { SettingsTabs } from '@/components/settings-tabs';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/toast';
+import { locationAddress } from '@/lib/address';
 import { sep, useFormat } from '@/lib/format';
 import { useKindLabels, useLocationName, useRoleLabels } from '@/lib/labels';
 
@@ -55,7 +56,7 @@ function LocationsSettings() {
                 <Link
                   {...(runs
                     ? { to: '/settings/location/$id/track' as const, params: { id: l.id } }
-                    : { to: '/loc/$id' as const, params: { id: l.id } })}
+                    : { to: '/loc/$id' as const, params: { id: locationAddress(l) } })}
                   className="block outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info"
                 >
                   <Row

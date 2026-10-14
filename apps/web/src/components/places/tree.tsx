@@ -90,7 +90,7 @@ export function PlacesPanel({
 }: {
   places: PlaceNode[];
   currentId?: string;
-  location: { id: string; name: string };
+  location: { id: string; name: string; address?: string };
 }) {
   const { t } = useLingui();
   const nameOf = usePlaceName();
@@ -100,7 +100,7 @@ export function PlacesPanel({
     <nav aria-label={t`Places in ${name}`} className="grid gap-1">
       <Link
         to="/loc/$id"
-        params={{ id: location.id }}
+        params={{ id: location.address ?? location.id }}
         aria-current={currentId === undefined ? 'page' : undefined}
         className="flex min-h-10 items-center rounded-lg px-3.5 font-semibold text-[14px] text-ink outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:outline-info aria-[current=page]:bg-sunken"
       >

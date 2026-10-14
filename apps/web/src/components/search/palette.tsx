@@ -40,7 +40,7 @@ import { placeIcon, usePlaceName } from '@/components/places/labels';
 import { StatusPill } from '@/components/status-pill';
 import { TypeIcon } from '@/components/type-icon';
 import { CloseOnBack } from '@/components/ui/close-on-back';
-import { addressOf } from '@/lib/address';
+import { addressOf, locationIdOf } from '@/lib/address';
 import { sep } from '@/lib/format';
 import { useKeyHints } from '@/lib/key-hints';
 import { useLocationName } from '@/lib/labels';
@@ -141,7 +141,11 @@ export default function Palette({
 
   // "Add a thing" opens the create sheet in the location you're on (or your Personal one); without
   // a host that can show it, the location page, where Add here is.
-  const here = /^\/loc\/([^/]+)/.exec(pathname)?.[1];
+  const herePath = /^\/loc\/([^/]+)/.exec(pathname)?.[1];
+  // The address is readable (D224) or an id: resolve it among the person's locations.
+  const here = herePath
+    ? (locationIdOf(decodeURIComponent(herePath), locs) ?? undefined)
+    : undefined;
   const addTo = here ?? me.data?.personalLocationId ?? locs[0]?.id;
   const addToName = (() => {
     const l = locs.find((x) => x.id === addTo);

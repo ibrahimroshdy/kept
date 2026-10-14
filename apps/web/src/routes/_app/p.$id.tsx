@@ -74,7 +74,7 @@ import { DialogFooter } from '@/components/ui/dialog';
 import { Segmented } from '@/components/ui/segmented';
 import { TextField } from '@/components/ui/text-field';
 import { toast } from '@/components/ui/toast';
-import { addressOf, useAddress, useCanonicalAddress } from '@/lib/address';
+import { addressOf, locationAddress, useAddress, useCanonicalAddress } from '@/lib/address';
 import { isolate } from '@/lib/bidi';
 import { sep } from '@/lib/format';
 import { useLocationName } from '@/lib/labels';
@@ -152,7 +152,7 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
   const parentStep = place.path.at(-2);
   const back = parentStep
     ? { to: '/p/$id' as const, params: { id: addressOf(parentStep) } }
-    : { to: '/loc/$id' as const, params: { id: location.id } };
+    : { to: '/loc/$id' as const, params: { id: locationAddress(location) } };
   const backName = parentStep ? parentStep.name : locationName;
   const tree = usePlaceTree(location.id);
   const close = () => setOpen(null);
@@ -174,7 +174,11 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
               <PlacesPanel
                 places={tree.data.places}
                 currentId={place.id}
-                location={{ id: location.id, name: locationName }}
+                location={{
+                  id: location.id,
+                  name: locationName,
+                  address: locationAddress(location),
+                }}
               />
             ),
           }
@@ -192,7 +196,7 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
           <IdChip code={place.shortCode} size="large" />
           <Breadcrumb
-            location={{ id: location.id, name: locationName }}
+            location={{ id: location.id, name: locationName, address: locationAddress(location) }}
             path={place.path.slice(0, -1)}
             current={name}
           />

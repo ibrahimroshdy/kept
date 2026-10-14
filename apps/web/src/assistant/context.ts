@@ -14,7 +14,7 @@ import { useRouterState } from '@tanstack/react-router';
 import { inventoryApi, inventoryKeys } from '@/api/inventory/queries';
 import { useLocations } from '@/api/queries';
 import { usePlaceName } from '@/components/places/labels';
-import { isUuid, resolveAddress } from '@/lib/address';
+import { isUuid, locationIdOf, resolveAddress } from '@/lib/address';
 import { useLocationName } from '@/lib/labels';
 
 export type PageContext = {
@@ -93,7 +93,9 @@ export function usePageContext(): PageContext | null {
 
   switch (kind) {
     case 'location': {
-      const l = locations.data?.find((x) => x.id === param);
+      // A readable address (`/loc/garage-3f9c2a1b`, D224) or an id.
+      const id = locationIdOf(param, locations.data);
+      const l = locations.data?.find((x) => x.id === id);
       return l
         ? { key, kind: 'location', id: l.id, locationId: l.id, label: locationName(l) }
         : null;

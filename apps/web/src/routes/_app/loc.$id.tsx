@@ -9,7 +9,8 @@
  */
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useLocation } from '@/api/queries';
+import { ApiError } from '@/api/client';
+import { useLocation, useLocations } from '@/api/queries';
 import type { LocationDetail } from '@/api/types';
 import { PeopleCount, ThingCount } from '@/components/counts';
 import { SubjectPaperwork } from '@/components/documents/subject-paperwork';
@@ -45,6 +46,7 @@ import { UnplacedCard } from '@/components/places/unplaced-sort';
 import { PrintInventory } from '@/components/reports/print-sheet';
 import { accessOf } from '@/components/schedules/access';
 import { buttonClass } from '@/components/ui/button';
+import { locationAddress, locationIdOf, useCanonicalLocationAddress } from '@/lib/address';
 import { sep, useFormat } from '@/lib/format';
 import { useKindLabels, useLocationName, usePresetCopy, useRoleLabels } from '@/lib/labels';
 import { DOCKED, useMediaQuery } from '@/lib/media';
@@ -55,10 +57,20 @@ export const Route = createFileRoute('/_app/loc/$id')({
 });
 
 function LocationPage() {
-  const { id } = Route.useParams();
+  const { id: param } = Route.useParams();
   const { t } = useLingui();
-  const location = useLocation(id);
-  if (location.isPending)
+  // A readable address (`/loc/garage-3f9c2a1b`, D224) resolves among the person's locations.
+  const locations = useLocations();
+  const id = locationIdOf(param, locations.data);
+  const location = useLocation(id ?? '');
+  useCanonicalLocationAddress(param, location.data);
+  if (id === null)
+    return (
+      <Page title={t`Location`} back="/">
+        <ErrorState error={new ApiError(404, 'not_found', 'Not found')} />
+      </Page>
+    );
+  if (id === undefined || location.isPending)
     return (
       <Page title={t`Location`} back="/">
         <LoadingRows />
@@ -104,7 +116,14 @@ function LocationBody({ location }: { location: LocationDetail }) {
       back="/"
       wide
       {...(panel && places.length > 1
-        ? { aside: <PlacesPanel places={places} location={{ id: location.id, name }} /> }
+        ? {
+            aside: (
+              <PlacesPanel
+                places={places}
+                location={{ id: location.id, name, address: locationAddress(location) }}
+              />
+            ),
+          }
         : {})}
     >
       <div className="flex items-start gap-3">

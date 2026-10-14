@@ -69,7 +69,8 @@ describe('short-ID addresses', () => {
 describe('short addresses in place links and activity (D208)', () => {
   it('the place tree, a place row and the breadcrumb link a place by its short ID', async () => {
     await renderApp(`/loc/${IDS.home}`);
-    const row = await screen.findByRole('link', { name: /^Office/ });
+    const contents = await screen.findByRole('list', { name: 'Contents of Home' });
+    const row = await within(contents).findByRole('link', { name: /^Office/ });
     expect(row).toHaveAttribute('href', '/p/R00M4K');
     for (const link of screen.getAllByRole('link', { name: 'Office' }))
       expect(link).toHaveAttribute('href', '/p/R00M4K');

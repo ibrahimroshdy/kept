@@ -449,7 +449,7 @@ describe('the place page', () => {
     const crumb = screen.getByRole('navigation', { name: 'Path' });
     expect(within(crumb).getByRole('link', { name: 'Home' })).toHaveAttribute(
       'href',
-      `/loc/${IDS.home}`,
+      `/loc/home-0000b002`,
     );
     expect(within(crumb).getByRole('link', { name: 'Office' })).toHaveAttribute(
       'href',
@@ -515,7 +515,7 @@ describe('the place page', () => {
         moveTo: { placeId: P.homeUnplaced },
       }),
     );
-    await waitFor(() => expect(pathOf(router)).toBe(`/loc/${IDS.home}`));
+    await waitFor(() => expect(pathOf(router)).toBe(`/loc/home-0000b002`));
     expect(await screen.findByText('Kitchen is in the trash')).toBeInTheDocument();
   });
 
@@ -863,6 +863,27 @@ describe('ContentsList for a container (task 26 hosts it)', () => {
   });
 });
 
+describe('a location’s address (1.1, D224)', () => {
+  it('reads as its name: an id link becomes /loc/<name>-<tail> in place', async () => {
+    const { router } = await renderApp(`/loc/${IDS.home}`);
+    await list('Contents of Home');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/loc/home-0000b002'));
+  });
+
+  it('opens by that address, and fixes a name that changed', async () => {
+    const { router } = await renderApp('/loc/old-name-0000b002');
+    await list('Contents of Home');
+    await waitFor(() => expect(router.state.location.pathname).toBe('/loc/home-0000b002'));
+  });
+
+  it('says not found for a tail that is none of your locations', async () => {
+    await renderApp('/loc/home-deadbeef');
+    expect(
+      await screen.findByText("This isn't here any more, or you can't see it."),
+    ).toBeInTheDocument();
+  });
+});
+
 describe('inside a location (D39)', () => {
   it('a place page links back to its parent and outlines the location around it', async () => {
     await renderApp(`/p/${P.deskDrawer}`);
@@ -897,7 +918,7 @@ describe('inside a location (D39)', () => {
       const panel = await screen.findByRole('navigation', { name: 'Places in Home' });
       expect(within(panel).getByRole('link', { name: 'Home' })).toHaveAttribute(
         'href',
-        `/loc/${IDS.home}`,
+        `/loc/home-0000b002`,
       );
       expect(within(panel).getByRole('link', { current: 'page' })).toHaveTextContent('Desk drawer');
       // The page's own collapsed outline gives way to it.
@@ -914,7 +935,7 @@ describe('inside a location (D39)', () => {
     await findHeading('Office');
     expect(screen.getByRole('link', { name: /Back to/ })).toHaveAttribute(
       'href',
-      `/loc/${IDS.home}`,
+      `/loc/home-0000b002`,
     );
   });
 

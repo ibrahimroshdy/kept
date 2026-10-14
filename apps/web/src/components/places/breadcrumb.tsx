@@ -22,7 +22,8 @@ export function Breadcrumb({
   path,
   current,
 }: {
-  location: { id: string; name: string };
+  /** `address`: the location's readable address (D224); its id otherwise. */
+  location: { id: string; name: string; address?: string };
   /** The places and containers above the current page, outermost first. */
   path: PathStep[];
   /** The current page's name; left out when the path ends at it already. */
@@ -39,7 +40,7 @@ export function Breadcrumb({
     <nav aria-label={t`Path`}>
       <ol className="m-0 flex list-none flex-wrap items-center gap-x-1 gap-y-0.5 p-0 text-[13px] font-medium leading-snug">
         <li>
-          <Link to="/loc/$id" params={{ id: location.id }} className={link}>
+          <Link to="/loc/$id" params={{ id: location.address ?? location.id }} className={link}>
             <bdi>{location.name}</bdi>
           </Link>
         </li>

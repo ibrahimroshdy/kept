@@ -37,7 +37,7 @@ import {
   vehiclePanel,
   vehicleTabOrder,
 } from '@/components/vehicles/vehicle-tabs';
-import { addressOf } from '@/lib/address';
+import { addressOf, locationAddress } from '@/lib/address';
 import { isolate } from '@/lib/bidi';
 import { useFormat } from '@/lib/format';
 import { useLocationName } from '@/lib/labels';
@@ -308,7 +308,7 @@ function Loaded({ tab, sheet }: { tab: ThingTab | undefined; sheet: SheetName | 
           id: parent.kind === 'container' ? parent.id : addressOf(parent),
         },
       }
-    : { to: '/loc/$id' as const, params: { id: location.id } };
+    : { to: '/loc/$id' as const, params: { id: locationAddress(location) } };
   const locationName = useLocationName();
   const backName = parent ? parent.name : locationName(location);
   const tree = usePlaceTree(location.id);
@@ -328,7 +328,11 @@ function Loaded({ tab, sheet }: { tab: ThingTab | undefined; sheet: SheetName | 
                 <PlacesPanel
                   places={tree.data.places}
                   {...(placeAt ? { currentId: placeAt.id } : {})}
-                  location={{ id: location.id, name: locationName(location) }}
+                  location={{
+                    id: location.id,
+                    name: locationName(location),
+                    address: locationAddress(location),
+                  }}
                 />
               ),
             }
