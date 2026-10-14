@@ -463,6 +463,10 @@ describe('reads', () => {
     expect(where).toContain(garage.id);
   });
 
+  /** The seeded price in any form ("4321.5", "4,321.50"), but never as part of an id: a UUID's
+   * hex or a short code can hold the digits 4321 by chance (main's CI, 2026-10-14). */
+  const PRICE = /(?<![0-9A-Za-z-])4,?321(?:\.\d+)?(?![0-9A-Za-z])/;
+
   it('get_thing by short ID; the price for a member, none for a viewer', async () => {
     const [code] = await own<{ code: string }>(
       db,
@@ -476,14 +480,14 @@ describe('reads', () => {
     expect(forLouis.thing.url).toBe(`/t/${code?.code}`);
     const forTalia = await data(talia, 'get_thing', { thing_id: priced.id });
     expect(forTalia.thing.purchase).toEqual({ purchased_on: '2026-09-01' });
-    expect(JSON.stringify(forTalia)).not.toContain('4321');
+    expect(JSON.stringify(forTalia)).not.toMatch(PRICE);
   });
 
   it('thing_history hides money from a viewer where the location hides it', async () => {
     const d = await data(talia, 'thing_history', { thing_id: priced.id });
     expect(d.items.length).toBeGreaterThan(0);
     expect(d.items[0].untrusted.summary).toContain('Espresso machine');
-    expect(JSON.stringify(d)).not.toContain('4321');
+    expect(JSON.stringify(d)).not.toMatch(PRICE);
   });
 
   it('list_contents walks down to three levels', async () => {
