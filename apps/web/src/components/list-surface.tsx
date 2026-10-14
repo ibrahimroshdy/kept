@@ -20,7 +20,7 @@
 import type { ListSurface as Surface } from '@kept/shared';
 import { Trans, useLingui } from '@lingui/react/macro';
 import type { InfiniteData, UseInfiniteQueryResult } from '@tanstack/react-query';
-import { type ReactNode, useEffect, useRef } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import type { Page } from '@/api/inventory/types';
 import {
   DisplayButton,
@@ -30,6 +30,7 @@ import {
 } from '@/components/filters/display';
 import { FilterStrip } from '@/components/filters/strip';
 import type { FilterDef } from '@/components/filters/types';
+import { ChevronDownIcon } from '@/components/icons';
 import { ErrorState, LoadingRows } from '@/components/page';
 import { Button } from '@/components/ui/button';
 import { type ListState, useListState } from '@/lib/url-state';
@@ -61,6 +62,13 @@ export type ListSurfaceProps<T> = {
   renderRow: (item: T) => ReactNode;
   /** Section headings when grouped: consecutive rows with the same key share one. */
   groupOf?: (item: T, group: string) => { key: string; label: ReactNode } | null;
+  /** Section headings when nothing is grouped (a location's Places and Things), the same way. */
+  sections?: (item: T) => { key: string; label: ReactNode } | null;
+  /**
+   * Headings fold their rows away (1.1): each is a button, and the folded keys are remembered on
+   * this device under this name.
+   */
+  collapsible?: string;
   /**
    * The grouping when the URL names none. A list whose grouping is fixed (the inbox, by capture
    * batch) passes it without `groups`, so there is no choice to show.
@@ -90,6 +98,8 @@ export function ListSurface<T>({
   getKey,
   renderRow,
   groupOf,
+  sections,
+  collapsible,
   defaultGroup,
   tiles = false,
   empty,
@@ -110,6 +120,15 @@ export function ListSurface<T>({
     focusFrom.current = null;
     listRef.current?.querySelectorAll<HTMLElement>('[data-list-row]')[from]?.focus();
   }, [items.length]);
+
+  const [folded, setFolded] = useState<ReadonlySet<string>>(() => readFolded(collapsible));
+  const fold = (key: string) => {
+    const next = new Set(folded);
+    if (next.has(key)) next.delete(key);
+    else next.add(key);
+    setFolded(next);
+    writeFolded(collapsible, next);
+  };
 
   let lastGroup: string | null = null;
   return (
@@ -171,9 +190,12 @@ export function ListSurface<T>({
         >
           {items.map((item) => {
             const by = list.group || defaultGroup || groups?.[0]?.value;
-            const group = groupOf && by && by !== 'none' ? groupOf(item, by) : null;
+            const group =
+              groupOf && by && by !== 'none' ? groupOf(item, by) : (sections?.(item) ?? null);
             const heading = group && group.key !== lastGroup ? group : null;
             if (group) lastGroup = group.key;
+            const isFolded = !!collapsible && !!group && folded.has(group.key);
+            if (isFolded && !heading) return null;
             return (
               <li
                 key={getKey(item)}
@@ -186,7 +208,26 @@ export function ListSurface<T>({
                     : 'border-line not-first:border-t',
                 )}
               >
-                {heading ? (
+                {heading && collapsible ? (
+                  <button
+                    type="button"
+                    aria-expanded={!isFolded}
+                    onClick={() => fold(heading.key)}
+                    className={cn(
+                      'eyebrow flex w-full items-center gap-1.5 bg-sunken px-3.5 py-2 text-start outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info',
+                      tiles && 'rounded-lg',
+                    )}
+                  >
+                    <ChevronDownIcon
+                      aria-hidden="true"
+                      className={cn(
+                        'size-3.5 shrink-0 transition-transform',
+                        isFolded && '-rotate-90 rtl:rotate-90',
+                      )}
+                    />
+                    {heading.label}
+                  </button>
+                ) : heading ? (
                   <div
                     className={cn('eyebrow bg-sunken px-3.5 py-2', tiles && 'rounded-lg')}
                     role="presentation"
@@ -194,7 +235,7 @@ export function ListSurface<T>({
                     {heading.label}
                   </div>
                 ) : null}
-                {renderRow(item)}
+                {isFolded ? null : renderRow(item)}
               </li>
             );
           })}
@@ -216,6 +257,27 @@ export function ListSurface<T>({
       ) : null}
     </div>
   );
+}
+
+/** The folded headings of a `collapsible` list, per device; storage may be absent or refuse. */
+function readFolded(name: string | undefined): ReadonlySet<string> {
+  if (!name) return new Set();
+  try {
+    const raw = localStorage.getItem(`kept.list.folded.${name}`);
+    const keys: unknown = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(keys) ? keys.filter((k) => typeof k === 'string') : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function writeFolded(name: string | undefined, keys: ReadonlySet<string>): void {
+  if (!name) return;
+  try {
+    localStorage.setItem(`kept.list.folded.${name}`, JSON.stringify([...keys]));
+  } catch {
+    // Private mode or blocked storage: it folds for this visit only.
+  }
 }
 
 export type { ListState };
