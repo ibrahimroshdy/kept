@@ -183,18 +183,23 @@ export const CHANNEL_KINDS = [
 export type ChannelKind = (typeof CHANNEL_KINDS)[number];
 
 /** The channels built: `notification_channels.kind`'s CHECK. 1.0 had email, web push and the
- * webhook; 1.3 adds ntfy and Telegram (D227). */
+ * webhook; 1.3 adds ntfy and Telegram (D227); 1.5 adds Apprise (D232). */
 export const CHANNEL_KINDS_BUILT = [
   'email',
   'webpush',
   'webhook',
   'ntfy',
   'telegram',
+  'apprise',
 ] as const satisfies readonly ChannelKind[];
 export type ChannelKindBuilt = (typeof CHANNEL_KINDS_BUILT)[number];
 
 /** The built channels a person adds themselves, each with a sealed config (D227). */
-export const RELAY_CHANNEL_KINDS = ['ntfy', 'telegram'] as const satisfies readonly ChannelKind[];
+export const RELAY_CHANNEL_KINDS = [
+  'ntfy',
+  'telegram',
+  'apprise',
+] as const satisfies readonly ChannelKind[];
 export type RelayChannelKind = (typeof RELAY_CHANNEL_KINDS)[number];
 
 /**
@@ -219,7 +224,7 @@ export type DeliveryStatus = (typeof DELIVERY_STATUSES)[number];
 /** At most this many webhook channels per person (T7's trigger). */
 export const MAX_WEBHOOK_CHANNELS = 5;
 
-/** At most this many ntfy, and this many Telegram, channels per person (D227; 0055's trigger). */
+/** At most this many ntfy, Telegram and Apprise channels per person, of each kind (D227, D232). */
 export const MAX_RELAY_CHANNELS = 3;
 
 /** At most this many live calendar feed links per person (Q23; T7's trigger). */

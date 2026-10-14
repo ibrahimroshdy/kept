@@ -122,8 +122,15 @@ describe('notification kinds and channels (D30, D130; Q10, Q35)', () => {
     expect(NOTIFY_KINDS).toContain('reading_stale');
   });
 
-  it('builds email, push and webhook in 1.0; preferences add in-app', () => {
-    expect(CHANNEL_KINDS_BUILT).toEqual(['email', 'webpush', 'webhook', 'ntfy', 'telegram']);
+  it('builds email, push and webhook in 1.0, ntfy and Telegram in 1.3, Apprise in 1.5; preferences add in-app', () => {
+    expect(CHANNEL_KINDS_BUILT).toEqual([
+      'email',
+      'webpush',
+      'webhook',
+      'ntfy',
+      'telegram',
+      'apprise',
+    ]);
     for (const c of CHANNEL_KINDS_BUILT) expect(CHANNEL_KINDS).toContain(c);
     expect(PREFERENCE_CHANNELS).toEqual([
       'inapp',
@@ -132,6 +139,7 @@ describe('notification kinds and channels (D30, D130; Q10, Q35)', () => {
       'webhook',
       'ntfy',
       'telegram',
+      'apprise',
     ]);
   });
 

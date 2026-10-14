@@ -140,13 +140,14 @@ the notification centre, where **Complete**, **Snooze**, **Renew** and **Mark re
 place.
 
 **Settings → Me → Notifications** chooses how each location reaches you (in Kept, email, push,
-webhook, ntfy, Telegram), a **Daily digest**, **Quiet hours**, and a private **Calendar feed** link
+webhook, ntfy, Telegram, Apprise), a **Daily digest**, **Quiet hours**, and a private **Calendar feed** link
 for your calendar app. Push on a phone is covered in [the phone app](/users/phone-app/#notifications).
 
 **ntfy**: add your server (`https://ntfy.sh` or your own) and a topic that's hard to guess, plus
 an access token if the topic needs one. **Telegram**: make a bot with @BotFather, send it a
-message, then add its token and your chat ID. Kept keeps both encrypted and never shows them
-again; **Test** sends one now.
+message, then add its token and your chat ID. **Apprise** (when your server has it): paste one or
+more Apprise URLs, like `discord://…`, to reach Discord, Slack, Matrix, Signal and more. Kept keeps
+all of these encrypted and never shows them again; **Test** sends one now.
 
 **Lending**: **Lend** a thing (or part of a quantity) to a member or a contact, with a due date and
 condition photos. Kept never messages the borrower; **Copy a reminder** gives you the text to send

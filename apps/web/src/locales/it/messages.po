@@ -21935,3 +21935,19 @@ msgstr "Nessuna posta letta finora"
 #: src/components/mailin/mailbox-settings.tsx
 msgid "Messages that arrive in the folder show here once Kept has read them."
 msgstr "I messaggi che arrivano nella cartella compaiono qui dopo che Kept li ha letti."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Add Apprise"
+msgstr "Aggiungi Apprise"
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Reminders to Discord, Slack, Matrix, Signal and over 100 other services, through this server's Apprise."
+msgstr "Promemoria su Discord, Slack, Matrix, Signal e oltre 100 altri servizi, tramite l’Apprise di questo server."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Apprise URLs"
+msgstr "URL Apprise"
+
+#: src/components/notifications/settings/channels.tsx
+msgid "One or more, separated by spaces or commas, like discord://… or mailto://…. Apprise's documentation lists every service."
+msgstr "Una o più, separate da spazi o virgole, come discord://… o mailto://…. La documentazione di Apprise elenca tutti i servizi."

@@ -449,6 +449,12 @@ const schema = z.object({
     .string()
     .optional()
     .describe('Google sign-in: the OAuth client secret; never logged'),
+  // 1.5 (D232): the Apprise API server Apprise channels go through.
+  KEPT_APPRISE_URL: httpUrl()
+    .optional()
+    .describe(
+      'Apprise channels: the Apprise API server, e.g. `http://apprise:8000`; unset, people can’t add Apprise channels',
+    ),
 });
 
 /** An optional retention count, 0 (or 1) to `max`. */

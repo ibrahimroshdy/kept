@@ -145,6 +145,7 @@ type UserChannels = {
   webhooks: string[];
   ntfy: string[];
   telegram: string[];
+  apprise: string[];
   devices: number;
 };
 
@@ -236,6 +237,7 @@ export class RecipientBook {
         webhooks: mine.filter((r) => r.kind === 'webhook').map((r) => r.id),
         ntfy: mine.filter((r) => r.kind === 'ntfy').map((r) => r.id),
         telegram: mine.filter((r) => r.kind === 'telegram').map((r) => r.id),
+        apprise: mine.filter((r) => r.kind === 'apprise').map((r) => r.id),
         devices: deviceCount.get(id) ?? 0,
       });
     }
@@ -300,8 +302,9 @@ export class RecipientBook {
         for (const id of ch?.webhooks ?? [])
           channels.push({ id, kind: 'webhook', userId: m.userId });
       }
-      // ntfy and Telegram (D227): added by the person to be heard, so the same default as push.
-      for (const kind of ['ntfy', 'telegram'] as const) {
+      // ntfy, Telegram (D227) and Apprise (D232): added by the person to be heard, so the same
+      // default as push.
+      for (const kind of ['ntfy', 'telegram', 'apprise'] as const) {
         if (!senders[kind] || !(pref(kind) ?? fallback)) continue;
         for (const id of ch?.[kind] ?? []) channels.push({ id, kind, userId: m.userId });
       }

@@ -594,7 +594,7 @@ export type AgendaPage = Page<AgendaItem> & {
 
 export type Channel = {
   id: string;
-  kind: 'email' | 'webpush' | 'webhook' | 'ntfy' | 'telegram';
+  kind: 'email' | 'webpush' | 'webhook' | 'ntfy' | 'telegram' | 'apprise';
   label: string | null;
   /** A webhook's or ntfy server's host only (`api.telegram.org` for Telegram): the URL, topic
    * and tokens are never returned after the channel is made (D227). */
@@ -618,6 +618,8 @@ export type KindPreference = {
   webhook: boolean;
   ntfy: boolean;
   telegram: boolean;
+  /** 1.5 (D232); absent from older servers. */
+  apprise?: boolean;
   isDefault: boolean;
 };
 
@@ -630,6 +632,8 @@ export type NotificationSettings = {
   quietTo: string | null;
   smtpConfigured: boolean;
   push: { available: boolean; publicKey: string | null; reason?: 'no_https' | 'no_subject' };
+  /** 1.5 (D232): the operator runs an Apprise API server; absent from older servers. */
+  apprise?: { available: boolean };
   channels: Channel[];
   locations: Array<{
     locationId: string;
@@ -655,11 +659,13 @@ export type PutPreferencesBody = {
     enabled: boolean;
   }>;
 };
-/** POST /api/v1/me/channels. At most 5 webhooks, 3 ntfy, 3 Telegram (D227). */
+/** POST /api/v1/me/channels. At most 5 webhooks, 3 ntfy, 3 Telegram (D227), 3 Apprise (D232). */
 export type CreateChannelBody =
   | { kind: 'webhook'; url: string; label?: string }
   | { kind: 'ntfy'; server: string; topic: string; token?: string; label?: string }
-  | { kind: 'telegram'; botToken: string; chatId: string; label?: string };
+  | { kind: 'telegram'; botToken: string; chatId: string; label?: string }
+  /** One or more Apprise URLs, separated by spaces or commas. */
+  | { kind: 'apprise'; urls: string; label?: string };
 /** 201: a webhook's signing secret, shown **once** (empty for ntfy and Telegram). */
 export type CreatedChannel = { channel: Channel; secret: string };
 /** POST /api/v1/me/channels/:id/test (5 an hour) · /me/push-subscriptions/:id/test. */

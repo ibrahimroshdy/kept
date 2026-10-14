@@ -131,7 +131,7 @@ export type AppOptions = {
   tokenKey?: Buffer | null;
   /** Step 4 (T15): web push's setup (notify/vapid.ts createPushSource), and in tests how a push
    * or a webhook leaves the process. Omitted: push reports unavailable. */
-  notify?: Pick<NotifyDeps, 'push' | 'transport'> | null;
+  notify?: Pick<NotifyDeps, 'push' | 'transport' | 'appriseUrl'> | null;
 };
 
 export type KeptApp = FastifyInstance<
@@ -334,6 +334,7 @@ export async function buildApp(opts: AppOptions): Promise<KeptApp> {
     auth,
     notify: {
       push: opts.notify?.push ?? null,
+      appriseUrl: opts.notify?.appriseUrl ?? null,
       mailer: opts.mailer ?? logMailer(app.log),
       mailConfigured: opts.mailConfigured ?? false,
       ...(opts.notify?.transport ? { transport: opts.notify.transport } : {}),

@@ -48,13 +48,15 @@ export type NotifyDeps = {
   mailer: Mailer;
   /** KEPT_SMTP_URL is set: email reminders can go out. */
   mailConfigured: boolean;
+  /** KEPT_APPRISE_URL (D232): the Apprise API server; null or absent, no Apprise channels. */
+  appriseUrl?: string | null;
   /** Tests: how a push, a webhook or an ntfy or Telegram message leaves the process. */
   transport?: { push?: PushTransport; webhookFetch?: WebhookFetch; relayFetch?: RelayFetch };
 };
 
 export type ChannelView = {
   id: string;
-  kind: 'email' | 'webpush' | 'webhook' | 'ntfy' | 'telegram';
+  kind: 'email' | 'webpush' | 'webhook' | 'ntfy' | 'telegram' | 'apprise';
   label: string | null;
   displayHost: string | null;
   verifiedAt: string | null;
@@ -96,7 +98,7 @@ export async function myChannels(client: pg.ClientBase): Promise<ChannelView[]> 
   const { rows } = await client.query<ChannelRow>(
     `SELECT ${CHANNEL_COLUMNS} FROM public.notification_channels
       WHERE user_id = kept.current_user_id()
-      ORDER BY array_position(ARRAY['email', 'webpush', 'webhook', 'ntfy', 'telegram'], kind),
+      ORDER BY array_position(ARRAY['email', 'webpush', 'webhook', 'ntfy', 'telegram', 'apprise'], kind),
                created_at, id`,
   );
   const subs = await client.query<{
@@ -230,7 +232,8 @@ export async function createWebhook(
   return { channel, secret };
 }
 
-/** POST /api/v1/me/channels for ntfy or Telegram (D227): the settings sealed, never shown again. */
+/** POST /api/v1/me/channels for ntfy, Telegram (D227) or Apprise (D232): the settings sealed, never
+ * shown again. `allowPrivate`: the instance's setting, for Apprise's generic URLs. */
 export async function createRelayChannel(
   tx: Tx,
   client: pg.ClientBase,
@@ -238,8 +241,9 @@ export async function createRelayChannel(
   userId: string,
   body: Parameters<typeof relayConfigFrom>[0] & { label?: string | undefined },
   requestId: string,
+  allowPrivate = false,
 ): Promise<{ channel: ChannelView; secret: string }> {
-  const config = relayConfigFrom(body);
+  const config = relayConfigFrom(body, { allowPrivate });
   const kind: RelayChannelKind = config.kind;
   const { rows: count } = await client.query<{ n: number }>(
     `SELECT count(*)::int AS n FROM public.notification_channels
@@ -468,7 +472,7 @@ export async function testWebhookSend(
     : { ok: false, ...(res.status !== undefined ? { status: res.status } : {}), error: res.error };
 }
 
-/** A test message to one ntfy or Telegram channel (D227), opened as kept_system. */
+/** A test message to one ntfy, Telegram or Apprise channel (D227, D232), opened as kept_system. */
 export async function testRelaySend(
   deps: NotifyDeps,
   pools: Pick<Pools, 'system'>,
@@ -483,6 +487,7 @@ export async function testRelaySend(
   const config = openRelayConfig(keyring, channel.id, channel.kind, channel.sealed);
   const res = await sendRelay(config, relayTest(mailLocale(locale), publicUrl), {
     allowPrivate: await webhookAllowsPrivate(pools),
+    appriseUrl: deps.appriseUrl ?? null,
     ...(deps.transport?.relayFetch ? { fetchFor: deps.transport.relayFetch } : {}),
   });
   await markRelay(pools, channel.id, res.ok);

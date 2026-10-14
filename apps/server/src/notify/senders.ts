@@ -59,6 +59,8 @@ export type SenderDeps = {
   /** Queues a `channel-webhook` job (the worker's pg-boss). */
   enqueue: (name: 'channel-webhook', data: WebhookJobData) => Promise<void>;
   /** Tests: how a push, a webhook or an ntfy or Telegram message leaves the process. */
+  /** KEPT_APPRISE_URL (D232): the Apprise API server; absent, Apprise channels aren't sent to. */
+  appriseUrl?: string | null;
   transport?: { push?: PushTransport; webhookFetch?: WebhookFetch; relayFetch?: RelayFetch };
 };
 
@@ -223,6 +225,7 @@ function relaySender(deps: SenderDeps): ChannelSender {
         fromPush(payload, deps.publicUrl, urgent),
         {
           allowPrivate: await webhookAllowsPrivate(deps.pools),
+          appriseUrl: deps.appriseUrl ?? null,
           ...(deps.transport?.relayFetch ? { fetchFor: deps.transport.relayFetch } : {}),
         },
       );
@@ -240,5 +243,7 @@ export function createChannelSenders(deps: SenderDeps): ChannelSenders {
     webhook: webhookSender(deps),
     ntfy: relaySender(deps),
     telegram: relaySender(deps),
+    // 1.5 (D232): only when the operator runs an Apprise API server.
+    ...(deps.appriseUrl ? { apprise: relaySender(deps) } : {}),
   };
 }

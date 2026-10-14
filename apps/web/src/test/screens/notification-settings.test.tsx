@@ -205,6 +205,38 @@ describe('channels', () => {
     expect(screen.getByText('api.telegram.org')).toBeInTheDocument();
   });
 
+  it('adds an Apprise channel when the server has Apprise, and hides it when not (D232)', async () => {
+    const { user, mock } = await renderApp(PATH);
+    await channels();
+    await user.click(await screen.findByRole('button', { name: 'Add Apprise' }));
+    const sheet = within(await screen.findByRole('dialog', { name: 'Add Apprise' }));
+    await user.type(
+      sheet.getByRole('textbox', { name: 'Apprise URLs' }),
+      'discord://id/token mailto://me@example.org',
+    );
+    await user.click(sheet.getByRole('button', { name: 'Add' }));
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    expect(mock.lastCall('POST', '/api/v1/me/channels')?.body).toEqual({
+      kind: 'apprise',
+      urls: 'discord://id/token mailto://me@example.org',
+    });
+    expect(screen.getByText('discord, mailto')).toBeInTheDocument();
+    expect(screen.queryByText(/discord:\/\/id/)).toBeNull();
+    expect(
+      screen.getByRole('switch', { name: 'Schedules due by Apprise in Home' }),
+    ).toBeInTheDocument();
+  });
+
+  it('offers no Apprise when the server has none', async () => {
+    await renderApp(PATH, {
+      setup: (mock) => {
+        mock.state.household.settings.apprise = { available: false };
+      },
+    });
+    await channels();
+    expect(screen.queryByRole('button', { name: 'Add Apprise' })).toBeNull();
+  });
+
   it('refuses a webhook address that is not a URL', async () => {
     const { user } = await renderApp(PATH);
     await channels();

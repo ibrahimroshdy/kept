@@ -855,6 +855,20 @@
       "when": 1791986477810,
       "tag": "0121_ai_token_ceiling",
       "breakpoints": true
+    },
+    {
+      "idx": 122,
+      "version": "7",
+      "when": 1792007889452,
+      "tag": "0122_apprise_channels",
+      "breakpoints": true
+    },
+    {
+      "idx": 123,
+      "version": "7",
+      "when": 1792007900053,
+      "tag": "0123_apprise_channel_cap",
+      "breakpoints": true
     }
   ]
 }

@@ -54,6 +54,7 @@ export function useChannelLabels(): Record<PreferenceChannel, string> {
     webhook: t`Webhook`,
     ntfy: 'ntfy',
     telegram: 'Telegram',
+    apprise: 'Apprise',
   };
 }
 
@@ -79,6 +80,7 @@ export function KindsByLocation({ settings }: { settings: NotificationSettings }
     ...(has('webhook') ? (['webhook'] as const) : []),
     ...(has('ntfy') ? (['ntfy'] as const) : []),
     ...(has('telegram') ? (['telegram'] as const) : []),
+    ...(has('apprise') ? (['apprise'] as const) : []),
   ];
 
   const set = async (

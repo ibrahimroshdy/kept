@@ -148,6 +148,7 @@ export type HouseholdState = {
     quietTo: string | null;
     smtpConfigured: boolean;
     push: { available: boolean; publicKey: string | null; reason?: 'no_https' | 'no_subject' };
+    apprise: { available: boolean };
     aiSummaryEmail: boolean;
   };
   /** Only the choices a person made; everything else is `defaultPreference()` (Q8). */
@@ -644,6 +645,7 @@ export function householdFixtures(meId: string): HouseholdState {
         publicKey:
           'BAswVXqfxOkOM1h9osfsETZbgKXK7xQ5XoOozfIXPGGGq9D1Gj9kia7T-B1CZ4yx1vsgRWqPtNn-I0htkrfcASY',
       },
+      apprise: { available: true },
       aiSummaryEmail: true,
     },
     preferences: [],

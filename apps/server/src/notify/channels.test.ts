@@ -45,6 +45,7 @@ type KindPref = {
   webhook: boolean;
   ntfy: boolean;
   telegram: boolean;
+  apprise: boolean;
   isDefault: boolean;
 };
 type Channel = {
@@ -63,6 +64,7 @@ type Settings = {
   quietTo: string | null;
   smtpConfigured: boolean;
   push: { available: boolean; publicKey: string | null; reason?: string };
+  apprise: { available: boolean };
   channels: Channel[];
   locations: Array<{
     locationId: string;
@@ -86,13 +88,15 @@ beforeAll(async () => {
         publicKey: vapid.publicKey,
         details: { ...vapid, subject: 'mailto:kept@example.org' },
       }),
+      // 1.5 (D232): the Apprise API server is the local receiver too.
+      appriseUrl: `${hook.url}/apprise`,
       transport: {
         push: {
           send: webpush.sendNotification,
           agent: new https.Agent({ ca: service.ca as Buffer }),
           refuseLiterals: false,
         },
-        // ntfy goes to the local receiver through the guard; Telegram to the stand-in.
+        // ntfy and Apprise go to the local receiver through the guard; Telegram to the stand-in.
         relayFetch: (allowPrivate) =>
           (async (input: string | URL | Request, init?: RequestInit) => {
             const url = String(input instanceof Request ? input.url : input);
@@ -194,6 +198,7 @@ describe('GET /api/v1/me/notification-settings', () => {
       webhook: false,
       ntfy: true,
       telegram: true,
+      apprise: true,
       isDefault: true,
     });
 
@@ -636,5 +641,99 @@ describe('push subscriptions', () => {
     service.reply(410);
     expect((await test()).json()).toEqual({ ok: false, status: 410, error: 'no_device' });
     expect((await test()).statusCode).toBe(404);
+  });
+});
+
+describe('Apprise channels (D232)', () => {
+  // catalogue: POST /api/v1/me/channels
+  it('makes an Apprise channel: URLs sealed, never returned, audited; a test POSTs to /notify/', async () => {
+    const bruce = await person(t, db, 'bruce');
+    expect((await settings(bruce)).apprise).toEqual({ available: true });
+    const urls = 'discord://webhook_id/webhook_token, mailto://user:pass@example.org';
+    const res = await call(t, '/api/v1/me/channels', {
+      as: bruce,
+      body: { kind: 'apprise', urls, label: 'Family' },
+    });
+    expect(res.statusCode, res.body).toBe(201);
+    const { channel } = res.json() as { channel: Channel };
+    expect(channel).toMatchObject({
+      kind: 'apprise',
+      label: 'Family',
+      displayHost: 'discord, mailto',
+    });
+    expect(res.body).not.toContain('webhook_token');
+    const [row] = await own<{ config_ciphertext: Sealed }>(
+      db,
+      'SELECT config_ciphertext FROM public.notification_channels WHERE id = $1',
+      [channel.id],
+    );
+    expect(JSON.stringify(row?.config_ciphertext)).not.toContain('webhook_token');
+    expect(
+      openRelayConfig(keyring, channel.id, 'apprise', row?.config_ciphertext as Sealed),
+    ).toEqual({
+      kind: 'apprise',
+      urls: ['discord://webhook_id/webhook_token', 'mailto://user:pass@example.org'],
+    });
+    expect((await accountAudit(bruce.userId)).map((e) => e.action)).toContain('channel.create');
+
+    hook.received.length = 0;
+    const test = await call(t, `/api/v1/me/channels/${channel.id}/test`, {
+      as: bruce,
+      method: 'POST',
+    });
+    expect(test.json()).toEqual({ ok: true, status: 200 });
+    const [got] = hook.received;
+    expect(got?.url).toBe('/apprise/notify/');
+    expect(JSON.parse(got?.body.toString() ?? '{}')).toEqual({
+      urls: 'discord://webhook_id/webhook_token,mailto://user:pass@example.org',
+      title: expect.any(String),
+      body: expect.stringContaining('/settings/me/notifications'),
+      type: 'info',
+      format: 'text',
+    });
+
+    hook.reply(424);
+    const failed = await call(t, `/api/v1/me/channels/${channel.id}/test`, {
+      as: bruce,
+      method: 'POST',
+    });
+    expect(failed.json()).toEqual({ ok: false, status: 424, error: 'apprise_424' });
+    expect(failed.body).not.toContain('webhook_token');
+  });
+
+  it('refuses generic json/xml/form URLs unless private addresses are allowed, and bad URLs', async () => {
+    const bruce = await person(t, db, 'bruce');
+    const make = (urls: string) =>
+      call(t, '/api/v1/me/channels', { as: bruce, body: { kind: 'apprise', urls } });
+    expect((await make('not a url')).statusCode).toBe(400);
+    expect(
+      (await make(Array.from({ length: 11 }, (_, i) => `ntfys://topic${i}`).join(' '))).statusCode,
+    ).toBe(400);
+    // This file allows private addresses for its local receivers; turned off, generic URLs go.
+    await own(
+      db,
+      "UPDATE public.instance_settings SET value = 'false'::jsonb WHERE key = 'ssrf_allow_private'",
+    );
+    try {
+      const generic = await make('json://192.168.1.10/hook');
+      expect(generic.statusCode).toBe(400);
+      expect(generic.json()).toMatchObject({ hint: expect.stringContaining('private addresses') });
+    } finally {
+      await own(
+        db,
+        "UPDATE public.instance_settings SET value = 'true'::jsonb WHERE key = 'ssrf_allow_private'",
+      );
+    }
+    expect((await make('json://192.168.1.10/hook')).statusCode).toBe(201);
+  });
+
+  it('is not offered when the operator runs no Apprise server', async () => {
+    const bruce = await person(bare, db, 'bruce');
+    expect((await settings(bruce, bare)).apprise).toEqual({ available: false });
+    const res = await call(bare, '/api/v1/me/channels', {
+      as: bruce,
+      body: { kind: 'apprise', urls: 'discord://a/b' },
+    });
+    expect(res.statusCode).toBe(400);
   });
 });
