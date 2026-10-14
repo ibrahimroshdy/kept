@@ -225,4 +225,7 @@ export interface Pacer {
   observe(p: ProviderRef, seen: Observed, now: Date): Promise<ProviderLimits | null>;
   /** A replaced key clears an `auth` trip (T9). */
   clearAuth(providerId: string): Promise<void>;
+  /** The most tokens one request may hold: the per-minute limit the provider's headers last
+   * named (Groq's 413 "Request too large … TPM"); null while none is known (1.4.1). */
+  ceiling(p: ProviderRef): Promise<number | null>;
 }

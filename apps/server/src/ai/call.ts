@@ -32,7 +32,7 @@
  *   the model's own per-call limit, spike S6.4 finding 4), reserved, paced, settled and ledgered
  *   the same way. Vectors and inputs never reach the ledger or a log.
  */
-import type { BudgetTask, LedgerOutcome, LedgerTask } from '@kept/shared';
+import type { BudgetTask, LedgerOutcome, LedgerTask, ProviderKind } from '@kept/shared';
 import { budgetTaskOf, EMBED_BATCH_MAX, estimateTextTokens } from '@kept/shared';
 import {
   embedMany,
@@ -316,6 +316,39 @@ async function admitCall(
   }
 }
 
+/** What a request's text estimate is made of: the instructions, the tools, the conversation. */
+function promptTextOf(
+  instructions: string,
+  tools: readonly ToolSpec[] | null,
+  history: readonly KeptMessage[],
+  text: string,
+): string {
+  const toolText = tools
+    ? JSON.stringify(tools.map((d) => ({ n: d.name, d: d.description, s: d.inputSchema })))
+    : '';
+  return `${instructions}\n${toolText}\n${conversationText(history)}\n${text}`;
+}
+
+/** The tokens a text-only request reserves (its input, estimated as callModel does, plus its
+ * output allowance): what a provider's per-minute ceiling is compared with (assistant/fit.ts). */
+export function requestTokens(
+  kind: ProviderKind,
+  r: {
+    instructions: string;
+    tools: readonly ToolSpec[] | null;
+    messages: readonly KeptMessage[];
+    maxOutputTokens: number;
+  },
+): number {
+  return estimateCall({
+    kind,
+    images: [],
+    promptText: promptTextOf(r.instructions, r.tools, r.messages, ''),
+    maxOutputTokens: r.maxOutputTokens,
+    expectedOutputTokens: r.maxOutputTokens,
+  }).reserveTokens;
+}
+
 export async function callModel<T>(rt: AiRuntime, req: CallRequest<T>): Promise<CallResult<T>> {
   await assertSendable(req.images);
   const { resolved } = req;
@@ -328,13 +361,10 @@ export async function callModel<T>(rt: AiRuntime, req: CallRequest<T>): Promise<
     instructions += `\n\nAnswer with one JSON object matching this JSON Schema:\n${JSON.stringify(req.output.schema)}`;
   }
   const history = req.conversation?.messages ?? [];
-  const toolText = req.tools
-    ? JSON.stringify(req.tools.defs.map((d) => ({ n: d.name, d: d.description, s: d.inputSchema })))
-    : '';
   const est = estimateCall({
     kind: provider.kind,
     images: req.images,
-    promptText: `${instructions}\n${toolText}\n${conversationText(history)}\n${req.text}`,
+    promptText: promptTextOf(instructions, req.tools?.defs ?? null, history, req.text),
     maxOutputTokens: req.maxOutputTokens,
     expectedOutputTokens: req.expectedOutputTokens,
   });

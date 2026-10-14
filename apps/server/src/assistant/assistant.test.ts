@@ -3,7 +3,7 @@
 // provider). The sample cast: Ibrahim owns Home and Garage, Alfred owns بيت العائلة; Louis is a
 // member of Home and Garage, Bruce an admin of Home, Talia a viewer of Home.
 import type { LanguageModelV4CallOptions, LanguageModelV4GenerateResult } from '@ai-sdk/provider';
-import { canonicalJson } from '@kept/shared';
+import { ASSISTANT_OUTPUT, canonicalJson, REASONING_ALLOWANCE } from '@kept/shared';
 import { APICallError } from 'ai';
 import { MockLanguageModelV4 } from 'ai/test';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -250,6 +250,50 @@ describe('a question with a tool step and an answer', () => {
       [threadId],
     );
     expect(results.map((r) => r.location_id)).toEqual([home.id]);
+  });
+
+  it('a request bigger than the provider’s per-minute limit fails too_large, never sent (1.4.1)', async () => {
+    // Groq's headers named a tiny per-minute limit: no request with 27 tools fits in it.
+    await own(
+      db,
+      `INSERT INTO public.ai_provider_limits (provider_id, limit_tokens, remaining_tokens, reset_at,
+                                              updated_at)
+       VALUES ($1, 500, 500, now() + interval '1 minute', now())`,
+      [homeProvider],
+    );
+    try {
+      const { turnId } = await ask(louis, 'Where is the HDMI cable?', {
+        kind: 'location',
+        id: home.id,
+      });
+      script.push(answer('never asked'));
+      expect(await run(louis, turnId)).toMatchObject({ status: 'failed' });
+      expect(prompts).toHaveLength(0);
+      expect((await ledger()).filter((r) => r.sent)).toEqual([]);
+      const [turn] = await own<{ status: string; status_reason: string | null }>(
+        db,
+        'SELECT status, status_reason FROM public.assistant_turns WHERE id = $1',
+        [turnId],
+      );
+      expect(turn).toEqual({ status: 'failed', status_reason: 'too_large' });
+
+      // A limit with room changes nothing: the full output allowance is asked for.
+      await own(
+        db,
+        'UPDATE public.ai_provider_limits SET limit_tokens = 1000000, remaining_tokens = 1000000 WHERE provider_id = $1',
+        [homeProvider],
+      );
+      const again = await ask(louis, 'Where is the HDMI cable?', { kind: 'location', id: home.id });
+      script.length = 0;
+      script.push(answer('In the cupboard.'));
+      expect(await run(louis, again.turnId)).toEqual({ status: 'done' });
+      // The answer's allowance plus the test provider's reasoning allowance (`low`), untouched.
+      expect(prompts.at(-1)?.maxOutputTokens).toBe(
+        ASSISTANT_OUTPUT.maxTokens + REASONING_ALLOWANCE.low,
+      );
+    } finally {
+      await own(db, 'DELETE FROM public.ai_provider_limits WHERE provider_id = $1', [homeProvider]);
+    }
   });
 
   it('a step after touching two owners’ locations is paid by the asker’s own cascade (D167)', async () => {

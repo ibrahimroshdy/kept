@@ -453,6 +453,10 @@ export class InMemoryBudgetGate implements BudgetGate {
 // --- Pacer ---------------------------------------------------------------------------------
 
 export class InMemoryPacer implements Pacer {
+  async ceiling(p: ProviderRef): Promise<number | null> {
+    return this.limits.get(p.id)?.limitTokens ?? null;
+  }
+
   readonly breakers = new Map<string, BreakerState>();
   readonly limits = new Map<string, ProviderLimits>();
   readonly slots = new Map<string, (string | null)[]>();
