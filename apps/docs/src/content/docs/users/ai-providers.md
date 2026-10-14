@@ -96,6 +96,11 @@ When a limit is reached, AI pauses for that scope only, with a banner such as "A
 does. Whoever set the cap gets **Resume now**, to raise it, remove it or keep paused. A provider's
 own rate limit is not a pause: progress lines say "Waiting for Groq · about 20 s" and carry on.
 
+**One assistant request is kept under the provider's per-minute limit** once the provider has
+named it (Groq's free tier: 8,000 tokens a minute). Kept first asks for a shorter answer, then
+leaves out the oldest tool results from what it sends; the thread keeps them. A question that
+still can't fit fails with "too large": a model or plan with a higher limit answers it.
+
 ## What is sent to the provider
 
 Kept's own summary, shown beside each provider:

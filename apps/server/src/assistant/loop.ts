@@ -17,7 +17,7 @@ import {
 } from '@kept/shared';
 import type pg from 'pg';
 import { FOREVER } from '../ai/breaker.js';
-import { type CallResult, callModel } from '../ai/call.js';
+import { type CallResult, callModel, requestTokens } from '../ai/call.js';
 import type { KeptMessage, ToolCallOut } from '../ai/convert.js';
 import { allowanceLevel } from '../ai/extract.js';
 import type { AiDeps } from '../ai/routes.js';
@@ -27,6 +27,7 @@ import type { JobMeta } from '../jobs/boss.js';
 import { runTool, toolsFor } from '../tools/context.js';
 import type { ToolDeps } from '../tools/types.js';
 import { checkLinks, locationsIn, seenIn } from './cite.js';
+import { fitToCeiling } from './fit.js';
 import { payingLocation } from './payer.js';
 import { instructionsFor, PROMPT_VERSION, type PromptLocation, toolSpecOf } from './prompt.js';
 import { propose } from './proposals.js';
@@ -339,24 +340,48 @@ async function steps(
     const last = step + 1 >= TURN_LIMITS.maxSteps;
     const names = [...new Set(candidates.flatMap((c) => c.tools))];
     const writes = names.some((n) => TOOL_DEFS[n].scope === 'write');
+    const instructions = instructionsFor({ locale, locations: candidates, context, writes });
+    const defs = names.map((n) => toolSpecOf(n, { oneLocation: candidates.length === 1 }));
+    const allowance = REASONING_ALLOWANCE[allowanceLevel(resolved.provider.reasoning)];
+    let messages = prepared.messages;
+    let maxOutputTokens = ASSISTANT_OUTPUT.maxTokens + allowance;
+    // Under the provider's per-minute token limit, when its headers have named one (fit.ts).
+    const ceiling = await rt.pacer.ceiling({
+      id: resolved.provider.id,
+      kind: resolved.provider.kind,
+    });
+    if (ceiling) {
+      const fitted = fitToCeiling({
+        messages,
+        maxOut: maxOutputTokens,
+        floor:
+          (last ? ASSISTANT_OUTPUT.expectedAnswer : ASSISTANT_OUTPUT.expectedToolStep) + allowance,
+        ceiling,
+        measure: (m, maxOut) =>
+          requestTokens(resolved.provider.kind, {
+            instructions,
+            tools: defs,
+            messages: m,
+            maxOutputTokens: maxOut,
+          }),
+      });
+      if (!fitted) return finish(deps, scope, turn.id, 'failed', { reason: 'too_large' });
+      messages = fitted.messages;
+      maxOutputTokens = fitted.maxOut;
+    }
     const result: CallResult<string> = await callModel<string>(rt, {
       resolved,
       task: step === 0 ? 'assistant_turn' : 'assistant_followup',
       locationId: prepared.payer,
       userId: scope.userId,
       links: { threadId: turn.thread_id },
-      instructions: instructionsFor({ locale, locations: candidates, context, writes }),
+      instructions,
       text: '',
       images: [],
       output: null,
-      conversation: { messages: prepared.messages },
-      tools: {
-        defs: names.map((n) => toolSpecOf(n, { oneLocation: candidates.length === 1 })),
-        choice: last ? 'none' : 'auto',
-      },
-      maxOutputTokens:
-        ASSISTANT_OUTPUT.maxTokens +
-        REASONING_ALLOWANCE[allowanceLevel(resolved.provider.reasoning)],
+      conversation: { messages },
+      tools: { defs, choice: last ? 'none' : 'auto' },
+      maxOutputTokens,
       expectedOutputTokens: last
         ? ASSISTANT_OUTPUT.expectedAnswer
         : ASSISTANT_OUTPUT.expectedToolStep,

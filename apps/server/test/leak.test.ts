@@ -289,6 +289,8 @@ const FUNCTIONS: Record<string, { roles: string[]; definer: boolean }> = {
   'kept.ai_reserve(jsonb)': { roles: BOTH, definer: true },
   'kept.ai_settle(jsonb,jsonb,text,jsonb)': { roles: BOTH, definer: true },
   'kept.ai_key_admit(uuid,integer,text,integer)': { roles: BOTH, definer: true },
+  // (0121, 1.4.1) A provider's learned per-minute token limit, behind the same reach check.
+  'kept.ai_token_ceiling(uuid)': { roles: BOTH, definer: true },
   'kept.ai_key_release(uuid,integer,text)': { roles: BOTH, definer: true },
   'kept.ai_breaker_state(uuid)': { roles: BOTH, definer: true },
   'kept.ai_observe(uuid,jsonb,jsonb)': { roles: BOTH, definer: true },
@@ -1865,6 +1867,12 @@ const PROBES: Probe[] = [
   {
     name: 'ai_key_admit',
     sql: `SELECT * FROM kept.ai_key_admit($1, 1, 'probe')`,
+    args: (i) => [i.provider],
+    viewer: 'rows',
+  },
+  {
+    name: 'ai_token_ceiling',
+    sql: 'SELECT kept.ai_token_ceiling($1) AS v',
     args: (i) => [i.provider],
     viewer: 'rows',
   },

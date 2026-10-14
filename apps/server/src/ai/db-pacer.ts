@@ -125,6 +125,16 @@ export class DbPacer implements Pacer {
     });
   }
 
+  async ceiling(p: ProviderRef): Promise<number | null> {
+    return this.run(async (client) => {
+      const { rows } = await client.query<{ ceiling: number | null }>(
+        'SELECT kept.ai_token_ceiling($1) AS ceiling',
+        [p.id],
+      );
+      return rows[0]?.ceiling ?? null;
+    });
+  }
+
   async clearAuth(providerId: string): Promise<void> {
     await this.run((client) => client.query('SELECT kept.ai_clear_trip($1)', [providerId]));
   }

@@ -92,6 +92,7 @@ function keyRejectedHook(pacer: Pacer, onKeyRejected: RuntimeOptions['onKeyRejec
     admit: (p, estimate, jobId, now) => pacer.admit(p, estimate, jobId, now),
     release: (lease) => pacer.release(lease),
     clearAuth: (id) => pacer.clearAuth(id),
+    ceiling: (p) => pacer.ceiling(p),
     observe: async (p, seen, now) => {
       const limits = await pacer.observe(p, seen, now);
       if (seen.signal.kind === 'auth') await onKeyRejected(p.id);

@@ -179,6 +179,8 @@ const KEPT_FUNCTION_EXECUTE: Record<string, string[]> = {
   'kept.ai_insert_call(jsonb,jsonb,text,jsonb)': OWNER_ONLY,
   'kept.ai_instance_calls(jsonb,text)': APP_ONLY,
   'kept.ai_key_admit(uuid,integer,text,integer)': APP_AND_SYSTEM,
+  // 1.4.1 (0121): a provider's learned per-minute token limit, for sizing a request under it.
+  'kept.ai_token_ceiling(uuid)': APP_AND_SYSTEM,
   'kept.ai_key_release(uuid,integer,text)': APP_AND_SYSTEM,
   'kept.ai_observe(uuid,jsonb,jsonb)': APP_AND_SYSTEM,
   'kept.ai_pause(jsonb)': APP_ONLY,
