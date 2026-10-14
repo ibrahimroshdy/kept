@@ -3,6 +3,32 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.0.6 (2026-10-14)
+
+### Fixes
+
+- **modules:** Moving mode isn't built yet: What to track shows it as Coming soon, and it can't be switched on (#41) (75df21b)
+- **release:** the README installs the release, and a tag must be new (#40) (49595f9)
+- **sync:** the op ledger lasts as long as an op may be resent (#39) (53092b2)
+- **import:** a CSV that isn't UTF-8 is refused, not imported as garbled names (#38) (37c034c)
+- **backup:** problems the backups found no longer stay quiet (#37) (14b6bc6)
+- **mcp:** update_thing files an alias by its script, not as English (#36) (2d5ee60)
+- **imports:** a failed Homebox step forgets the brand it made, so the next item imports (#35) (dffdae4)
+- **web:** nothing follows you into another location or to the next person (#34) (5227a0d)
+- **assistant:** confirmed cards send the thing's version only to tools that check it (#33) (d61b643)
+- **auth:** tokens end with the account: a disabled user's stop, a claim revokes them (#32) (f124fa3)
+- **sync:** the orphan purge keeps an upload whose queued op may still come (#31) (15c123d)
+- **test:** date fixtures count calendar days in Cairo, not 24-hour steps from UTC (#30) (12d3e64)
+- **web:** the guided tour no longer sends people off its own path (#27) (5a958c8)
+- **web:** review fixes for #2, #3, #18 and the docs move; two flaky tests (#26) (5decc9a)
+- **mcp:** add_thing resolves a short-ID or container place_id, and a saved write never answers an error (#25) (7efae71)
+
+### Documentation
+
+- the images are public and releases are signed into the transparency log: the install, verify and security pages say so (#41) (75df21b)
+- **design:** the screens board catches up with 1.0.5 (#29) (ea49553)
+- **release:** the 1.0.4 and 1.0.5 records, and fixes 1.0.1's changelog missed (#28) (c649b8b)
+
 ## 1.0.5 (2026-10-11)
 
 ### Fixes
