@@ -49,6 +49,12 @@ export const paths = {
      * (step 6 T16, spike S6.7).
      */
     signInSocial: `${AUTH}/sign-in/social`,
+    /** D176, D226: link an outside sign-in to the signed-in account, from a fresh session. */
+    linkSocial: `${AUTH}/link-social`,
+    /** The account's sign-in methods (password, OIDC, Google), never their tokens. */
+    listAccounts: `${AUTH}/list-accounts`,
+    /** `{accountId}`: Better Auth's own row id. From a fresh session; never the last way in. */
+    unlinkAccount: `${AUTH}/unlink-account`,
   },
   /** D147: `{version, revision, source}` (apps/server/src/http/health.ts). */
   version: '/version',

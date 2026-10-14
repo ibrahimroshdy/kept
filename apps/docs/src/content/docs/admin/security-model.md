@@ -66,6 +66,11 @@ Kept uses Better Auth on its own login and schema. What an account can sign in w
   ([configuration](/reference/configuration/)). An outside identity is never linked to an account
   because the email matches; a new person gets in by invite, or by an allowed domain or group.
   The identity provider's tokens are never stored.
+- **Google**, when `KEPT_GOOGLE_CLIENT_ID` and `KEPT_GOOGLE_CLIENT_SECRET` are set, with the
+  redirect URI Admin → Status shows. The same rules as OIDC, except that nobody gets in by
+  domain: only an existing account that linked Google, or an invited person.
+- **Linking and unlinking** an outside sign-in happen in Settings → Me → Sign-in methods, from a
+  sign-in in the last ten minutes. An account keeps at least one way in.
 
 **Sessions** last 30 days over HTTPS, extended once a day of use, with `Secure`, `__Secure-`
 prefixed cookies. Over plain HTTP they last 12 hours and are never extended, and Kept refuses

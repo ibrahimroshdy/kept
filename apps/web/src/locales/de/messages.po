@@ -21399,3 +21399,71 @@ msgstr "Dein Konto kann noch nicht gelöscht werden."
 #: src/components/history/timeline.tsx
 msgid "A former member"
 msgstr "Ein ehemaliges Mitglied"
+
+#: src/routes/invite.tsx
+msgid "Join with Google"
+msgstr "Mit Google beitreten"
+
+#: src/components/sign-in-methods.tsx
+msgid "That's your only way in. Add a password or another sign-in first."
+msgstr "Das ist dein einziger Weg hinein. Füge zuerst ein Passwort oder eine andere Anmeldung hinzu."
+
+#: src/components/sign-in-methods.tsx
+msgid "That didn't work. Try again."
+msgstr "Das hat nicht geklappt. Versuch es noch einmal."
+
+#: src/components/sign-in-methods.tsx
+msgid "Unlinked"
+msgstr "Verknüpfung aufgehoben"
+
+#: src/components/sign-in-methods.tsx
+msgid "Sign-in methods"
+msgstr "Anmeldemethoden"
+
+#: src/components/sign-in-methods.tsx
+msgid "Sign in again first"
+msgstr "Melde dich zuerst neu an"
+
+#: src/components/sign-in-methods.tsx
+msgid "Linking or unlinking a sign-in needs a sign-in in the last ten minutes."
+msgstr "Zum Verknüpfen oder Aufheben einer Anmeldung musst du dich in den letzten zehn Minuten angemeldet haben."
+
+#: src/components/sign-in-methods.tsx
+msgid "Loading your sign-in methods"
+msgstr "Deine Anmeldemethoden werden geladen"
+
+#: src/components/sign-in-methods.tsx
+msgid "Not linked"
+msgstr "Nicht verknüpft"
+
+#: src/components/sign-in-methods.tsx
+msgid "Unlink {name}?"
+msgstr "{name} trennen?"
+
+#: src/components/sign-in-methods.tsx
+msgid "You won't be able to sign in with {name} until you link it again. Your password and passkeys still work."
+msgstr "Du kannst dich nicht mehr mit {name} anmelden, bis du es wieder verknüpfst. Dein Passwort und deine Passkeys funktionieren weiter."
+
+#: src/components/sign-in-methods.tsx
+msgid "Unlink"
+msgstr "Trennen"
+
+#: src/components/sign-in-methods.tsx
+msgid "Once linked, that account signs you in here. Kept never links one because the email matches."
+msgstr "Einmal verknüpft, meldet dich dieses Konto hier an. Kept verknüpft nie eines, nur weil die E-Mail übereinstimmt."
+
+#: src/components/admin/oidc-status.tsx
+msgid "Sign-in with Google"
+msgstr "Anmeldung mit Google"
+
+#: src/components/admin/oidc-status.tsx
+msgid "Make an OAuth client in Google Cloud, set <0>KEPT_GOOGLE_CLIENT_ID</0> and <1>KEPT_GOOGLE_CLIENT_SECRET</1>, then restart Kept."
+msgstr "Lege in Google Cloud einen OAuth-Client an, setze <0>KEPT_GOOGLE_CLIENT_ID</0> und <1>KEPT_GOOGLE_CLIENT_SECRET</1> und starte Kept neu."
+
+#: src/components/admin/oidc-status.tsx
+msgid "Redirect URI to register with Google"
+msgstr "Weiterleitungs-URI für Google"
+
+#: src/components/admin/oidc-status.tsx
+msgid "Google sign-in reaches only an account already linked to it, or someone invited here. Nobody gets in on their own."
+msgstr "Die Anmeldung mit Google erreicht nur ein bereits damit verknüpftes Konto oder jemanden, der hierher eingeladen wurde. Niemand kommt von selbst hinein."

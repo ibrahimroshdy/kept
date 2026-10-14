@@ -7,6 +7,7 @@ import { audited } from '../audit/audited.js';
 import type { Auth } from '../auth/auth.js';
 import { requestClientIp } from '../auth/client-ip.js';
 import { isUndeliverableEmail } from '../auth/emails.js';
+import { googleStatus } from '../auth/google.js';
 import { ANONYMOUS_BODY_LIMIT, authHeaders, forwardCookies, rateLimited } from '../auth/http.js';
 import { oidcStatus } from '../auth/oidc.js';
 import { clearSignInFailures, limiterKey, reserveWithLockout } from '../auth/sign-in-limiter.js';
@@ -59,6 +60,8 @@ export async function setupRoutes(app: KeptApp, deps: SetupDeps): Promise<void> 
             needed: z.boolean(),
             // Step 6 (T16, D127): "Sign in with <name>", when OIDC is on (discovery worked at boot).
             oidc: z.object({ name: z.string() }).optional(),
+            // 1.2 (D226): "Sign in with Google", when Google's client is configured.
+            google: z.boolean().optional(),
           }),
         },
       },
@@ -68,6 +71,7 @@ export async function setupRoutes(app: KeptApp, deps: SetupDeps): Promise<void> 
       return {
         needed: await setupNeeded(pools.system),
         ...(oidc.configured && !oidc.error && oidc.name ? { oidc: { name: oidc.name } } : {}),
+        ...(googleStatus().configured ? { google: true } : {}),
       };
     },
   );

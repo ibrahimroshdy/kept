@@ -18,7 +18,8 @@ export type EnvErrorCode =
   | 'backup_invalid'
   | 'vapid_keys_partial'
   | 'embeddings_unavailable'
-  | 'oidc_incomplete';
+  | 'oidc_incomplete'
+  | 'google_incomplete';
 
 export class EnvError extends Error {
   readonly code: EnvErrorCode;
@@ -437,6 +438,17 @@ const schema = z.object({
     .string()
     .default('openid email profile')
     .describe('OIDC sign-in: the scopes asked for, space-separated'),
+  // 1.2 (D226): Google sign-in, with a Google OAuth client. Both set, or neither.
+  KEPT_GOOGLE_CLIENT_ID: z
+    .string()
+    .optional()
+    .describe(
+      'Google sign-in: the OAuth client id from Google Cloud; set with the secret, Google sign-in is on (invite only, never autoprovision)',
+    ),
+  KEPT_GOOGLE_CLIENT_SECRET: z
+    .string()
+    .optional()
+    .describe('Google sign-in: the OAuth client secret; never logged'),
 });
 
 /** An optional retention count, 0 (or 1) to `max`. */
@@ -576,6 +588,7 @@ export type Env = Readonly<
     | 'KEPT_BACKUP_PASSWORD'
     | 'KEPT_VAPID_PRIVATE_KEY'
     | 'KEPT_OIDC_CLIENT_SECRET'
+    | 'KEPT_GOOGLE_CLIENT_SECRET'
   > & {
     KEPT_SECRET_KEY: string;
     KEPT_AUTH_SECRET: string;
@@ -595,6 +608,8 @@ export type Env = Readonly<
     KEPT_VAPID_PRIVATE_KEY: string | undefined;
     /** Non-enumerable, like the keys. */
     KEPT_OIDC_CLIENT_SECRET: string | undefined;
+    /** Non-enumerable, like the keys. */
+    KEPT_GOOGLE_CLIENT_SECRET: string | undefined;
   }
 >;
 
@@ -941,6 +956,7 @@ export async function loadEnv(
     KEPT_BACKUP_PASSWORD: backupPassword,
     KEPT_VAPID_PRIVATE_KEY: vapidPrivateKey,
     KEPT_OIDC_CLIENT_SECRET: oidcClientSecret,
+    KEPT_GOOGLE_CLIENT_SECRET: googleClientSecret,
     KEPT_IMAGE_CONCURRENCY: imageConcurrency,
     ...env
   } = parsed.data;
@@ -959,6 +975,14 @@ export async function loadEnv(
   // Step 6 (S6.7): an OIDC issuer needs its client id.
   if (env.KEPT_OIDC_ISSUER && !env.KEPT_OIDC_CLIENT_ID) {
     throw new EnvError('KEPT_OIDC_ISSUER is set without KEPT_OIDC_CLIENT_ID', 'oidc_incomplete');
+  }
+
+  // 1.2 (D226): Google needs its client id and secret together.
+  if (Boolean(env.KEPT_GOOGLE_CLIENT_ID) !== Boolean(googleClientSecret)) {
+    throw new EnvError(
+      'KEPT_GOOGLE_CLIENT_ID and KEPT_GOOGLE_CLIENT_SECRET are set together, or neither',
+      'google_incomplete',
+    );
   }
 
   // Step 4 (Q11): the VAPID pair overrides the generated one only whole.
@@ -1023,6 +1047,7 @@ export async function loadEnv(
         KEPT_BACKUP_PASSWORD: hidden(backupPassword),
         KEPT_VAPID_PRIVATE_KEY: hidden(vapidPrivateKey),
         KEPT_OIDC_CLIENT_SECRET: hidden(oidcClientSecret),
+        KEPT_GOOGLE_CLIENT_SECRET: hidden(googleClientSecret),
         KEPT_SECRET_KEY: hidden(keys.secretKeyRaw),
         KEPT_AUTH_SECRET: hidden(keys.authSecretRaw),
         secretKey: hidden(keys.secretKey),

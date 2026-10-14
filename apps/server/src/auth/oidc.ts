@@ -352,8 +352,9 @@ export function externalIdentityPolicy(
   };
 }
 
-/** The `kept-oidc` plugin: a fresh session to link an IdP account, and an invite carried in
- * the OAuth state's server context. The callback's session rotation is security.ts's. */
+/** The `kept-oidc` plugin, for every outside identity (OIDC, Google, D226): a fresh session to
+ * link or unlink one, and an invite carried in the OAuth state's server context. The callback's
+ * session rotation is security.ts's. */
 export function keptOidc(opts: { findInvite: OidcInvites['find'] }): BetterAuthPlugin {
   return {
     id: 'kept-oidc',
@@ -364,14 +365,17 @@ export function keptOidc(opts: { findInvite: OidcInvites['find'] }): BetterAuthP
           // Auth's `freshSessionMiddleware` as the handler: a before-hook that returns a value
           // short-circuits the endpoint, and that middleware returns `{session}`, which then
           // became the response body, token included (spike S6.7's first run).
-          matcher: (ctx) => ctx.path === '/link-social',
+          // D226: unlinking one too, so a borrowed session can't strip a way in either. Better
+          // Auth's own fresh-session check covers /unlink-account as well; this one answers both
+          // with the same SESSION_NOT_FRESH, which the web turns into "Sign in again".
+          matcher: (ctx) => ctx.path === '/link-social' || ctx.path === '/unlink-account',
           handler: createAuthMiddleware(async (ctx) => {
             const found = await getSessionFromCtx(ctx);
             if (!found) return; // the endpoint's own session middleware answers 401
             const age = Date.now() - new Date(found.session.createdAt).getTime();
             if (age >= ctx.context.sessionConfig.freshAge * 1000) {
               throw new APIError('FORBIDDEN', {
-                message: 'Sign in again, then link the account.',
+                message: 'Sign in again, then link or unlink the account.',
                 code: 'SESSION_NOT_FRESH',
               });
             }
@@ -406,11 +410,14 @@ export const ACCOUNT_OPTIONS: NonNullable<BetterAuthOptions['account']> = {
   },
 };
 
+/** The providers whose tokens Kept drops: generic OIDC and Google (D226). */
+const OUTSIDE_PROVIDERS: ReadonlySet<unknown> = new Set([OIDC_PROVIDER_ID, 'google']);
+
 /** The IdP's tokens are not kept: Kept never calls the IdP after sign-in. */
 export const DROP_IDP_TOKENS = {
   create: {
     before: async (account: Record<string, unknown>) =>
-      account.providerId === OIDC_PROVIDER_ID
+      OUTSIDE_PROVIDERS.has(account.providerId)
         ? {
             data: {
               ...account,

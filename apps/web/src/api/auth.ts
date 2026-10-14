@@ -3,7 +3,13 @@ import { startAuthentication } from '@simplewebauthn/browser';
 import { assistantStore } from '@/assistant/store';
 import { api } from './client';
 import { paths } from './paths';
-import type { EmailChangeStage, SignInResult, SignUpBody, TwoFactorEnableResult } from './types';
+import type {
+  EmailChangeStage,
+  SignInMethod,
+  SignInResult,
+  SignUpBody,
+  TwoFactorEnableResult,
+} from './types';
 
 /** "Email or username" is one field: an @ means an email (managed accounts have none, D47). */
 export function signInWithPassword(identifier: string, password: string) {
@@ -15,6 +21,10 @@ export function signInWithPassword(identifier: string, password: string) {
 
 /** The generic OIDC provider's fixed id on the server (spike S6.7: the callback is `/callback/oidc`). */
 export const OIDC_PROVIDER_ID = 'oidc';
+/** Google's (1.2, D226): the callback is `/callback/google`. */
+export const GOOGLE_PROVIDER_ID = 'google';
+/** An outside sign-in: the instance's OIDC provider, or Google. */
+export type OutsideProvider = typeof OIDC_PROVIDER_ID | typeof GOOGLE_PROVIDER_ID;
 
 /**
  * Starts "Sign in with <name>" (step 6 T16, D127): the server answers the IdP's URL, which the page
@@ -23,18 +33,44 @@ export const OIDC_PROVIDER_ID = 'oidc';
  * new person invited here can join with the IdP; Kept never links on email alone (D176).
  */
 export function startOidcSignIn(opts: {
+  /** Default: the instance's OIDC provider. */
+  provider?: OutsideProvider;
   callbackURL: string;
   errorCallbackURL: string;
   inviteToken?: string;
 }) {
   return api.post<{ url: string; redirect: boolean }>(paths.auth.signInSocial, {
-    provider: OIDC_PROVIDER_ID,
+    provider: opts.provider ?? OIDC_PROVIDER_ID,
     callbackURL: opts.callbackURL,
     errorCallbackURL: opts.errorCallbackURL,
     disableRedirect: true,
     ...(opts.inviteToken ? { additionalData: { inviteToken: opts.inviteToken } } : {}),
   });
 }
+
+/**
+ * Links an outside sign-in to the signed-in account (D176, D226): the server answers the provider's
+ * URL, which the page opens; back from it, Kept lands on `callbackURL`, or on `errorCallbackURL`
+ * with `?error=<code>`. A session older than ten minutes is refused (`SESSION_NOT_FRESH`).
+ */
+export function startLinkSignIn(
+  provider: OutsideProvider,
+  opts: { callbackURL: string; errorCallbackURL: string },
+) {
+  return api.post<{ url: string; redirect: boolean }>(paths.auth.linkSocial, {
+    provider,
+    callbackURL: opts.callbackURL,
+    errorCallbackURL: opts.errorCallbackURL,
+    disableRedirect: true,
+  });
+}
+
+/** The account's sign-in methods: `credential` (a password), `oidc`, `google`. */
+export const listSignInMethods = () => api.get<SignInMethod[]>(paths.auth.listAccounts);
+
+/** Unlinks one (by Better Auth's row id): from a fresh session, never the last way in. */
+export const unlinkSignInMethod = (id: string) =>
+  api.post<{ status: boolean }>(paths.auth.unlinkAccount, { accountId: id });
 
 /** The server mails a link to /auth/confirm#token=… (task 17); the fragment never reaches it. */
 export function requestMagicLink(email: string) {

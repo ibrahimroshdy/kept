@@ -22,6 +22,7 @@ export function statusRoutes(state: MockState): MockRoute[] {
       return {
         ...state.admin.status,
         oidc: step6.oidc,
+        google: step6.google,
         connectors: step6.connectors,
         embeddings: step6.embeddings,
         ...opsStatus(state),

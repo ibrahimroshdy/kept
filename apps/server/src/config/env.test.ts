@@ -835,4 +835,22 @@ describe('embeddings and OIDC (step 6, T2; D207, S6.7)', () => {
       load({ KEPT_OIDC_ISSUER: 'ftp://id.example.org', KEPT_OIDC_CLIENT_ID: 'kept' }),
     ).rejects.toMatchObject({ code: 'invalid_env' });
   });
+
+  it('Google sign-in (D226): the id and secret together, the secret never shown', async () => {
+    const env = await load({
+      KEPT_GOOGLE_CLIENT_ID: '1234.apps.googleusercontent.com',
+      KEPT_GOOGLE_CLIENT_SECRET: 'google-secret-value',
+    });
+    expect(env.KEPT_GOOGLE_CLIENT_ID).toBe('1234.apps.googleusercontent.com');
+    expect(env.KEPT_GOOGLE_CLIENT_SECRET).toBe('google-secret-value');
+    expect(Object.keys(env)).not.toContain('KEPT_GOOGLE_CLIENT_SECRET');
+    expect(JSON.stringify(env)).not.toContain('google-secret-value');
+    expect(inspect(env)).not.toContain('google-secret-value');
+    await expect(
+      load({ KEPT_GOOGLE_CLIENT_ID: '1234.apps.googleusercontent.com' }),
+    ).rejects.toMatchObject({ code: 'google_incomplete' });
+    await expect(load({ KEPT_GOOGLE_CLIENT_SECRET: 'google-secret-value' })).rejects.toMatchObject({
+      code: 'google_incomplete',
+    });
+  });
 });

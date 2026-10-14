@@ -20,6 +20,7 @@ mounted at `/api/v1/auth/*`.
 | Passkey | `@better-auth/passkey`, relying party = the public URL's host | A passkey with user verification counts as two factors |
 | Managed account | `username` plugin | A username and password, no real email (below) |
 | OIDC | `genericOAuth`, when `KEPT_OIDC_ISSUER` is set and boot-time discovery worked | The account key is `sub`, never the email; linking is explicit only. Spike: [step 6 OIDC](https://github.com/ibrahimroshdy/kept/blob/main/docs/spikes/2026-09-30-step6-oidc.md) |
+| Google | Better Auth's `socialProviders.google`, when `KEPT_GOOGLE_CLIENT_ID` and `_SECRET` are set | OIDC's rules (`auth/oidc.ts` `externalIdentityPolicy`, `keptOidc`), never autoprovision; `prompt=select_account`; Google's tokens are dropped (`auth/google.ts`) |
 
 Sign-up isn't open by default. People join through Kept's own `POST /api/v1/auth/sign-up`, which
 accepts only while sign-up is open (`KEPT_SIGNUP_OPEN`, or the admin setting) or with a live

@@ -8,7 +8,8 @@ import { aiNoticeHooks } from './ai/notices.js';
 import { createAiDeps } from './ai/routes.js';
 import { allowPrivateAddresses } from './ai/runtime.js';
 import { createAuth } from './auth/auth.js';
-import { bootOidc, oidcConfigOf } from './auth/oidc.js';
+import { googleConfigOf, setGoogleStatus } from './auth/google.js';
+import { bootOidc, oidcConfigOf, oidcInvites } from './auth/oidc.js';
 import { resticOf } from './backup/config.js';
 import { pgTools } from './backup/pg-tools.js';
 import { readableCopy } from './backup/readable/run.js';
@@ -284,6 +285,9 @@ export async function startKept(env: Env, opts: StartOptions = {}): Promise<Runn
         fetch: guardedFetch({ allowPrivate: await allowPrivateAddresses(pools) }),
         log: logger,
       });
+      // 1.2 (D226): Google sign-in, from the environment; nothing to discover.
+      const google = googleConfigOf(env);
+      setGoogleStatus(google, env.KEPT_PUBLIC_URL);
       // D180 (T16, Q16, Q24): a changed OIDC or SMTP configuration is told to every active user,
       // once, whichever replica boots first (notices/transparency.ts).
       await checkConfigNotices({
@@ -292,10 +296,12 @@ export async function startKept(env: Env, opts: StartOptions = {}): Promise<Runn
           await sendInTx(boss as PgBoss, client, name, data);
         },
         oidc: oidcConfigOf(env),
+        google,
         smtp: smtpFacts(env.KEPT_SMTP_URL, env.KEPT_SMTP_FROM ?? defaultFrom(env.KEPT_PUBLIC_URL)),
       }).catch((err: unknown) => logger.error({ err }, 'configuration notices failed'));
       const auth = createAuth({
         oidc,
+        google: google ? { ...google, invites: oidcInvites(pools.app) } : null,
         pool: pools.auth,
         env,
         mail: authMail(mailer),

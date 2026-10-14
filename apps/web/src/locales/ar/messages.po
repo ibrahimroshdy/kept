@@ -21399,3 +21399,71 @@ msgstr "لا يمكن حذف حسابك بعد."
 #: src/components/history/timeline.tsx
 msgid "A former member"
 msgstr "عضو سابق"
+
+#: src/routes/invite.tsx
+msgid "Join with Google"
+msgstr "الانضمام عبر Google"
+
+#: src/components/sign-in-methods.tsx
+msgid "That's your only way in. Add a password or another sign-in first."
+msgstr "هذه طريقتك الوحيدة للدخول. أضف كلمة مرور أو طريقة دخول أخرى أولًا."
+
+#: src/components/sign-in-methods.tsx
+msgid "That didn't work. Try again."
+msgstr "لم ينجح ذلك. حاول مرة أخرى."
+
+#: src/components/sign-in-methods.tsx
+msgid "Unlinked"
+msgstr "أُلغي الربط"
+
+#: src/components/sign-in-methods.tsx
+msgid "Sign-in methods"
+msgstr "طرق تسجيل الدخول"
+
+#: src/components/sign-in-methods.tsx
+msgid "Sign in again first"
+msgstr "سجّل الدخول مجددًا أولًا"
+
+#: src/components/sign-in-methods.tsx
+msgid "Linking or unlinking a sign-in needs a sign-in in the last ten minutes."
+msgstr "يتطلب ربط طريقة دخول أو إلغاء ربطها تسجيلَ دخول خلال آخر عشر دقائق."
+
+#: src/components/sign-in-methods.tsx
+msgid "Loading your sign-in methods"
+msgstr "جارٍ تحميل طرق تسجيل الدخول"
+
+#: src/components/sign-in-methods.tsx
+msgid "Not linked"
+msgstr "غير مرتبط"
+
+#: src/components/sign-in-methods.tsx
+msgid "Unlink {name}?"
+msgstr "إلغاء ربط {name}؟"
+
+#: src/components/sign-in-methods.tsx
+msgid "You won't be able to sign in with {name} until you link it again. Your password and passkeys still work."
+msgstr "لن تتمكن من تسجيل الدخول عبر {name} حتى تربطه مجددًا. تبقى كلمة المرور ومفاتيح المرور تعمل."
+
+#: src/components/sign-in-methods.tsx
+msgid "Unlink"
+msgstr "إلغاء الربط"
+
+#: src/components/sign-in-methods.tsx
+msgid "Once linked, that account signs you in here. Kept never links one because the email matches."
+msgstr "بعد الربط، يُدخلك ذلك الحساب هنا. لا يربط Kept أي حساب لمجرد تطابق البريد الإلكتروني."
+
+#: src/components/admin/oidc-status.tsx
+msgid "Sign-in with Google"
+msgstr "تسجيل الدخول عبر Google"
+
+#: src/components/admin/oidc-status.tsx
+msgid "Make an OAuth client in Google Cloud, set <0>KEPT_GOOGLE_CLIENT_ID</0> and <1>KEPT_GOOGLE_CLIENT_SECRET</1>, then restart Kept."
+msgstr "أنشئ عميل OAuth في Google Cloud، واضبط <0>KEPT_GOOGLE_CLIENT_ID</0> و<1>KEPT_GOOGLE_CLIENT_SECRET</1>، ثم أعد تشغيل Kept."
+
+#: src/components/admin/oidc-status.tsx
+msgid "Redirect URI to register with Google"
+msgstr "عنوان إعادة التوجيه لتسجيله لدى Google"
+
+#: src/components/admin/oidc-status.tsx
+msgid "Google sign-in reaches only an account already linked to it, or someone invited here. Nobody gets in on their own."
+msgstr "لا يصل تسجيل الدخول عبر Google إلا إلى حساب مرتبط به مسبقًا، أو إلى شخص مدعو هنا. لا يدخل أحد من تلقاء نفسه."

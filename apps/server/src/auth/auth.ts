@@ -14,12 +14,14 @@ import { cimdFetch } from '../oauth/cimd-fetch.js';
 import { type OAuthServerOptions, oauthPlugins } from '../oauth/plugin.js';
 import { CLIENT_IP_HEADER } from './client-ip.js';
 import { isUndeliverableEmail } from './emails.js';
+import type { GoogleConfig } from './google.js';
 import {
   ACCOUNT_OPTIONS,
   type AuthOidc,
   DROP_IDP_TOKENS,
   externalIdentityPolicy,
   keptOidc,
+  type OidcInvites,
 } from './oidc.js';
 import {
   claimUnverifiedAccount,
@@ -75,6 +77,9 @@ export type AuthDeps = {
   /** Step 6 (T16): generic OIDC sign-in, when KEPT_OIDC_ISSUER is set and boot-time discovery
    * worked (auth/oidc.ts bootOidc). Absent: no OIDC provider at all. */
   oidc?: AuthOidc | null;
+  /** 1.2 (D226): Google sign-in, when KEPT_GOOGLE_CLIENT_ID and _SECRET are set, with the invite
+   * doors its first sign-in claims (auth/google.ts). Absent: no Google. */
+  google?: (GoogleConfig & { invites: OidcInvites }) | null;
   /** Step 6 (T12): Kept as the OAuth server for MCP connectors (oauth/plugin.ts). Absent: on
    * with an https public URL, off otherwise; null: off. Off, `/mcp` takes personal tokens only. */
   oauth?: OAuthServerOptions | null;
@@ -204,6 +209,10 @@ export function createAuth(deps: AuthDeps) {
     background('mail', () => mail.sendSecurityNotice({ email: user.email, event }));
   };
 
+  // An outside identity (generic OIDC, Google) is on: its rules apply to every OAuth sign-in,
+  // link and creation (auth/oidc.ts), whichever provider it comes through.
+  const external = deps.oidc || deps.google ? (deps.oidc?.invites ?? deps.google?.invites) : null;
+
   // The gate looks sessions up through the finished instance; hooks run only after createAuth
   // returns, so the late binding is safe.
   let lookup: ((headers: Headers) => Promise<SessionLike | null>) | undefined;
@@ -242,10 +251,28 @@ export function createAuth(deps: AuthDeps) {
     // D176 (step 6, T16): an external identity is linked only explicitly, never on a matching
     // email, and a sign-in never writes the IdP's tokens back (auth/oidc.ts).
     account: ACCOUNT_OPTIONS,
-    // The provisioning gate for OIDC: verified, deliverable email; a new user only by invite or
-    // autoprovision (D127, D176). Set only with OIDC, so no other flow meets it.
-    ...(deps.oidc
-      ? { user: { validateUserInfo: externalIdentityPolicy(deps.oidc.config, deps.oidc.invites) } }
+    // The provisioning gate for OIDC and Google: verified, deliverable email; a new user only by
+    // invite, or OIDC's autoprovision (D127, D176). Set only with one of them, so no other flow
+    // meets it.
+    ...(external
+      ? {
+          user: {
+            validateUserInfo: externalIdentityPolicy(deps.oidc?.config ?? null, external),
+          },
+        }
+      : {}),
+    // 1.2 (D226): Google, Better Auth's own provider; "select_account" so a shared browser
+    // never signs the wrong Google account in silently.
+    ...(deps.google
+      ? {
+          socialProviders: {
+            google: {
+              clientId: deps.google.clientId,
+              clientSecret: deps.google.clientSecret,
+              prompt: 'select_account' as const,
+            },
+          },
+        }
       : {}),
     session: https
       ? {
@@ -260,7 +287,7 @@ export function createAuth(deps: AuthDeps) {
         },
     databaseHooks: {
       // The IdP's access, refresh and id tokens are never stored (auth/oidc.ts).
-      ...(deps.oidc ? { account: DROP_IDP_TOKENS } : {}),
+      ...(external ? { account: DROP_IDP_TOKENS } : {}),
       user: {
         create: {
           // After the auth transaction commits (Better Auth queues it), so the kept_app
@@ -346,13 +373,10 @@ export function createAuth(deps: AuthDeps) {
       username(),
       admin(),
       // Step 6 (T16, spike S6.7): generic OIDC, its endpoints from boot-time discovery through
-      // the SSRF guard, with Kept's link-freshness and invite hooks.
-      ...(deps.oidc
-        ? [
-            genericOAuth({ config: [deps.oidc.provider] }),
-            keptOidc({ findInvite: deps.oidc.invites.find }),
-          ]
-        : []),
+      // the SSRF guard.
+      ...(deps.oidc ? [genericOAuth({ config: [deps.oidc.provider] })] : []),
+      // Link and unlink freshness and the invite in the OAuth state, for OIDC and Google alike.
+      ...(external ? [keptOidc({ findInvite: external.find })] : []),
       // Step 6 (T12): the OAuth provider for MCP connectors, with CIMD (oauth/plugin.ts).
       ...(oauth ? oauthPlugins(oauth) : []),
       keptSecurity({

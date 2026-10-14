@@ -23,17 +23,24 @@ import { isApiError } from '@/api/client';
 import { keys } from '@/api/queries';
 import { AuthFrame } from '@/components/auth-frame';
 import { KeyIcon, MailIcon } from '@/components/icons';
-import { OidcError, OidcSignInButton, useOidcName } from '@/components/oidc-sign-in';
+import { OidcError, OidcSignInButton, useGoogleOn, useOidcName } from '@/components/oidc-sign-in';
 import { LinkButton, Notice, useErrorText } from '@/components/page';
 import { Button } from '@/components/ui/button';
 import { PasswordField } from '@/components/ui/password-field';
 import { TextField } from '@/components/ui/text-field';
 import { nextSearch } from '@/lib/next';
 
-/** `next`, and the `error` a failed "Sign in with <name>" comes back with (step 6, T22). */
-const signInSearch = (search: Record<string, unknown>): { next?: string; error?: string } => {
+/** `next`, the `error` a failed "Sign in with <name>" comes back with (step 6, T22), and `via`:
+ * `google` when it was Google's (D226). */
+const signInSearch = (
+  search: Record<string, unknown>,
+): { next?: string; error?: string; via?: 'google' } => {
   const error = typeof search.error === 'string' ? search.error.slice(0, 64) : undefined;
-  return { ...nextSearch(search), ...(error ? { error } : {}) };
+  return {
+    ...nextSearch(search),
+    ...(error ? { error } : {}),
+    ...(search.via === 'google' ? { via: 'google' as const } : {}),
+  };
 };
 
 export const Route = createFileRoute('/signin/')({
@@ -51,8 +58,9 @@ const looksLikeEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()
 
 function SignInPage() {
   const { t } = useLingui();
-  const { next, error: oidcError } = Route.useSearch();
+  const { next, error: oidcError, via } = Route.useSearch();
   const oidcName = useOidcName();
+  const googleOn = useGoogleOn();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const errorText = useErrorText();
@@ -152,7 +160,9 @@ function SignInPage() {
 
   return (
     <AuthFrame title={t`Sign in to Kept`}>
-      {oidcError ? <OidcError code={oidcError} name={oidcName} /> : null}
+      {oidcError ? (
+        <OidcError code={oidcError} name={via === 'google' ? 'Google' : oidcName} />
+      ) : null}
       <form
         className="grid gap-4"
         onSubmit={(e) => {
@@ -245,6 +255,9 @@ function SignInPage() {
           </Button>
         ) : null}
         {oidcName ? <OidcSignInButton name={oidcName} {...(next ? { next } : {})} /> : null}
+        {googleOn ? (
+          <OidcSignInButton provider="google" name="Google" {...(next ? { next } : {})} />
+        ) : null}
       </div>
       <LinkButton to="/signin/code" variant="ghost">
         <Trans>I have a one-time code</Trans>
