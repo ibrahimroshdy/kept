@@ -209,7 +209,7 @@ describe('Home', () => {
     const cards = await section('Locations');
     const home = within(cards).getByRole('link', { name: /Home.*Apartment/ });
     expect(home).toHaveTextContent('12 things need a place');
-    expect(home).toHaveAttribute('href', `/loc/${IDS.home}`);
+    expect(home).toHaveAttribute('href', `/loc/home-0000b002`);
     expect(within(cards).getByRole('link', { name: /Garage/ })).toHaveTextContent(
       '1 thing needs a place',
     );

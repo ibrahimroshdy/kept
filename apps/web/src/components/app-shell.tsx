@@ -59,6 +59,7 @@ import { PaletteHost } from '@/components/search/palette-host';
 import { SyncStatus } from '@/components/sync-status';
 import { Button } from '@/components/ui/button';
 import { Tip } from '@/components/ui/tooltip';
+import { locationAddress } from '@/lib/address';
 import { sep } from '@/lib/format';
 import { useLocationName } from '@/lib/labels';
 import { DOCKED, useMediaQuery, WIDE } from '@/lib/media';
@@ -463,7 +464,7 @@ function Sidebar({ locations, counts }: { locations: LocationSummary[]; counts: 
               <RailTip on={tips} content={nameOf(l)}>
                 <Link
                   to="/loc/$id"
-                  params={{ id: l.id }}
+                  params={{ id: locationAddress(l) }}
                   data-nav={`loc:${l.id}`}
                   className={cn(item, sideLink, 'data-[status=active]:font-normal')}
                 >

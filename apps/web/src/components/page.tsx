@@ -61,6 +61,7 @@ export function Page({
   back,
   actions,
   eyebrow,
+  aside,
   children,
   wide = false,
   fill = wide,
@@ -71,6 +72,8 @@ export function Page({
   actions?: ReactNode;
   /** A small line above the title on desktop, e.g. the location name. */
   eyebrow?: ReactNode;
+  /** A column beside the page that stays in view (1.1: a location's places, from 1280 px). */
+  aside?: ReactNode;
   children: ReactNode;
   /** A wider column when centered: lists, grids and dashboards. */
   wide?: boolean;
@@ -126,7 +129,18 @@ export function Page({
         )}
         data-slot="page-body"
       >
-        <SectionTabsContext.Provider value={countTabs}>{children}</SectionTabsContext.Provider>
+        <SectionTabsContext.Provider value={countTabs}>
+          {aside ? (
+            <div className="grid min-w-0 grid-cols-[15rem_minmax(0,1fr)] items-start gap-6">
+              {/* Not an <aside>: beside the sidebar's, a second complementary landmark fails axe's
+                  landmark-unique; the panel's own <nav> names it. */}
+              <div className="sticky top-20 max-h-[calc(100dvh-6rem)] overflow-y-auto">{aside}</div>
+              <div className="grid min-w-0 content-start gap-5">{children}</div>
+            </div>
+          ) : (
+            children
+          )}
+        </SectionTabsContext.Provider>
       </div>
     </div>
   );

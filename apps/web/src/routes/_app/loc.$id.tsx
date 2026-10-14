@@ -9,7 +9,8 @@
  */
 import { Trans, useLingui } from '@lingui/react/macro';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useLocation } from '@/api/queries';
+import { ApiError } from '@/api/client';
+import { useLocation, useLocations } from '@/api/queries';
 import type { LocationDetail } from '@/api/types';
 import { PeopleCount, ThingCount } from '@/components/counts';
 import { SubjectPaperwork } from '@/components/documents/subject-paperwork';
@@ -40,13 +41,15 @@ import { AddHere } from '@/components/places/add-here-sheet';
 import { usePlaceTree } from '@/components/places/api';
 import { ContentsList } from '@/components/places/contents-list';
 import { contentsSearch } from '@/components/places/contents-search';
-import { PlaceTree } from '@/components/places/tree';
+import { PlacesPanel, PlaceTree } from '@/components/places/tree';
 import { UnplacedCard } from '@/components/places/unplaced-sort';
 import { PrintInventory } from '@/components/reports/print-sheet';
 import { accessOf } from '@/components/schedules/access';
 import { buttonClass } from '@/components/ui/button';
+import { locationAddress, locationIdOf, useCanonicalLocationAddress } from '@/lib/address';
 import { sep, useFormat } from '@/lib/format';
 import { useKindLabels, useLocationName, usePresetCopy, useRoleLabels } from '@/lib/labels';
+import { DOCKED, useMediaQuery } from '@/lib/media';
 
 export const Route = createFileRoute('/_app/loc/$id')({
   validateSearch: contentsSearch,
@@ -54,10 +57,20 @@ export const Route = createFileRoute('/_app/loc/$id')({
 });
 
 function LocationPage() {
-  const { id } = Route.useParams();
+  const { id: param } = Route.useParams();
   const { t } = useLingui();
-  const location = useLocation(id);
-  if (location.isPending)
+  // A readable address (`/loc/garage-3f9c2a1b`, D224) resolves among the person's locations.
+  const locations = useLocations();
+  const id = locationIdOf(param, locations.data);
+  const location = useLocation(id ?? '');
+  useCanonicalLocationAddress(param, location.data);
+  if (id === null)
+    return (
+      <Page title={t`Location`} back="/">
+        <ErrorState error={new ApiError(404, 'not_found', 'Not found')} />
+      </Page>
+    );
+  if (id === undefined || location.isPending)
     return (
       <Page title={t`Location`} back="/">
         <LoadingRows />
@@ -88,6 +101,8 @@ function LocationBody({ location }: { location: LocationDetail }) {
   const until = location.membershipExpiresAt ? f.day(location.membershipExpiresAt) : null;
   const preset = presets[location.preset].name;
   const name = nameOf(location);
+  // 1.1: from 1280 px the location's places stay open beside the page.
+  const panel = useMediaQuery(DOCKED);
   const places = tree.data?.places ?? [];
   const unplaced = places.find((pl) => pl.isUnplaced) ?? null;
   const access = accessOf(location);
@@ -96,7 +111,21 @@ function LocationBody({ location }: { location: LocationDetail }) {
     'block outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info';
 
   return (
-    <Page title={name} back="/" wide>
+    <Page
+      title={name}
+      back="/"
+      wide
+      {...(panel && places.length > 1
+        ? {
+            aside: (
+              <PlacesPanel
+                places={places}
+                location={{ id: location.id, name, address: locationAddress(location) }}
+              />
+            ),
+          }
+        : {})}
+    >
       <div className="flex items-start gap-3">
         <IconTile className="size-12 [&_svg]:size-6">
           <KindIcon kind={location.kind} />
@@ -195,9 +224,7 @@ function LocationBody({ location }: { location: LocationDetail }) {
         canEdit={canEdit}
       />
 
-      <div data-tour="location-places">
-        <PlaceTree places={places} />
-      </div>
+      <div data-tour="location-places">{panel ? null : <PlaceTree places={places} />}</div>
 
       {/* D155: the whole home's documents (the lease, the insurance), while Paperwork is on. */}
       {(location.effectiveModules ?? location.modules).includes('paperwork') ? (

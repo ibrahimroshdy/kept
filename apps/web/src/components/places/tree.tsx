@@ -2,7 +2,7 @@
  * A location's place tree: the flattening the move picker searches, and the "All places" outline
  * on the Location page, a way to jump to any depth in one tap (screens §1's locations tree).
  */
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Link } from '@tanstack/react-router';
 import type { PlaceNode } from '@/api/inventory/types';
 import { ChevronDownIcon } from '@/components/icons';
@@ -75,5 +75,53 @@ export function PlaceTree({ places, currentId }: { places: PlaceNode[]; currentI
         ))}
       </ul>
     </details>
+  );
+}
+
+/**
+ * The location's places as a panel beside the page (1.1, the maintainer's "railing" sidebar):
+ * always open, the location heading it and the current place marked. Pages show it from 1280 px
+ * (`useMediaQuery(DOCKED)`), and the collapsed outline below that.
+ */
+export function PlacesPanel({
+  places,
+  currentId,
+  location,
+}: {
+  places: PlaceNode[];
+  currentId?: string;
+  location: { id: string; name: string; address?: string };
+}) {
+  const { t } = useLingui();
+  const nameOf = usePlaceName();
+  const rows = flattenTree(places);
+  const name = location.name;
+  return (
+    <nav aria-label={t`Places in ${name}`} className="grid gap-1">
+      <Link
+        to="/loc/$id"
+        params={{ id: location.address ?? location.id }}
+        aria-current={currentId === undefined ? 'page' : undefined}
+        className="flex min-h-10 items-center rounded-lg px-3.5 font-semibold text-[14px] text-ink outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:outline-info aria-[current=page]:bg-sunken"
+      >
+        <bdi className="[overflow-wrap:anywhere]">{name}</bdi>
+      </Link>
+      <ul className="m-0 grid list-none p-0">
+        {rows.map(({ place, depth }) => (
+          <li key={place.id}>
+            <Link
+              to="/p/$id"
+              params={{ id: addressOf(place) }}
+              aria-current={place.id === currentId ? 'page' : undefined}
+              style={indentStyle(depth)}
+              className="flex min-h-9 items-center gap-2 rounded-lg pe-3.5 text-[14px] text-ink-2 outline-none hover:bg-sunken hover:text-ink focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info aria-[current=page]:bg-sunken aria-[current=page]:font-semibold aria-[current=page]:text-ink"
+            >
+              <TypeIcon icon={placeIcon(place)} className="size-4 shrink-0 text-ink-3" />
+              <bdi className="[overflow-wrap:anywhere]">{nameOf(place)}</bdi>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }

@@ -117,3 +117,61 @@ export function useCanonicalAddress(
     });
   }, [kind, param, shortCode, id, navigate]);
 }
+
+// ----- locations (1.1, D224) ------------------------------------------------------------------
+// A location has no short ID; its address reads as its name, with the last 8 hex characters of
+// its id to say which one: `/loc/garage-3f9c2a1b`. The tail resolves among the locations the
+// person can see (the list the sidebar already loaded); the name part is for people, and is
+// put right in place after a rename. A UUID still works, and is replaced by the readable form.
+
+/** A location's name as an address part: letters and digits in any script, joined by hyphens. */
+export function locationSlug(loc: { name: string; kind?: string }): string {
+  const name = loc.kind === 'personal' ? 'personal' : loc.name;
+  const slug = name
+    .normalize('NFKC')
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40)
+    .replace(/-+$/g, '');
+  return slug || 'location';
+}
+
+const tailOf = (id: string) => id.replace(/-/g, '').slice(-8).toLowerCase();
+
+/** The address a location's page reads as (an id that isn't a UUID, as in tests, is its own). */
+export const locationAddress = (loc: { id: string; name: string; kind?: string }): string =>
+  isUuid(loc.id) ? `${locationSlug(loc)}-${tailOf(loc.id)}` : loc.id;
+
+/** The location id an address names, among `locations`; null when none (or, against the odds,
+ * two) of them ends with its tail. */
+export function locationIdOf(
+  param: string,
+  locations: readonly { id: string }[] | undefined,
+): string | null | undefined {
+  if (isUuid(param)) return param.toLowerCase();
+  if (locations?.some((l) => l.id === param)) return param;
+  const tail = /-([0-9a-f]{8})$/i.exec(param)?.[1]?.toLowerCase();
+  if (!tail) return null;
+  if (!locations) return undefined;
+  const hits = locations.filter((l) => tailOf(l.id) === tail);
+  return hits.length === 1 ? (hits[0] as { id: string }).id : null;
+}
+
+/** Once the location is loaded, its readable address replaces any other in place. */
+export function useCanonicalLocationAddress(
+  param: string,
+  loc: { id: string; name: string; kind?: string } | undefined,
+): void {
+  const navigate = useNavigate();
+  const target = loc ? locationAddress(loc) : null;
+  useEffect(() => {
+    if (!target || param === target) return;
+    void navigate({
+      to: '/loc/$id',
+      params: { id: target },
+      search: ((prev: Record<string, unknown>) => prev) as never,
+      replace: true,
+    });
+  }, [param, target, navigate]);
+}

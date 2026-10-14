@@ -9,6 +9,7 @@ import { ChevronEndIcon, PlusIcon } from '@/components/icons';
 import { KindIcon } from '@/components/kind-icon';
 import { IconTile, List, Page, Row, Section } from '@/components/page';
 import { SignOutButton } from '@/components/sign-out';
+import { locationAddress } from '@/lib/address';
 import { useLocationName } from '@/lib/labels';
 
 export const Route = createFileRoute('/_app/more')({ component: MorePage });
@@ -26,7 +27,7 @@ function MorePage() {
             <li key={l.id}>
               <Link
                 to="/loc/$id"
-                params={{ id: l.id }}
+                params={{ id: locationAddress(l) }}
                 className="block outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info"
               >
                 <Row

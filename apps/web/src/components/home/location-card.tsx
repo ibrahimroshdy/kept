@@ -12,6 +12,7 @@ import { PeopleCount, ThingCount } from '@/components/counts';
 import { BoxIcon, ChevronEndIcon, LockIcon } from '@/components/icons';
 import { KindIcon } from '@/components/kind-icon';
 import { IconTile, Pill } from '@/components/page';
+import { locationAddress } from '@/lib/address';
 import { sep } from '@/lib/format';
 import { useKindLabels, useLocationName } from '@/lib/labels';
 
@@ -32,7 +33,7 @@ export function LocationCard({
   return (
     <Link
       to="/loc/$id"
-      params={{ id: location.id }}
+      params={{ id: locationAddress(location) }}
       className="flex items-center gap-3 rounded-[10px] border border-line bg-surface p-3.5 text-ink outline-none hover:border-ink-3 focus-visible:outline-2 focus-visible:outline-info"
     >
       <IconTile>

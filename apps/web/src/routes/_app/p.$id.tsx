@@ -65,7 +65,7 @@ import { PlaceFields } from '@/components/places/place-fields';
 import { PlaceCounts } from '@/components/places/rows';
 import { Sheet } from '@/components/places/sheet';
 import { TrashPlaceDialog } from '@/components/places/trash-contents-dialog';
-import { PlaceTree } from '@/components/places/tree';
+import { PlacesPanel, PlaceTree } from '@/components/places/tree';
 import { SortUnplaced } from '@/components/places/unplaced-sort';
 import { useOriginalFile } from '@/components/things/original-file';
 import { TypeIcon } from '@/components/type-icon';
@@ -74,10 +74,11 @@ import { DialogFooter } from '@/components/ui/dialog';
 import { Segmented } from '@/components/ui/segmented';
 import { TextField } from '@/components/ui/text-field';
 import { toast } from '@/components/ui/toast';
-import { addressOf, useAddress, useCanonicalAddress } from '@/lib/address';
+import { addressOf, locationAddress, useAddress, useCanonicalAddress } from '@/lib/address';
 import { isolate } from '@/lib/bidi';
 import { sep } from '@/lib/format';
 import { useLocationName } from '@/lib/labels';
+import { DOCKED, useMediaQuery } from '@/lib/media';
 
 export const Route = createFileRoute('/_app/p/$id')({
   validateSearch: contentsSearch,
@@ -146,10 +147,12 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
   const canEdit = role !== 'viewer';
   const admin = role === 'owner' || role === 'admin';
   const name = nameOf(place);
+  // 1.1: from 1280 px the location's places stay open beside the page.
+  const panel = useMediaQuery(DOCKED);
   const parentStep = place.path.at(-2);
   const back = parentStep
     ? { to: '/p/$id' as const, params: { id: addressOf(parentStep) } }
-    : { to: '/loc/$id' as const, params: { id: location.id } };
+    : { to: '/loc/$id' as const, params: { id: locationAddress(location) } };
   const backName = parentStep ? parentStep.name : locationName;
   const tree = usePlaceTree(location.id);
   const close = () => setOpen(null);
@@ -160,7 +163,27 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
     !place.isUnplaced && (location.effectiveModules ?? location.modules).includes('paperwork');
 
   return (
-    <Page title={name} back={back} eyebrow={<bdi>{locationName}</bdi>} wide>
+    <Page
+      title={name}
+      back={back}
+      eyebrow={<bdi>{locationName}</bdi>}
+      wide
+      {...(panel && tree.data?.places
+        ? {
+            aside: (
+              <PlacesPanel
+                places={tree.data.places}
+                currentId={place.id}
+                location={{
+                  id: location.id,
+                  name: locationName,
+                  address: locationAddress(location),
+                }}
+              />
+            ),
+          }
+        : {})}
+    >
       <div className="grid gap-2">
         {/* At every width: on a phone the header's back arrow is icon-only, and this says where
             it goes (the maintainer couldn't tell how to get back to a thing's place). */}
@@ -173,7 +196,7 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
           <IdChip code={place.shortCode} size="large" />
           <Breadcrumb
-            location={{ id: location.id, name: locationName }}
+            location={{ id: location.id, name: locationName, address: locationAddress(location) }}
             path={place.path.slice(0, -1)}
             current={name}
           />
@@ -194,7 +217,9 @@ function PlaceBody({ place, location }: { place: PlaceView; location: LocationDe
         </div>
       </div>
 
-      {tree.data?.places ? <PlaceTree places={tree.data.places} currentId={place.id} /> : null}
+      {!panel && tree.data?.places ? (
+        <PlaceTree places={tree.data.places} currentId={place.id} />
+      ) : null}
 
       {canEdit ? (
         <AddHere
