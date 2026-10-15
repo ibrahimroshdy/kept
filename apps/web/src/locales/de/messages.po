@@ -23422,3 +23422,12 @@ msgstr "Öffnen"
 msgctxt "map: go up a floor"
 msgid "Up to {0}"
 msgstr "Hinauf zu {0}"
+
+#: src/components/schedules/labels.tsx
+msgctxt "schedule state"
+msgid "Done"
+msgstr "Erledigt"
+
+#: src/components/schedules/labels.tsx
+msgid "Done {day}"
+msgstr "Erledigt am {day}"

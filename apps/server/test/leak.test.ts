@@ -392,6 +392,8 @@ const FUNCTIONS: Record<string, { roles: string[]; definer: boolean }> = {
   // (0100) The ETA as a row a caller joins (inlined): invoker, as meter_eta() was.
   'kept.meter_eta_at(uuid,numeric,timestamp with time zone)': { roles: BOTH, definer: false },
   'kept.schedule_due(schedules,date,timestamp with time zone)': { roles: BOTH, definer: false },
+  // (0133, D247) The day a one-off was done: invoker, the caller's policies on its services.
+  'kept.schedule_done_on(schedules)': { roles: BOTH, definer: false },
   'kept.is_vehicle_type(uuid)': { roles: BOTH, definer: false },
   // (0070, step-6 T4) The token principal: the scope reader (invoker), the doors a request takes
   // before it has a scope (verify, an OAuth grant's lookup, the rate limiter), the consent step's

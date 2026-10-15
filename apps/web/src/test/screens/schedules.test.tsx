@@ -167,6 +167,36 @@ describe('the variants', () => {
     expect(screen.queryByRole('button', { name: 'New schedule' })).toBeNull();
   });
 
+  it('a one-off that is done says when, with nothing to complete or snooze (D247)', async () => {
+    const state = ownerScenario();
+    const [boiler] = state.household.schedules;
+    const [last] = state.household.serviceRecords;
+    if (!boiler || !last) throw new Error('no fixture');
+    const id = crypto.randomUUID();
+    state.household.schedules.push({
+      ...boiler,
+      id,
+      name: 'Flue inspection',
+      everyMonths: null,
+      dueOn: last.servicedOn,
+    });
+    state.household.serviceRecords.push({
+      ...last,
+      id: crypto.randomUUID(),
+      completes: [{ scheduleId: id, name: 'Flue inspection' }],
+    });
+    const { user } = await renderApp('/schedules', { state });
+    const row = within(await screen.findByRole('article', { name: 'Flue inspection' }));
+    expect(row.getByText(/^Done /)).toBeInTheDocument();
+    expect(row.queryByText(/^Last done/)).toBeNull();
+    expect(row.queryByRole('button', { name: 'Complete Flue inspection' })).toBeNull();
+    await user.click(row.getByRole('button', { name: 'More' }));
+    expect(await screen.findByRole('menuitem', { name: 'Edit' })).toBeInTheDocument();
+    expect(screen.queryByRole('menuitem', { name: 'Snooze' })).toBeNull();
+    // Counted nowhere: Home's boiler is still the only one due.
+    expect(screen.getByText('0 overdue · 1 due')).toBeInTheDocument();
+  });
+
   it('says so when Schedules is off everywhere', async () => {
     const state = ownerScenario();
     for (const l of state.locations) {

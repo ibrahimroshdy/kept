@@ -86,6 +86,9 @@ export function gatedMoney(
 // ---------------------------------------------------------------------------------------------
 
 export type ScheduleState = 'upcoming' | 'due' | 'overdue';
+/** A schedule's state now: its rule's point (ScheduleState), or `done`, a one-off completed by a
+ * confirmed service (D247, kept.schedule_done_on()), which has no next due point. */
+export type ScheduleNextState = ScheduleState | 'done';
 /** Which rule the schedule has (the web's wording): both intervals, one of them, or a date. */
 export type ScheduleBasis = 'months' | 'units' | 'both' | 'once';
 
@@ -105,7 +108,7 @@ export type Schedule = {
   next: {
     dueOn: string | null;
     dueValue: string | null;
-    state: ScheduleState;
+    state: ScheduleNextState;
     basis: ScheduleBasis;
   };
   snoozedUntil: string | null;
@@ -132,7 +135,7 @@ export const ScheduleSchema = z.object({
   next: z.object({
     dueOn: z.string().nullable(),
     dueValue: z.string().nullable(),
-    state: z.enum(['upcoming', 'due', 'overdue']),
+    state: z.enum(['upcoming', 'due', 'overdue', 'done']),
     basis: z.enum(['months', 'units', 'both', 'once']),
   }),
   snoozedUntil: z.string().nullable(),
@@ -200,7 +203,7 @@ type ScheduleRecord = ScheduleRow & {
   meter_unit: string | null;
   next_due_on: string | null;
   next_due_value: string | null;
-  next_state: ScheduleState;
+  next_state: ScheduleNextState;
   subject: unknown;
   last_service: { id: string; servicedOn: string } | null;
 };
@@ -229,7 +232,7 @@ export const scheduleViewColumns = (next: NextSource = NEXT_OF_N) => `${SCHEDULE
        (SELECT jsonb_build_object('id', r.id, 'servicedOn', r.serviced_on::text)
           FROM public.service_completions c
           JOIN public.service_records r ON r.id = c.service_record_id
-         WHERE c.schedule_id = s.id
+         WHERE c.schedule_id = s.id AND r.review_state = 'confirmed'
          ORDER BY r.serviced_on DESC, r.created_at DESC, r.id DESC LIMIT 1) AS last_service`;
 
 function basisOf(r: ScheduleRow): ScheduleBasis {

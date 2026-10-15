@@ -449,6 +449,13 @@ function meterOf(state: MockState, s: StoredSchedule) {
 
 /** A schedule's next due point, as the agenda computes it (T11 reads it from agenda_items). */
 export function scheduleNextOf(state: MockState, s: StoredSchedule): Schedule['next'] {
+  // A one-off a service completed is done (D247): no next due point.
+  if (
+    s.everyMonths == null &&
+    s.everyUnits == null &&
+    hh(state).serviceRecords.some((r) => r.completes.some((c) => c.scheduleId === s.id))
+  )
+    return { dueOn: null, dueValue: null, state: 'done', basis: basisOf(s) };
   const next = scheduleNext(s, {
     today: todayIn(state, s.locationId),
     latestValue: meterOf(state, s)?.latest?.value ?? null,
@@ -590,6 +597,7 @@ export function agendaItems(state: MockState): AgendaItem[] {
     const subject = scheduleSubjectRef(state, s.subject);
     if (!subject) continue;
     const next = scheduleNextOf(state, s);
+    if (next.state === 'done') continue;
     const unit = meterOf(state, s)?.unit ?? null;
     out.push(
       keyed({

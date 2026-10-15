@@ -357,6 +357,8 @@ export type CreateLoanAttachmentBody = {
 
 export type ScheduleBasis = 'months' | 'units' | 'both' | 'once';
 export type { ScheduleState };
+/** Its state now: the rule's (ScheduleState), or `done`, a one-off completed (D247). */
+export type ScheduleNextState = ScheduleState | 'done';
 
 export type Schedule = {
   id: string;
@@ -377,7 +379,8 @@ export type Schedule = {
   next: {
     dueOn: string | null;
     dueValue: string | null;
-    state: ScheduleState;
+    /** `done`: a one-off completed (D247), with no next due point; `lastService` says when. */
+    state: ScheduleNextState;
     basis: ScheduleBasis;
   };
   snoozedUntil: string | null;
@@ -391,7 +394,7 @@ export type Schedule = {
 /** GET /api/v1/schedules (the Schedules screen; global, module `schedules` per row's location). */
 export type SchedulesParams = {
   locationId?: string;
-  state?: ScheduleState;
+  state?: ScheduleNextState;
   subjectType?: 'thing' | 'place';
   q?: string;
   cursor?: string;

@@ -281,9 +281,26 @@ describe('the routes D244 opens to tokens', () => {
         body: { servicedOn: cairoToday() },
         headers: { 'if-match': String(before?.rowVersion) },
       }),
-    ) as unknown as { schedule: { id: string; lastService: { servicedOn: string } | null } };
+    ) as unknown as {
+      schedule: {
+        id: string;
+        next: { state: string; dueOn: string | null };
+        lastService: { servicedOn: string } | null;
+      };
+    };
     expect(done.schedule.id).toBe(filterScheduleId);
     expect(done.schedule.lastService?.servicedOn).toBe(cairoToday());
+    // The filter was a one-off: once done it is done (D247), and leaves Due everywhere.
+    expect(done.schedule.next).toMatchObject({ state: 'done', dueOn: null });
+    const s = await summary(ibrahim);
+    expect(s.locations.find((l) => l.id === home.id)?.counts.due).toBe(0);
+    expect(s.totals.due).toBe(0);
+    const agenda = ok(await bearer(writer, `/api/v1/agenda?locationId=${home.id}`)) as unknown as {
+      items: { sourceId: string }[];
+      counts: { due: number };
+    };
+    expect(agenda.counts.due).toBe(0);
+    expect(agenda.items.map((i) => i.sourceId)).not.toContain(filterScheduleId);
     const events = await own<{ action: string }>(
       db,
       `SELECT e.action FROM public.audit_events e

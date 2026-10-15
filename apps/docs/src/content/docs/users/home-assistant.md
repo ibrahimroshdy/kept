@@ -111,6 +111,7 @@ Kept finds unlikely waits for review in the Inbox.
 
 **Kept: Mark a schedule done** (`kept.complete_schedule`) marks a schedule done on a day (today,
 in the location's time zone) and records the service, with the reading for a schedule by meter.
+A one-off is then done and leaves the counts; marking it done again fails.
 
 Both need a **Read and change** token.
 

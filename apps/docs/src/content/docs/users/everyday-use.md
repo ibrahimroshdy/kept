@@ -167,6 +167,10 @@ costs and, on Complete, fuel.
   the engine oil"); the assistant's confirm card shows each **From stock** line before anything
   moves.
 - **Add starter schedules** adds the usual ones: oil change, tyre rotation, brake fluid, air filter.
+- **A one-off** (a date, no repeat) is done once you complete it: it leaves Due and Overdue on
+  Home, the agenda and the calendar, and **Schedules** lists it last as **Done** with the day.
+  Undo the completion, or delete that service, and it is due again; to do it again later, edit it
+  to repeat or add a new one.
 - **Read the card** reads a registration card in Label mode: VIN, plate and licence expiry.
 - **History report** makes a PDF for a period: odometer history with proof photos, services with
   their invoices, fuel and documents, and costs only where you can see money.

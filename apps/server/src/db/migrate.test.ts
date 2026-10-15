@@ -277,6 +277,8 @@ const KEPT_FUNCTION_EXECUTE: Record<string, string[]> = {
   'kept.meter_eta(uuid,numeric,timestamp with time zone)': APP_AND_SYSTEM,
   'kept.meter_eta_at(uuid,numeric,timestamp with time zone)': APP_AND_SYSTEM,
   'kept.schedule_due(schedules,date,timestamp with time zone)': APP_AND_SYSTEM,
+  // 1.x (D247): the day a one-off schedule was done.
+  'kept.schedule_done_on(schedules)': APP_AND_SYSTEM,
   'kept.is_vehicle_type(uuid)': APP_AND_SYSTEM,
   // Step 6 (0070): the token principal, its doors, and tokens dying with access.
   'kept.current_token_id()': APP_AND_SYSTEM,

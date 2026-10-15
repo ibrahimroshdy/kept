@@ -17,6 +17,7 @@ import { moneyOff, requireCurrencies } from '../things/validate.js';
 import {
   type Ctx,
   requireModule,
+  requireNotDone,
   type SubjectInput,
   scheduleRow,
   subjectOfInput,
@@ -560,6 +561,7 @@ export async function completeSchedule(
       by ? { displayName: by } : null,
     );
   }
+  await requireNotDone(ctx.client, s);
   if (body.reading && !s.meter_id) {
     throw invalid('Check body.reading: this schedule counts no meter.');
   }

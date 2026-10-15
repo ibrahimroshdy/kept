@@ -11,7 +11,7 @@ import {
   encodeCursor,
   PAGE_DEFAULT,
 } from '../http/conventions.js';
-import { AppError, invalid, notFound } from '../http/errors.js';
+import { AppError, conflict, invalid, notFound } from '../http/errors.js';
 import type { JobQueue } from '../jobs/queue.js';
 import { requireMembership } from '../locations/access.js';
 import { gateFor } from '../serialize/gates.js';
@@ -20,8 +20,8 @@ import { requireRole } from '../things/service.js';
 import {
   SCHEDULE_COLUMNS,
   type Schedule,
+  type ScheduleNextState,
   type ScheduleRow,
-  type ScheduleState,
   scheduleImage,
   schedulesOf,
   schedulesWhere,
@@ -131,6 +131,24 @@ export async function writableSchedule(
   return { ...(await scheduleRow(ctx.client, id, true)), role };
 }
 
+/**
+ * 409 `conflict` when the schedule is a one-off that is done (D247): completing it again would
+ * log a second service, and a snooze would hold nothing. Undoing its completion, or making it
+ * repeat, opens it again.
+ */
+export async function requireNotDone(client: pg.ClientBase, row: ScheduleRow): Promise<void> {
+  if (row.every_months !== null || row.every_units !== null) return;
+  const { rows } = await client.query<{ done: boolean }>(
+    'SELECT kept.schedule_done_on(s) IS NOT NULL AS done FROM public.schedules s WHERE s.id = $1',
+    [row.id],
+  );
+  if (rows[0]?.done) {
+    throw conflict(
+      'This one-off is done. Undo its completion to open it again, or make it repeat.',
+    );
+  }
+}
+
 /** 412 (D156) unless the schedule is at `expected`, naming who changed it since. */
 async function requireVersion(
   client: pg.ClientBase,
@@ -223,21 +241,44 @@ async function checkRule(
 
 export type ScheduleListQuery = {
   locationId?: string | undefined;
-  state?: ScheduleState | undefined;
+  state?: ScheduleNextState | undefined;
   subjectType?: 'thing' | 'place' | undefined;
   q?: string | undefined;
   limit?: number | undefined;
   cursor?: string | undefined;
 };
 
-const RANK_SQL = `CASE a.state WHEN 'overdue' THEN 0 WHEN 'due' THEN 1 ELSE 2 END`;
-const DUE_SQL = `coalesce(a.due_on, DATE '9999-12-31')`;
+const RANK_SQL = `CASE a.state WHEN 'overdue' THEN 0 WHEN 'due' THEN 1 WHEN 'upcoming' THEN 2
+                   ELSE 3 END`;
+const DUE_SQL = `coalesce(a.sort_on, DATE '9999-12-31')`;
+
+/**
+ * The Schedules screen's rows: the agenda's schedules, and the one-offs that are done (D247),
+ * which are on no agenda, under the agenda's own conditions (active, the module on, the subject
+ * live and in use). A done row has no due point; it sorts by its own date, after the rest.
+ */
+const LIST_ROWS = `(
+  SELECT a.source_id, a.location_id, a.due_on, a.due_value, a.state, a.due_on AS sort_on
+    FROM public.agenda_items a
+   WHERE a.source_type = 'schedule'
+  UNION ALL
+  SELECT s.id, s.location_id, NULL::date, NULL::numeric, 'done', s.due_on
+    FROM public.schedules s
+    JOIN public.locations l ON l.id = s.location_id
+    LEFT JOIN public.things t ON t.id = s.thing_id
+    LEFT JOIN public.places p ON p.id = s.place_id
+   WHERE s.every_months IS NULL AND s.every_units IS NULL
+     AND kept.schedule_done_on(s) IS NOT NULL
+     AND s.active AND l.deleted_at IS NULL AND kept.module_on(s.location_id, 'schedules')
+     AND (s.thing_id IS NULL OR (t.deleted_at IS NULL AND t.lifecycle = 'in_use'))
+     AND (s.place_id IS NULL OR p.deleted_at IS NULL))`;
 
 /**
  * GET /api/v1/schedules: the Schedules screen, across every location the caller sees with the
- * module on (screens §1), overdue first, then due, then upcoming, soonest first. It reads the
- * agenda view (plan Q24), so its rows and counts are the ones Home and the reminder scan see:
- * an inactive schedule, a trashed or ended subject, or the module off leaves it out.
+ * module on (screens §1), overdue first, then due, then upcoming, soonest first, then the done
+ * one-offs (D247). It reads the agenda view (plan Q24), so its rows and counts are the ones Home
+ * and the reminder scan see: an inactive schedule, a trashed or ended subject, or the module off
+ * leaves it out.
  */
 export async function listSchedules(
   client: pg.ClientBase,
@@ -263,14 +304,13 @@ export async function listSchedules(
     after = raw as [number, string, string];
   }
   const q = query.q?.trim() ? query.q.trim() : null;
-  const base = `FROM public.agenda_items a
+  const base = `FROM ${LIST_ROWS} a
     JOIN public.schedules s ON s.id = a.source_id
     JOIN public.locations l ON l.id = s.location_id
     LEFT JOIN public.meters m ON m.id = s.meter_id
     LEFT JOIN public.things t ON t.id = s.thing_id
     LEFT JOIN public.places p ON p.id = s.place_id
-   WHERE a.source_type = 'schedule'
-     AND ($1::uuid IS NULL OR a.location_id = $1)
+   WHERE ($1::uuid IS NULL OR a.location_id = $1)
      AND ($2::text IS NULL OR (CASE WHEN s.thing_id IS NULL THEN 'place' ELSE 'thing' END) = $2)
      AND ($3::text IS NULL
           OR strpos(kept.normalize(s.name), kept.normalize($3)) > 0
@@ -322,7 +362,8 @@ export async function subjectSchedules(
     ctx.client,
     `${column} = $1`,
     [subject.thingId ?? subject.placeId],
-    `s.active DESC, CASE n.state WHEN 'overdue' THEN 0 WHEN 'due' THEN 1 ELSE 2 END,
+    `s.active DESC,
+     CASE n.state WHEN 'overdue' THEN 0 WHEN 'due' THEN 1 WHEN 'upcoming' THEN 2 ELSE 3 END,
      coalesce(n.due_on, DATE '9999-12-31'), s.created_at, s.id`,
   );
   return { items };
@@ -514,6 +555,7 @@ export async function snoozeSchedule(
   const { client } = ctx;
   const before = await writableSchedule(ctx, id);
   await requireVersion(client, before, expected, Object.keys(body));
+  await requireNotDone(client, before);
   let untilDate: string | null = null;
   let untilValue: string | null = null;
   if ('untilDate' in body) {

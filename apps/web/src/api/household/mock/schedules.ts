@@ -148,7 +148,7 @@ export function schedulesRoutes(state: MockState): MockRoute[] {
         due: all.filter((s) => s.next.state === 'due').length,
         overdue: all.filter((s) => s.next.state === 'overdue').length,
       };
-      const RANK = { overdue: 0, due: 1, upcoming: 2 } as const;
+      const RANK = { overdue: 0, due: 1, upcoming: 2, done: 3 } as const;
       const items = all
         .filter(
           (s) =>
@@ -257,6 +257,13 @@ export function schedulesRoutes(state: MockState): MockRoute[] {
     route('POST', p.scheduleComplete(':id'), ({ params, body, headers }) =>
       withSchedule(params.id, headers, (s) => {
         const b = (body ?? {}) as CompleteScheduleBody;
+        if (scheduleView(state, s)?.next.state === 'done')
+          return err(
+            409,
+            'conflict',
+            'That conflicts with the current state.',
+            'This one-off is done. Undo its completion to open it again, or make it repeat.',
+          );
         const servicedOn = b.servicedOn ?? todayIn(state, s.locationId);
         if (servicedOn > todayIn(state, s.locationId))
           return invalid('servicedOn: not in the future');

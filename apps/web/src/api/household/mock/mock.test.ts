@@ -164,6 +164,23 @@ describe('the household mock', () => {
     expect(again?.next.state).toBe('due');
   });
 
+  it('a one-off is done once completed (D247): off the agenda, done in the list, due on undo', async () => {
+    const s = await api.createSchedule({
+      subject: { thingId: T.kettle },
+      name: 'Descale once',
+      dueOn: '2099-01-01',
+    });
+    const done = await api.completeSchedule(s.id, {}, s.rowVersion);
+    expect(done.body.schedule.next).toMatchObject({ state: 'done', dueOn: null });
+    const listed = (await api.schedules({ state: 'done' })).items.map((x) => x.id);
+    expect(listed).toEqual([s.id]);
+    const again = await fail(api.completeSchedule(s.id, {}, done.body.schedule.rowVersion));
+    expect(again.status).toBe(409);
+    await undoApi.undo(done.auditEvents[0] ?? '');
+    const back = (await api.schedules({ q: 'descale once' })).items[0];
+    expect(back?.next).toMatchObject({ state: 'upcoming', dueOn: '2099-01-01' });
+  });
+
   it('a schedule needs an interval or a date', async () => {
     const e = await fail(api.createSchedule({ subject: { thingId: T.kettle }, name: 'Descale' }));
     expect(e.code).toBe('schedule_interval_required');

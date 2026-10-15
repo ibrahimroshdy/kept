@@ -45,3 +45,22 @@ describe('a schedule due by the day or the meter (T29)', () => {
     expect(screen.getByText('In 165 days or at 51,000 km')).toBeInTheDocument();
   });
 });
+
+describe('a one-off that is done (D247)', () => {
+  it('says it is done, not when it is due', async () => {
+    await renderUI(
+      <Due
+        s={{
+          ...oil({ dueOn: null, dueValue: null, state: 'done', basis: 'once' }),
+          everyMonths: null,
+          everyUnits: null,
+          meter: null,
+          dueOn: '2026-10-01',
+          lastService: { id: 'r1', servicedOn: '2026-09-28' },
+        }}
+      />,
+    );
+    expect(screen.getByText(/^Done /)).toBeInTheDocument();
+    expect(screen.queryByText(/overdue|In \d/)).toBeNull();
+  });
+});
