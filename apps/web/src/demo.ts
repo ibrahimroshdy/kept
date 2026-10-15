@@ -4,13 +4,14 @@
  * in-memory mock server with that scenario. `&lang=en|ar|fr|de|it`, `&theme=light|dark` and
  * `&digits=western|eastern` set the display preferences for the visit. `&showcase=1` is the demo
  * as the docs site's screenshots show it (scripts/capture-screens.mjs): Home's AI cap not reached,
- * so no screen says "AI paused" (`withinAiCap`). The scenario and the showcase survive in-app
- * navigation (sessionStorage), so a reload keeps them.
+ * so no screen says "AI paused" (`withinAiCap`), and the money in US dollars (`inDollars`). The
+ * scenario and the showcase survive in-app navigation (sessionStorage), so a reload keeps them.
  *
  * Only reachable from main.tsx behind a compile-time flag: never in a production bundle.
  */
 
 import { withinAiCap } from '@/api/capture/mock/state';
+import { inDollars } from '@/api/mock/dollars';
 import { type MockState, type ScenarioName, scenarios } from '@/api/mock/fixtures';
 import { createMockApi } from '@/api/mock/server';
 import { DIGITS_KEY, LOCALE_KEY, setDigits, setThemePref, THEME_KEY } from '@/lib/prefs';
@@ -53,7 +54,10 @@ export function installDemo(): void {
   const digits = params.get('digits');
   if (digits === 'western' || digits === 'eastern') setDigits(digits);
   const state = scenarios[scenario]();
-  if (showcase) withinAiCap(state.capture);
+  if (showcase) {
+    withinAiCap(state.capture);
+    inDollars(state);
+  }
   if ((params.get('lang') ?? localStorageLang()) === 'ar') arabise(state);
   const mock = createMockApi(state);
   const realFetch = window.fetch.bind(window);

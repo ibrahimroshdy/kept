@@ -5,6 +5,7 @@
  * location lets viewers see it), as the server's gate does.
  */
 
+import { fixtureMoney, perCurrency } from '../mock/dollars';
 import type { MockState } from '../mock/fixtures';
 import { IDS } from '../mock/fixtures';
 import { type MockRoute, route, sessionGate } from '../mock/kit';
@@ -32,25 +33,40 @@ const addMonths = (month: string, n: number) => {
   return `${Math.floor(total / 12)}-${String((total % 12) + 1).padStart(2, '0')}`;
 };
 
-const cost = (fuel: number, service: number, fees = 0): CostAmounts => ({
-  currency: 'EGP',
-  fuel: String(fuel),
-  service: String(service),
-  fees: String(fees),
-  total: String(fuel + service + fees),
+/** A month's or a year's vehicle costs, written in Egyptian pounds (dollars in the showcase). */
+const cost = (state: MockState, fuel: number, service: number, fees = 0): CostAmounts => {
+  const egp = (n: number) => fixtureMoney(state, String(n));
+  return {
+    currency: egp(0).currency,
+    fuel: egp(fuel).amount,
+    service: egp(service).amount,
+    fees: egp(fees).amount,
+    total: egp(fuel + service + fees).amount,
+  };
+};
+
+/** Amounts written in Egyptian pounds, beside any in dollars: one entry per currency. */
+const inPounds = (
+  state: MockState,
+  egp: string,
+  ...others: { currency: string; amount: string }[]
+) => perCurrency([fixtureMoney(state, egp), ...others]);
+
+/** A year's warranty repairs: what they cost and what the cover paid, in Egyptian pounds. */
+const repair = (state: MockState, cost: string, covered: string) => ({
+  currency: fixtureMoney(state, cost).currency,
+  cost: fixtureMoney(state, cost).amount,
+  covered: fixtureMoney(state, covered).amount,
 });
 
-function homeValue(money: boolean): LocationValue {
+function homeValue(state: MockState, money: boolean): LocationValue {
   const m = <T extends object>(o: T) => (money ? o : {});
   return {
     locationId: IDS.home,
     things: 136,
     ...m({
       valued: 36,
-      byCurrency: [
-        { currency: 'EGP', amount: '122800' },
-        { currency: 'USD', amount: '150' },
-      ],
+      byCurrency: inPounds(state, '122800', { currency: 'USD', amount: '150' }),
     }),
     ...(money ? {} : { moneyHidden: true as const }),
     places: [
@@ -62,10 +78,7 @@ function homeValue(money: boolean): LocationValue {
         things: 61,
         ...m({
           valued: 12,
-          byCurrency: [
-            { currency: 'EGP', amount: '24300' },
-            { currency: 'USD', amount: '150' },
-          ],
+          byCurrency: inPounds(state, '24300', { currency: 'USD', amount: '150' }),
         }),
       },
       {
@@ -74,7 +87,7 @@ function homeValue(money: boolean): LocationValue {
         name: 'Living room',
         unplaced: false,
         things: 42,
-        ...m({ valued: 18, byCurrency: [{ currency: 'EGP', amount: '86500' }] }),
+        ...m({ valued: 18, byCurrency: inPounds(state, '86500') }),
       },
       {
         id: MOCK_INSIGHT_IDS.bedroom,
@@ -82,7 +95,7 @@ function homeValue(money: boolean): LocationValue {
         name: 'Bedroom',
         unplaced: false,
         things: 30,
-        ...m({ valued: 6, byCurrency: [{ currency: 'EGP', amount: '12000' }] }),
+        ...m({ valued: 6, byCurrency: inPounds(state, '12000') }),
       },
       {
         id: MOCK_INSIGHT_IDS.unplaced,
@@ -131,10 +144,10 @@ export function insightsOf(state: MockState, filter: string[]): Insights {
         ? {
             byCurrency: [
               year === Y
-                ? cost(16800, 1400)
+                ? cost(state, 16800, 1400)
                 : year === Y - 1
-                  ? cost(21900, 6200, 4700)
-                  : cost(19800, 4100, 4300),
+                  ? cost(state, 21900, 6200, 4700)
+                  : cost(state, 19800, 4100, 4300),
             ],
           }
         : {}),
@@ -158,31 +171,28 @@ export function insightsOf(state: MockState, filter: string[]): Insights {
               soFar: false,
               purchases: 4,
               unpriced: 0,
-              byCurrency: amounts([{ currency: 'EGP', amount: '12400' }]),
+              byCurrency: amounts(inPounds(state, '12400')),
             },
             {
               year: Y - 2,
               soFar: false,
               purchases: 7,
               unpriced: 0,
-              byCurrency: amounts([
-                { currency: 'EGP', amount: '31250' },
-                { currency: 'USD', amount: '420' },
-              ]),
+              byCurrency: amounts(inPounds(state, '31250', { currency: 'USD', amount: '420' })),
             },
             {
               year: Y - 1,
               soFar: false,
               purchases: 9,
               unpriced: homeMoney ? 1 : 0,
-              byCurrency: amounts([{ currency: 'EGP', amount: '48900' }]),
+              byCurrency: amounts(inPounds(state, '48900')),
             },
             {
               year: Y,
               soFar: true,
               purchases: 5,
               unpriced: 0,
-              byCurrency: amounts([{ currency: 'EGP', amount: '9800' }]),
+              byCurrency: amounts(inPounds(state, '9800')),
             },
           ]
         : [],
@@ -191,7 +201,7 @@ export function insightsOf(state: MockState, filter: string[]): Insights {
     value: {
       locations: locs.map((l) =>
         l.id === IDS.home
-          ? homeValue(homeMoney)
+          ? homeValue(state, homeMoney)
           : {
               locationId: l.id,
               things: 0,
@@ -207,7 +217,7 @@ export function insightsOf(state: MockState, filter: string[]): Insights {
           months: months.map((month, i) => ({
             month,
             byCurrency: home
-              ? amounts([cost(fuelOf[i] ?? 0, serviceAt.get(i) ?? 0, i === 6 ? 3500 : 0)])
+              ? amounts([cost(state, fuelOf[i] ?? 0, serviceAt.get(i) ?? 0, i === 6 ? 3500 : 0)])
               : [],
           })),
           items: home && withVehicles.includes(home) ? [corolla] : [],
@@ -247,9 +257,7 @@ export function insightsOf(state: MockState, filter: string[]): Insights {
             ...(locs.some(showsMoney)
               ? {
                   byCurrency:
-                    home && homeMoney && year === Y - 1
-                      ? [{ currency: 'EGP', cost: '1800', covered: '1800' }]
-                      : [],
+                    home && homeMoney && year === Y - 1 ? [repair(state, '1800', '1800')] : [],
                 }
               : {}),
           })),
