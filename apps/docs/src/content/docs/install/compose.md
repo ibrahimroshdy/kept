@@ -1,6 +1,6 @@
 ---
 title: Install with Docker Compose
-description: Run Kept and its Postgres with Docker Compose, sign in for the first time, and keep the keys safe.
+description: Run Kept and its Postgres with Docker Compose on your own server or homelab, sign in for the first time, and keep the keys safe.
 sidebar:
   order: 1
 ---
