@@ -278,7 +278,7 @@ afterAll(async () => {
 const newIdOf = (oldId: string) => importedId(runId, oldId, runAt);
 
 describe('a Kept export with condition reports (D238)', () => {
-  it('holds the reports, their rooms, and their photos’ originals (format version 2)', async () => {
+  it('holds the reports, their rooms, and their photos’ originals (format version 2 and later)', async () => {
     const staged = await stageKeptRun(
       db,
       files,
@@ -288,7 +288,7 @@ describe('a Kept export with condition reports (D238)', () => {
     const opened = await openKeptArchive(files.blobs, staged, archive.bytes);
     try {
       const manifest = await readManifest(opened);
-      expect(manifest.version).toBe(2);
+      expect(manifest.version).toBeGreaterThanOrEqual(2);
       expect(manifest.counts['condition-reports']).toBe(2);
       expect(manifest.counts['condition-report-rooms']).toBe(
         moveIn.rooms.length + moveOut.rooms.length,

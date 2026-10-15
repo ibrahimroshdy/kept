@@ -22536,3 +22536,595 @@ msgstr "costo {0}, coperto {1}"
 #: src/components/insights/insights-screen.tsx
 msgid "Repairs resolved, {year}: {0}"
 msgstr "Riparazioni risolte, {year}: {0}"
+
+#: src/map/card.tsx
+msgid "{left} left, keep at least {min}"
+msgstr "Ne restano {left}, tenerne almeno {min}"
+
+#: src/map/card.tsx
+msgid "someone"
+msgstr "qualcuno"
+
+#: src/map/card.tsx
+msgid "Lent to {who}"
+msgstr "Prestato a {who}"
+
+#: src/map/card.tsx
+msgid "Lent to {who}, back by {back}"
+msgstr "Prestato a {who}, da restituire entro il {back}"
+
+#: src/map/card.tsx
+msgid "{what}: overdue since {when}"
+msgstr "{what}: in ritardo dal {when}"
+
+#: src/map/card.tsx
+msgid "{what}: due {when}"
+msgstr "{what}: in scadenza il {when}"
+
+#: src/map/card.tsx
+msgid "QR label for {printed}"
+msgstr "Etichetta QR di {printed}"
+
+#: src/map/card.tsx
+msgid "Label of this place"
+msgstr "Etichetta di questo posto"
+
+#: src/map/card.tsx
+msgid "Label of this thing"
+msgstr "Etichetta di questa cosa"
+
+#: src/map/card.tsx
+msgid "Serial"
+msgstr "Numero di serie"
+
+#: src/map/card.tsx
+msgid "No photo yet"
+msgstr "Ancora nessuna foto"
+
+#: src/map/card.tsx
+msgid "{n, plural, one {# place in it} other {# places in it}}"
+msgstr "{n, plural, one {# posto dentro} other {# posti dentro}}"
+
+#: src/map/card.tsx
+msgid "Open the place"
+msgstr "Apri il posto"
+
+#: src/map/card.tsx
+msgid "Nothing matches."
+msgstr "Nessun risultato."
+
+#: src/map/card.tsx
+msgid "{w} × {d} m"
+msgstr "{w} × {d} m"
+
+#: src/map/card.tsx
+msgid "What’s here · {0}"
+msgstr "Cosa c’è qui · {0}"
+
+#: src/map/card.tsx
+msgid "Put on the map"
+msgstr "Metti sulla mappa"
+
+#: src/map/card.tsx
+msgid "Find a thing in {0}"
+msgstr "Trova una cosa in {0}"
+
+#: src/map/card.tsx
+msgid "Find a thing to put on the map"
+msgstr "Trova una cosa da mettere sulla mappa"
+
+#: src/map/card.tsx
+msgid "Everything here is on the map."
+msgstr "Tutto quello che c’è qui è sulla mappa."
+
+#: src/map/card.tsx
+msgid "on {host}"
+msgstr "su {host}"
+
+#: src/map/card.tsx
+msgid "{c} running low inside"
+msgstr "{c} in esaurimento dentro"
+
+#: src/map/card.tsx
+msgid "{c} lent out inside"
+msgstr "{c} in prestito dentro"
+
+#: src/map/card.tsx
+msgid "{c} due inside"
+msgstr "{c} in scadenza dentro"
+
+#: src/map/card.tsx
+msgid "Down to {0}"
+msgstr "Scendi a {0}"
+
+#: src/map/card.tsx
+msgid "Inside · {n}"
+msgstr "Dentro · {n}"
+
+#: src/map/card.tsx
+msgid "Turn"
+msgstr "Ruota"
+
+#: src/map/card.tsx
+msgid "Take off the map"
+msgstr "Togli dalla mappa"
+
+#: src/map/card.tsx
+msgid "Less"
+msgstr "Meno"
+
+#: src/map/card.tsx
+msgid "Shape"
+msgstr "Forma"
+
+#: src/map/card.tsx
+msgid "{n, plural, one {# thing inside} other {# things inside}}"
+msgstr "{n, plural, one {# cosa dentro} other {# cose dentro}}"
+
+#: src/map/card.tsx
+msgid "On it"
+msgstr "Sopra"
+
+#: src/map/card.tsx
+msgid "Find inside {0}"
+msgstr "Cerca in {0}"
+
+#: src/map/card.tsx
+msgid "Find inside"
+msgstr "Cerca dentro"
+
+#: src/map/card.tsx
+msgid "Nothing in it yet."
+msgstr "Ancora niente dentro."
+
+#: src/map/labels.ts
+msgid "Sofa"
+msgstr "Divano"
+
+#: src/map/labels.ts
+msgid "Armchair"
+msgstr "Poltrona"
+
+#: src/map/labels.ts
+msgid "Coffee table"
+msgstr "Tavolino"
+
+#: src/map/labels.ts
+msgid "TV stand"
+msgstr "Mobile TV"
+
+#: src/map/labels.ts
+msgid "Cube shelf"
+msgstr "Libreria a cubi"
+
+#: src/map/labels.ts
+msgid "Tall plant"
+msgstr "Pianta alta"
+
+#: src/map/labels.ts
+msgid "Plant"
+msgstr "Pianta"
+
+#: src/map/labels.ts
+msgid "Succulent"
+msgstr "Pianta grassa"
+
+#: src/map/labels.ts
+msgid "Dining chair"
+msgstr "Sedia da pranzo"
+
+#: src/map/labels.ts
+msgid "Chest of drawers"
+msgstr "Cassettiera"
+
+#: src/map/labels.ts
+msgid "Bedside table"
+msgstr "Comodino"
+
+#: src/map/labels.ts
+msgid "Metal shelf"
+msgstr "Scaffale in metallo"
+
+#: src/map/labels.ts
+msgid "Tool cart"
+msgstr "Carrello portautensili"
+
+#: src/map/labels.ts
+msgid "Drill"
+msgstr "Trapano"
+
+#: src/map/labels.ts
+msgid "Moving box"
+msgstr "Scatolone"
+
+#: src/map/labels.ts
+msgid "Crate"
+msgstr "Cassetta"
+
+#: src/map/labels.ts
+msgid "Basket"
+msgstr "Cesto"
+
+#: src/map/labels.ts
+msgid "Bistro set"
+msgstr "Set bistrot"
+
+#: src/map/labels.ts
+msgid "Plastic chair"
+msgstr "Sedia di plastica"
+
+#: src/map/labels.ts
+msgid "Planter"
+msgstr "Fioriera"
+
+#: src/map/labels.ts
+msgid "Long planter"
+msgstr "Fioriera lunga"
+
+#: src/map/labels.ts
+msgid "AC outdoor unit"
+msgstr "Unità esterna del condizionatore"
+
+#: src/map/labels.ts
+msgid "Watering can"
+msgstr "Annaffiatoio"
+
+#: src/map/labels.ts
+msgid "TV"
+msgstr "TV"
+
+#: src/map/labels.ts
+msgid "Bookshelf"
+msgstr "Libreria"
+
+#: src/map/labels.ts
+msgid "Floor lamp"
+msgstr "Lampada da terra"
+
+#: src/map/labels.ts
+msgid "Kitchen counter"
+msgstr "Piano di lavoro"
+
+#: src/map/labels.ts
+msgid "Sink counter"
+msgstr "Mobile lavello"
+
+#: src/map/labels.ts
+msgid "Fridge"
+msgstr "Frigorifero"
+
+#: src/map/labels.ts
+msgid "Coffee machine"
+msgstr "Macchina da caffè"
+
+#: src/map/labels.ts
+msgid "Microwave"
+msgstr "Microonde"
+
+#: src/map/labels.ts
+msgid "Dining table"
+msgstr "Tavolo da pranzo"
+
+#: src/map/labels.ts
+msgid "Bed"
+msgstr "Letto"
+
+#: src/map/labels.ts
+msgid "Wardrobe"
+msgstr "Armadio"
+
+#: src/map/labels.ts
+msgid "Table lamp"
+msgstr "Lampada da tavolo"
+
+#: src/map/labels.ts
+msgid "Desk"
+msgstr "Scrivania"
+
+#: src/map/labels.ts
+msgid "Monitor"
+msgstr "Monitor"
+
+#: src/map/labels.ts
+msgid "Laptop"
+msgstr "Portatile"
+
+#: src/map/labels.ts
+msgid "Desk chair"
+msgstr "Sedia da ufficio"
+
+#: src/map/labels.ts
+msgid "Filing cabinet"
+msgstr "Schedario"
+
+#: src/map/labels.ts
+msgid "Storage box"
+msgstr "Scatola"
+
+#: src/map/labels.ts
+msgid "Washing machine"
+msgstr "Lavatrice"
+
+#: src/map/labels.ts
+msgid "Workbench"
+msgstr "Banco da lavoro"
+
+#: src/map/labels.ts
+msgid "Bike"
+msgstr "Bicicletta"
+
+#: src/map/labels.ts
+msgid "Water tank"
+msgstr "Serbatoio d’acqua"
+
+#: src/map/labels.ts
+msgid "Satellite dish"
+msgstr "Parabola"
+
+#: src/map/labels.ts
+msgid "Stairs"
+msgstr "Scale"
+
+#: src/map/labels.ts
+msgid "Stairwell"
+msgstr "Vano scale"
+
+#: src/map/labels.ts
+msgid "Area"
+msgstr "Area"
+
+#: src/map/labels.ts
+msgid "Small thing"
+msgstr "Cosa piccola"
+
+#: src/map/labels.ts
+msgid "Terrace"
+msgstr "Terrazza"
+
+#: src/map/labels.ts
+msgid "Garden"
+msgstr "Giardino"
+
+#: src/map/labels.ts
+msgid "Wood"
+msgstr "Legno"
+
+#: src/map/labels.ts
+msgid "Tiles"
+msgstr "Piastrelle"
+
+#: src/map/labels.ts
+msgid "Concrete"
+msgstr "Cemento"
+
+#: src/map/labels.ts
+msgid "Deck"
+msgstr "Decking"
+
+#: src/map/labels.ts
+msgid "Grass"
+msgstr "Prato"
+
+#: src/map/map-view.tsx
+msgid "Not on a floor"
+msgstr "Non su un piano"
+
+#: src/map/map-view.tsx
+msgid "on it: {x}"
+msgstr "sopra: {x}"
+
+#: src/map/map-view.tsx
+msgid "+{n} more"
+msgstr "+{n} altri"
+
+#: src/map/map-view.tsx
+msgid "{n} inside"
+msgstr "{n} dentro"
+
+#: src/map/map-view.tsx
+msgid "click to open"
+msgstr "clicca per aprire"
+
+#: src/map/map-view.tsx
+msgid "click to change floor"
+msgstr "clicca per cambiare piano"
+
+#: src/map/map-view.tsx
+msgid "Room {n}"
+msgstr "Stanza {n}"
+
+#: src/map/map-view.tsx
+msgid "Couldn’t add the room"
+msgstr "Impossibile aggiungere la stanza"
+
+#: src/map/map-view.tsx
+msgid "Floor {n}"
+msgstr "Piano {n}"
+
+#: src/map/map-view.tsx
+msgid "Room 1"
+msgstr "Stanza 1"
+
+#: src/map/map-view.tsx
+msgid "Couldn’t add the floor"
+msgstr "Impossibile aggiungere il piano"
+
+#: src/map/map-view.tsx
+msgid "Throw away these changes?"
+msgstr "Scartare queste modifiche?"
+
+#: src/map/map-view.tsx
+msgid "The map goes back to how it was. Rooms and floors you added stay in Kept."
+msgstr "La mappa torna com’era. Le stanze e i piani aggiunti restano in Kept."
+
+#: src/map/map-view.tsx
+msgid "Throw away"
+msgstr "Scarta"
+
+#: src/map/map-view.tsx
+msgid "Map arranged"
+msgstr "Mappa sistemata"
+
+#: src/map/map-view.tsx
+msgid "Someone arranged this map since you opened it"
+msgstr "Qualcuno ha sistemato questa mappa da quando l’hai aperta"
+
+#: src/map/map-view.tsx
+msgid "Couldn’t save the map"
+msgstr "Impossibile salvare la mappa"
+
+#: src/map/map-view.tsx
+msgid "Drag anything to move it. Drop small things on a counter, desk, shelf or box. Drag a room’s amber corner to resize it."
+msgstr "Trascina qualunque cosa per spostarla. Appoggia le cose piccole su un piano, una scrivania, uno scaffale o una scatola. Trascina l’angolo ambra di una stanza per ridimensionarla."
+
+#: src/map/map-view.tsx
+msgid "Drag on empty ground to draw a new room on this floor."
+msgstr "Trascina su uno spazio vuoto per disegnare una nuova stanza su questo piano."
+
+#: src/map/map-view.tsx
+msgid "Rooms can’t overlap. Draw on empty ground."
+msgstr "Le stanze non possono sovrapporsi. Disegna su uno spazio vuoto."
+
+#: src/map/map-view.tsx
+msgid "Map of {name}"
+msgstr "Mappa di {name}"
+
+#: src/map/map-view.tsx
+msgid "This browser can’t draw the map. The list below has everything on it."
+msgstr "Questo browser non riesce a disegnare la mappa. L’elenco qui sotto contiene tutto."
+
+#: src/map/map-view.tsx
+msgid "Where you are on the map"
+msgstr "Dove sei sulla mappa"
+
+#: src/map/map-view.tsx
+msgid "View"
+msgstr "Vista"
+
+#: src/map/map-view.tsx
+msgid "3D"
+msgstr "3D"
+
+#: src/map/map-view.tsx
+msgid "Plan"
+msgstr "Pianta"
+
+#: src/map/map-view.tsx
+msgid "Saving…"
+msgstr "Salvataggio…"
+
+#: src/map/map-view.tsx
+msgid "Arrange"
+msgstr "Sistema"
+
+#: src/map/map-view.tsx
+msgid "Pins"
+msgstr "Segnaposti"
+
+#: src/map/map-view.tsx
+msgid "Arrange tool"
+msgstr "Strumento di sistemazione"
+
+#: src/map/map-view.tsx
+msgid "Draw a room"
+msgstr "Disegna una stanza"
+
+#: src/map/map-view.tsx
+msgid "Add a floor"
+msgstr "Aggiungi un piano"
+
+#: src/map/map-view.tsx
+msgid "All floors"
+msgstr "Tutti i piani"
+
+#: src/map/map-view.tsx
+msgid "Zoom in"
+msgstr "Ingrandisci"
+
+#: src/map/map-view.tsx
+msgid "Zoom out"
+msgstr "Riduci"
+
+#: src/map/map-view.tsx
+msgid "Turn left"
+msgstr "Ruota a sinistra"
+
+#: src/map/map-view.tsx
+msgid "Turn right"
+msgstr "Ruota a destra"
+
+#: src/map/map-view.tsx
+msgid "Show the whole floor"
+msgstr "Mostra tutto il piano"
+
+#: src/map/map-view.tsx
+msgid "Detailed models"
+msgstr "Modelli dettagliati"
+
+#: src/map/map-view.tsx
+msgid "Places on this level"
+msgstr "Posti su questo piano"
+
+#: src/map/map-view.tsx
+msgid "Furniture, plants and the AC units are free models from Poly Haven (CC0), shrunk for phones. Turn off Detailed models to download none."
+msgstr "Mobili, piante e condizionatori sono modelli gratuiti di Poly Haven (CC0), alleggeriti per i telefoni. Disattiva Modelli dettagliati per non scaricarne nessuno."
+
+#: src/components/places/contents-list.tsx
+msgid "Map"
+msgstr "Mappa"
+
+#: src/map/whats-in.tsx
+msgid "Nothing here."
+msgstr "Niente qui."
+
+#: src/map/whats-in.tsx
+msgid "Show fewer"
+msgstr "Mostra meno"
+
+#: src/map/whats-in.tsx
+msgid "Show {0} more"
+msgstr "Mostra altri {0}"
+
+#: src/map/whats-in.tsx
+msgid "Nothing here yet."
+msgstr "Ancora niente qui."
+
+#: src/map/whats-in.tsx
+msgid "What’s in {name}"
+msgstr "Cosa c’è in {name}"
+
+#: src/map/whats-in.tsx
+msgid "{0, plural, one {# floor} other {# floors}}"
+msgstr "{0, plural, one {# piano} other {# piani}}"
+
+#: src/map/whats-in.tsx
+msgid "<0>{0}</0> low"
+msgstr "<0>{0}</0> in esaurimento"
+
+#: src/map/whats-in.tsx
+msgid "<0>{0}</0> lent"
+msgstr "<0>{0}</0> in prestito"
+
+#: src/map/whats-in.tsx
+msgid "<0>{0}</0> due"
+msgstr "<0>{0}</0> in scadenza"
+
+#: src/map/whats-in.tsx
+msgid "The map lists the first {0} things; search the location for the rest."
+msgstr "La mappa elenca le prime {0} cose; cerca il resto nel luogo."
+
+#: src/map/whats-in.tsx
+msgid "Find a thing or a short ID"
+msgstr "Trova una cosa o un ID breve"
+
+#: src/map/whats-in.tsx
+msgid "By room"
+msgstr "Per stanza"
+
+#: src/map/whats-in.tsx
+msgid "Needs attention"
+msgstr "Da guardare"
+
+#: src/components/places/contents-list.tsx
+msgid "map"
+msgstr "mappa"

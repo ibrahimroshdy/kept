@@ -327,6 +327,15 @@ export const GripIcon = (p: IconProps) => (
   </Svg>
 );
 
+/** A folded map with a pin (D237): the location map. */
+export const MapIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M3.5 6.8 8.8 4.5l6.4 2.6 5.3-2.3v12.4l-5.3 2.3-6.4-2.6-5.3 2.3Z" />
+    <path d="M8.8 4.5v12.4M15.2 7.1V12" />
+    <path d="M17.6 12.4a2.1 2.1 0 0 0-2.1 2.1c0 1.6 2.1 3.6 2.1 3.6s2.1-2 2.1-3.6a2.1 2.1 0 0 0-2.1-2.1Z" />
+  </Svg>
+);
+
 export const GearIcon = (p: IconProps) => (
   <Svg {...p}>
     <circle cx="12" cy="12" r="3" />

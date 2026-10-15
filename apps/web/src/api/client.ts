@@ -224,6 +224,8 @@ export const written = {
     }),
   patch: <T>(path: string, body: unknown, headers?: Record<string, string>) =>
     requestWritten<T>(path, { method: 'PATCH', body, ...(headers ? { headers } : {}) }),
+  put: <T>(path: string, body: unknown, headers?: Record<string, string>) =>
+    requestWritten<T>(path, { method: 'PUT', body, ...(headers ? { headers } : {}) }),
 };
 
 /** The server's largest page (§7.7). */

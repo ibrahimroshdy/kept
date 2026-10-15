@@ -22536,3 +22536,595 @@ msgstr "cost {0}, covered {1}"
 #: src/components/insights/insights-screen.tsx
 msgid "Repairs resolved, {year}: {0}"
 msgstr "Repairs resolved, {year}: {0}"
+
+#: src/map/card.tsx
+msgid "{left} left, keep at least {min}"
+msgstr "{left} left, keep at least {min}"
+
+#: src/map/card.tsx
+msgid "someone"
+msgstr "someone"
+
+#: src/map/card.tsx
+msgid "Lent to {who}"
+msgstr "Lent to {who}"
+
+#: src/map/card.tsx
+msgid "Lent to {who}, back by {back}"
+msgstr "Lent to {who}, back by {back}"
+
+#: src/map/card.tsx
+msgid "{what}: overdue since {when}"
+msgstr "{what}: overdue since {when}"
+
+#: src/map/card.tsx
+msgid "{what}: due {when}"
+msgstr "{what}: due {when}"
+
+#: src/map/card.tsx
+msgid "QR label for {printed}"
+msgstr "QR label for {printed}"
+
+#: src/map/card.tsx
+msgid "Label of this place"
+msgstr "Label of this place"
+
+#: src/map/card.tsx
+msgid "Label of this thing"
+msgstr "Label of this thing"
+
+#: src/map/card.tsx
+msgid "Serial"
+msgstr "Serial"
+
+#: src/map/card.tsx
+msgid "No photo yet"
+msgstr "No photo yet"
+
+#: src/map/card.tsx
+msgid "{n, plural, one {# place in it} other {# places in it}}"
+msgstr "{n, plural, one {# place in it} other {# places in it}}"
+
+#: src/map/card.tsx
+msgid "Open the place"
+msgstr "Open the place"
+
+#: src/map/card.tsx
+msgid "Nothing matches."
+msgstr "Nothing matches."
+
+#: src/map/card.tsx
+msgid "{w} × {d} m"
+msgstr "{w} × {d} m"
+
+#: src/map/card.tsx
+msgid "What’s here · {0}"
+msgstr "What’s here · {0}"
+
+#: src/map/card.tsx
+msgid "Put on the map"
+msgstr "Put on the map"
+
+#: src/map/card.tsx
+msgid "Find a thing in {0}"
+msgstr "Find a thing in {0}"
+
+#: src/map/card.tsx
+msgid "Find a thing to put on the map"
+msgstr "Find a thing to put on the map"
+
+#: src/map/card.tsx
+msgid "Everything here is on the map."
+msgstr "Everything here is on the map."
+
+#: src/map/card.tsx
+msgid "on {host}"
+msgstr "on {host}"
+
+#: src/map/card.tsx
+msgid "{c} running low inside"
+msgstr "{c} running low inside"
+
+#: src/map/card.tsx
+msgid "{c} lent out inside"
+msgstr "{c} lent out inside"
+
+#: src/map/card.tsx
+msgid "{c} due inside"
+msgstr "{c} due inside"
+
+#: src/map/card.tsx
+msgid "Down to {0}"
+msgstr "Down to {0}"
+
+#: src/map/card.tsx
+msgid "Inside · {n}"
+msgstr "Inside · {n}"
+
+#: src/map/card.tsx
+msgid "Turn"
+msgstr "Turn"
+
+#: src/map/card.tsx
+msgid "Take off the map"
+msgstr "Take off the map"
+
+#: src/map/card.tsx
+msgid "Less"
+msgstr "Less"
+
+#: src/map/card.tsx
+msgid "Shape"
+msgstr "Shape"
+
+#: src/map/card.tsx
+msgid "{n, plural, one {# thing inside} other {# things inside}}"
+msgstr "{n, plural, one {# thing inside} other {# things inside}}"
+
+#: src/map/card.tsx
+msgid "On it"
+msgstr "On it"
+
+#: src/map/card.tsx
+msgid "Find inside {0}"
+msgstr "Find inside {0}"
+
+#: src/map/card.tsx
+msgid "Find inside"
+msgstr "Find inside"
+
+#: src/map/card.tsx
+msgid "Nothing in it yet."
+msgstr "Nothing in it yet."
+
+#: src/map/labels.ts
+msgid "Sofa"
+msgstr "Sofa"
+
+#: src/map/labels.ts
+msgid "Armchair"
+msgstr "Armchair"
+
+#: src/map/labels.ts
+msgid "Coffee table"
+msgstr "Coffee table"
+
+#: src/map/labels.ts
+msgid "TV stand"
+msgstr "TV stand"
+
+#: src/map/labels.ts
+msgid "Cube shelf"
+msgstr "Cube shelf"
+
+#: src/map/labels.ts
+msgid "Tall plant"
+msgstr "Tall plant"
+
+#: src/map/labels.ts
+msgid "Plant"
+msgstr "Plant"
+
+#: src/map/labels.ts
+msgid "Succulent"
+msgstr "Succulent"
+
+#: src/map/labels.ts
+msgid "Dining chair"
+msgstr "Dining chair"
+
+#: src/map/labels.ts
+msgid "Chest of drawers"
+msgstr "Chest of drawers"
+
+#: src/map/labels.ts
+msgid "Bedside table"
+msgstr "Bedside table"
+
+#: src/map/labels.ts
+msgid "Metal shelf"
+msgstr "Metal shelf"
+
+#: src/map/labels.ts
+msgid "Tool cart"
+msgstr "Tool cart"
+
+#: src/map/labels.ts
+msgid "Drill"
+msgstr "Drill"
+
+#: src/map/labels.ts
+msgid "Moving box"
+msgstr "Moving box"
+
+#: src/map/labels.ts
+msgid "Crate"
+msgstr "Crate"
+
+#: src/map/labels.ts
+msgid "Basket"
+msgstr "Basket"
+
+#: src/map/labels.ts
+msgid "Bistro set"
+msgstr "Bistro set"
+
+#: src/map/labels.ts
+msgid "Plastic chair"
+msgstr "Plastic chair"
+
+#: src/map/labels.ts
+msgid "Planter"
+msgstr "Planter"
+
+#: src/map/labels.ts
+msgid "Long planter"
+msgstr "Long planter"
+
+#: src/map/labels.ts
+msgid "AC outdoor unit"
+msgstr "AC outdoor unit"
+
+#: src/map/labels.ts
+msgid "Watering can"
+msgstr "Watering can"
+
+#: src/map/labels.ts
+msgid "TV"
+msgstr "TV"
+
+#: src/map/labels.ts
+msgid "Bookshelf"
+msgstr "Bookshelf"
+
+#: src/map/labels.ts
+msgid "Floor lamp"
+msgstr "Floor lamp"
+
+#: src/map/labels.ts
+msgid "Kitchen counter"
+msgstr "Kitchen counter"
+
+#: src/map/labels.ts
+msgid "Sink counter"
+msgstr "Sink counter"
+
+#: src/map/labels.ts
+msgid "Fridge"
+msgstr "Fridge"
+
+#: src/map/labels.ts
+msgid "Coffee machine"
+msgstr "Coffee machine"
+
+#: src/map/labels.ts
+msgid "Microwave"
+msgstr "Microwave"
+
+#: src/map/labels.ts
+msgid "Dining table"
+msgstr "Dining table"
+
+#: src/map/labels.ts
+msgid "Bed"
+msgstr "Bed"
+
+#: src/map/labels.ts
+msgid "Wardrobe"
+msgstr "Wardrobe"
+
+#: src/map/labels.ts
+msgid "Table lamp"
+msgstr "Table lamp"
+
+#: src/map/labels.ts
+msgid "Desk"
+msgstr "Desk"
+
+#: src/map/labels.ts
+msgid "Monitor"
+msgstr "Monitor"
+
+#: src/map/labels.ts
+msgid "Laptop"
+msgstr "Laptop"
+
+#: src/map/labels.ts
+msgid "Desk chair"
+msgstr "Desk chair"
+
+#: src/map/labels.ts
+msgid "Filing cabinet"
+msgstr "Filing cabinet"
+
+#: src/map/labels.ts
+msgid "Storage box"
+msgstr "Storage box"
+
+#: src/map/labels.ts
+msgid "Washing machine"
+msgstr "Washing machine"
+
+#: src/map/labels.ts
+msgid "Workbench"
+msgstr "Workbench"
+
+#: src/map/labels.ts
+msgid "Bike"
+msgstr "Bike"
+
+#: src/map/labels.ts
+msgid "Water tank"
+msgstr "Water tank"
+
+#: src/map/labels.ts
+msgid "Satellite dish"
+msgstr "Satellite dish"
+
+#: src/map/labels.ts
+msgid "Stairs"
+msgstr "Stairs"
+
+#: src/map/labels.ts
+msgid "Stairwell"
+msgstr "Stairwell"
+
+#: src/map/labels.ts
+msgid "Area"
+msgstr "Area"
+
+#: src/map/labels.ts
+msgid "Small thing"
+msgstr "Small thing"
+
+#: src/map/labels.ts
+msgid "Terrace"
+msgstr "Terrace"
+
+#: src/map/labels.ts
+msgid "Garden"
+msgstr "Garden"
+
+#: src/map/labels.ts
+msgid "Wood"
+msgstr "Wood"
+
+#: src/map/labels.ts
+msgid "Tiles"
+msgstr "Tiles"
+
+#: src/map/labels.ts
+msgid "Concrete"
+msgstr "Concrete"
+
+#: src/map/labels.ts
+msgid "Deck"
+msgstr "Deck"
+
+#: src/map/labels.ts
+msgid "Grass"
+msgstr "Grass"
+
+#: src/map/map-view.tsx
+msgid "Not on a floor"
+msgstr "Not on a floor"
+
+#: src/map/map-view.tsx
+msgid "on it: {x}"
+msgstr "on it: {x}"
+
+#: src/map/map-view.tsx
+msgid "+{n} more"
+msgstr "+{n} more"
+
+#: src/map/map-view.tsx
+msgid "{n} inside"
+msgstr "{n} inside"
+
+#: src/map/map-view.tsx
+msgid "click to open"
+msgstr "click to open"
+
+#: src/map/map-view.tsx
+msgid "click to change floor"
+msgstr "click to change floor"
+
+#: src/map/map-view.tsx
+msgid "Room {n}"
+msgstr "Room {n}"
+
+#: src/map/map-view.tsx
+msgid "Couldn’t add the room"
+msgstr "Couldn’t add the room"
+
+#: src/map/map-view.tsx
+msgid "Floor {n}"
+msgstr "Floor {n}"
+
+#: src/map/map-view.tsx
+msgid "Room 1"
+msgstr "Room 1"
+
+#: src/map/map-view.tsx
+msgid "Couldn’t add the floor"
+msgstr "Couldn’t add the floor"
+
+#: src/map/map-view.tsx
+msgid "Throw away these changes?"
+msgstr "Throw away these changes?"
+
+#: src/map/map-view.tsx
+msgid "The map goes back to how it was. Rooms and floors you added stay in Kept."
+msgstr "The map goes back to how it was. Rooms and floors you added stay in Kept."
+
+#: src/map/map-view.tsx
+msgid "Throw away"
+msgstr "Throw away"
+
+#: src/map/map-view.tsx
+msgid "Map arranged"
+msgstr "Map arranged"
+
+#: src/map/map-view.tsx
+msgid "Someone arranged this map since you opened it"
+msgstr "Someone arranged this map since you opened it"
+
+#: src/map/map-view.tsx
+msgid "Couldn’t save the map"
+msgstr "Couldn’t save the map"
+
+#: src/map/map-view.tsx
+msgid "Drag anything to move it. Drop small things on a counter, desk, shelf or box. Drag a room’s amber corner to resize it."
+msgstr "Drag anything to move it. Drop small things on a counter, desk, shelf or box. Drag a room’s amber corner to resize it."
+
+#: src/map/map-view.tsx
+msgid "Drag on empty ground to draw a new room on this floor."
+msgstr "Drag on empty ground to draw a new room on this floor."
+
+#: src/map/map-view.tsx
+msgid "Rooms can’t overlap. Draw on empty ground."
+msgstr "Rooms can’t overlap. Draw on empty ground."
+
+#: src/map/map-view.tsx
+msgid "Map of {name}"
+msgstr "Map of {name}"
+
+#: src/map/map-view.tsx
+msgid "This browser can’t draw the map. The list below has everything on it."
+msgstr "This browser can’t draw the map. The list below has everything on it."
+
+#: src/map/map-view.tsx
+msgid "Where you are on the map"
+msgstr "Where you are on the map"
+
+#: src/map/map-view.tsx
+msgid "View"
+msgstr "View"
+
+#: src/map/map-view.tsx
+msgid "3D"
+msgstr "3D"
+
+#: src/map/map-view.tsx
+msgid "Plan"
+msgstr "Plan"
+
+#: src/map/map-view.tsx
+msgid "Saving…"
+msgstr "Saving…"
+
+#: src/map/map-view.tsx
+msgid "Arrange"
+msgstr "Arrange"
+
+#: src/map/map-view.tsx
+msgid "Pins"
+msgstr "Pins"
+
+#: src/map/map-view.tsx
+msgid "Arrange tool"
+msgstr "Arrange tool"
+
+#: src/map/map-view.tsx
+msgid "Draw a room"
+msgstr "Draw a room"
+
+#: src/map/map-view.tsx
+msgid "Add a floor"
+msgstr "Add a floor"
+
+#: src/map/map-view.tsx
+msgid "All floors"
+msgstr "All floors"
+
+#: src/map/map-view.tsx
+msgid "Zoom in"
+msgstr "Zoom in"
+
+#: src/map/map-view.tsx
+msgid "Zoom out"
+msgstr "Zoom out"
+
+#: src/map/map-view.tsx
+msgid "Turn left"
+msgstr "Turn left"
+
+#: src/map/map-view.tsx
+msgid "Turn right"
+msgstr "Turn right"
+
+#: src/map/map-view.tsx
+msgid "Show the whole floor"
+msgstr "Show the whole floor"
+
+#: src/map/map-view.tsx
+msgid "Detailed models"
+msgstr "Detailed models"
+
+#: src/map/map-view.tsx
+msgid "Places on this level"
+msgstr "Places on this level"
+
+#: src/map/map-view.tsx
+msgid "Furniture, plants and the AC units are free models from Poly Haven (CC0), shrunk for phones. Turn off Detailed models to download none."
+msgstr "Furniture, plants and the AC units are free models from Poly Haven (CC0), shrunk for phones. Turn off Detailed models to download none."
+
+#: src/components/places/contents-list.tsx
+msgid "Map"
+msgstr "Map"
+
+#: src/map/whats-in.tsx
+msgid "Nothing here."
+msgstr "Nothing here."
+
+#: src/map/whats-in.tsx
+msgid "Show fewer"
+msgstr "Show fewer"
+
+#: src/map/whats-in.tsx
+msgid "Show {0} more"
+msgstr "Show {0} more"
+
+#: src/map/whats-in.tsx
+msgid "Nothing here yet."
+msgstr "Nothing here yet."
+
+#: src/map/whats-in.tsx
+msgid "What’s in {name}"
+msgstr "What’s in {name}"
+
+#: src/map/whats-in.tsx
+msgid "{0, plural, one {# floor} other {# floors}}"
+msgstr "{0, plural, one {# floor} other {# floors}}"
+
+#: src/map/whats-in.tsx
+msgid "<0>{0}</0> low"
+msgstr "<0>{0}</0> low"
+
+#: src/map/whats-in.tsx
+msgid "<0>{0}</0> lent"
+msgstr "<0>{0}</0> lent"
+
+#: src/map/whats-in.tsx
+msgid "<0>{0}</0> due"
+msgstr "<0>{0}</0> due"
+
+#: src/map/whats-in.tsx
+msgid "The map lists the first {0} things; search the location for the rest."
+msgstr "The map lists the first {0} things; search the location for the rest."
+
+#: src/map/whats-in.tsx
+msgid "Find a thing or a short ID"
+msgstr "Find a thing or a short ID"
+
+#: src/map/whats-in.tsx
+msgid "By room"
+msgstr "By room"
+
+#: src/map/whats-in.tsx
+msgid "Needs attention"
+msgstr "Needs attention"
+
+#: src/components/places/contents-list.tsx
+msgid "map"
+msgstr "map"

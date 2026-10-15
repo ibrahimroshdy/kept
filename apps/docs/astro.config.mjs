@@ -67,6 +67,7 @@ const sidebar = [
     group('Install', 'التثبيت', dir('install')),
     page('users/first-run'),
     page('users/everyday-use'),
+    page('users/location-map'),
     page('users/phone-app'),
     page('users/ai-providers'),
     page('admin/ollama'),

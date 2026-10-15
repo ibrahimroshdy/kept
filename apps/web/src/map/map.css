@@ -1,0 +1,827 @@
+/* biome-ignore-all lint/style/noDescendingSpecificity: each rule styles its own component; the
+   rule compares selectors of unrelated components that never match the same element. */
+/*
+ * The location map (1.x, D237), ported from the approved spike. Loaded with the map's chunk only.
+ * The map itself is never mirrored (M9): positions on the canvas are the scene's, so the labels and
+ * the hover tip are placed from the canvas's left edge; the controls around it use logical sides.
+ */
+.kmap-stage {
+  position: relative;
+  /* map-view.tsx sizes it to the space between the page's top and the tab bar; until then, about
+     that much. */
+  height: calc(100svh - 14rem);
+  min-height: 320px;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  isolation: isolate;
+}
+.kmap-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.kmap-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.map-label {
+  position: absolute;
+  top: 0;
+  left: 0; /* logical-css-ignore: canvas coordinates; the map isn't mirrored (M9) */
+  font: 600 12.5px / 1.25 var(--sans);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 4px 7px;
+  white-space: pre;
+  pointer-events: none;
+}
+.map-label.small {
+  font: 500 11px / 1.3 var(--sans);
+  padding: 3px 5px;
+  color: var(--ink-2);
+}
+.map-label.small b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.map-label.count {
+  font: 500 11.5px / 1 var(--mono);
+  color: var(--ink-2);
+}
+.map-label.level {
+  font: 600 15px / 1.1 var(--sans);
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.kmap-tip {
+  position: absolute;
+  top: 0;
+  left: 0; /* logical-css-ignore: canvas coordinates; the map isn't mirrored (M9) */
+  pointer-events: none;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 8px;
+  padding: 6px 9px;
+  font: 500 12.5px / 1.35 var(--sans);
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.18);
+  z-index: 3;
+}
+.kmap-tip small {
+  font: 11.5px var(--mono);
+  opacity: 0.8;
+}
+.kmap-tip[hidden] {
+  display: none;
+}
+.kmap-bar {
+  position: absolute;
+  inset-inline: 12px;
+  top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.kmap-bar > * {
+  pointer-events: auto;
+}
+.kmap-crumb {
+  font: 600 17px / 1.15 var(--sans);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 40px;
+  flex-wrap: wrap;
+}
+.kmap-crumb button {
+  font: inherit;
+  color: var(--ink-2);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+fieldset.kmap-seg,
+fieldset.kmap-chips,
+fieldset.kmap-floors,
+fieldset.kmap-palette {
+  margin: 0;
+  min-inline-size: 0;
+}
+.kmap-seg {
+  display: inline-flex;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.kmap-seg button {
+  font: 600 13px / 1 var(--sans);
+  border: 0;
+  background: none;
+  color: var(--ink-2);
+  padding: 0 12px;
+  min-height: 34px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.kmap-seg button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.kmap-btn {
+  font: 600 13px / 1 var(--sans);
+  min-height: 38px;
+  padding: 0 13px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+.kmap-btn[aria-pressed="true"],
+.kmap-btn.primary {
+  background: var(--amber);
+  color: var(--amber-ink);
+  border-color: var(--amber);
+}
+.kmap-btn.ghost {
+  background: none;
+  border-color: transparent;
+  color: var(--ink-2);
+  padding: 0 6px;
+}
+.kmap-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.kmap-chips {
+  border: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.kmap-chip {
+  font: 500 12.5px / 1 var(--sans);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  border-radius: 999px;
+  padding: 7px 11px;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 32px;
+}
+.kmap-chip[aria-pressed="true"] {
+  color: var(--ink);
+  border-color: var(--ink-3);
+}
+.kmap-chip[aria-pressed="false"] {
+  opacity: 0.7;
+}
+.kmap-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex: none;
+}
+.kmap-dot.low {
+  background: var(--danger);
+}
+.kmap-dot.lent {
+  background: var(--info);
+}
+.kmap-dot.due {
+  background: var(--warn);
+}
+.kmap button:focus-visible,
+.kmap a:focus-visible,
+.kmap input:focus-visible,
+.kmap summary:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+}
+.kmap-tools {
+  position: absolute;
+  inset-inline-start: 12px;
+  top: 110px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  max-width: calc(100% - 90px);
+  align-items: center;
+  z-index: 2;
+}
+.kmap-hint {
+  font: 12.5px / 1.4 var(--sans);
+  color: var(--ink-2);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 9px;
+  max-width: 46ch;
+}
+.kmap-ctl {
+  position: absolute;
+  inset-inline-end: 12px;
+  top: 110px;
+  display: grid;
+  gap: 6px;
+  z-index: 2;
+}
+.kmap-ctl > button {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: 600 18px / 1 var(--sans);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.kmap-ctl svg {
+  width: 20px;
+  height: 20px;
+}
+.kmap-floors {
+  padding: 0;
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface);
+  margin-bottom: 6px;
+}
+.kmap-floors button {
+  border: 0;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+  font: 600 14px / 1 var(--mono);
+  width: 44px;
+  height: 40px;
+}
+.kmap-floors button + button {
+  border-top: 1px solid var(--line);
+}
+.kmap-floors button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.kmap-floors button.all {
+  font: 600 11.5px / 1 var(--sans);
+}
+.kmap-readout {
+  position: absolute;
+  inset-inline-start: 12px;
+  bottom: 12px;
+  font: 12px / 1.45 var(--mono);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 9px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  max-width: calc(100% - 24px);
+  z-index: 2;
+}
+.kmap-readout b {
+  color: var(--ink);
+  font-weight: 500;
+}
+.kmap-toggles {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-family: var(--sans);
+}
+.kmap-toggles label {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  cursor: pointer;
+}
+/* The card: a short strip first; the full card only when asked. */
+.kmap-panel {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  align-content: start;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.12);
+  z-index: 3;
+}
+@media (min-width: 900px) {
+  .kmap-panel {
+    inset-inline-end: 68px;
+    top: 110px;
+    width: 320px;
+    border-radius: 12px;
+    max-height: calc(100% - 170px);
+    overflow: auto;
+  }
+}
+@media (max-width: 899px) {
+  .kmap-panel {
+    inset-inline: 8px;
+    bottom: 8px;
+    border-radius: 14px;
+    overflow: auto;
+    max-height: 45%;
+  }
+  .kmap-panel.full {
+    max-height: 68%;
+  }
+}
+.kmap-panel h2 {
+  margin: 0;
+  font: 600 18px / 1.2 var(--sans);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.kmap-meta {
+  color: var(--ink-3);
+  font-size: 12.5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  align-items: center;
+}
+.kmap-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.kmap-peek {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+}
+.kmap-x {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-2);
+  font: 500 18px / 1 var(--sans);
+  cursor: pointer;
+}
+.kmap-card-head {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+.kmap-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  background: var(--sunken);
+  border: 1px dashed var(--line);
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+  overflow: hidden;
+}
+.kmap-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.kmap-photo svg {
+  width: 22px;
+  height: 22px;
+}
+.kmap-idrow {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px;
+}
+.kmap-qr {
+  width: 76px;
+  height: 76px;
+  background: #fff;
+  border-radius: 6px;
+  padding: 2px;
+}
+.kmap-qr svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.kmap-code {
+  font: 600 19px / 1 var(--mono);
+  letter-spacing: 0.06em;
+  direction: ltr;
+}
+.kmap-facts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 4px 12px;
+  font-size: 13px;
+}
+.kmap-facts dt {
+  color: var(--ink-3);
+}
+.kmap-facts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.kmap-status {
+  display: grid;
+  gap: 3px;
+}
+.kmap-status div {
+  display: flex;
+  gap: 7px;
+  align-items: baseline;
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+.kmap-sub {
+  font: 500 11.5px / 1 var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.kmap-inv {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.kmap-inv li + li {
+  border-top: 1px solid var(--line);
+}
+.kmap-inv button {
+  width: 100%;
+  text-align: start;
+  border: 0;
+  background: var(--surface);
+  min-height: 40px;
+  padding: 5px 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1px 10px;
+  color: var(--ink);
+  cursor: pointer;
+  font: 500 13.5px var(--sans);
+}
+.kmap-inv button > span:first-child {
+  overflow-wrap: anywhere;
+}
+.kmap-inv button small {
+  grid-column: 1;
+  color: var(--ink-3);
+  font: 11.5px var(--mono);
+}
+.kmap-inv button span.q {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  align-self: center;
+  font: 500 12.5px var(--mono);
+  color: var(--ink-2);
+}
+.kmap-inv .kmap-dot {
+  margin-inline-start: 6px;
+  transform: translateY(-1px);
+}
+.kmap-input {
+  font: 500 15px var(--sans);
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+.kmap-palette {
+  border: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 6px;
+}
+.kmap-palette button {
+  font: 500 12px var(--sans);
+  min-height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  padding: 4px 6px;
+}
+.kmap-palette button[aria-pressed="true"] {
+  background: var(--amber);
+  color: var(--amber-ink);
+  border-color: var(--amber);
+}
+.kmap-empty {
+  color: var(--ink-3);
+  margin: 6px 2px;
+}
+.kmap-short {
+  display: none;
+}
+/* Phones: the floor and view buttons in one row at the bottom (hidden while a card is open),
+ * short chip labels, the map gets the width. */
+@media (max-width: 600px) {
+  .kmap-long {
+    display: none;
+  }
+  .kmap-short {
+    display: inline;
+  }
+  .kmap-ctl {
+    top: auto;
+    bottom: 12px;
+    inset-inline: 12px;
+    display: flex;
+    gap: 6px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .kmap-ctl > button {
+    width: 40px;
+    height: 40px;
+  }
+  .kmap-ctl .kmap-turn-end {
+    display: none;
+  }
+  .kmap-floors {
+    display: flex;
+    margin: 0;
+  }
+  .kmap-floors button {
+    order: var(--o);
+    width: 40px;
+  }
+  .kmap-floors button + button {
+    border-top: 0;
+    border-inline-start: 1px solid var(--line);
+  }
+  .kmap-stage[data-card="true"] .kmap-ctl {
+    display: none;
+  }
+  .kmap-readout {
+    bottom: 64px;
+    font-size: 11px;
+  }
+  .kmap-tools {
+    top: 100px;
+    max-width: calc(100% - 24px);
+  }
+}
+/* Below the map: what's in the location. */
+.kmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 10px;
+  align-items: start;
+}
+.kmap-rcard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 10px 6px;
+  display: grid;
+  min-width: 0;
+}
+.kmap-rcard header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 2px 2px 6px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.kmap-rcard header button {
+  font: 600 16px / 1.2 var(--sans);
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+.kmap-lv {
+  font: 600 10.5px / 1 var(--mono);
+  background: var(--sunken);
+  color: var(--ink-2);
+  border-radius: 4px;
+  padding: 3px 5px;
+}
+.kmap-cnt {
+  margin-inline-start: auto;
+  font: 12px var(--mono);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.kmap-orow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding-inline: 2px;
+  list-style: none;
+  flex-wrap: wrap;
+}
+details > summary.kmap-orow {
+  cursor: pointer;
+}
+.kmap-orow::-webkit-details-marker {
+  display: none;
+}
+.kmap-rcard > .kmap-orow + .kmap-orow,
+.kmap-rcard > details + .kmap-orow,
+.kmap-rcard > .kmap-orow + details,
+.kmap-rcard > details + details {
+  border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+.kmap-nm {
+  font: 500 13.5px / 1.3 var(--sans);
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: start;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.kmap-orow small {
+  font: 11px var(--mono);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.kmap-fill {
+  flex: 1;
+}
+.kmap-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+.kmap-c {
+  font: 12px var(--mono);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.kmap-chev {
+  width: 16px;
+  color: var(--ink-3);
+  transition: transform 0.15s;
+  text-align: center;
+}
+details[open] > .kmap-orow .kmap-chev {
+  transform: rotate(90deg);
+}
+[dir="rtl"] .kmap-chev {
+  transform: scaleX(-1);
+}
+[dir="rtl"] details[open] > .kmap-orow .kmap-chev {
+  transform: rotate(90deg);
+}
+.kmap-crows {
+  margin-block: 0 6px;
+  margin-inline-start: 6px;
+  padding: 0;
+  padding-inline-start: 10px;
+  list-style: none;
+  border-inline-start: 2px solid var(--line);
+  display: grid;
+}
+.kmap-crows button {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  color: var(--ink);
+  font: 13px var(--sans);
+  cursor: pointer;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+.kmap-crows button small {
+  font: 11px var(--mono);
+  color: var(--ink-3);
+}
+.kmap-more {
+  justify-self: start;
+  font: 600 12.5px var(--sans);
+  color: var(--ink-2);
+  background: none;
+  border: 0;
+  padding: 6px 2px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.kmap-flist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.kmap-flist li + li {
+  border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+.kmap-flist button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1px 10px;
+  background: none;
+  border: 0;
+  padding: 6px 2px;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: start;
+  font: 500 13.5px var(--sans);
+}
+.kmap-flist button > span:first-child {
+  overflow-wrap: anywhere;
+}
+.kmap-flist small {
+  font: 11.5px var(--sans);
+  color: var(--ink-3);
+  grid-column: 1;
+  overflow-wrap: anywhere;
+}
+.kmap-flist .why {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  align-self: center;
+  font: 12px var(--sans);
+  color: var(--ink-2);
+  text-align: end;
+  max-width: 18ch;
+}
+.kmap-sum {
+  margin: 0;
+  color: var(--ink-2);
+  font: 13px var(--sans);
+  display: flex;
+  gap: 6px 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.kmap-sum span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.kmap-sum b {
+  color: var(--ink);
+  font-weight: 600;
+}

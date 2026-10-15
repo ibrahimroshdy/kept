@@ -22536,3 +22536,595 @@ msgstr "التكلفة {0}، المغطّى {1}"
 #: src/components/insights/insights-screen.tsx
 msgid "Repairs resolved, {year}: {0}"
 msgstr "الإصلاحات المنتهية، {year}: {0}"
+
+#: src/map/card.tsx
+msgid "{left} left, keep at least {min}"
+msgstr "بقي {left}، والحد الأدنى {min}"
+
+#: src/map/card.tsx
+msgid "someone"
+msgstr "شخص ما"
+
+#: src/map/card.tsx
+msgid "Lent to {who}"
+msgstr "مُعار إلى {who}"
+
+#: src/map/card.tsx
+msgid "Lent to {who}, back by {back}"
+msgstr "مُعار إلى {who}، يعود بحلول {back}"
+
+#: src/map/card.tsx
+msgid "{what}: overdue since {when}"
+msgstr "{what}: متأخر منذ {when}"
+
+#: src/map/card.tsx
+msgid "{what}: due {when}"
+msgstr "{what}: مستحق في {when}"
+
+#: src/map/card.tsx
+msgid "QR label for {printed}"
+msgstr "ملصق QR لـ {printed}"
+
+#: src/map/card.tsx
+msgid "Label of this place"
+msgstr "ملصق هذا المكان"
+
+#: src/map/card.tsx
+msgid "Label of this thing"
+msgstr "ملصق هذا الشيء"
+
+#: src/map/card.tsx
+msgid "Serial"
+msgstr "الرقم التسلسلي"
+
+#: src/map/card.tsx
+msgid "No photo yet"
+msgstr "لا صورة بعد"
+
+#: src/map/card.tsx
+msgid "{n, plural, one {# place in it} other {# places in it}}"
+msgstr "{n, plural, zero {لا أماكن فيه} one {مكان واحد فيه} two {مكانان فيه} few {# أماكن فيه} many {# مكانًا فيه} other {# مكان فيه}}"
+
+#: src/map/card.tsx
+msgid "Open the place"
+msgstr "فتح المكان"
+
+#: src/map/card.tsx
+msgid "Nothing matches."
+msgstr "لا شيء يطابق."
+
+#: src/map/card.tsx
+msgid "{w} × {d} m"
+msgstr "{w} × {d} م"
+
+#: src/map/card.tsx
+msgid "What’s here · {0}"
+msgstr "ما هنا · {0}"
+
+#: src/map/card.tsx
+msgid "Put on the map"
+msgstr "ضع على الخريطة"
+
+#: src/map/card.tsx
+msgid "Find a thing in {0}"
+msgstr "ابحث عن شيء في {0}"
+
+#: src/map/card.tsx
+msgid "Find a thing to put on the map"
+msgstr "ابحث عن شيء لوضعه على الخريطة"
+
+#: src/map/card.tsx
+msgid "Everything here is on the map."
+msgstr "كل ما هنا على الخريطة."
+
+#: src/map/card.tsx
+msgid "on {host}"
+msgstr "على {host}"
+
+#: src/map/card.tsx
+msgid "{c} running low inside"
+msgstr "{c} على وشك النفاد بداخله"
+
+#: src/map/card.tsx
+msgid "{c} lent out inside"
+msgstr "{c} مُعار من داخله"
+
+#: src/map/card.tsx
+msgid "{c} due inside"
+msgstr "{c} مستحق بداخله"
+
+#: src/map/card.tsx
+msgid "Down to {0}"
+msgstr "نزولًا إلى {0}"
+
+#: src/map/card.tsx
+msgid "Inside · {n}"
+msgstr "بداخله · {n}"
+
+#: src/map/card.tsx
+msgid "Turn"
+msgstr "تدوير"
+
+#: src/map/card.tsx
+msgid "Take off the map"
+msgstr "إزالة من الخريطة"
+
+#: src/map/card.tsx
+msgid "Less"
+msgstr "أقل"
+
+#: src/map/card.tsx
+msgid "Shape"
+msgstr "الشكل"
+
+#: src/map/card.tsx
+msgid "{n, plural, one {# thing inside} other {# things inside}}"
+msgstr "{n, plural, zero {لا أشياء بداخله} one {شيء واحد بداخله} two {شيئان بداخله} few {# أشياء بداخله} many {# شيئًا بداخله} other {# شيء بداخله}}"
+
+#: src/map/card.tsx
+msgid "On it"
+msgstr "عليه"
+
+#: src/map/card.tsx
+msgid "Find inside {0}"
+msgstr "ابحث داخل {0}"
+
+#: src/map/card.tsx
+msgid "Find inside"
+msgstr "ابحث بالداخل"
+
+#: src/map/card.tsx
+msgid "Nothing in it yet."
+msgstr "لا شيء فيه بعد."
+
+#: src/map/labels.ts
+msgid "Sofa"
+msgstr "أريكة"
+
+#: src/map/labels.ts
+msgid "Armchair"
+msgstr "كرسي بذراعين"
+
+#: src/map/labels.ts
+msgid "Coffee table"
+msgstr "طاولة قهوة"
+
+#: src/map/labels.ts
+msgid "TV stand"
+msgstr "حامل تلفاز"
+
+#: src/map/labels.ts
+msgid "Cube shelf"
+msgstr "رف مكعبات"
+
+#: src/map/labels.ts
+msgid "Tall plant"
+msgstr "نبتة طويلة"
+
+#: src/map/labels.ts
+msgid "Plant"
+msgstr "نبتة"
+
+#: src/map/labels.ts
+msgid "Succulent"
+msgstr "نبتة عصارية"
+
+#: src/map/labels.ts
+msgid "Dining chair"
+msgstr "كرسي سفرة"
+
+#: src/map/labels.ts
+msgid "Chest of drawers"
+msgstr "خزانة أدراج"
+
+#: src/map/labels.ts
+msgid "Bedside table"
+msgstr "طاولة جانب السرير"
+
+#: src/map/labels.ts
+msgid "Metal shelf"
+msgstr "رف معدني"
+
+#: src/map/labels.ts
+msgid "Tool cart"
+msgstr "عربة أدوات"
+
+#: src/map/labels.ts
+msgid "Drill"
+msgstr "مثقاب"
+
+#: src/map/labels.ts
+msgid "Moving box"
+msgstr "صندوق نقل"
+
+#: src/map/labels.ts
+msgid "Crate"
+msgstr "صندوق بلاستيكي"
+
+#: src/map/labels.ts
+msgid "Basket"
+msgstr "سلة"
+
+#: src/map/labels.ts
+msgid "Bistro set"
+msgstr "طقم طاولة وكراسي"
+
+#: src/map/labels.ts
+msgid "Plastic chair"
+msgstr "كرسي بلاستيكي"
+
+#: src/map/labels.ts
+msgid "Planter"
+msgstr "حوض زرع"
+
+#: src/map/labels.ts
+msgid "Long planter"
+msgstr "حوض زرع طويل"
+
+#: src/map/labels.ts
+msgid "AC outdoor unit"
+msgstr "وحدة مكيف خارجية"
+
+#: src/map/labels.ts
+msgid "Watering can"
+msgstr "مرشة ري"
+
+#: src/map/labels.ts
+msgid "TV"
+msgstr "تلفاز"
+
+#: src/map/labels.ts
+msgid "Bookshelf"
+msgstr "مكتبة كتب"
+
+#: src/map/labels.ts
+msgid "Floor lamp"
+msgstr "مصباح أرضي"
+
+#: src/map/labels.ts
+msgid "Kitchen counter"
+msgstr "سطح مطبخ"
+
+#: src/map/labels.ts
+msgid "Sink counter"
+msgstr "سطح بحوض"
+
+#: src/map/labels.ts
+msgid "Fridge"
+msgstr "ثلاجة"
+
+#: src/map/labels.ts
+msgid "Coffee machine"
+msgstr "آلة قهوة"
+
+#: src/map/labels.ts
+msgid "Microwave"
+msgstr "ميكروويف"
+
+#: src/map/labels.ts
+msgid "Dining table"
+msgstr "طاولة سفرة"
+
+#: src/map/labels.ts
+msgid "Bed"
+msgstr "سرير"
+
+#: src/map/labels.ts
+msgid "Wardrobe"
+msgstr "خزانة ملابس"
+
+#: src/map/labels.ts
+msgid "Table lamp"
+msgstr "مصباح طاولة"
+
+#: src/map/labels.ts
+msgid "Desk"
+msgstr "مكتب"
+
+#: src/map/labels.ts
+msgid "Monitor"
+msgstr "شاشة"
+
+#: src/map/labels.ts
+msgid "Laptop"
+msgstr "حاسوب محمول"
+
+#: src/map/labels.ts
+msgid "Desk chair"
+msgstr "كرسي مكتب"
+
+#: src/map/labels.ts
+msgid "Filing cabinet"
+msgstr "خزانة ملفات"
+
+#: src/map/labels.ts
+msgid "Storage box"
+msgstr "صندوق تخزين"
+
+#: src/map/labels.ts
+msgid "Washing machine"
+msgstr "غسالة"
+
+#: src/map/labels.ts
+msgid "Workbench"
+msgstr "طاولة عمل"
+
+#: src/map/labels.ts
+msgid "Bike"
+msgstr "دراجة"
+
+#: src/map/labels.ts
+msgid "Water tank"
+msgstr "خزان مياه"
+
+#: src/map/labels.ts
+msgid "Satellite dish"
+msgstr "طبق استقبال"
+
+#: src/map/labels.ts
+msgid "Stairs"
+msgstr "درج"
+
+#: src/map/labels.ts
+msgid "Stairwell"
+msgstr "بئر الدرج"
+
+#: src/map/labels.ts
+msgid "Area"
+msgstr "منطقة"
+
+#: src/map/labels.ts
+msgid "Small thing"
+msgstr "شيء صغير"
+
+#: src/map/labels.ts
+msgid "Terrace"
+msgstr "تراس"
+
+#: src/map/labels.ts
+msgid "Garden"
+msgstr "حديقة"
+
+#: src/map/labels.ts
+msgid "Wood"
+msgstr "خشب"
+
+#: src/map/labels.ts
+msgid "Tiles"
+msgstr "بلاط"
+
+#: src/map/labels.ts
+msgid "Concrete"
+msgstr "خرسانة"
+
+#: src/map/labels.ts
+msgid "Deck"
+msgstr "ألواح خشبية"
+
+#: src/map/labels.ts
+msgid "Grass"
+msgstr "عشب"
+
+#: src/map/map-view.tsx
+msgid "Not on a floor"
+msgstr "ليست على طابق"
+
+#: src/map/map-view.tsx
+msgid "on it: {x}"
+msgstr "عليه: {x}"
+
+#: src/map/map-view.tsx
+msgid "+{n} more"
+msgstr "+{n} أخرى"
+
+#: src/map/map-view.tsx
+msgid "{n} inside"
+msgstr "{n} بداخله"
+
+#: src/map/map-view.tsx
+msgid "click to open"
+msgstr "انقر للفتح"
+
+#: src/map/map-view.tsx
+msgid "click to change floor"
+msgstr "انقر لتغيير الطابق"
+
+#: src/map/map-view.tsx
+msgid "Room {n}"
+msgstr "غرفة {n}"
+
+#: src/map/map-view.tsx
+msgid "Couldn’t add the room"
+msgstr "تعذّرت إضافة الغرفة"
+
+#: src/map/map-view.tsx
+msgid "Floor {n}"
+msgstr "الطابق {n}"
+
+#: src/map/map-view.tsx
+msgid "Room 1"
+msgstr "غرفة 1"
+
+#: src/map/map-view.tsx
+msgid "Couldn’t add the floor"
+msgstr "تعذّرت إضافة الطابق"
+
+#: src/map/map-view.tsx
+msgid "Throw away these changes?"
+msgstr "التخلّي عن هذه التغييرات؟"
+
+#: src/map/map-view.tsx
+msgid "The map goes back to how it was. Rooms and floors you added stay in Kept."
+msgstr "تعود الخريطة كما كانت. الغرف والطوابق التي أضفتها تبقى في Kept."
+
+#: src/map/map-view.tsx
+msgid "Throw away"
+msgstr "تخلَّ عنها"
+
+#: src/map/map-view.tsx
+msgid "Map arranged"
+msgstr "رُتّبت الخريطة"
+
+#: src/map/map-view.tsx
+msgid "Someone arranged this map since you opened it"
+msgstr "رتّب شخص آخر هذه الخريطة منذ فتحتها"
+
+#: src/map/map-view.tsx
+msgid "Couldn’t save the map"
+msgstr "تعذّر حفظ الخريطة"
+
+#: src/map/map-view.tsx
+msgid "Drag anything to move it. Drop small things on a counter, desk, shelf or box. Drag a room’s amber corner to resize it."
+msgstr "اسحب أي شيء لنقله. ضع الأشياء الصغيرة على سطح أو مكتب أو رف أو صندوق. اسحب الزاوية الكهرمانية للغرفة لتغيير حجمها."
+
+#: src/map/map-view.tsx
+msgid "Drag on empty ground to draw a new room on this floor."
+msgstr "اسحب على أرض فارغة لرسم غرفة جديدة في هذا الطابق."
+
+#: src/map/map-view.tsx
+msgid "Rooms can’t overlap. Draw on empty ground."
+msgstr "لا يمكن أن تتداخل الغرف. ارسم على أرض فارغة."
+
+#: src/map/map-view.tsx
+msgid "Map of {name}"
+msgstr "خريطة {name}"
+
+#: src/map/map-view.tsx
+msgid "This browser can’t draw the map. The list below has everything on it."
+msgstr "لا يستطيع هذا المتصفح رسم الخريطة. القائمة أدناه تحتوي كل شيء."
+
+#: src/map/map-view.tsx
+msgid "Where you are on the map"
+msgstr "مكانك على الخريطة"
+
+#: src/map/map-view.tsx
+msgid "View"
+msgstr "العرض"
+
+#: src/map/map-view.tsx
+msgid "3D"
+msgstr "ثلاثي الأبعاد"
+
+#: src/map/map-view.tsx
+msgid "Plan"
+msgstr "مخطط"
+
+#: src/map/map-view.tsx
+msgid "Saving…"
+msgstr "جارٍ الحفظ…"
+
+#: src/map/map-view.tsx
+msgid "Arrange"
+msgstr "ترتيب"
+
+#: src/map/map-view.tsx
+msgid "Pins"
+msgstr "الدبابيس"
+
+#: src/map/map-view.tsx
+msgid "Arrange tool"
+msgstr "أداة الترتيب"
+
+#: src/map/map-view.tsx
+msgid "Draw a room"
+msgstr "ارسم غرفة"
+
+#: src/map/map-view.tsx
+msgid "Add a floor"
+msgstr "أضف طابقًا"
+
+#: src/map/map-view.tsx
+msgid "All floors"
+msgstr "كل الطوابق"
+
+#: src/map/map-view.tsx
+msgid "Zoom in"
+msgstr "تكبير"
+
+#: src/map/map-view.tsx
+msgid "Zoom out"
+msgstr "تصغير"
+
+#: src/map/map-view.tsx
+msgid "Turn left"
+msgstr "تدوير لليسار"
+
+#: src/map/map-view.tsx
+msgid "Turn right"
+msgstr "تدوير لليمين"
+
+#: src/map/map-view.tsx
+msgid "Show the whole floor"
+msgstr "اعرض الطابق كاملًا"
+
+#: src/map/map-view.tsx
+msgid "Detailed models"
+msgstr "نماذج مفصّلة"
+
+#: src/map/map-view.tsx
+msgid "Places on this level"
+msgstr "الأماكن في هذا الطابق"
+
+#: src/map/map-view.tsx
+msgid "Furniture, plants and the AC units are free models from Poly Haven (CC0), shrunk for phones. Turn off Detailed models to download none."
+msgstr "الأثاث والنباتات ووحدات التكييف نماذج مجانية من Poly Haven ‏(CC0)، مُصغَّرة للهواتف. أوقف «نماذج مفصّلة» كي لا يُنزَّل أي منها."
+
+#: src/components/places/contents-list.tsx
+msgid "Map"
+msgstr "خريطة"
+
+#: src/map/whats-in.tsx
+msgid "Nothing here."
+msgstr "لا شيء هنا."
+
+#: src/map/whats-in.tsx
+msgid "Show fewer"
+msgstr "عرض أقل"
+
+#: src/map/whats-in.tsx
+msgid "Show {0} more"
+msgstr "عرض {0} أخرى"
+
+#: src/map/whats-in.tsx
+msgid "Nothing here yet."
+msgstr "لا شيء هنا بعد."
+
+#: src/map/whats-in.tsx
+msgid "What’s in {name}"
+msgstr "ما في {name}"
+
+#: src/map/whats-in.tsx
+msgid "{0, plural, one {# floor} other {# floors}}"
+msgstr "{0, plural, zero {لا طوابق} one {طابق واحد} two {طابقان} few {# طوابق} many {# طابقًا} other {# طابق}}"
+
+#: src/map/whats-in.tsx
+msgid "<0>{0}</0> low"
+msgstr "<0>{0}</0> على وشك النفاد"
+
+#: src/map/whats-in.tsx
+msgid "<0>{0}</0> lent"
+msgstr "<0>{0}</0> مُعار"
+
+#: src/map/whats-in.tsx
+msgid "<0>{0}</0> due"
+msgstr "<0>{0}</0> مستحق"
+
+#: src/map/whats-in.tsx
+msgid "The map lists the first {0} things; search the location for the rest."
+msgstr "تعرض الخريطة أول {0} من الأشياء؛ ابحث في الموقع عن الباقي."
+
+#: src/map/whats-in.tsx
+msgid "Find a thing or a short ID"
+msgstr "ابحث عن شيء أو معرّف قصير"
+
+#: src/map/whats-in.tsx
+msgid "By room"
+msgstr "حسب الغرفة"
+
+#: src/map/whats-in.tsx
+msgid "Needs attention"
+msgstr "يحتاج انتباهًا"
+
+#: src/components/places/contents-list.tsx
+msgid "map"
+msgstr "خريطة"
