@@ -58,7 +58,7 @@ scoped transaction), `view.ts` (response shapes) and `undo.ts` (in-app undo hand
 | `files` | Uploads, attachments, signed file serving, PDF text |
 | `fuel` | Fuel and charging entries |
 | `history` | History and the activity feed |
-| `home` | The home screen's checklist, attention panel and hints |
+| `home` | The home screen's checklist, attention counts, overview (cards, tiles, Insights teaser) and hints |
 | `http` | `buildApp()`, conventions, errors, module gating, health, the web bundle |
 | `imports` | CSV, Homebox and Kept archive imports |
 | `inbox` | The review inbox and bulk actions |

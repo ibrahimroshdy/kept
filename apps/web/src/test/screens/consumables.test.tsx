@@ -166,15 +166,19 @@ describe('Keep at least on the thing page', { timeout: 20_000 }, () => {
   });
 });
 
-describe('Home’s Low stock row', { timeout: 20_000 }, () => {
-  it('counts the batteries, last in the panel, and opens Consumables', async () => {
+describe('Home’s Low stock tile', { timeout: 20_000 }, () => {
+  it('counts the batteries, last of the six tiles, and opens Consumables', async () => {
     await renderApp('/');
     const heading = await screen.findByRole('heading', { name: 'Needs you' }, { timeout: 3000 });
     const panel = heading.closest('section') as HTMLElement;
-    const links = within(panel).getAllByRole('link');
-    const last = links[links.length - 1] as HTMLElement;
-    expect(last.querySelector('[data-title]')?.textContent).toBe('Low stock');
-    expect(last).toHaveAttribute('href', '/consumables?f.state=low');
+    const low = within(panel).getByRole('link', { name: /^Low stock/ });
+    const fixed = within(panel)
+      .getAllByRole('link')
+      .map((r) => r.querySelector('[data-title]')?.textContent)
+      .slice(0, 6);
+    expect(fixed.at(-1)).toBe('Low stock');
+    expect(low).toHaveAttribute('href', '/consumables?f.state=low');
+    expect(low).not.toHaveAttribute('data-zero');
   });
 
   it('is hidden where the module is off', async () => {

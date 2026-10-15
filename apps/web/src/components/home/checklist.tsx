@@ -4,8 +4,10 @@
  *
  * - Over plain HTTP an instance admin's first step is "Put Kept on HTTPS" (D193). The server
  *   can't see the scheme behind a proxy, so this client adds it.
- * - Finished steps fold into one "Done" row, as in the frame; open steps follow in the server's
- *   order, each with its action where step 2 has one (printing labels and AI arrive later).
+ * - D240 (the approved Home design): one line, a progress bar, "4 of 6 done" and the next step;
+ *   the chevron opens the steps (open ones first, each with its action, then one "Done" row for
+ *   the finished ones), and × hides it for good with Undo in the toast. Only Help brings it back
+ *   (routes/_app/help.tsx); Home no longer has its own "Show Get started".
  * - The server leaves out "invite" and "connect AI" for invited members, and "connect AI" on
  *   Essentials (D191). A member who joined someone's home has one, so "your first home" counts
  *   as done ("Joined Home") rather than asking her to make another.
@@ -16,9 +18,10 @@
  * - It disappears when every step is done.
  */
 import { can } from '@kept/shared';
-import { Plural, Trans, useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useId, useRef, useState } from 'react';
+import { Button as AriaButton } from 'react-aria-components';
 import { getAdminStatus } from '@/api/admin';
 import { api } from '@/api/client';
 import { inventoryPaths as p } from '@/api/inventory/paths';
@@ -26,7 +29,7 @@ import { inventoryKeys } from '@/api/inventory/queries';
 import type { ChecklistKey, HomeResponse, UpdateHintBody } from '@/api/inventory/types';
 import { keys } from '@/api/queries';
 import type { LocationSummary, Me } from '@/api/types';
-import { CheckIcon, XIcon } from '@/components/icons';
+import { CheckIcon, ChevronDownIcon, XIcon } from '@/components/icons';
 import { LinkButton, Notice } from '@/components/page';
 import { CreateThingSheet } from '@/components/things/create-sheet';
 import { Button } from '@/components/ui/button';
@@ -134,6 +137,10 @@ export function GetStarted({
   const f = useFormat();
   const nameOf = useLocationName();
   const [sheet, setSheet] = useState<'add' | 'install' | null>(null);
+  // One line until opened (D240): the steps are a tap away, not the biggest thing on Home.
+  const [expanded, setExpanded] = useState(false);
+  const labelId = useId();
+  const stepsId = useId();
   const qc = useQueryClient();
 
   const shared = locations.filter((l) => l.kind !== 'personal');
@@ -278,61 +285,76 @@ export function GetStarted({
   const finished = steps.filter((s) => s.done);
   const open = steps.filter((s) => !s.done);
   if (openStepCount(home, me, locations) === 0) return null;
-  const https = open.filter((s) => s.key === 'https');
-  const rest = open.filter((s) => s.key !== 'https');
-  // `done` and `total` keep step 1's message, so its Arabic stays.
+  const next = open[0];
+  // `done` and `total` keep the reader's digits (D143).
   const done = f.num(finished.length);
   const total = f.num(steps.length);
+  const title = next?.title ?? '';
 
   return (
-    <section
-      aria-labelledby="get-started"
-      className={cn(
-        'grid content-start gap-3 rounded-[10px] border border-line bg-surface p-3.5',
-        className,
-      )}
-    >
-      <div className="flex items-start gap-2">
-        <div className="grid flex-1 gap-0.5">
-          <h2 id="get-started" className="m-0 font-semibold text-[16px]">
-            <Trans>Get started</Trans>
-          </h2>
-          <p className="m-0 text-small text-ink-2">
-            <Plural
-              value={open.length}
-              one="One more step and Kept is set up."
-              other="# more steps and Kept is set up."
-            />
-          </p>
-        </div>
-        <span className="rounded-[3px] bg-amber px-1.5 py-1 font-semibold text-[12px] leading-none text-amber-ink">
-          <Trans>
-            {done} of {total}
-          </Trans>
-        </span>
-        <Button variant="ghost" size="icon" aria-label={t`Hide Get started`} onPress={onHide}>
+    <section aria-labelledby={labelId} className={cn('grid content-start gap-2', className)}>
+      <div className="flex items-center gap-2 rounded-xl border border-line bg-surface py-1.5 ps-2 pe-1.5">
+        <h2 className="m-0 flex min-w-0 flex-1">
+          <AriaButton
+            aria-expanded={expanded}
+            aria-controls={expanded ? stepsId : undefined}
+            onPress={() => setExpanded((x) => !x)}
+            className="flex min-h-11 min-w-0 flex-1 cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 rounded-lg p-1.5 text-start font-normal outline-none data-focus-visible:outline-2 data-focus-visible:outline-info data-hovered:bg-sunken"
+          >
+            <span id={labelId} className="font-semibold text-[14px] text-ink">
+              <Trans>Get started</Trans>
+            </span>
+            <span
+              aria-hidden="true"
+              className="relative h-1.5 w-[110px] shrink-0 overflow-hidden rounded-full bg-sunken @max-[559px]/home:w-[84px]"
+            >
+              <span
+                className="absolute inset-y-0 start-0 rounded-full bg-amber"
+                style={{ width: `${(finished.length / Math.max(1, steps.length)) * 100}%` }}
+              />
+            </span>
+            <span className="text-[13px] text-ink-2 tabular-nums">
+              <Trans>
+                {done} of {total} done
+              </Trans>
+            </span>
+            {next ? (
+              <span className="text-[13px] text-ink-2 @max-[559px]/home:hidden">
+                <Trans>
+                  Next: <strong className="font-medium text-ink">{title}</strong>
+                </Trans>
+              </span>
+            ) : null}
+          </AriaButton>
+        </h2>
+        <ChevronDownIcon
+          className={cn(
+            'size-5 shrink-0 text-ink-3 transition-transform',
+            expanded && 'rotate-180',
+          )}
+        />
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={t`Hide Get started for good`}
+          onPress={onHide}
+        >
           <XIcon />
         </Button>
       </div>
-      <div aria-hidden="true" className="flex gap-1">
-        {[...finished, ...open].map((s) => (
-          <span
-            key={s.key}
-            className={cn('h-1 flex-1 rounded-full', s.done ? 'bg-ok' : 'bg-sunken')}
-          />
-        ))}
-      </div>
-      <ul className="m-0 grid list-none gap-0 p-0 [&>li+li]:border-t [&>li+li]:border-line">
-        {https.map((s) => (
-          <StepRow key={s.key} title={s.title} body={s.body} action={s.action} />
-        ))}
-        {finished.length > 0 ? (
-          <StepRow done title={t`Done`} body={finished.map((s) => s.doneLabel).join(sep())} />
-        ) : null}
-        {rest.map((s) => (
-          <StepRow key={s.key} title={s.title} body={s.body} action={s.action} />
-        ))}
-      </ul>
+      {expanded ? (
+        <ul
+          id={stepsId}
+          className="m-0 grid list-none gap-0 rounded-xl border border-line bg-surface px-3.5 py-1.5 [&>li+li]:border-t [&>li+li]:border-line"
+        >
+          {open.map((s) => (
+            <StepRow key={s.key} title={s.title} body={s.body} action={s.action} />
+          ))}
+          {finished.length > 0 ? (
+            <StepRow done title={t`Done`} body={finished.map((s) => s.doneLabel).join(sep())} />
+          ) : null}
+        </ul>
+      ) : null}
       {sheet === 'add' && addTo ? (
         <CreateThingSheet
           isOpen
@@ -362,33 +384,28 @@ function StepRow({
 }) {
   const { t } = useLingui();
   return (
-    <li className="flex items-center gap-3 py-2.5">
+    <li className="flex flex-wrap items-center gap-3 py-2.5">
       <span
         className={cn(
-          'grid size-6 shrink-0 place-items-center rounded-md border-2 [&_svg]:size-4',
-          done ? 'border-ok bg-ok text-surface' : 'border-line',
+          'grid size-[22px] shrink-0 place-items-center rounded-full [&_svg]:size-3.5',
+          done ? 'bg-ok text-surface' : 'border-[1.5px] border-ink-3 border-dashed',
         )}
       >
-        {done ? <CheckIcon /> : null}
+        {done ? <CheckIcon strokeWidth={2.4} /> : null}
         <span className="sr-only">{done ? t`Done` : t`Not done yet`}</span>
       </span>
-      <div className="grid min-w-0 flex-1 gap-0.5">
-        <div data-title className={cn('font-semibold text-[15px]', done && 'text-ink-2')}>
+      <div className="grid min-w-48 flex-1 gap-0.5">
+        <div data-title className={cn('font-semibold text-[14px]', done && 'text-ink-2')}>
           {title}
         </div>
-        <div className="text-small text-ink-2 [overflow-wrap:anywhere]">{body}</div>
+        <div
+          className={cn('text-[13px] [overflow-wrap:anywhere]', done ? 'text-ink-3' : 'text-ink-2')}
+        >
+          {body}
+        </div>
       </div>
       {action}
     </li>
-  );
-}
-
-/** Once dismissed and still unfinished: bring it back (Help does this from a later step, §8). */
-export function ShowGetStarted({ onShow }: { onShow: () => void }) {
-  return (
-    <Button variant="ghost" size="small" className="justify-self-start" onPress={onShow}>
-      <Trans>Show Get started</Trans>
-    </Button>
   );
 }
 

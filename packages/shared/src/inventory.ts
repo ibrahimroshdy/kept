@@ -107,3 +107,20 @@ export const DERIVED_STATES = [
   'in_repair',
 ] as const;
 export type DerivedState = (typeof DERIVED_STATES)[number];
+
+/**
+ * Home's Recent activity chips (1.6, D240): the audit actions behind Added, Moved and Checked, as
+ * `GET /api/v1/activity?kind=` filters them. Added: a thing or place made, a capture included;
+ * Moved: a thing or place moved; Checked: a box check, Mark seen, Not here.
+ */
+export const ACTIVITY_KINDS = {
+  added: ['thing.create', 'thing.capture', 'place.create'],
+  moved: ['thing.move', 'place.move'],
+  checked: ['box.check', 'thing.seen', 'thing.not_here'],
+} as const;
+export type ActivityKind = keyof typeof ACTIVITY_KINDS;
+export const ACTIVITY_KIND_IDS = [
+  'added',
+  'moved',
+  'checked',
+] as const satisfies readonly ActivityKind[];

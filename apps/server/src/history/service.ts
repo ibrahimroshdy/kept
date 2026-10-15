@@ -1,4 +1,10 @@
-import { LEDGER_TASKS, type LedgerTask, tsQuery } from '@kept/shared';
+import {
+  ACTIVITY_KIND_IDS,
+  ACTIVITY_KINDS,
+  LEDGER_TASKS,
+  type LedgerTask,
+  tsQuery,
+} from '@kept/shared';
 import type pg from 'pg';
 import { z } from 'zod';
 import {
@@ -131,6 +137,8 @@ export const ActivityQuery = HistoryQuery.extend({
   to: When.optional(),
   /** Words in the name of what the event is about, or of who did it (T27 decision). */
   q: z.string().trim().max(200).optional(),
+  /** Home's chips (1.6, D240): what was added, moved or checked (ACTIVITY_KINDS). */
+  kind: z.enum(ACTIVITY_KIND_IDS).optional(),
 });
 export type ActivityQuery = z.infer<typeof ActivityQuery>;
 
@@ -747,6 +755,10 @@ export async function activity(
     where.add((v) =>
       matchOf(`e.entity_type = ANY (${v(entityType.values)}::text[])`, entityType.not),
     );
+  }
+  if (query.kind) {
+    const actions = ACTIVITY_KINDS[query.kind];
+    where.add((v) => `e.action = ANY (${v([...actions])}::text[])`);
   }
   if (query.from) {
     const from = query.from;

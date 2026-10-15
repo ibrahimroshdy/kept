@@ -138,7 +138,7 @@ export const fromUnits = (n: bigint): string => {
 };
 
 /** Per-currency sums, in insertion order then sorted by currency code. */
-class Sums {
+export class Sums {
   readonly by = new Map<string, bigint>();
   add(currency: string | null, amount: string | null): void {
     if (!currency || amount === null) return;
@@ -211,8 +211,9 @@ async function locationsInScope(
   return out;
 }
 
-const shownOf = (locs: readonly InScope[]) => locs.filter((l) => l.gate.showMoney).map((l) => l.id);
-const hiddenOf = (locs: readonly InScope[]) =>
+const shownOf = (locs: readonly Pick<InScope, 'id' | 'gate'>[]) =>
+  locs.filter((l) => l.gate.showMoney).map((l) => l.id);
+const hiddenOf = (locs: readonly Pick<InScope, 'id' | 'gate'>[]) =>
   locs.filter((l) => !l.gate.showMoney).map((l) => l.id);
 
 const SHORT_CODE = (col: string, alias: string) =>
@@ -224,12 +225,15 @@ const SHORT_CODE = (col: string, alias: string) =>
 // the sum of its priced lines (quantity × unit price); one with neither is "unpriced".
 // ---------------------------------------------------------------------------------------------
 
-async function spending(
+/** Also Home's Insights teaser (D240), over `fullYears` full years before this one, so its figures
+ * are this section's. Reads only `id` and `gate` of each location. */
+export async function spending(
   client: pg.ClientBase,
-  locs: readonly InScope[],
+  locs: readonly Pick<InScope, 'id' | 'gate'>[],
   thisYear: number,
+  fullYears = SPENDING_YEARS,
 ): Promise<Insights['spending']> {
-  const from = thisYear - SPENDING_YEARS;
+  const from = thisYear - fullYears;
   const { rows } = await client.query<{
     year: number;
     currency: string | null;

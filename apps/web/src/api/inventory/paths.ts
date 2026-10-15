@@ -122,6 +122,8 @@ export const inventoryPaths = {
 
   // ----- home and hints (task 22) -----
   home: `${V1}/home`,
+  /** Home's own read (1.6, D240): the location cards, the tiles' first items, the teaser. */
+  homeOverview: `${V1}/home/overview`,
   hints: `${V1}/me/hints`,
   hint: (key: string) => `${V1}/me/hints/${seg(key)}`,
 
@@ -222,6 +224,7 @@ export const METHODS: Record<keyof typeof inventoryPaths, readonly Method[]> = {
   locationActors: ['GET'],
   undo: ['POST'],
   home: ['GET'],
+  homeOverview: ['GET'],
   hints: ['GET'],
   hint: ['PUT'],
   reportsInventory: ['POST'],

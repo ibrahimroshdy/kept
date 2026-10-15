@@ -1,6 +1,8 @@
 /**
- * The signed-in gate, Home (task 29: the computed Get-started checklist, the attention panel,
- * recent activity and the location cards) and the app frame.
+ * The signed-in gate, Home (task 29; D240's redesign: Get started as one line, Needs you as tiles,
+ * the location cards with map previews, shortcuts, recent activity with its chips and Photos to
+ * review, the Insights teaser; today, day one, a viewer, Money off, a phone width, Arabic) and the
+ * app frame.
  */
 import { screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -18,6 +20,7 @@ import {
 import { type MockApi, MockReply } from '@/api/mock/server';
 import { paths } from '@/api/paths';
 import type { LocationDetail } from '@/api/types';
+import { ensureVehiclesSeeded } from '@/api/vehicles/mock';
 import { assistantStore, setDraft, showThread } from '@/assistant/store';
 import { ATTENTION_ORDER } from '@/components/home/attention';
 import { findHeading, pathOf, renderApp } from '@/test/app';
@@ -92,7 +95,13 @@ const homeIs =
   };
 
 const section = async (name: string) => (await findHeading(name)).closest('section') as HTMLElement;
-const checklistItems = async () => within(await section('Get started')).getAllByRole('listitem');
+/** Get started, one line (D240): its region, and its steps once the chevron opens them. */
+const startedRegion = () => screen.findByRole('region', { name: 'Get started' }, { timeout: 3000 });
+async function openSteps(user: { click: (el: Element) => Promise<void> }) {
+  const region = await startedRegion();
+  await user.click(within(region).getByRole('button', { name: /^Get started/ }));
+  return within(region).getAllByRole('listitem');
+}
 
 describe('the signed-in gate', () => {
   it('sends a fresh server to first-run setup', async () => {
@@ -169,16 +178,50 @@ describe('Home', () => {
     ).toBeInTheDocument();
   });
 
-  it('first run: the Personal card and Create your first home, with no checklist', async () => {
+  it('today: every section, in the one-column order a phone shows', async () => {
+    await renderApp('/');
+    await section('Locations');
+    for (const name of ['Needs you', 'Shortcuts', 'Recent activity', 'Insights'])
+      expect(await section(name)).toBeInTheDocument();
+    expect(await startedRegion()).toBeInTheDocument();
+    // The banners stay above Needs you; the Invite card sits under the locations (D194).
+    expect(screen.getByText('Invite people to Garage')).toBeInTheDocument();
+    const order = (name: string) =>
+      Number(
+        [...(screen.getByRole('heading', { name }).closest('section')?.classList ?? [])]
+          .find((c) => /^order-\d$/.test(c))
+          ?.slice(6),
+      );
+    expect(
+      ['Needs you', 'Shortcuts', 'Locations', 'Recent activity', 'Insights'].map(order),
+    ).toEqual([3, 4, 5, 7, 8]);
+    expectLogicalOnly();
+  });
+
+  it('day one: the welcome, the steps after it, the Personal card, three shortcuts and an empty Recent', async () => {
     await renderApp('/', { state: firstRunScenario() });
     expect(await findHeading('Welcome, Ibrahim')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Create your first home/ })).toHaveAttribute(
       'href',
       '/locations/new',
     );
+    expect(await screen.findByText(/^Then: add 3 things/)).toBeInTheDocument();
     expect(screen.getByText(/captures with no location land here/)).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Get started' })).not.toBeInTheDocument();
+    // No checklist: its first step is the button. Nothing to count yet.
+    expect(screen.queryByRole('region', { name: 'Get started' })).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Needs you' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Insights' })).not.toBeInTheDocument();
+    const shortcuts = await section('Shortcuts');
+    expect([...shortcuts.querySelectorAll('a, button')].map((b) => b.textContent)).toEqual([
+      'Capture',
+      'Scan a label',
+      'Add a thing',
+    ]);
+    const recent = await section('Recent activity');
+    expect(
+      await within(recent).findByText('Nothing yet. What you add, move and check shows here.'),
+    ).toBeInTheDocument();
+    expect(within(recent).queryByRole('link', { name: 'All activity' })).not.toBeInTheDocument();
     // Over plain HTTP the admin still hears about HTTPS (D193).
     expect(screen.getByText('Put Kept on HTTPS')).toBeInTheDocument();
   });
@@ -196,7 +239,7 @@ describe('Home', () => {
     ]);
   });
 
-  it('a location card says how many things need a place, from /home', async () => {
+  it('a location card: things, places, value and its flags, with a map preview', async () => {
     await renderApp('/', {
       setup: homeIs({
         locations: [
@@ -208,11 +251,18 @@ describe('Home', () => {
     });
     const cards = await section('Locations');
     const home = within(cards).getByRole('link', { name: /Home.*Apartment/ });
-    expect(home).toHaveTextContent('12 things need a place');
     expect(home).toHaveAttribute('href', `/loc/home-0000b002`);
+    expect(home).toHaveTextContent('12 things need a place');
+    await waitFor(() => expect(home).toHaveTextContent(/places/));
+    // The mock's Insights: Home holds EGP and USD values, each its own, never converted.
+    expect(home).toHaveTextContent(/EGP\s?122,800\.00 · \$150\.00 value/);
+    expect(home).toHaveTextContent('1 low');
+    expect(home.querySelector('svg circle[data-pin]')).not.toBeNull();
     expect(within(cards).getByRole('link', { name: /Garage/ })).toHaveTextContent(
       '1 thing needs a place',
     );
+    // Money is off in the Garage: no value line at all.
+    expect(within(cards).getByRole('link', { name: /Garage/ })).not.toHaveTextContent('value');
     expect(within(cards).getByRole('link', { name: /Personal/ })).not.toHaveTextContent(
       'need a place',
     );
@@ -220,46 +270,94 @@ describe('Home', () => {
 
   it('renders in Arabic, right to left, with Eastern digits', async () => {
     await renderApp('/', { locale: 'ar' });
-    expect(await findHeading('خطوات البدء')).toBeInTheDocument();
+    expect(await screen.findByText('تم ٣ من ٧')).toBeInTheDocument();
+    expect(await findHeading('ما يحتاج إليك')).toBeInTheDocument();
     expect(document.documentElement).toHaveAttribute('dir', 'rtl');
-    expect(screen.getByText('٣ من ٧')).toBeInTheDocument();
     // The cards count what /home counted (the mock's inventory), in Eastern digits.
     expect(within(await section('المواقع')).getByRole('link', { name: /Home/ })).toHaveTextContent(
       '١٢ شيئًا',
     );
+    expect(await findHeading('اختصارات')).toBeInTheDocument();
     expectLogicalOnly();
   });
 
   it('Western digits when the person chooses them', async () => {
     await renderApp('/', { locale: 'ar', digits: 'western' });
-    expect(await screen.findByText('3 من 7')).toBeInTheDocument();
+    expect(await screen.findByText('تم 3 من 7')).toBeInTheDocument();
+  });
+
+  it('at a phone width nothing is cut off with an ellipsis', async () => {
+    const { container } = await renderApp('/');
+    await section('Recent activity');
+    await waitFor(() =>
+      expect(within(screen.getByRole('main')).getAllByRole('article').length).toBe(3),
+    );
+    const clipped = [...container.querySelectorAll<HTMLElement>('[class]')].filter((el) =>
+      /(^|\s)(truncate|text-ellipsis|line-clamp-\d)(\s|$)/.test(el.getAttribute('class') ?? ''),
+    );
+    expect(clipped.map((el) => el.textContent)).toEqual([]);
+  });
+
+  it('asks for Home once each, and only Home asks for its overview', async () => {
+    const asked: string[] = [];
+    const { mock } = await renderApp('/', {
+      setup: homeIs({
+        attention: {
+          toReview: 0,
+          uncertain: 0,
+          longUnseen: 0,
+          unplaced: 0,
+          overdue: 0,
+          due: 0,
+          expiring: 0,
+          lentOut: 0,
+          borrowedIn: 0,
+        },
+        agendaBySource: { overdue: {}, due: {}, expiring: {} },
+      }),
+    });
+    await section('Shortcuts');
+    await waitFor(() => expect(mock.calls.some((c) => c.path === p.homeOverview)).toBe(true));
+    for (const c of mock.calls) if (c.method === 'GET') asked.push(c.path);
+    expect(asked.filter((x) => x === p.homeOverview)).toHaveLength(1);
+    expect(asked.filter((x) => x === p.home)).toHaveLength(1);
+    // Nothing waits in the inbox, the counts are /home's: no inbox, agenda, loans or Insights.
+    expect(asked).not.toContain('/api/v1/inbox');
+    expect(asked).not.toContain(hp.agenda);
+    expect(asked).not.toContain(hp.loans);
+    expect(asked).not.toContain('/api/v1/insights');
   });
 });
 
-describe('Home: Get started (D138, D191, D193)', () => {
-  it('over plain HTTP the admin sees HTTPS first; done steps fold into one Done row', async () => {
-    await renderApp('/');
-    const items = await checklistItems();
+describe('Home: Get started (D138, D191, D193, D240)', () => {
+  it('is one line: progress, "3 of 7 done", the next step; the chevron opens the steps', async () => {
+    const { user } = await renderApp('/');
+    const started = await startedRegion();
+    expect(within(started).getByText('3 of 7 done')).toBeInTheDocument();
+    expect(within(started).getByText('Put Kept on HTTPS')).toBeInTheDocument();
+    expect(within(started).queryByRole('listitem')).not.toBeInTheDocument();
+    const items = await openSteps(user);
     expect(items.map((i) => i.querySelector('[data-title]')?.textContent)).toEqual([
       'Put Kept on HTTPS',
-      'Done',
       'Print your first label',
       'Connect an AI provider',
       'Install on your phone',
+      'Done',
     ]);
-    expect(items[1]).toHaveTextContent('Created Home · Added 3 things · Invited someone');
-    const checklist = await section('Get started');
-    expect(within(checklist).getByText('3 of 7')).toBeInTheDocument();
-    expect(within(checklist).getByText('4 more steps and Kept is set up.')).toBeInTheDocument();
+    expect(items[4]).toHaveTextContent('Created Home · Added 3 things · Invited someone');
+    expect(within(started).getByRole('button', { name: /^Get started/ })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
   });
 
   it('over HTTPS there is no HTTPS step', async () => {
     https.plain = false;
-    await renderApp('/');
-    const items = await checklistItems();
-    expect(items[0]).toHaveTextContent('Done');
+    const { user } = await renderApp('/');
+    expect(within(await startedRegion()).getByText('3 of 6 done')).toBeInTheDocument();
+    const items = await openSteps(user);
+    expect(items[0]).toHaveTextContent('Print your first label');
     expect(screen.queryByText('Put Kept on HTTPS')).not.toBeInTheDocument();
-    expect(screen.getByText('3 of 6')).toBeInTheDocument();
   });
 
   it('asks the instance admin to set up email while mail is off, with how', async () => {
@@ -269,9 +367,11 @@ describe('Home: Get started (D138, D191, D193)', () => {
         m.state.admin.status.mail.configured = false;
       },
     });
-    expect(await screen.findByText('Set up email')).toBeInTheDocument();
-    expect(screen.getByText('3 of 7')).toBeInTheDocument();
-    const step = screen.getByText('Set up email').closest('li') as HTMLElement;
+    await waitFor(async () =>
+      expect(within(await startedRegion()).getByText('3 of 7 done')).toBeInTheDocument(),
+    );
+    const items = await openSteps(user);
+    const step = items.find((i) => i.textContent?.includes('Set up email')) as HTMLElement;
     await user.click(within(step).getByRole('button', { name: 'How' }));
     const dialog = await screen.findByRole('dialog', { name: 'Set up email' });
     expect(within(dialog).getByText('KEPT_SMTP_URL')).toBeInTheDocument();
@@ -282,10 +382,10 @@ describe('Home: Get started (D138, D191, D193)', () => {
     const { user } = await renderApp('/', {
       setup: homeIs({ checklist: checklist({ threeThings: false }) }),
     });
-    const items = await checklistItems();
+    const items = await openSteps(user);
     const three = items.find((i) => i.textContent?.includes('Add 3 things')) as HTMLElement;
     expect(three).toBeTruthy();
-    expect(items[1]).not.toHaveTextContent('Added 3 things');
+    expect(items.at(-1)).not.toHaveTextContent('Added 3 things');
     await user.click(within(three).getByRole('button', { name: 'Add' }));
     expect(await screen.findByRole('dialog', { name: 'Add a thing' })).toBeInTheDocument();
   });
@@ -293,69 +393,48 @@ describe('Home: Get started (D138, D191, D193)', () => {
   it('on Essentials there is no AI step (D191)', async () => {
     const state = ownerScenario();
     for (const l of state.locations) l.preset = 'essentials';
-    await renderApp('/', { state });
-    await checklistItems();
+    const { user } = await renderApp('/', { state });
+    await openSteps(user);
     expect(screen.queryByText('Connect an AI provider')).not.toBeInTheDocument();
-    expect(screen.getByText('Print your first label')).toBeInTheDocument();
+    expect(screen.getAllByText('Print your first label').length).toBeGreaterThan(0);
   });
 
   it('an invited member: no invite or AI step, and the home he joined counts', async () => {
-    await renderApp('/', { state: memberScenario() });
-    const items = await checklistItems();
-    expect(items[0]).toHaveTextContent('Done');
-    expect(items[0]).toHaveTextContent('Joined Home');
+    const { user } = await renderApp('/', { state: memberScenario() });
+    const items = await openSteps(user);
+    const done = items.at(-1) as HTMLElement;
+    expect(done).toHaveTextContent('Done');
+    expect(done).toHaveTextContent('Joined Home');
     expect(screen.queryByText('Invite someone')).not.toBeInTheDocument();
     expect(screen.queryByText('Connect an AI provider')).not.toBeInTheDocument();
     expect(screen.queryByText(/Invite people to/)).not.toBeInTheDocument();
     expect(screen.queryByText('Put Kept on HTTPS')).not.toBeInTheDocument();
   });
 
-  it('a viewer: no invite step or card, the panel still shows, and Add goes to his Personal', async () => {
-    const state = memberScenario();
-    const home = state.locations.find((l) => l.id === IDS.home) as LocationDetail;
-    home.role = 'viewer';
-    const { user } = await renderApp('/', {
-      state,
-      setup: homeIs({
-        checklist: checklist({ threeThings: false }),
-        attention: { toReview: 0, uncertain: 2, longUnseen: 0, unplaced: 0 },
-      }),
-    });
-    // What needs attention is still shown: a viewer can look.
-    expect(await section('Needs you')).toBeInTheDocument();
-    expect(screen.queryByText(/Invite people to/)).not.toBeInTheDocument();
-    // His Personal location is his to add to (D114), so the step keeps its button.
-    const items = await checklistItems();
-    const three = items.find((i) => i.textContent?.includes('Add 3 things')) as HTMLElement;
-    await user.click(within(three).getByRole('button', { name: 'Add' }));
-    expect(await screen.findByRole('dialog', { name: 'Add a thing' })).toBeInTheDocument();
-  });
-
-  it('hide and Undo go through the server, so another phone agrees', async () => {
+  it('hide for good and Undo go through the server, so another phone agrees', async () => {
     const { user, mock } = await renderApp('/');
-    await findHeading('Get started');
-    await user.click(screen.getByRole('button', { name: 'Hide Get started' }));
-    expect(screen.queryByRole('heading', { name: 'Get started' })).not.toBeInTheDocument();
+    await startedRegion();
+    await user.click(screen.getByRole('button', { name: 'Hide Get started for good' }));
+    expect(screen.queryByRole('region', { name: 'Get started' })).not.toBeInTheDocument();
     await waitFor(() =>
       expect(mock.lastCall('PUT', p.hint('checklist'))?.body).toEqual({ dismissed: true }),
     );
     expect(mock.state.inventory.checklistDismissed).toBe(true);
+    expect(await screen.findByText('Get started hidden. Help brings it back.')).toBeInTheDocument();
     await user.click(await screen.findByRole('button', { name: 'Undo' }));
-    expect(await findHeading('Get started')).toBeInTheDocument();
+    expect(await startedRegion()).toBeInTheDocument();
     await waitFor(() =>
       expect(mock.lastCall('PUT', p.hint('checklist'))?.body).toEqual({ dismissed: false }),
     );
   });
 
-  it('dismissed elsewhere stays hidden here, and Show Get started brings it back', async () => {
+  it('dismissed elsewhere stays hidden here; only Help brings it back', async () => {
     const state = ownerScenario();
     state.inventory.checklistDismissed = true;
-    const { user, mock } = await renderApp('/', { state });
+    await renderApp('/', { state });
     await section('Locations');
-    expect(screen.queryByRole('heading', { name: 'Get started' })).not.toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Show Get started' }));
-    expect(await findHeading('Get started')).toBeInTheDocument();
-    expect(mock.lastCall('PUT', p.hint('checklist'))?.body).toEqual({ dismissed: false });
+    expect(screen.queryByRole('region', { name: 'Get started' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Show Get started' })).not.toBeInTheDocument();
   });
 
   it("step 1's hidden flag on this device moves to the server", async () => {
@@ -366,22 +445,26 @@ describe('Home: Get started (D138, D191, D193)', () => {
       expect(mock.lastCall('PUT', p.hint('checklist'))?.body).toEqual({ dismissed: true }),
     );
     expect(localStorage.getItem('kept.getStarted.hidden')).toBeNull();
-    expect(screen.queryByRole('heading', { name: 'Get started' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: 'Get started' })).not.toBeInTheDocument();
   });
 
   it('opened as the installed app, Install on your phone ticks itself', async () => {
     media(['(display-mode: standalone)']);
-    const { mock } = await renderApp('/');
+    const { user, mock } = await renderApp('/');
     await waitFor(() =>
       expect(mock.lastCall('PUT', p.hint('installed_standalone'))?.body).toEqual({ seen: true }),
     );
-    await waitFor(() => expect(screen.getByText(/Installed on your phone/)).toBeInTheDocument());
+    await waitFor(async () =>
+      expect(within(await startedRegion()).getByText('4 of 7 done')).toBeInTheDocument(),
+    );
+    await openSteps(user);
+    expect(screen.getByText(/Installed on your phone/)).toBeInTheDocument();
     expect(screen.queryByText('Install on your phone')).not.toBeInTheDocument();
   });
 
   it('How shows the install steps, iPhone first on an iPhone', async () => {
     const { user } = await renderApp('/');
-    const items = await checklistItems();
+    const items = await openSteps(user);
     const install = items.find((i) =>
       i.textContent?.includes('Install on your phone'),
     ) as HTMLElement;
@@ -406,45 +489,76 @@ describe('Home: Get started (D138, D191, D193)', () => {
       }),
     });
     await section('Locations');
-    expect(screen.queryByRole('heading', { name: 'Get started' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Show Get started' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: 'Get started' })).not.toBeInTheDocument();
   });
 });
 
-describe('Home: Needs you (D185, screens §8)', () => {
-  it('rows keep the fixed order, zero rows are hidden, and each opens its search', async () => {
+const tiles = (panel: HTMLElement) =>
+  within(panel)
+    .getAllByRole('link')
+    .map((r) => r.querySelector('[data-title]')?.textContent);
+
+describe('Home: Needs you (D185, D240, screens §8)', () => {
+  it('six fixed tiles; a zero stays, muted; the extras join only with a count', async () => {
     await renderApp('/', {
       setup: homeIs({ attention: { toReview: 2, uncertain: 0, longUnseen: 4, unplaced: 3 } }),
     });
     const panel = await section('Needs you');
-    const rows = within(panel).getAllByRole('link');
-    expect(rows.map((r) => r.querySelector('[data-title]')?.textContent)).toEqual([
-      'To review',
+    expect(tiles(panel)).toEqual([
+      'Overdue',
+      'Due',
+      'Expiring',
+      'Lent out',
+      'Uncertain',
+      'Low stock',
       'Long unseen',
-      'Unplaced',
     ]);
-    expect(rows[0]).toHaveTextContent('2');
-    expect(rows[2]).toHaveTextContent('3 things waiting for a place');
-    expect(rows.map((r) => r.getAttribute('href'))).toEqual([
-      '/search?f.state=to_review',
-      '/search?f.state=long_unseen',
-      '/search?f.state=unplaced',
-    ]);
+    const tile = (name: string) =>
+      within(panel).getByRole('link', { name: new RegExp(`^${name}`) });
+    expect(tile('Uncertain')).toHaveAttribute('data-zero', 'true');
+    expect(tile('Uncertain')).toHaveAttribute('href', '/search?f.state=uncertain');
+    expect(tile('Uncertain')).toHaveTextContent('Nothing');
+    expect(tile('Long unseen')).toHaveAccessibleName('Long unseen 4');
+    expect(tile('Long unseen')).toHaveAttribute('href', '/search?f.state=long_unseen');
+    // To review and Unplaced left Needs you (D240).
+    expect(within(panel).queryByText('To review')).not.toBeInTheDocument();
+    expect(within(panel).queryByText('Unplaced')).not.toBeInTheDocument();
   });
 
-  it('"To review" with inbox items waiting opens the inbox on Everyone’s (T22)', async () => {
+  it('each tile names its most urgent item, from the overview', async () => {
+    await renderApp('/');
+    const panel = await section('Needs you');
+    const tile = (name: string) =>
+      within(panel).getByRole('link', { name: new RegExp(`^${name}`) });
+    await waitFor(() => expect(tile('Low stock')).toHaveTextContent(/left, keep/));
+    expect(tile('Low stock')).toHaveAccessibleDescription(/AA batteries/);
+    expect(tile('Lent out')).toHaveTextContent('Murdock');
+  });
+
+  it('a module off everywhere has no tile: Lending and Consumables', async () => {
+    const state = ownerScenario();
+    for (const l of state.locations)
+      l.modules = l.modules.filter((m) => m !== 'lending' && m !== 'consumables');
+    await renderApp('/', { state });
+    const panel = await section('Needs you');
+    await waitFor(() =>
+      expect(tiles(panel).slice(0, 4)).toEqual(['Overdue', 'Due', 'Expiring', 'Uncertain']),
+    );
+    expect(tiles(panel)).not.toContain('Lent out');
+    expect(tiles(panel)).not.toContain('Low stock');
+    expect(tiles(panel)).not.toContain('Borrowed in');
+  });
+
+  it('a tile opens search with its filter applied', async () => {
     const { user, router } = await renderApp('/', {
-      setup: homeIs({
-        attention: { toReview: 5, uncertain: 0, longUnseen: 0, unplaced: 0 },
-        counts: { inbox: 4, unprintedLabels: 0 },
-      }),
+      setup: homeIs({ attention: { toReview: 0, uncertain: 1, longUnseen: 0, unplaced: 0 } }),
     });
     const panel = await section('Needs you');
-    const row = within(panel).getByRole('link', { name: /To review/ });
-    expect(row).toHaveTextContent('5 items need a look');
-    expect(row.getAttribute('href')).toBe('/inbox?f.mine=everyone');
-    await user.click(row);
-    await waitFor(() => expect(pathOf(router)).toBe('/inbox'));
+    await user.click(within(panel).getByRole('link', { name: /^Uncertain/ }));
+    await waitFor(() => expect(pathOf(router)).toBe('/search'));
+    expect(String((router.state.location.search as Record<string, unknown>)['f.state'])).toBe(
+      'uncertain',
+    );
   });
 
   it('the sidebar’s Inbox shows the open items from Home’s counts (D198)', async () => {
@@ -468,54 +582,13 @@ describe('Home: Needs you (D185, screens §8)', () => {
       'lowStock',
     ]);
   });
-
-  it('counts come from the inventory (the mock computes them like the server)', async () => {
-    await renderApp('/');
-    const panel = await section('Needs you');
-    const titles = within(panel)
-      .getAllByRole('link')
-      .map((r) => r.querySelector('[data-title]')?.textContent);
-    expect(titles[0]).toBe('To review');
-    expect(titles).toContain('Uncertain');
-  });
-
-  it('nothing needs you: no panel at all', async () => {
-    await renderApp('/', {
-      setup: homeIs({ attention: { toReview: 0, uncertain: 0, longUnseen: 0, unplaced: 0 } }),
-    });
-    await section('Locations');
-    expect(screen.queryByRole('heading', { name: 'Needs you' })).not.toBeInTheDocument();
-  });
-
-  it('a row opens search with its filter applied', async () => {
-    const { user, router } = await renderApp('/', {
-      setup: homeIs({ attention: { toReview: 0, uncertain: 1, longUnseen: 0, unplaced: 0 } }),
-    });
-    const panel = await section('Needs you');
-    await user.click(within(panel).getByRole('link', { name: /Uncertain/ }));
-    await waitFor(() => expect(pathOf(router)).toBe('/search'));
-    expect(String((router.state.location.search as Record<string, unknown>)['f.state'])).toBe(
-      'uncertain',
-    );
-  });
 });
 
-describe("Home: step 4's rows (plan T13, T27)", () => {
-  const titles = (panel: HTMLElement) =>
-    within(panel)
-      .getAllByRole('link')
-      .map((r) => r.querySelector('[data-title]')?.textContent);
-
-  it('overdue · due · expiring · lent out · borrowed in, in the §8 order', async () => {
+describe("Home: step 4's counts (plan T13, T27)", () => {
+  it('overdue · due · expiring · lent out, then borrowed in, with their links', async () => {
     await renderApp('/');
     const panel = await section('Needs you');
-    await waitFor(() => expect(titles(panel)).toContain('Borrowed in'));
-    const shown = titles(panel);
-    const order = ['Overdue', 'Due', 'Expiring', 'Lent out', 'Borrowed in'].filter((x) =>
-      shown.includes(x),
-    );
-    expect(order).toEqual(['Overdue', 'Due', 'Expiring', 'Lent out', 'Borrowed in']);
-    expect(shown.indexOf('Borrowed in')).toBeLessThan(shown.indexOf('Uncertain'));
+    await waitFor(() => expect(tiles(panel)).toContain('Borrowed in'));
     const row = (name: string) => within(panel).getByRole('link', { name: new RegExp(`^${name}`) });
     expect(row('Due').getAttribute('href')).toBe('/schedules?f.state=due');
     expect(row('Expiring').getAttribute('href')).toBe('/expiring?f.state=expiring');
@@ -524,12 +597,13 @@ describe("Home: step 4's rows (plan T13, T27)", () => {
     expect(row('Overdue').getAttribute('href')).toMatch(/^\/expiring\?f\.state=overdue/);
   });
 
-  it("a row's count is what the list it opens shows", async () => {
+  it("a tile's count is what the list it opens shows", async () => {
     const { user, router } = await renderApp('/');
     const panel = await section('Needs you');
     const overdue = await within(panel).findByRole('link', { name: /^Overdue/ });
+    await waitFor(() => expect(overdue).not.toHaveAccessibleName('Overdue ٠'));
     const n = Number(
-      (overdue.textContent ?? '')
+      (overdue.getAttribute('aria-label') ?? '')
         .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x660))
         .match(/\d+/)?.[0],
     );
@@ -539,7 +613,7 @@ describe("Home: step 4's rows (plan T13, T27)", () => {
     await waitFor(() => expect(within(list).getAllByRole('article')).toHaveLength(n));
   });
 
-  it("takes the counts and the rows' links from /home when it carries them, and asks nothing else", async () => {
+  it("takes the counts and the tiles' links from /home when it carries them, and asks nothing else", async () => {
     const asked: string[] = [];
     const { user, router } = await renderApp('/', {
       setup: (m) => {
@@ -572,26 +646,101 @@ describe("Home: step 4's rows (plan T13, T27)", () => {
       },
     });
     const panel = await section('Needs you');
-    expect(titles(panel)).toEqual(['Overdue', 'Due', 'Expiring', 'Lent out']);
     const row = (name: string) => within(panel).getByRole('link', { name: new RegExp(`^${name}`) });
+    expect(row('Overdue')).toHaveAccessibleName('Overdue 2');
     expect(row('Overdue').getAttribute('href')).toBe('/schedules?f.state=overdue');
     expect(row('Due').getAttribute('href')).toMatch(/^\/expiring\?f\.state=due/);
-    expect(row('Lent out')).toHaveTextContent('4');
+    expect(row('Lent out')).toHaveAccessibleName('Lent out 4');
+    expect(tiles(panel)).not.toContain('Borrowed in');
     expect(asked).toEqual([]);
     await user.click(row('Overdue'));
     await waitFor(() => expect(pathOf(router)).toBe('/schedules'));
   });
 
-  it('hidden with nothing on the agenda and no loans', async () => {
+  it('nothing on the agenda and no loans: the tiles stay, at zero', async () => {
     await renderApp('/', { setup: quietHousehold });
     const panel = await section('Needs you');
-    await section('Locations');
-    expect(titles(panel)).not.toContain('Overdue');
-    expect(titles(panel)).not.toContain('Lent out');
+    const row = (name: string) => within(panel).getByRole('link', { name: new RegExp(`^${name}`) });
+    await waitFor(() => expect(row('Overdue')).toHaveAttribute('data-zero', 'true'));
+    expect(row('Lent out')).toHaveAttribute('data-zero', 'true');
+    expect(tiles(panel)).not.toContain('Borrowed in');
   });
 });
 
-describe('Home: recent activity (screens §8)', () => {
+describe('Home: shortcuts and Insights (D240, D234)', () => {
+  it('Capture, Scan a label, Log a reading and Add a thing', async () => {
+    // A metered car (step 5's fixtures) puts Log a reading among them.
+    const state = ownerScenario();
+    ensureVehiclesSeeded(state);
+    const { user } = await renderApp('/', { state });
+    const shortcuts = await section('Shortcuts');
+    await waitFor(() =>
+      expect([...shortcuts.querySelectorAll('a, button')].map((b) => b.textContent)).toEqual([
+        'Capture',
+        'Scan a label',
+        'Log a reading',
+        'Add a thing',
+      ]),
+    );
+    expect(within(shortcuts).getByRole('link', { name: 'Capture' })).toHaveAttribute(
+      'href',
+      '/capture',
+    );
+    expect(within(shortcuts).getByRole('link', { name: 'Scan a label' })).toHaveAttribute(
+      'href',
+      '/scan',
+    );
+    await user.click(within(shortcuts).getByRole('button', { name: 'Add a thing' }));
+    expect(await screen.findByRole('dialog', { name: 'Add a thing' })).toBeInTheDocument();
+  });
+
+  it('the teaser: this year so far and the years before, the value, per currency, and what it leaves out', async () => {
+    await renderApp('/');
+    const teaser = await section('Insights');
+    const year = new Date().getFullYear();
+    expect(within(teaser).getByText(`Spent on things, ${year} so far`)).toBeInTheDocument();
+    expect(teaser).toHaveTextContent(/EGP\s?9,800\.00/);
+    expect(teaser).toHaveTextContent(/EGP\s?122,800\.00/);
+    expect(teaser).toHaveTextContent('$150.00');
+    expect(teaser).toHaveTextContent('36 of 136 things have a value');
+    expect(within(teaser).getByText('Leaves out Garage: Money is off there.')).toBeInTheDocument();
+    expect(within(teaser).getByRole('link', { name: 'Open' })).toHaveAttribute('href', '/insights');
+  });
+
+  it('a viewer: no amounts on the cards, no teaser, Needs you still shows, no invite card', async () => {
+    const state = memberScenario();
+    const home = state.locations.find((l) => l.id === IDS.home) as LocationDetail;
+    home.role = 'viewer';
+    await renderApp('/', { state });
+    expect(await section('Needs you')).toBeInTheDocument();
+    const cards = await section('Locations');
+    await waitFor(() =>
+      expect(within(cards).getByRole('link', { name: /Home/ })).toHaveTextContent(/places/),
+    );
+    expect(within(cards).getByRole('link', { name: /Home/ })).not.toHaveTextContent('value');
+    expect(within(cards).getByRole('link', { name: /Home/ })).toHaveTextContent('Viewer');
+    expect(screen.queryByRole('heading', { name: 'Insights' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/Invite people to/)).not.toBeInTheDocument();
+  });
+
+  it('Money off everywhere: no value and no teaser', async () => {
+    const state = ownerScenario();
+    for (const l of state.locations) l.modules = l.modules.filter((m) => m !== 'money');
+    await renderApp('/', { state });
+    const cards = await section('Locations');
+    await waitFor(() =>
+      expect(within(cards).getByRole('link', { name: /Home.*Apartment/ })).toHaveTextContent(
+        /places/,
+      ),
+    );
+    expect(within(cards).getByRole('link', { name: /Home.*Apartment/ })).not.toHaveTextContent(
+      'value',
+    );
+    expect(screen.queryByRole('heading', { name: 'Insights' })).not.toBeInTheDocument();
+  });
+});
+
+describe('Home: recent activity (screens §8, D240)', () => {
   it('three entries on the phone, with All activity', async () => {
     await renderApp('/');
     const recent = await section('Recent activity');
@@ -611,12 +760,50 @@ describe('Home: recent activity (screens §8)', () => {
     await waitFor(() => expect(within(recent).getAllByRole('article')).toHaveLength(5));
   });
 
-  it('no activity yet: no section', async () => {
+  it('the chips ask the feed for what was added, moved or checked', async () => {
+    const { user } = await renderApp('/');
+    const recent = await section('Recent activity');
+    await waitFor(() => expect(within(recent).getAllByRole('article').length).toBeGreaterThan(0));
+    expect(within(recent).getByRole('radio', { name: 'All' })).toBeChecked();
+    await user.click(within(recent).getByRole('radio', { name: 'Moved' }));
+    await waitFor(() =>
+      expect(
+        within(recent)
+          .getAllByRole('article')
+          .every((a) => /Moved/.test(a.getAttribute('aria-label') ?? '')),
+      ).toBe(true),
+    );
+  });
+
+  it('Photos to review: the inbox’s newest, everyone’s, each opening the Inbox', async () => {
+    await renderApp('/', {
+      setup: homeIs({
+        attention: { toReview: 5, uncertain: 0, longUnseen: 0, unplaced: 0 },
+        counts: { inbox: 4, unprintedLabels: 0 },
+      }),
+    });
+    const recent = await section('Recent activity');
+    expect(within(recent).getByText('Photos to review')).toBeInTheDocument();
+    expect(within(recent).getByRole('link', { name: /^Inbox/ })).toHaveAttribute(
+      'href',
+      '/inbox?f.mine=everyone',
+    );
+    // One reading waits that isn't an inbox item: its own line, to Search.
+    expect(within(recent).getByRole('link', { name: '1 reading needs a look' })).toHaveAttribute(
+      'href',
+      '/search?f.state=to_review',
+    );
+    await waitFor(() => expect(within(recent).getAllByRole('listitem').length).toBeGreaterThan(0));
+  });
+
+  it('no activity yet: Recent says what will show there', async () => {
     const state = ownerScenario();
     state.inventory.events = [];
     await renderApp('/', { state });
-    await section('Locations');
-    expect(screen.queryByRole('heading', { name: 'Recent activity' })).not.toBeInTheDocument();
+    const recent = await section('Recent activity');
+    expect(
+      await within(recent).findByText('Nothing yet. What you add, move and check shows here.'),
+    ).toBeInTheDocument();
   });
 });
 

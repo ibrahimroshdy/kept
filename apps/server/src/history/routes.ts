@@ -21,9 +21,10 @@ import {
 // GET /api/v1/things/:id/history?limit&cursor&kind    → {items: HistoryEvent[], next_cursor}
 //   `kind` (step 6, T18): `changes`, `ai` (its AI calls, `action: 'ai.call'`) or `all` (default).
 // GET /api/v1/places/:id/history?limit&cursor         → {items: HistoryEvent[], next_cursor}
-// GET /api/v1/activity?locationId*&actorId*&entityType*&not*&from&to&q&limit&cursor
+// GET /api/v1/activity?locationId*&actorId*&entityType*&not*&from&to&q&kind&limit&cursor
 //                                                     → {items: HistoryEvent[], next_cursor}
-//   `*`: repeatable, "is any of"; `not` names those that are "is none of" (D205).
+//   `*`: repeatable, "is any of"; `not` names those that are "is none of" (D205). `kind` (1.6,
+//   D240, Home's chips): `added`, `moved` or `checked` (service.ts ACTIVITY_KINDS).
 // GET /api/v1/locations/:id/actors                    → {items: [{id, displayName}]}
 //
 // All reads. Undo (POST /api/v1/audit/:eventId/undo) is audit/undo.ts's, registered by things.

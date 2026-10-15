@@ -12,7 +12,7 @@
 import type { SnapThing } from '@kept/shared';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 import { useLocations } from '@/api/queries';
 import { EmptyState, LoadingRows } from '@/components/page';
@@ -94,7 +94,14 @@ export function useQuickLogTargets(enabled: boolean) {
   });
 }
 
-export function QuickLog({ meteredThings }: { meteredThings: number | undefined }) {
+export function QuickLog({
+  meteredThings,
+  trigger,
+}: {
+  meteredThings: number | undefined;
+  /** The control that opens it (Home's Shortcuts tile, D240); a plain button by default. */
+  trigger?: (open: () => void) => ReactNode;
+}) {
   const online = useOnline();
   const [picking, setPicking] = useState(false);
   const [target, setTarget] = useState<ReadingSheetTarget | null>(null);
@@ -106,10 +113,14 @@ export function QuickLog({ meteredThings }: { meteredThings: number | undefined 
   if (!show) return null;
   return (
     <>
-      <Button variant="secondary" className="justify-self-start" onPress={() => setPicking(true)}>
-        <GaugeIcon />
-        <Trans>Log a reading</Trans>
-      </Button>
+      {trigger ? (
+        trigger(() => setPicking(true))
+      ) : (
+        <Button variant="secondary" className="justify-self-start" onPress={() => setPicking(true)}>
+          <GaugeIcon />
+          <Trans>Log a reading</Trans>
+        </Button>
+      )}
       <PickMeterSheet
         isOpen={picking}
         onClose={() => setPicking(false)}

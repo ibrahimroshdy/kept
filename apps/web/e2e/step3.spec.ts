@@ -567,9 +567,11 @@ test('labels: three things on an A4 sheet from cell 5, printed to PDF at the she
   await dialog.getByRole('button', { name: 'Yes, printed OK' }).click();
   await expect(dialog).toBeHidden();
 
-  // Home's checklist: the label step is done (it joins the done row as "Printed a label").
+  // Home's checklist: the label step is done (it joins the done row as "Printed a label"). Get
+  // started is one line since D240; its chevron button opens the steps.
   await page.goto('/');
   const started = page.getByRole('region', { name: 'Get started' });
+  await started.getByRole('button', { name: /^Get started/ }).click();
   await expect(started.getByRole('listitem').filter({ hasText: 'Printed a label' })).toContainText(
     /^Done/,
   );

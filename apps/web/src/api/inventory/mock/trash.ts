@@ -9,6 +9,7 @@
  * - a few older events (a money edit, a secret change, a move in from another location, a price
  *   in a location without Money) are added once, so the timeline has every row kind to show.
  */
+import { ACTIVITY_KINDS, type ActivityKind } from '@kept/shared';
 import type { MockState } from '../../mock/fixtures';
 import {
   err,
@@ -414,6 +415,11 @@ export function trashRoutes(state: MockState): MockRoute[] {
       const from = query.get('from');
       const to = query.get('to');
       const q = query.get('q')?.trim() ?? '';
+      // D240: Home's chips; an unknown kind is the server's 400.
+      const kindParam = query.get('kind');
+      if (kindParam && !Object.hasOwn(ACTIVITY_KINDS, kindParam))
+        return err(400, 'invalid', 'Not an activity kind.');
+      const kind = kindParam as ActivityKind | null;
       const items = inv()
         .events.filter((e) => e.location_id && visible.has(e.location_id))
         .filter(
@@ -425,6 +431,7 @@ export function trashRoutes(state: MockState): MockRoute[] {
         )
         .filter((e) => !from || e.at >= from)
         .filter((e) => !to || e.at < to)
+        .filter((e) => !kind || (ACTIVITY_KINDS[kind] as readonly string[]).includes(e.action))
         .sort(newestFirst);
       let narrowed = narrow(items, query, 'locationId', (e, v) => e.location_id === v);
       narrowed = narrow(narrowed, query, 'entityType', (e, v) => e.entity.type === v);

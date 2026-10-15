@@ -332,9 +332,10 @@ export function inboxIsNaming(pages: readonly InboxPage[] | undefined): boolean 
   );
 }
 
-export const useInbox = (params: InboxParams = {}) =>
+export const useInbox = (params: InboxParams = {}, enabled = true) =>
   useInfiniteQuery({
     queryKey: k.inbox.list(params),
+    enabled,
     queryFn: ({ pageParam }) =>
       captureApi.inbox({ ...params, ...(pageParam ? { cursor: pageParam } : {}) }),
     initialPageParam: undefined as string | undefined,
