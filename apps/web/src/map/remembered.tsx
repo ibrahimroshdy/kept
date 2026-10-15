@@ -10,8 +10,14 @@ import { useEffect, useRef } from 'react';
 import { useMe } from '@/api/queries';
 import { MapIcon } from '@/components/icons';
 import { Segmented } from '@/components/ui/segmented';
+import { SHEET, useMediaQuery } from '@/lib/media';
 
-export type LocationLayout = 'list' | 'grid' | 'map';
+/** 1.x (D250): `table`, the spreadsheet view, on a screen 1024 px wide or more. */
+export type LocationLayout = 'list' | 'grid' | 'map' | 'table';
+
+const LAYOUTS: readonly string[] = ['grid', 'map', 'table'];
+const layoutOf = (v: unknown): LocationLayout =>
+  typeof v === 'string' && LAYOUTS.includes(v) ? (v as LocationLayout) : 'list';
 
 const keyOf = (userId: string, locationId: string) => `kept.loc.view.${userId}.${locationId}`;
 /** Set once a map has been opened on this device; the Map option stops shining. */
@@ -34,7 +40,7 @@ function markSeen(): void {
 function read(key: string): LocationLayout | null {
   try {
     const v = localStorage.getItem(key);
-    return v === 'map' || v === 'grid' ? v : null;
+    return v && LAYOUTS.includes(v) ? (v as LocationLayout) : null;
   } catch {
     return null;
   }
@@ -55,7 +61,7 @@ export function useRememberedLayout(locationId: string): LocationLayout {
   const navigate = useNavigate();
   const me = useMe();
   const userId = me.data?.user.id;
-  const view = search.view === 'map' || search.view === 'grid' ? search.view : 'list';
+  const view = layoutOf(search.view);
   const explicit = search.view !== undefined;
   // Only on arrival does a missing `view` mean "as last time"; afterwards it means List (the
   // Display menu clears `view` for its default).
@@ -80,13 +86,15 @@ export function useRememberedLayout(locationId: string): LocationLayout {
   return view;
 }
 
-/** List · Grid · Map above the map, where the list's Display menu isn't. */
+/** List · Grid · Map (· Table on a wide screen) above the map, where the list's Display menu
+ * isn't. */
 export function LayoutSwitch() {
   const { t } = useLingui();
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as { view?: unknown };
-  const value: LocationLayout =
-    search.view === 'map' || search.view === 'grid' ? search.view : 'list';
+  const wide = useMediaQuery(SHEET);
+  const asked = layoutOf(search.view);
+  const value: LocationLayout = asked === 'table' && !wide ? 'list' : asked;
   const shine = value !== 'map' && !seen();
   useEffect(() => {
     if (value === 'map') markSeen();
@@ -96,7 +104,7 @@ export function LayoutSwitch() {
       aria-label={t`Layout`}
       // The guided tour points here (components/hints/tour.ts, D242).
       data-tour="location-layout"
-      className="w-full max-w-xs"
+      className={wide ? 'w-full max-w-sm' : 'w-full max-w-xs'}
       value={value}
       onChange={(v) =>
         void navigate({
@@ -118,6 +126,7 @@ export function LayoutSwitch() {
             </span>
           ),
         },
+        ...(wide ? [{ id: 'table' as const, label: t`Table` }] : []),
       ]}
     />
   );

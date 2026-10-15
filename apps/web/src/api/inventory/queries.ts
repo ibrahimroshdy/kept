@@ -8,13 +8,17 @@
  * URL state (lib/url-state.ts) as part of the key.
  */
 import type { ListSurface } from '@kept/shared';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { api, ifMatch, written } from '../client';
 import { inventoryPaths as p, qs, type RegistryPathKind } from './paths';
 import type {
   AccountsResponse,
   ActivityParams,
   AttachmentView,
+  BulkEditBody,
+  BulkEditResult,
+  BulkTrashBody,
+  BulkTrashResult,
   CodeLookup,
   ContentsChoiceDetails,
   CreateAttachmentBody,
@@ -51,6 +55,8 @@ import type {
   SearchParams,
   SearchResponse,
   SeenResult,
+  SheetParams,
+  SheetRow,
   SplitBody,
   SplitResult,
   ThingListParams,
@@ -131,6 +137,8 @@ export const inventoryKeys = {
     detail: (id: string) => ['things', 'detail', id] as const,
     history: (id: string) => ['things', 'history', id] as const,
     attachments: (id: string) => ['things', 'attachments', id] as const,
+    /** The spreadsheet's pages (D250): under `things`, so every thing write refreshes them. */
+    sheet: (params: SheetParams = {}) => ['things', 'sheet', params] as const,
   },
   meters: { readings: (meterId: string) => ['meters', meterId, 'readings'] as const },
   search: (params: SearchParams = {}) => ['search', params] as const,
@@ -207,6 +215,10 @@ export const inventoryApi = {
   movePreview: (body: MovePreviewBody) => api.post<MovePreview>(p.movePreview, body),
   /** Undoable (D150): one audit event id per moved thing, for the Undo toast. */
   move: (body: MoveBody) => written.post<MoveResult>(p.move, body),
+  /** The spreadsheet view (D250): wide rows, "Save N changes" and a bulk trash. */
+  sheet: (params: SheetParams = {}) => api.get<Page<SheetRow>>(p.thingsSheet + qs(params)),
+  bulkEdit: (body: BulkEditBody) => api.post<BulkEditResult>(p.thingsBulkEdit, body),
+  bulkTrash: (body: BulkTrashBody) => api.post<BulkTrashResult>(p.thingsBulkTrash, body),
   readings: (meterId: string, cursor?: string) =>
     api.get<Page<Reading>>(p.meterReadings(meterId) + qs({ cursor })),
   logReading: (meterId: string, body: CreateReadingBody) =>
@@ -290,6 +302,19 @@ export const useThings = (params: ThingListParams = {}) =>
       inventoryApi.things({ ...params, ...(pageParam ? { cursor: pageParam } : {}) }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: nextCursor,
+  });
+/** The spreadsheet's rows (D250), `limit` a page (the sheet asks for 100). */
+export const useSheet = (params: SheetParams, enabled = true) =>
+  useInfiniteQuery({
+    queryKey: k.things.sheet(params),
+    queryFn: ({ pageParam }) =>
+      inventoryApi.sheet({ ...params, ...(pageParam ? { cursor: pageParam } : {}) }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: nextCursor,
+    enabled,
+    // A new sort or filter keeps the old rows on screen until the new ones arrive: the grid
+    // doesn't blink to a skeleton and lose its place.
+    placeholderData: keepPreviousData,
   });
 export const useThing = (id: string) =>
   useQuery({ queryKey: k.things.detail(id), queryFn: () => inventoryApi.thing(id) });

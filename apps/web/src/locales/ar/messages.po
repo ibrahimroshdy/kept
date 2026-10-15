@@ -23807,3 +23807,187 @@ msgstr "لا يوجد شكل يطابق «{query}». جرّب «شيء صغير�
 #: src/map/shapes.tsx
 msgid "Shapes that match"
 msgstr "الأشكال المطابقة"
+
+#: src/components/places/contents-list.tsx
+msgid "Table"
+msgstr "جدول"
+
+#: src/components/places/contents-list.tsx
+msgid "table"
+msgstr "جدول"
+
+#: src/components/sheet/bulk.tsx
+msgid "{count, plural, one {Move # thing} other {Move # things}}"
+msgstr "{count, plural, zero {لا تنقل شيئًا} one {انقل شيئًا واحدًا} two {انقل شيئين} few {انقل # أشياء} many {انقل # شيئًا} other {انقل # شيء}}"
+
+#: src/components/sheet/bulk.tsx
+msgid "The move waits with your other changes until you save. To move to another location, use Move on the list."
+msgstr "ينتظر النقل مع تغييراتك الأخرى حتى تحفظ. للنقل إلى موقع آخر، استخدم «نقل» في القائمة."
+
+#: src/components/sheet/bulk.tsx
+msgid "{count, plural, one {Tags of # thing} other {Tags of # things}}"
+msgstr "{count, plural, zero {وسوم لا شيء} one {وسوم شيء واحد} two {وسوم شيئين} few {وسوم # أشياء} many {وسوم # شيئًا} other {وسوم # شيء}}"
+
+#: src/components/sheet/bulk.tsx
+msgid "Add or remove"
+msgstr "أضف أو أزل"
+
+#: src/components/sheet/bulk.tsx
+msgid "Add tags"
+msgstr "أضف وسومًا"
+
+#: src/components/sheet/bulk.tsx
+msgid "Remove tags"
+msgstr "أزل وسومًا"
+
+#: src/components/sheet/bulk.tsx
+msgid "{count, plural, one {Set a field on # thing} other {Set a field on # things}}"
+msgstr "{count, plural, zero {عيّن حقلًا على لا شيء} one {عيّن حقلًا على شيء واحد} two {عيّن حقلًا على شيئين} few {عيّن حقلًا على # أشياء} many {عيّن حقلًا على # شيئًا} other {عيّن حقلًا على # شيء}}"
+
+#: src/components/sheet/bulk.tsx
+msgid "Leave it empty to clear it."
+msgstr "اتركه فارغًا لمسحه."
+
+#: src/components/sheet/bulk.tsx
+msgid "{count, plural, one {Send # thing to the Trash?} other {Send # things to the Trash?}}"
+msgstr "{count, plural, zero {لا شيء لنقله إلى المهملات؟} one {نقل شيء واحد إلى المهملات؟} two {نقل شيئين إلى المهملات؟} few {نقل # أشياء إلى المهملات؟} many {نقل # شيئًا إلى المهملات؟} other {نقل # شيء إلى المهملات؟}}"
+
+#: src/components/sheet/bulk.tsx
+msgid "Some of them hold things"
+msgstr "بعضها يحوي أشياء"
+
+#: src/components/sheet/bulk.tsx
+msgid "Move what's inside out, to where each one is"
+msgstr "أخرج ما بداخلها إلى حيث يوجد كلٌّ منها"
+
+#: src/components/sheet/bulk.tsx
+msgid "Trash what's inside too"
+msgstr "انقل ما بداخلها إلى المهملات أيضًا"
+
+#: src/components/sheet/bulk.tsx
+msgid "They stay in the Trash for 30 days. Undo brings them all back."
+msgstr "تبقى في المهملات ٣٠ يومًا. التراجع يعيدها كلها."
+
+#: src/components/sheet/bulk.tsx
+msgid "Send to Trash"
+msgstr "انقل إلى المهملات"
+
+#: src/components/sheet/labels.ts
+msgid "Short ID"
+msgstr "المعرّف القصير"
+
+#: src/components/sheet/labels.ts
+msgid "Warranty ends"
+msgstr "ينتهي الضمان"
+
+#: src/components/sheet/labels.ts
+msgid "This one is counted one by one: its quantity stays 1."
+msgstr "هذا يُعدّ واحدًا واحدًا: تبقى كميته ١."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "A box"
+msgstr "صندوق"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {Fix # row before saving} other {Fix # rows before saving}}"
+msgstr "{0, plural, zero {لا صفوف لإصلاحها} one {أصلح صفًا واحدًا قبل الحفظ} two {أصلح صفين قبل الحفظ} few {أصلح # صفوف قبل الحفظ} many {أصلح # صفًا قبل الحفظ} other {أصلح # صف قبل الحفظ}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{cells, plural, one {Saved # change} other {Saved # changes}}"
+msgstr "{cells, plural, zero {لم يُحفظ أي تغيير} one {حُفظ تغيير واحد} two {حُفظ تغييران} few {حُفظت # تغييرات} many {حُفظ # تغييرًا} other {حُفظ # تغيير}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {# row wasn't saved} other {# rows weren't saved}}"
+msgstr "{0, plural, zero {حُفظت كل الصفوف} one {لم يُحفظ صف واحد} two {لم يُحفظ صفان} few {لم تُحفظ # صفوف} many {لم يُحفظ # صفًا} other {لم يُحفظ # صف}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {Discard # change?} other {Discard # changes?}}"
+msgstr "{0, plural, zero {لا تغييرات لتجاهلها؟} one {تجاهل تغيير واحد؟} two {تجاهل تغييرين؟} few {تجاهل # تغييرات؟} many {تجاهل # تغييرًا؟} other {تجاهل # تغيير؟}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Leave without saving?"
+msgstr "المغادرة دون حفظ؟"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {# change isn't saved yet.} other {# changes aren't saved yet.}}"
+msgstr "{0, plural, zero {لا تغييرات غير محفوظة.} one {تغيير واحد لم يُحفظ بعد.} two {تغييران لم يُحفظا بعد.} few {# تغييرات لم تُحفظ بعد.} many {# تغييرًا لم يُحفظ بعد.} other {# تغيير لم يُحفظ بعد.}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Leave"
+msgstr "غادر"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Stay"
+msgstr "ابقَ"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {Sent # thing to the Trash} other {Sent # things to the Trash}}"
+msgstr "{0, plural, zero {لم يُنقل شيء إلى المهملات} one {نُقل شيء واحد إلى المهملات} two {نُقل شيئان إلى المهملات} few {نُقلت # أشياء إلى المهملات} many {نُقل # شيئًا إلى المهملات} other {نُقل # شيء إلى المهملات}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Not saved: {0}"
+msgstr "لم يُحفظ: {0}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Tags…"
+msgstr "الوسوم…"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Set a field…"
+msgstr "عيّن حقلًا…"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Send at most 200 to the Trash at a time."
+msgstr "انقل ٢٠٠ على الأكثر إلى المهملات في كل مرة."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Select none"
+msgstr "ألغِ تحديد الكل"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Select all"
+msgstr "حدد الكل"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Changes"
+msgstr "التغييرات"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {# change} other {# changes}}"
+msgstr "{0, plural, zero {لا تغييرات} one {تغيير واحد} two {تغييران} few {# تغييرات} many {# تغييرًا} other {# تغيير}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {on # thing} other {on # things}}"
+msgstr "{0, plural, zero {على لا شيء} one {على شيء واحد} two {على شيئين} few {على # أشياء} many {على # شيئًا} other {على # شيء}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {# row needs a fix} other {# rows need a fix}}"
+msgstr "{0, plural, zero {لا صفوف تحتاج إصلاحًا} one {صف واحد يحتاج إصلاحًا} two {صفان يحتاجان إصلاحًا} few {# صفوف تحتاج إصلاحًا} many {# صفًا يحتاج إصلاحًا} other {# صف يحتاج إصلاحًا}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {Save # change} other {Save # changes}}"
+msgstr "{0, plural, zero {لا تغييرات للحفظ} one {احفظ تغييرًا واحدًا} two {احفظ تغييرين} few {احفظ # تغييرات} many {احفظ # تغييرًا} other {احفظ # تغيير}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{who} changed this since you opened it."
+msgstr "غيّر {who} هذا منذ فتحته."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Someone changed this since you opened it."
+msgstr "غيّره أحدهم منذ فتحته."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "You can view this location but not change it."
+msgstr "يمكنك عرض هذا الموقع لكن لا يمكنك تغييره."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "It's no longer here."
+msgstr "لم يعد هنا."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Check the highlighted cells."
+msgstr "تحقق من الخلايا المميزة."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Discard my change"
+msgstr "تجاهل تغييري"

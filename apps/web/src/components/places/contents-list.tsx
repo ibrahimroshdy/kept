@@ -44,6 +44,7 @@ import { pickUp } from '@/components/tray/use-tray';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/toast';
 import { useFormat } from '@/lib/format';
+import { SHEET, useMediaQuery } from '@/lib/media';
 import { useOnline } from '@/lib/online';
 import { firstOf, useListState } from '@/lib/url-state';
 import { cn } from '@/lib/utils';
@@ -88,6 +89,7 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
   const fmt = useFormat();
   const nameOf = usePlaceName();
   const [list] = useListState();
+  const sheetFits = useMediaQuery(SHEET);
   const photos = (view ?? list.layout) === 'photos' && parent.kind === 'container';
   const where = firstOf(list, 'where');
   const f = useFilterRegistry();
@@ -514,6 +516,10 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
                   // 1.x (D237, M11): a location's map; its page draws it instead of this list.
                   ...(parent.kind === 'location'
                     ? [{ value: 'map', label: t`Map`, short: t`map` }]
+                    : []),
+                  // 1.x (D250): the spreadsheet view, on a screen wide enough for it.
+                  ...(parent.kind === 'location' && sheetFits
+                    ? [{ value: 'table', label: t`Table`, short: t`table` }]
                     : []),
                 ],
               })}

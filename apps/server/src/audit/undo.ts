@@ -15,7 +15,8 @@ import { actorOf } from './actor.js';
 import { type AuditEventInput, type AuditResult, audited } from './audited.js';
 
 // Undo (D58, D124, D150; engineering spec §7.5; T27 decision): POST /api/v1/audit/:eventId/undo
-// reverses one audited change, while its `undoable_until` (at most 7 days) hasn't passed.
+// reverses one audited change, while its `undoable_until` (at most 7 days) hasn't passed;
+// POST /api/v1/audit/undo {eventIds (≤ 400)} reverses several together, all or none (D250).
 //
 // The route is generic; what "reverse" means is per action, in a registry: an area registers a
 // handler for each action it writes as undoable (things/undo.ts registers `thing.update`,
@@ -247,6 +248,12 @@ type EventRow = {
 
 const Params = z.object({ eventId: z.uuid() });
 const UndoResult = z.object({ undoOf: z.uuid(), eventId: z.uuid() });
+/** How many events one "undo them together" may name: a bulk edit of 200 rows writes up to two
+ * each (the edit and the move). */
+export const UNDO_TOGETHER_MAX = 400;
+const UndoTogetherBody = z.strictObject({
+  eventIds: z.array(z.uuid()).min(1).max(UNDO_TOGETHER_MAX),
+});
 
 /**
  * Whether the caller made the event: as themself, or (step 6, D58) through one of their own
@@ -448,5 +455,26 @@ export async function undoRoutes(
         status: 200,
         body: await undoEvent(tx, client, scope, req.params.eventId.toLowerCase(), req.id, deps),
       })),
+  );
+
+  // 1.x (D250): a write's events undone together, as one: the spreadsheet's "Save N changes" and
+  // its bulk actions record one event per thing (X-Kept-Audit-Event, or the answer's `events`),
+  // and its Undo toast sends them all here. Newest first, in one transaction: every one is
+  // undone, or the first refusal is the answer and none is (the same 403/404/409 as one undo).
+  app.post(
+    '/api/v1/audit/undo',
+    {
+      schema: {
+        body: UndoTogetherBody,
+        response: { 200: z.object({ undone: z.array(UndoResult) }) },
+      },
+    },
+    (req, reply) =>
+      scopedWrite(deps.pools, req, reply, async (tx, client, scope) => {
+        const ids = [...new Set(req.body.eventIds.map((id) => id.toLowerCase()))].reverse();
+        const undone: z.infer<typeof UndoResult>[] = [];
+        for (const id of ids) undone.push(await undoEvent(tx, client, scope, id, req.id, deps));
+        return { status: 200, body: { undone } };
+      }),
   );
 }

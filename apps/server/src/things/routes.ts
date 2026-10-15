@@ -23,6 +23,7 @@ import {
   splitThing,
   updateThing,
 } from './service.js';
+import { sheetRoutes } from './sheet-routes.js';
 import { registerThingUndo } from './undo.js';
 import {
   CodeParams,
@@ -74,8 +75,9 @@ import { LinkSchema, ThingRowSchema, ThingViewSchema, viewOf } from './view.js';
 // POST   /api/v1/audit/:eventId/undo                              → {undoOf, eventId} (D150)
 //
 // Moves (T15: POST /things/move, /things/move/preview, /things/:id/empty-into) are in
-// move-routes.ts, registered from here; meters (T16), files (T17), secrets (T19) and trash (T21)
-// have their own modules.
+// move-routes.ts, and the spreadsheet view (D250: GET /things/sheet, POST /things/bulk-edit,
+// /things/bulk-trash) in sheet-routes.ts, both registered from here; meters (T16), files (T17),
+// secrets (T19) and trash (T21) have their own modules.
 
 /** An If-Match the client may send (split, not-here: the web may send none). */
 function optionalIfMatch(req: FastifyRequest): number | null {
@@ -92,6 +94,7 @@ export async function thingRoutes(app: KeptApp, deps: InventoryDeps): Promise<vo
   registerThingUndo();
   await undoRoutes(app, { pools, jobs: deps.jobs, files: deps.files, log: deps.log });
   await moveRoutes(app, deps);
+  await sheetRoutes(app, deps);
   await listExportRoutes(app, deps);
 
   /** One scoped write, answering `status` with what `fn` returns. */

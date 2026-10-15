@@ -47,11 +47,12 @@ import { PlacesPanel, PlaceTree } from '@/components/places/tree';
 import { UnplacedCard } from '@/components/places/unplaced-sort';
 import { PrintInventory } from '@/components/reports/print-sheet';
 import { accessOf } from '@/components/schedules/access';
+import { SheetLazy } from '@/components/sheet/lazy';
 import { buttonClass } from '@/components/ui/button';
 import { locationAddress, locationIdOf, useCanonicalLocationAddress } from '@/lib/address';
 import { sep, useFormat } from '@/lib/format';
 import { useKindLabels, useLocationName, usePresetCopy, useRoleLabels } from '@/lib/labels';
-import { DOCKED, useMediaQuery } from '@/lib/media';
+import { DOCKED, SHEET, useMediaQuery } from '@/lib/media';
 import { LocationMapLazy } from '@/map/lazy';
 import { LayoutSwitch, useRememberedLayout } from '@/map/remembered';
 
@@ -111,7 +112,10 @@ function LocationBody({ location }: { location: LocationDetail }) {
   const unplaced = places.find((pl) => pl.isUnplaced) ?? null;
   const access = accessOf(location);
   // 1.x (D237, M11): List, Grid or Map, remembered per person and location; List by default.
-  const layout = useRememberedLayout(location.id);
+  // 1.x (D250): Table, the spreadsheet view, from 1024 px; narrower, the list shows instead.
+  const remembered = useRememberedLayout(location.id);
+  const sheetFits = useMediaQuery(SHEET);
+  const layout = remembered === 'table' && !sheetFits ? 'list' : remembered;
 
   const meta = (
     <>
@@ -224,7 +228,7 @@ function LocationBody({ location }: { location: LocationDetail }) {
       title={name}
       back="/"
       wide
-      {...(panel && places.length > 1
+      {...(panel && places.length > 1 && layout !== 'table'
         ? {
             aside: (
               <PlacesPanel
@@ -257,17 +261,23 @@ function LocationBody({ location }: { location: LocationDetail }) {
           </div>
           {addHere}
           {unplacedCard}
-          <ContentsList
-            parent={{
-              kind: 'location',
-              locationId: location.id,
-              name,
-              unplacedId: unplaced?.id ?? null,
-            }}
-            canEdit={canEdit}
-          />
+          {layout === 'table' ? (
+            <SheetLazy location={location} />
+          ) : (
+            <>
+              <ContentsList
+                parent={{
+                  kind: 'location',
+                  locationId: location.id,
+                  name,
+                  unplacedId: unplaced?.id ?? null,
+                }}
+                canEdit={canEdit}
+              />
 
-          <div>{panel ? null : <PlaceTree places={places} />}</div>
+              <div>{panel ? null : <PlaceTree places={places} />}</div>
+            </>
+          )}
         </>
       )}
 

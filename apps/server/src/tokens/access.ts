@@ -30,6 +30,10 @@ export const TOKEN_ROUTES: Readonly<Record<string, Exclude<TokenAccess, 'none'>>
   'POST /api/v1/things/:id/seen': 'write',
   'POST /api/v1/things/move': 'write',
   'POST /api/v1/things/move/preview': 'write',
+  // 1.x (D250): the spreadsheet's wide rows and its "Save N changes", the same edits as PATCH a
+  // row at a time; its bulk trash stays the app's, like every trash.
+  'GET /api/v1/things/sheet': 'read',
+  'POST /api/v1/things/bulk-edit': 'write',
   // Places.
   'GET /api/v1/locations/:locationId/places': 'read',
   'GET /api/v1/places/:id': 'read',
@@ -75,6 +79,7 @@ export const TOKEN_ROUTES: Readonly<Record<string, Exclude<TokenAccess, 'none'>>
   'GET /api/v1/paperless-links': 'read',
   // Undo: a token undoes only its own changes (audit/undo.ts).
   'POST /api/v1/audit/:eventId/undo': 'write',
+  'POST /api/v1/audit/undo': 'write',
 });
 
 /**

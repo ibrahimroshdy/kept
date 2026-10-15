@@ -23807,3 +23807,187 @@ msgstr "Nessuna forma corrisponde a “{query}”. Prova Cosa piccola o Piccolo 
 #: src/map/shapes.tsx
 msgid "Shapes that match"
 msgstr "Forme corrispondenti"
+
+#: src/components/places/contents-list.tsx
+msgid "Table"
+msgstr "Tabella"
+
+#: src/components/places/contents-list.tsx
+msgid "table"
+msgstr "tabella"
+
+#: src/components/sheet/bulk.tsx
+msgid "{count, plural, one {Move # thing} other {Move # things}}"
+msgstr "{count, plural, one {Sposta # oggetto} other {Sposta # oggetti}}"
+
+#: src/components/sheet/bulk.tsx
+msgid "The move waits with your other changes until you save. To move to another location, use Move on the list."
+msgstr "Lo spostamento attende con le altre modifiche finché non salvi. Per spostare in un altro luogo, usa Sposta nell’elenco."
+
+#: src/components/sheet/bulk.tsx
+msgid "{count, plural, one {Tags of # thing} other {Tags of # things}}"
+msgstr "{count, plural, one {Tag di # oggetto} other {Tag di # oggetti}}"
+
+#: src/components/sheet/bulk.tsx
+msgid "Add or remove"
+msgstr "Aggiungi o rimuovi"
+
+#: src/components/sheet/bulk.tsx
+msgid "Add tags"
+msgstr "Aggiungi tag"
+
+#: src/components/sheet/bulk.tsx
+msgid "Remove tags"
+msgstr "Rimuovi tag"
+
+#: src/components/sheet/bulk.tsx
+msgid "{count, plural, one {Set a field on # thing} other {Set a field on # things}}"
+msgstr "{count, plural, one {Imposta un campo su # oggetto} other {Imposta un campo su # oggetti}}"
+
+#: src/components/sheet/bulk.tsx
+msgid "Leave it empty to clear it."
+msgstr "Lascialo vuoto per cancellarlo."
+
+#: src/components/sheet/bulk.tsx
+msgid "{count, plural, one {Send # thing to the Trash?} other {Send # things to the Trash?}}"
+msgstr "{count, plural, one {Spostare # oggetto nel cestino?} other {Spostare # oggetti nel cestino?}}"
+
+#: src/components/sheet/bulk.tsx
+msgid "Some of them hold things"
+msgstr "Alcuni contengono oggetti"
+
+#: src/components/sheet/bulk.tsx
+msgid "Move what's inside out, to where each one is"
+msgstr "Sposta fuori il contenuto, dove si trova ciascuno"
+
+#: src/components/sheet/bulk.tsx
+msgid "Trash what's inside too"
+msgstr "Sposta nel cestino anche il contenuto"
+
+#: src/components/sheet/bulk.tsx
+msgid "They stay in the Trash for 30 days. Undo brings them all back."
+msgstr "Restano nel cestino per 30 giorni. Annulla li riporta tutti."
+
+#: src/components/sheet/bulk.tsx
+msgid "Send to Trash"
+msgstr "Sposta nel cestino"
+
+#: src/components/sheet/labels.ts
+msgid "Short ID"
+msgstr "ID breve"
+
+#: src/components/sheet/labels.ts
+msgid "Warranty ends"
+msgstr "Fine garanzia"
+
+#: src/components/sheet/labels.ts
+msgid "This one is counted one by one: its quantity stays 1."
+msgstr "Questo si conta uno per uno: la quantità resta 1."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "A box"
+msgstr "Una scatola"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {Fix # row before saving} other {Fix # rows before saving}}"
+msgstr "{0, plural, one {Correggi # riga prima di salvare} other {Correggi # righe prima di salvare}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{cells, plural, one {Saved # change} other {Saved # changes}}"
+msgstr "{cells, plural, one {# modifica salvata} other {# modifiche salvate}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {# row wasn't saved} other {# rows weren't saved}}"
+msgstr "{0, plural, one {# riga non è stata salvata} other {# righe non sono state salvate}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {Discard # change?} other {Discard # changes?}}"
+msgstr "{0, plural, one {Scartare # modifica?} other {Scartare # modifiche?}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Leave without saving?"
+msgstr "Uscire senza salvare?"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {# change isn't saved yet.} other {# changes aren't saved yet.}}"
+msgstr "{0, plural, one {# modifica non è ancora salvata.} other {# modifiche non sono ancora salvate.}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Leave"
+msgstr "Esci"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Stay"
+msgstr "Resta"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {Sent # thing to the Trash} other {Sent # things to the Trash}}"
+msgstr "{0, plural, one {# oggetto spostato nel cestino} other {# oggetti spostati nel cestino}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Not saved: {0}"
+msgstr "Non salvato: {0}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Tags…"
+msgstr "Tag…"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Set a field…"
+msgstr "Imposta un campo…"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Send at most 200 to the Trash at a time."
+msgstr "Al massimo 200 alla volta nel cestino."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Select none"
+msgstr "Deseleziona tutto"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Select all"
+msgstr "Seleziona tutto"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Changes"
+msgstr "Modifiche"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {# change} other {# changes}}"
+msgstr "{0, plural, one {# modifica} other {# modifiche}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {on # thing} other {on # things}}"
+msgstr "{0, plural, one {su # oggetto} other {su # oggetti}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {# row needs a fix} other {# rows need a fix}}"
+msgstr "{0, plural, one {# riga da correggere} other {# righe da correggere}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{0, plural, one {Save # change} other {Save # changes}}"
+msgstr "{0, plural, one {Salva # modifica} other {Salva # modifiche}}"
+
+#: src/components/sheet/sheet-view.tsx
+msgid "{who} changed this since you opened it."
+msgstr "{who} l’ha modificato da quando l’hai aperto."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Someone changed this since you opened it."
+msgstr "Qualcuno l’ha modificato da quando l’hai aperto."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "You can view this location but not change it."
+msgstr "Puoi vedere questo luogo ma non modificarlo."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "It's no longer here."
+msgstr "Non è più qui."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Check the highlighted cells."
+msgstr "Controlla le celle evidenziate."
+
+#: src/components/sheet/sheet-view.tsx
+msgid "Discard my change"
+msgstr "Scarta la mia modifica"

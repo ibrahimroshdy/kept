@@ -28,6 +28,9 @@ export const INSTANCES = {
   // The guided tour (e2e/tour.spec.ts, D242): where it stopped is per person on the server, so a
   // seeded instance of its own, one person per project.
   tour: { name: 'tour', port: 8190, seed: true },
+  // The spreadsheet view (e2e/sheet.spec.ts, D250) edits and moves things: a seeded instance of
+  // its own, so no other spec sees its changes.
+  sheet: { name: 'sheet', port: 8198, seed: true },
 } as const satisfies Record<string, Instance>;
 
 /**
