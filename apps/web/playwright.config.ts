@@ -104,6 +104,36 @@ const server = (i: Served) => ({
   gracefulShutdown: { signal: 'SIGTERM' as const, timeout: 15_000 },
 });
 
+/**
+ * Every selected instance through one webServer entry (e2e/serve-all.mjs), started several at a
+ * time: Playwright starts webServer entries one after another, which cost every CI shard about
+ * four minutes before its first test. KEPT_E2E_SEQUENTIAL=1 goes back to one entry per instance.
+ * The status port, 8180, sits below the instances' ports.
+ */
+const SERVE_ALL_PORT = 8180;
+const serveAll = (list: Served[]) => ({
+  command: `node --conditions=kept-dist e2e/serve-all.mjs ${SERVE_ALL_PORT}`,
+  url: `http://localhost:${SERVE_ALL_PORT}/readyz`,
+  env: {
+    KEPT_E2E_SERVE: JSON.stringify(
+      list.map(({ name, port, seed, aiMock, https, owner }) => ({
+        name,
+        port,
+        seed,
+        aiMock,
+        https,
+        owner,
+      })),
+    ),
+  },
+  reuseExistingServer: false,
+  timeout: 300_000,
+  stdout: 'pipe' as const,
+  stderr: 'pipe' as const,
+  // serve-all.mjs passes SIGTERM to every serve.mjs and waits for each to drop its database.
+  gracefulShutdown: { signal: 'SIGTERM' as const, timeout: 30_000 },
+});
+
 export default defineConfig({
   testDir: './e2e',
   outputDir: '../../.tmp/e2e/results',
@@ -148,5 +178,5 @@ export default defineConfig({
       },
     },
   ],
-  webServer: selected().map(server),
+  webServer: process.env.KEPT_E2E_SEQUENTIAL ? selected().map(server) : [serveAll(selected())],
 });
