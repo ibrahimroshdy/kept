@@ -11,6 +11,7 @@ import { createReading, updateReading } from '../meters/service.js';
 import { whenDays } from '../meters/when.js';
 import { createItem } from '../registries/service.js';
 import { gateFor } from '../serialize/gates.js';
+import { moveStock, requireStockThings, type StockRecord } from '../services/stock.js';
 import { requireRole } from '../things/service.js';
 import { moneyOff, requireCurrencies } from '../things/validate.js';
 import {
@@ -53,6 +54,9 @@ import {
 //   is finished by confirmService(), which applies the create rules above to the draft's own row:
 //   the reading, the lines, the money, the vendor and `completes`. A draft isn't edited (409
 //   `service_draft`); its logger, or an admin, deletes it, with its read, at any time.
+// - D236: a line may use stock from a consumable (`consumableThingId`); every write here, and each
+//   undo (./undo.ts, services/drafts.ts), moves the shelf count by the difference between the
+//   record's lines before and after it (services/stock.ts moveStock).
 
 const actor = (ctx: Ctx) => actorOf(ctx.scope);
 const MAX_LINES = 50;
@@ -64,6 +68,10 @@ export type LineInput = {
   description: string;
   quantity?: string | undefined;
   unitCost?: string | undefined;
+  /** D236: the consumable it used from the shelf (services/stock.ts). */
+  consumableThingId?: string | undefined;
+  /** D236: how much came off the shelf, when it isn't the line's quantity. */
+  consumedQuantity?: string | undefined;
 };
 export type VendorInput = { id: string } | { name: string };
 
@@ -98,6 +106,9 @@ type LineImage = {
   quantity: string | null;
   unit_cost: string | null;
   sort: number;
+  /** D236: only when the line uses stock, so images from before it compare as they were. */
+  consumable_thing_id?: string;
+  consumed_quantity?: string;
 };
 
 export type ServiceImage = {
@@ -133,9 +144,15 @@ export async function serviceRow(
  * run one after another: a pg client runs one query at a time, and a `Promise.all` on one client
  * only queues them anyway (and warns "client is already executing a query"). */
 export async function serviceImage(client: pg.ClientBase, row: ServiceRow): Promise<ServiceImage> {
-  const lines = await client.query<LineImage>(
+  const lines = await client.query<
+    Omit<LineImage, 'consumable_thing_id' | 'consumed_quantity'> & {
+      stock: string | null;
+      consumed: string | null;
+    }
+  >(
     `SELECT id, kind, description, trim_scale(quantity)::text AS quantity,
-            trim_scale(unit_cost)::text AS unit_cost, sort
+            trim_scale(unit_cost)::text AS unit_cost, sort, consumable_thing_id AS stock,
+            trim_scale(consumed_quantity)::text AS consumed
        FROM public.service_lines WHERE service_record_id = $1 ORDER BY sort, id`,
     [row.id],
   );
@@ -158,7 +175,11 @@ export async function serviceImage(client: pg.ClientBase, row: ServiceRow): Prom
     total: row.total,
     currency: row.currency,
     notes: row.notes,
-    lines: lines.rows,
+    lines: lines.rows.map(({ stock, consumed, ...l }) => ({
+      ...l,
+      ...(stock ? { consumable_thing_id: stock } : {}),
+      ...(consumed ? { consumed_quantity: consumed } : {}),
+    })),
     completes: completes.rows.map((c) => c.schedule_id),
   };
 }
@@ -209,6 +230,19 @@ async function requireVersion(
 // ---------------------------------------------------------------------------------------------
 // Pieces of a write
 // ---------------------------------------------------------------------------------------------
+
+/** A record as the stock's audit row names it (services/stock.ts). */
+export const stockRecordOf = (row: {
+  id: string;
+  location_id: string;
+  thing_id: string | null;
+  place_id: string | null;
+}): StockRecord => ({
+  id: row.id,
+  locationId: row.location_id,
+  thingId: row.thing_id,
+  placeId: row.place_id,
+});
 
 /** The vendor a body names: an existing one of the account (the guard refuses another's: a
  * 404), or a new one by name, created inline (D11, `people-vendors.create-inline`). */
@@ -297,8 +331,9 @@ async function insertLines(
   for (const [i, l] of lines.entries()) {
     await client.query(
       `INSERT INTO public.service_lines (id, location_id, service_record_id, kind, description,
-                                         quantity, unit_cost, sort)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+                                         quantity, unit_cost, sort, consumable_thing_id,
+                                         consumed_quantity)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       [
         l.id ?? newId(),
         locationId,
@@ -308,6 +343,8 @@ async function insertLines(
         l.quantity ?? null,
         l.unitCost ?? null,
         i,
+        l.consumableThingId?.toLowerCase() ?? null,
+        l.consumableThingId ? (l.consumedQuantity ?? null) : null,
       ],
     );
   }
@@ -404,6 +441,7 @@ export async function createService(
   if ((body.lines?.length ?? 0) > MAX_LINES)
     throw invalid(`Check body.lines: at most ${MAX_LINES}.`);
   const cleared = await completable(ctx, locationId, body.completes ?? []);
+  await requireStockThings(ctx, locationId, body.lines ?? []);
   const money = await moneyFor(ctx, locationId, body);
   const vendorId = await vendorFor(ctx, locationId, body.vendor);
 
@@ -466,7 +504,9 @@ export async function createService(
     id,
     cleared.map((c) => c.id),
   );
-  const after = await serviceImage(client, await serviceRow(client, id));
+  const row = await serviceRow(client, id);
+  const after = await serviceImage(client, row);
+  await moveStock(ctx, stockRecordOf(row), [], after.lines);
   await audited(ctx.tx, {
     locationId,
     actor: actor(ctx),
@@ -580,6 +620,8 @@ export async function confirmService(
     throw invalid(`Check body.lines: at most ${MAX_LINES}.`);
   const before = await serviceImage(client, row);
   const cleared = await completable(ctx, locationId, body.completes ?? []);
+  // D236: the stock moves now, as the lines are written: a draft took nothing.
+  await requireStockThings(ctx, locationId, body.lines ?? [], before.lines);
   // The draft holds no money of its own (its invoice's amounts are suggestions): only what the
   // form sends is written, with an enabled currency (requireCurrencies).
   const money = await moneyFor(ctx, locationId, body);
@@ -635,6 +677,7 @@ export async function confirmService(
     cleared.map((c) => c.id),
   );
   const after = await serviceImage(client, await serviceRow(client, id));
+  await moveStock(ctx, stockRecordOf(row), before.lines, after.lines);
   await audited(ctx.tx, {
     locationId,
     actor: actor(ctx),
@@ -699,6 +742,9 @@ export async function updateService(
   }
   if ((body.lines?.length ?? 0) > MAX_LINES)
     throw invalid(`Check body.lines: at most ${MAX_LINES}.`);
+  if (body.lines !== undefined) {
+    await requireStockThings(ctx, locationId, body.lines, before.lines);
+  }
   if (body.completes !== undefined) {
     const added = body.completes.filter((s) => !before.completes.includes(s.toLowerCase()));
     if (added.length > 0 || body.completes.length !== before.completes.length) {
@@ -765,6 +811,8 @@ export async function updateService(
     await insertCompletions(client, locationId, id, want);
   }
   const after = await serviceImage(client, await serviceRow(client, id));
+  // D236: the stock moves by the lines' difference (a quantity changed, a line removed).
+  await moveStock(ctx, stockRecordOf(row), before.lines, after.lines);
   await audited(ctx.tx, {
     locationId,
     actor: actor(ctx),
@@ -816,6 +864,8 @@ export async function deleteService(ctx: Ctx, id: string, expected: number): Pro
     if (!(await gateFor(ctx.tx, row.location_id, ctx.scope)).showMoney) throw moneyOff();
   }
   await client.query('DELETE FROM public.service_records WHERE id = $1', [id]);
+  // D236: what its lines took goes back on the shelf.
+  await moveStock(ctx, stockRecordOf(row), image.lines, []);
   await audited(ctx.tx, {
     locationId: row.location_id,
     actor: actor(ctx),

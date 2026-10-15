@@ -351,6 +351,20 @@ const NAME_SOURCES: Record<string, string> = {
   tag: 'public.tags',
 };
 
+/** What a `thing.stock_use` was for (D236): the serviced thing or place, from its diff. */
+export function stockServiceOf(e: {
+  action: string;
+  diff: unknown;
+}): { type: 'thing' | 'place'; id: string } | null {
+  if (e.action !== 'thing.stock_use' || !e.diff || typeof e.diff !== 'object') return null;
+  const diff = e.diff as Record<string, { after?: unknown } | undefined>;
+  const thing = diff.service_thing_id?.after;
+  if (typeof thing === 'string') return { type: 'thing', id: thing };
+  const place = diff.service_place_id?.after;
+  if (typeof place === 'string') return { type: 'place', id: place };
+  return null;
+}
+
 /** Current names of what the events are about, as the caller may see them. */
 async function namesOf(
   client: pg.ClientBase,
@@ -369,6 +383,8 @@ async function namesOf(
   for (const e of events) {
     if (e.root_thing_id) want('thing', e.root_thing_id);
     want(e.entity_type, e.entity_id);
+    const service = stockServiceOf(e);
+    if (service) want(service.type, service.id);
   }
   const out = new Map<string, string>();
   for (const [type, ids] of wanted) {
@@ -488,6 +504,7 @@ async function renderEvents(
         : (names.get(`${e.entity_type}:${e.entity_id}`) ??
           (e.root_thing_id ? names.get(`thing:${e.root_thing_id}`) : undefined) ??
           null);
+    const service = stockServiceOf(e);
     return {
       ...rendered,
       actor: {
@@ -500,7 +517,11 @@ async function renderEvents(
         // Gone to a location the reader can't see: no address to offer beyond the id.
         shortCode: movedOut ? null : (codes.get(`${e.entity_type}:${e.entity_id}`) ?? null),
       },
-      ...summarise(rendered, { name, movedOut }),
+      ...summarise(rendered, {
+        name,
+        movedOut,
+        ...(service ? { service: names.get(`${service.type}:${service.id}`) ?? null } : {}),
+      }),
     };
   });
 }

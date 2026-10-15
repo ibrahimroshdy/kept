@@ -81,6 +81,7 @@ describe('ErrorCode', () => {
       'import_target_needed',
       'field_convert_blocked',
       'not_consumable',
+      'not_enough_stock',
       'homebox_unreachable',
       'backup_not_configured',
       'backup_running',
@@ -115,7 +116,7 @@ describe('ErrorCode', () => {
   });
 
   it('gives every step-7 code an English sentence', () => {
-    expect(Object.keys(PORTABILITY_ERROR_MESSAGES)).toHaveLength(10);
+    expect(Object.keys(PORTABILITY_ERROR_MESSAGES)).toHaveLength(11);
     for (const [code, message] of Object.entries(PORTABILITY_ERROR_MESSAGES)) {
       expect(isErrorCode(code)).toBe(true);
       expect(message).toMatch(/^[A-Z].+\.$/);

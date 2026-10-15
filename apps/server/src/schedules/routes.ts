@@ -52,6 +52,9 @@ import { ScheduleSchema, ServiceRecordSchema } from './view.js';
 // location is known (a body's subject, a schedule's row). Service records are core (D113).
 // A reading refused by the meters' check is 409 `conflict` with `reason` and the neighbour it
 // collides with, the meters section's shape (meters/service.ts).
+// D236: a line's `consumableThingId` takes its quantity off that consumable's count (needs
+// Consumables on for a new link); more than is left is 409 `not_enough_stock` with `thing` and
+// `left` (services/stock.ts).
 
 const Id = z.uuid();
 const Params = z.object({ id: Id });
@@ -76,16 +79,29 @@ const Vendor = z.union([
   z.strictObject({ id: Id }),
   z.strictObject({ name: z.string().trim().min(1).max(120) }),
 ]);
-const Line = z.strictObject({
-  kind: z.enum(SERVICE_LINE_KINDS),
-  description: z.string().trim().min(1).max(300),
-  quantity: z
-    .string()
-    .regex(/^\d{1,9}(\.\d{1,3})?$/, 'a quantity, e.g. 2 or 4.5')
-    .refine((q) => Number(q) > 0, 'more than 0')
-    .optional(),
-  unitCost: Amount.optional(),
-});
+const Line = z
+  .strictObject({
+    kind: z.enum(SERVICE_LINE_KINDS),
+    description: z.string().trim().min(1).max(300),
+    quantity: z
+      .string()
+      .regex(/^\d{1,9}(\.\d{1,3})?$/, 'a quantity, e.g. 2 or 4.5')
+      .refine((q) => Number(q) > 0, 'more than 0')
+      .optional(),
+    unitCost: Amount.optional(),
+    /** D236: the consumable it used from the shelf; the count moves by the line's quantity. */
+    consumableThingId: Id.optional(),
+    /** D236: how much came off the shelf when it isn't the quantity (one line, 4.5 litres). */
+    consumedQuantity: z
+      .string()
+      .regex(/^\d{1,9}(\.\d{1,3})?$/, 'a quantity, e.g. 2 or 4.5')
+      .refine((q) => Number(q) > 0, 'more than 0')
+      .optional(),
+  })
+  .refine((l) => l.consumedQuantity === undefined || l.consumableThingId !== undefined, {
+    message: 'consumedQuantity needs consumableThingId',
+    path: ['consumedQuantity'],
+  });
 
 const CreateScheduleBody = z.strictObject({
   id: Id.optional(),

@@ -1224,6 +1224,9 @@ export async function thingListWhere(
                  OR EXISTS (SELECT 1 FROM public.things c
                              WHERE c.container_id = t.id AND c.deleted_at IS NULL))`);
   }
+  if (q.consumable === '1') {
+    where.push(`'consumable' = ANY (kept.type_capabilities(t.type_id))`);
+  }
   if (q.importRunId) {
     // "See what was imported" (step-3 carry-over, step-7 T16): the things a run recorded in
     // import_source_ids. That table is for owners and admins (0038): anyone else, and a run of

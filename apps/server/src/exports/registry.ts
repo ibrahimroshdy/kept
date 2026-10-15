@@ -489,7 +489,7 @@ export const REGISTRY: readonly EntityDef[] = Object.freeze([
     scope: 'location',
     key: ['id'],
     fields:
-      'id:uuid service_record_id:uuid kind:text description:text quantity:dec unit_cost:dec sort:int created_at:ts updated_at:ts',
+      'id:uuid service_record_id:uuid kind:text description:text quantity:dec unit_cost:dec sort:int consumable_thing_id:uuid consumed_quantity:dec created_at:ts updated_at:ts',
     omit: 'location_id row_version change_seq',
     money: ['unit_cost'],
     thingRefs: [

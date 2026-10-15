@@ -103,6 +103,40 @@ describe('the schedules list', () => {
     expect(saved?.completes.map((c) => c.scheduleId)).toEqual([H.schedule.boiler]);
   });
 
+  it('Log a service: a line from stock takes it off the shelf, never more than is left (D236)', async () => {
+    const { user, mock } = await renderApp('/schedules');
+    await user.click(
+      within(await boilerRow()).getByRole('button', { name: 'Complete Boiler service' }),
+    );
+    const complete = await screen.findByRole('dialog', { name: 'Complete Boiler service' });
+    await user.click(
+      within(complete).getByRole('button', { name: 'Add line items or an invoice' }),
+    );
+    const sheet = within(await screen.findByRole('dialog', { name: 'Log a service' }));
+    await user.click(sheet.getByRole('button', { name: 'Add a line' }));
+    const from = await sheet.findByRole('combobox', { name: 'From stock' });
+    expect(from).toHaveValue('Not from stock');
+    await user.clear(from);
+    await user.type(from, 'AA');
+    await user.click(await screen.findByRole('option', { name: /AA batteries/ }));
+    // Picking it names the line after it.
+    expect(sheet.getByRole('textbox', { name: 'What' })).toHaveValue('AA batteries');
+    const batteries = () => mock.state.inventory.things.find((x) => x.name === 'AA batteries');
+    const before = batteries()?.quantity ?? 0;
+    await user.type(sheet.getByRole('textbox', { name: 'Quantity' }), String(before + 1));
+    await user.click(sheet.getByRole('button', { name: 'Save' }));
+    expect(await sheet.findByText(`Only ${before} left of AA batteries.`)).toBeInTheDocument();
+    expect(batteries()?.quantity).toBe(before);
+
+    await user.clear(sheet.getByRole('textbox', { name: 'Quantity' }));
+    await user.type(sheet.getByRole('textbox', { name: 'Quantity' }), '2');
+    await user.click(sheet.getByRole('button', { name: 'Save' }));
+    expect((await screen.findAllByText('Service logged')).length).toBeGreaterThan(0);
+    expect(batteries()?.quantity).toBe(before - 2);
+    const saved = mock.state.household.serviceRecords.at(-1);
+    expect(saved?.lines[0]?.consumable).toEqual({ id: batteries()?.id, name: 'AA batteries' });
+  });
+
   it('a new schedule needs a name and how often, then lands in the list', async () => {
     const { user } = await renderApp('/schedules');
     await findHeading('Schedules');

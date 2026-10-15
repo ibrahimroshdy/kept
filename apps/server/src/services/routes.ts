@@ -42,16 +42,29 @@ const Vendor = z.union([
   z.strictObject({ id: Id }),
   z.strictObject({ name: z.string().trim().min(1).max(120) }),
 ]);
-const Line = z.strictObject({
-  kind: z.enum(SERVICE_LINE_KINDS),
-  description: z.string().trim().min(1).max(300),
-  quantity: z
-    .string()
-    .regex(/^\d{1,9}(\.\d{1,3})?$/, 'a quantity, e.g. 2 or 4.5')
-    .refine((q) => Number(q) > 0, 'more than 0')
-    .optional(),
-  unitCost: Amount.optional(),
-});
+const Line = z
+  .strictObject({
+    kind: z.enum(SERVICE_LINE_KINDS),
+    description: z.string().trim().min(1).max(300),
+    quantity: z
+      .string()
+      .regex(/^\d{1,9}(\.\d{1,3})?$/, 'a quantity, e.g. 2 or 4.5')
+      .refine((q) => Number(q) > 0, 'more than 0')
+      .optional(),
+    unitCost: Amount.optional(),
+    /** D236: the consumable it used from the shelf; the count moves by the line's quantity. */
+    consumableThingId: Id.optional(),
+    /** D236: how much came off the shelf when it isn't the quantity (one line, 4.5 litres). */
+    consumedQuantity: z
+      .string()
+      .regex(/^\d{1,9}(\.\d{1,3})?$/, 'a quantity, e.g. 2 or 4.5')
+      .refine((q) => Number(q) > 0, 'more than 0')
+      .optional(),
+  })
+  .refine((l) => l.consumedQuantity === undefined || l.consumableThingId !== undefined, {
+    message: 'consumedQuantity needs consumableThingId',
+    path: ['consumedQuantity'],
+  });
 
 const DraftBody = z.strictObject({
   id: Id,

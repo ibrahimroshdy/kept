@@ -181,6 +181,8 @@ export const ListQuery = z.object({
   importRunId: z.uuid().optional(),
   /** `1`: only things that hold things (the container capability, or contents; T26). */
   container: z.enum(['0', '1']).optional(),
+  /** `1`: only things whose type is consumable (D236: a service line's "From stock" picker). */
+  consumable: z.enum(['0', '1']).optional(),
   q: z.string().trim().max(200).optional(),
   group: z.enum(['type', 'place', 'none']).default('none'),
   sort: z.enum(['name', 'updated', 'lastSeen']).default('name'),

@@ -9,9 +9,10 @@ import {
 } from '../audit/undo.js';
 import { conflict } from '../http/errors.js';
 import { gateFor } from '../serialize/gates.js';
+import { moveStock, type StockCtx } from '../services/stock.js';
 import { moneyOff } from '../things/validate.js';
 import { scheduleRow } from './service.js';
-import { type ServiceImage, serviceImage, serviceRow } from './services.js';
+import { type ServiceImage, serviceImage, serviceRow, stockRecordOf } from './services.js';
 import { type ScheduleRow, scheduleImage } from './view.js';
 
 // Undo for schedules and service records (plan T11; D150, D124; Q25, Q28). Each handler checks
@@ -27,6 +28,10 @@ import { type ScheduleRow, scheduleImage } from './view.js';
 // - service_record.update: the record, its lines, completions and reading go back.
 // - service_record.delete: the record comes back with its id, lines, completions and files (a
 //   file already purged, a day after it lost its last attachment, stays gone).
+// Each service undo moves the stock its lines took by the difference, as the write did (D236,
+// services/stock.ts): a line put back takes its stock again (409 `not_enough_stock` when the shelf
+// no longer has it), one removed gives it back. A line put back whose consumable is gone keeps
+// its words without the link.
 // A re-inserted row is written by the person undoing (the insert policies say so, 0051, 0053):
 // they made the change being undone, or they are an owner or admin there.
 
@@ -35,6 +40,13 @@ const beforeOf = (diff: Diff): Record<string, unknown> =>
   Object.fromEntries(Object.entries(diff).map(([k, c]) => [k, c.before ?? null]));
 const afterOf = (diff: Diff): Record<string, unknown> =>
   Object.fromEntries(Object.entries(diff).map(([k, c]) => [k, c.after ?? null]));
+
+const stockCtx = (args: UndoArgs): StockCtx => ({
+  tx: args.tx,
+  client: args.client,
+  scope: args.scope,
+  requestId: args.requestId,
+});
 
 async function refuse(args: UndoArgs, type: string, id: string, fields: string[]): Promise<never> {
   const who = await lastChangedBy(args.client, args.event.locationId, { type, id }, args.event.at);
@@ -239,6 +251,7 @@ async function undoServiceCreate(args: UndoArgs): Promise<void> {
   if (conflicts.length > 0) await refuse(args, 'service_record', id, conflicts);
   const after = afterOf(event.diff);
   await client.query('DELETE FROM public.service_records WHERE id = $1', [id]);
+  await moveStock(stockCtx(args), stockRecordOf(row), (image as unknown as ServiceImage).lines, []);
   if (after.reading_created === true) await dropReading(client, after.meter_reading_id);
   const cleared = (beforeOf(event.diff).cleared_schedules as Cleared[] | null) ?? [];
   for (const c of cleared) {
@@ -260,6 +273,48 @@ async function undoServiceCreate(args: UndoArgs): Promise<void> {
   });
 }
 
+/** Lines back from an image; a consumable no longer in the location leaves the line unlinked. */
+export async function insertLineImages(
+  client: pg.ClientBase,
+  locationId: string,
+  id: string,
+  lines: readonly {
+    id: string;
+    kind: string;
+    description: string;
+    quantity: string | null;
+    unit_cost: string | null;
+    sort: number;
+    consumable_thing_id?: string | null;
+    consumed_quantity?: string | null;
+  }[],
+): Promise<void> {
+  for (const l of lines) {
+    await client.query(
+      `INSERT INTO public.service_lines (id, location_id, service_record_id, kind, description,
+                                         quantity, unit_cost, sort, consumable_thing_id,
+                                         consumed_quantity)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8,
+               (SELECT t.id FROM public.things t WHERE t.id = $9 AND t.location_id = $2),
+               CASE WHEN EXISTS (SELECT 1 FROM public.things t
+                                  WHERE t.id = $9 AND t.location_id = $2)
+                    THEN $10::numeric END)`,
+      [
+        l.id,
+        locationId,
+        id,
+        l.kind,
+        l.description,
+        l.quantity,
+        l.unit_cost,
+        l.sort,
+        l.consumable_thing_id ?? null,
+        l.consumed_quantity ?? null,
+      ],
+    );
+  }
+}
+
 /** Puts a record's lines and completions back to an image's (snooze and skip kept). */
 async function restoreChildren(
   client: pg.ClientBase,
@@ -268,14 +323,7 @@ async function restoreChildren(
   image: Pick<ServiceImage, 'lines' | 'completes'>,
 ): Promise<void> {
   await client.query('DELETE FROM public.service_lines WHERE service_record_id = $1', [id]);
-  for (const l of image.lines ?? []) {
-    await client.query(
-      `INSERT INTO public.service_lines (id, location_id, service_record_id, kind, description,
-                                         quantity, unit_cost, sort)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [l.id, locationId, id, l.kind, l.description, l.quantity, l.unit_cost, l.sort],
-    );
-  }
+  await insertLineImages(client, locationId, id, image.lines ?? []);
   const want = image.completes ?? [];
   await client.query(
     `DELETE FROM public.service_completions
@@ -341,6 +389,12 @@ async function undoServiceUpdate(args: UndoArgs): Promise<void> {
     await restoreChildren(client, event.locationId, id, back);
   }
   const now = await serviceImage(client, await serviceRow(client, id));
+  await moveStock(
+    stockCtx(args),
+    stockRecordOf(row),
+    (image as unknown as ServiceImage).lines,
+    now.lines,
+  );
   await args.audit({
     action: 'service_record.update',
     entity: { type: 'service_record', id },
@@ -409,7 +463,9 @@ async function undoServiceDelete(args: UndoArgs): Promise<void> {
       [a.id, event.locationId, a.file_id, a.url, id, a.role, a.sort],
     );
   }
-  const now = await serviceImage(client, await serviceRow(client, id));
+  const restored = await serviceRow(client, id);
+  const now = await serviceImage(client, restored);
+  await moveStock(stockCtx(args), stockRecordOf(restored), [], now.lines);
   await args.audit({
     action: 'service_record.delete',
     entity: { type: 'service_record', id },

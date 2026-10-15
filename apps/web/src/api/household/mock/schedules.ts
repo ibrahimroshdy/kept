@@ -25,11 +25,13 @@ import {
   hh,
   listLocations,
   locOf,
+  moveMockStock,
   newId,
   recordHouseholdEvent,
   resolveSubject,
   scheduleView,
   serviceRecordView,
+  stockRefOf,
   todayIn,
 } from './db';
 import type { ScheduleSubject, StoredSchedule, StoredServiceRecord } from './state';
@@ -114,6 +116,7 @@ export function schedulesRoutes(state: MockState): MockRoute[] {
         description: l.description,
         quantity: l.quantity ?? null,
         unitCost: l.unitCost ? { amount: l.unitCost, currency } : null,
+        ...stockRefOf(state, l.consumableThingId, l.consumedQuantity),
       })),
       completes: (b.completes ?? []).flatMap((id) => {
         const s = h().schedules.find((x) => x.id === id);
@@ -358,6 +361,8 @@ export function schedulesRoutes(state: MockState): MockRoute[] {
       if (!b.servicedOn || b.servicedOn > todayIn(state, at.locationId))
         return invalid('servicedOn: a date, not in the future');
       if ((b.lines?.length ?? 0) > 50) return invalid('lines: at most 50');
+      const short = moveMockStock(state, b.lines ?? []);
+      if (short) return short;
       const record = newRecord(b, at.locationId);
       h().serviceRecords.push(record);
       const completed = h().schedules.filter((s) => b.completes?.includes(s.id));
@@ -374,6 +379,7 @@ export function schedulesRoutes(state: MockState): MockRoute[] {
         name: at.ref.name,
         undo: () => {
           h().serviceRecords = h().serviceRecords.filter((r) => r !== record);
+          moveMockStock(state, b.lines ?? [], -1);
           for (const [i, s] of completed.entries())
             Object.assign(s, befores[i], { rowVersion: s.rowVersion + 1 });
         },
@@ -419,6 +425,18 @@ export function schedulesRoutes(state: MockState): MockRoute[] {
       const stale = versionError(headers, r);
       if (stale) return reply(stale.status, stale.body);
       h().serviceRecords = h().serviceRecords.filter((x) => x !== r);
+      // D236: what its lines took goes back on the shelf.
+      const taken = r.lines.flatMap((l) =>
+        l.consumable
+          ? [
+              {
+                consumableThingId: l.consumable.id,
+                quantity: l.consumedQuantity ?? l.quantity ?? '1',
+              },
+            ]
+          : [],
+      );
+      moveMockStock(state, taken, -1);
       const completed = h().schedules.filter((s) => r.completes.some((c) => c.scheduleId === s.id));
       const befores = completed.map((s) => ({ ...s }));
       for (const s of completed) {
@@ -433,6 +451,7 @@ export function schedulesRoutes(state: MockState): MockRoute[] {
         name: resolveSubject(state, r.subject)?.ref.name ?? '',
         undo: () => {
           h().serviceRecords.push(r);
+          moveMockStock(state, taken);
           for (const [i, s] of completed.entries())
             Object.assign(s, befores[i], { rowVersion: s.rowVersion + 1 });
         },

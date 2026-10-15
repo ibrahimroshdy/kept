@@ -129,6 +129,9 @@ export const ErrorCode = Object.freeze({
   field_convert_blocked: 'field_convert_blocked',
   /** Step 7: "Keep at least" needs a consumable type (D14). */
   not_consumable: 'not_consumable',
+  /** 1.x (D236): a service line takes more of a consumable than is left; the body names the
+   * thing (`thing: {id, name}`) and what is left (`left`). */
+  not_enough_stock: 'not_enough_stock',
   /** Step 7: the optional Homebox connection failed: unreachable, a redirect, a refused key or
    * sign-in, or an answer that isn't Homebox's (502, plan T11). */
   homebox_unreachable: 'homebox_unreachable',
@@ -287,6 +290,7 @@ export type PortabilityErrorCode =
   | 'import_target_needed'
   | 'field_convert_blocked'
   | 'not_consumable'
+  | 'not_enough_stock'
   | 'homebox_unreachable';
 
 /** The English sentence for each step-7 code (spread into the server's `MESSAGES`). */
@@ -301,6 +305,7 @@ export const PORTABILITY_ERROR_MESSAGES: Readonly<Record<PortabilityErrorCode, s
     import_target_needed: 'Choose where to import it first.',
     field_convert_blocked: "A field of this kind can't be converted to that one.",
     not_consumable: 'Only things you run out of can have a minimum.',
+    not_enough_stock: 'There is not that much left.',
     homebox_unreachable: "Kept couldn't read from that Homebox.",
   });
 

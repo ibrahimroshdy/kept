@@ -91,6 +91,9 @@ export type StoredServiceRecord = Omit<ServiceRecord, 'subject' | 'total' | 'lin
     description: string;
     quantity: string | null;
     unitCost: Money | null;
+    /** D236: the consumable it used from the shelf. */
+    consumable?: { id: string; name: string | null };
+    consumedQuantity?: string;
   }>;
   loggedById: string;
 };

@@ -22327,3 +22327,39 @@ msgstr "أُنشئ رابط مشاركة"
 #: src/components/history/labels.ts
 msgid "Share link revoked"
 msgstr "أُلغي رابط مشاركة"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Only {left} left of {name}."
+msgstr "لم يتبقَّ من {name} إلا {left}."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Only {left} left."
+msgstr "لم يتبقَّ إلا {left}."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "From stock"
+msgstr "من المخزون"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Optional. Saving takes the quantity off its count."
+msgstr "اختياري. عند الحفظ تُخصم الكمية من عدده."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Not from stock"
+msgstr "ليس من المخزون"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "{left} left"
+msgstr "المتبقي {left}"
+
+#: src/components/history/labels.ts
+msgid "Used {name} in a service of {service}"
+msgstr "استُخدم {name} في صيانة {service}"
+
+#: src/components/history/labels.ts
+msgid "Put {name} back from a service of {service}"
+msgstr "أُعيد {name} من صيانة {service}"
+
+#: src/components/history/timeline.tsx
+msgid "Go to <0>{0}</0>"
+msgstr "انتقل إلى <0>{0}</0>"

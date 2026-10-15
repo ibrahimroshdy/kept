@@ -193,6 +193,8 @@ export function EventRow({
   const title = moved ? <Trans>Moved in from another location</Trans> : <Isolated text={line} />;
   const undoable = !compact && trailing === undefined && (offered ?? canUndo(event));
   const target = linkEntity ? entityRoute(event) : null;
+  // D236: a stock use links to what the service was for.
+  const service = compact ? null : serviceRoute(event);
   const created = event.summaryKey.endsWith('.create');
   const changes =
     moved || compact
@@ -243,6 +245,16 @@ export function EventRow({
             </Pill>
           ) : null}
         </div>
+        {service ? (
+          <Link
+            {...service.route}
+            className="justify-self-start rounded-sm text-small text-info underline underline-offset-2 outline-none focus-visible:outline-2 focus-visible:outline-info [overflow-wrap:anywhere]"
+          >
+            <Trans>
+              Go to <bdi>{service.name}</bdi>
+            </Trans>
+          </Link>
+        ) : null}
         {changes.length ? (
           <dl className="m-0 grid gap-1 text-small">
             {changes.map(([key, change]) => (
@@ -305,6 +317,27 @@ function Isolated({ text }: { text: string }) {
     rest = rest.slice(end + 1);
   }
   return <span>{parts}</span>;
+}
+
+/** What a `thing.stock_use` row's service was for (D236), as a link, or null. */
+function serviceRoute(e: HistoryEvent): {
+  route: { to: '/t/$id' | '/p/$id'; params: { id: string } };
+  name: string;
+} | null {
+  const { serviceThingId, servicePlaceId, service } = e.summaryParams;
+  if (e.summaryKey !== 'thing.stock_use' && e.summaryKey !== 'thing.stock_return') return null;
+  if (!service || service === 'a thing' || service === 'a place') return null;
+  if (serviceThingId)
+    return {
+      route: { to: '/t/$id', params: { id: addressOf({ id: serviceThingId, shortCode: null }) } },
+      name: service,
+    };
+  if (servicePlaceId)
+    return {
+      route: { to: '/p/$id', params: { id: addressOf({ id: servicePlaceId, shortCode: null }) } },
+      name: service,
+    };
+  return null;
 }
 
 function entityRoute(

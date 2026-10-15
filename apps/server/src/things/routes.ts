@@ -47,9 +47,10 @@ import { LinkSchema, ThingRowSchema, ThingViewSchema, viewOf } from './view.js';
 //          &vendorId&state*&not*&lifecycle&container&q&group&sort&dir&limit
 //          &cursor
 //                                                                  → {items: ThingRow[], next_cursor}
-//          &importRunId
+//          &importRunId&consumable
 //          `*`: repeatable, "is any of"; `not` names those that are "is none of" (D205);
 //          `importRunId`: the things that import run brought in (owners and admins, step-7 T16)
+//          `consumable=1`: things of a consumable type (D236, the "From stock" picker)
 // GET    /api/v1/things.csv?<the same, but limit and cursor>      → text/csv (lists/routes.ts)
 // POST   /api/v1/things                                           → 201 ThingView & {ownCodes};
 //          with `templateId` (quick add, T19) the template's payload is the base and the body

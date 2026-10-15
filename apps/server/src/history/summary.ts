@@ -4,8 +4,8 @@ import type { RenderedAuditEvent } from '../audit/render.js';
 // `summaryParams` that the web localises, and `summary`, the same sentence in English, as the
 // fallback. It is built from the *rendered* event, after renderAudit() has redacted it, so it
 // can never say more than the row it sits on: money and secrets never reach the params (the
-// only diff values read are the name and the lifecycle, both plain), and a move from a location
-// the viewer can't see has no diff to read at all (D183).
+// only diff values read are the name, the lifecycle and a stock use's service ids, all plain),
+// and a move from a location the viewer can't see has no diff to read at all (D183).
 //
 // Params are data, never English: names as stored, and codes (`lifecycle: 'given_away'`) the web
 // localises. Keys are `<entity>.<verb>` in the audit's own vocabulary, with three refinements the action
@@ -23,6 +23,8 @@ export type SummaryContext = {
   name: string | null;
   /** The event is a move out to a location the viewer can't see (crossingOf() = 'out'). */
   movedOut?: boolean;
+  /** A `thing.stock_use` (D236): the current name of the thing or place the service was for. */
+  service?: string | null;
 };
 
 type Sentence = (p: SummaryParams) => string;
@@ -59,6 +61,9 @@ const ENGLISH: Record<string, Sentence> = {
   'place.convert_to_container': (p) => `Turned ${p.name} into a container`,
   'place.label': (p) => `Labelled ${p.name}`,
   'place.codes': (p) => `Changed the codes of ${p.name}`,
+  // D236: a service line took the consumable off the shelf, or gave it back.
+  'thing.stock_use': (p) => `Used ${p.name} in a service of ${p.service}`,
+  'thing.stock_return': (p) => `Put ${p.name} back from a service of ${p.service}`,
   'attachment.create': (p) => `Attached a file to ${p.name}`,
   'attachment.update': (p) => `Changed a file on ${p.name}`,
   'attachment.delete': (p) => `Removed a file from ${p.name}`,
@@ -129,6 +134,11 @@ function keyOf(event: RenderedAuditEvent, ctx: SummaryContext): string {
     if (deleted && deleted.after === null) return `${entity}.restore`;
   }
   if (event.undo_of) return 'undo';
+  // D236: the stock went back up (the line shrank or went, the service was deleted or undone).
+  if (action === 'thing.stock_use') {
+    const q = plainOf(event, 'quantity');
+    if (q && Number(q.after) > Number(q.before)) return 'thing.stock_return';
+  }
   return ENGLISH[action] ? action : 'event';
 }
 
@@ -144,6 +154,15 @@ export function summarise(event: RenderedAuditEvent, ctx: SummaryContext): Summa
       (v): v is string => typeof v === 'string' && v.length > 0,
     );
     params.name = ctx.name ?? diffName ?? NOUNS[entity] ?? 'something';
+    if (key === 'thing.stock_use' || key === 'thing.stock_return') {
+      // The service's subject: its name (a noun when the reader can't see it), and its id for the
+      // link, read from the rendered diff (plain ids, never money).
+      const thing = plainOf(event, 'service_thing_id')?.after;
+      const place = plainOf(event, 'service_place_id')?.after;
+      params.service = ctx.service ?? (typeof place === 'string' ? 'a place' : 'a thing');
+      if (typeof thing === 'string') params.serviceThingId = thing;
+      else if (typeof place === 'string') params.servicePlaceId = place;
+    }
     if (key === 'thing.lifecycle') {
       // The stored code (`given_away`), never English: the web says it in the reader's language.
       // Left out when the row shows no lifecycle change.

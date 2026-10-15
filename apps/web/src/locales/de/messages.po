@@ -22327,3 +22327,39 @@ msgstr "Geteilter Link erstellt"
 #: src/components/history/labels.ts
 msgid "Share link revoked"
 msgstr "Geteilter Link widerrufen"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Only {left} left of {name}."
+msgstr "Von {name} sind nur noch {left} übrig."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Only {left} left."
+msgstr "Nur noch {left} übrig."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "From stock"
+msgstr "Aus dem Vorrat"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Optional. Saving takes the quantity off its count."
+msgstr "Optional. Beim Speichern wird die Menge von seinem Bestand abgezogen."
+
+#: src/components/services/log-service-sheet.tsx
+msgid "Not from stock"
+msgstr "Nicht aus dem Vorrat"
+
+#: src/components/services/log-service-sheet.tsx
+msgid "{left} left"
+msgstr "{left} übrig"
+
+#: src/components/history/labels.ts
+msgid "Used {name} in a service of {service}"
+msgstr "{name} bei einer Wartung von {service} verwendet"
+
+#: src/components/history/labels.ts
+msgid "Put {name} back from a service of {service}"
+msgstr "{name} aus einer Wartung von {service} zurückgelegt"
+
+#: src/components/history/timeline.tsx
+msgid "Go to <0>{0}</0>"
+msgstr "Zu <0>{0}</0>"

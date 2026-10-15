@@ -513,6 +513,52 @@ describe('activity', () => {
     expect(row.textContent).not.toMatch(/Confirmed|Not sure where|In use|Quantity|Aliases/);
   });
 
+  it('a service line from stock says what it was used for, and links to it (D236)', async () => {
+    const state = ownerScenario();
+    const event = (id: string, before: string, after: string) => ({
+      id,
+      at: new Date(Date.now() - 3_600_000).toISOString(),
+      location_id: INV_IDS.loc.garage,
+      action: 'thing.stock_use',
+      actor: { type: 'user' as const, id: null, displayName: 'Ibrahim' },
+      entity: { type: 'thing', id: T.pump },
+      root_thing_id: T.pump,
+      diff: {
+        quantity: { before, after, class: 'plain' as const },
+        service_record_id: {
+          before: null,
+          after: '01926f00-0000-7000-8000-0000000efc11',
+          class: 'plain' as const,
+        },
+        service_thing_id: { before: null, after: T.tv, class: 'plain' as const },
+      },
+      undo_of: null,
+      undoable_until: null,
+      summaryKey: Number(after) < Number(before) ? 'thing.stock_use' : 'thing.stock_return',
+      summaryParams: { name: 'Oil filter', service: 'Mower', serviceThingId: T.tv },
+      summary: 'English, never shown',
+    });
+    state.inventory.events.push(
+      event('01926f00-0000-7000-8000-0000000efc10', '5', '3'),
+      event('01926f00-0000-7000-8000-0000000efc12', '3', '5'),
+    );
+    await renderApp('/activity', { state });
+    const list = await feed();
+    const used = within(list).getByRole('article', {
+      name: 'Used Oil filter in a service of Mower',
+    });
+    expect(used.textContent).toMatch(/Quantity.*5.*3/);
+    expect(within(used).getByRole('link', { name: 'Go to Mower' })).toHaveAttribute(
+      'href',
+      expect.stringContaining('/t/'),
+    );
+    // The ids it names stay out of the row.
+    expect(used.textContent).not.toMatch(/0000-7000/);
+    expect(
+      within(list).getByRole('article', { name: 'Put Oil filter back from a service of Mower' }),
+    ).toBeInTheDocument();
+  });
+
   it('a secret shows as changed, never a value', async () => {
     await renderApp('/activity');
     const safe = within(await feed()).getByRole('article', {
