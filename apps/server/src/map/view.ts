@@ -81,6 +81,11 @@ export const MapViewSchema = z.object({
       shortCode: z.string().nullable(),
       quantity: z.number(),
       parentId: z.uuid(),
+      /** Its built-in type, its own or its nearest built-in parent's (D249: its shape). */
+      typeKey: z.string().nullable(),
+      /** A custom type's own name ("Television"); null for built-in types. */
+      typeName: z.string().nullable(),
+      isContainer: z.boolean(),
     }),
   ),
   /** Things in rooms past THING_CAP, not in `things`. */
@@ -117,6 +122,7 @@ type ThingRow = {
   container_id: string | null;
   quantity: string;
   type_key: string | null;
+  type_name: string | null;
   is_container: boolean;
   short_code: string | null;
   on_map: boolean;
@@ -210,6 +216,7 @@ async function thingRows(client: pg.ClientBase, locationId: string): Promise<Thi
             coalesce(ty.builtin_key,
                      (SELECT pt.builtin_key FROM public.types pt WHERE pt.id = ty.parent_id))
               AS type_key,
+            CASE WHEN ty.builtin_key IS NULL THEN ty.name END AS type_name,
             (coalesce('container' = ANY (kept.type_capabilities(t.type_id)), false)
               OR EXISTS (SELECT 1 FROM public.things c
                           WHERE c.container_id = t.id AND c.deleted_at IS NULL)) AS is_container,
@@ -475,6 +482,9 @@ export async function mapView(tx: Tx, client: pg.ClientBase, locationId: string)
       shortCode: t.short_code,
       quantity: Number(t.quantity),
       parentId,
+      typeKey: t.type_key,
+      typeName: t.type_name,
+      isContainer: t.is_container,
     });
   }
 

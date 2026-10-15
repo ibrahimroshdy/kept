@@ -3,6 +3,11 @@ title: The location map
 description: See a location as a 3D map of its floors and rooms, find where things are, and arrange the rooms, shelves and boxes yourself.
 ---
 
+import Clip from '../../../components/Clip.astro';
+import clipMp4 from '../../../assets/clips/map-add-tv.mp4?url';
+import clipPoster from '../../../assets/clips/map-add-tv-poster.webp?url';
+import clipWebm from '../../../assets/clips/map-add-tv.webm?url';
+
 A location's page has three layouts: **List**, **Grid** and **Map**. The map draws the location
 in 3D: each floor, its rooms, and the shelves, cupboards and boxes in them. Tap anything to see
 what it is, where it is and what's inside. List stays the default; Kept remembers your choice for
@@ -87,8 +92,8 @@ Owners, admins and members can arrange a location; viewers see it as arranged. *
 - **Add a floor** adds a place of the kind Floor, with one room in it.
 - Select a room to set its **kind** (room, balcony, terrace, garden) and its **floor** (wood, tiles,
   concrete, deck, grass), or to **put a thing of that room on the map**.
-- Select a thing to **turn** it, change its **shape**, or **take it off the map** (only what you put
-  there yourself).
+- Select a thing to **turn** it, change its **shape** (see below), or **take it off the map** (only
+  what you put there yourself).
 
 **Done** saves the whole arrangement at once, and the toast offers **Undo** for ten minutes.
 **Cancel** puts the map back. If someone else arranged the same location while you were, Kept
@@ -98,6 +103,77 @@ says so and shows theirs, rather than overwriting it.
 
 The arrangement travels in a Kept export, so moving to another server keeps the map. A Homebox
 import starts from the automatic layout.
+
+## Put things on the map
+
+Shelves, cupboards, areas and boxes standing directly in a room are on the map already. Anything
+else, such as the TV, a desk or the car, is on the map once you put it there. Owners, admins and
+members can do it.
+
+### In a room you already have
+
+1. Open the location and choose **Map**.
+2. Select the room: tap its floor, or tap it in **What's in** under the map. To work closer,
+   **Open** on its card goes into the room.
+3. Tap **Arrange**. The room's card now has **Put on the map**, listing the room's things that
+   aren't on the map yet.
+4. Type part of the name or the short ID in **Find a thing in** the room, then tap the thing. It
+   appears in the middle of the room, selected.
+5. Its card says which shape it got and why: **Shape: TV, from its type** or **from its name**.
+   When Kept isn't sure, the card says **a guess** and shows **Pick a shape**.
+6. **Change** (or **Pick a shape**) opens the shapes. **Suggested** comes first, then every shape
+   in its group (furniture, storage, electronics, kitchen and laundry, tools, plants and outdoor,
+   vehicles, stairs and areas), each with a picture. **Find a shape** searches the names and their
+   other words in any of Kept's languages: "fridge", "Kühlschrank" and "ثلاجة" all find the
+   fridge. Tap a shape to use it.
+7. Drag the thing where it stands. Small things can stand on a desk, counter, shelf or box.
+   **Turn** turns it a quarter.
+8. Tap **Done**. The toast offers **Undo** for ten minutes. **Cancel** before Done throws the whole
+   session away.
+
+<Clip
+  webm={clipWebm}
+  mp4={clipMp4}
+  poster={clipPoster}
+  width={960}
+  height={698}
+  label="Putting a TV on the map in the sample household: Arrange, the living room, Put on the map, the Samsung TV, its card saying Shape: TV, from its type, the shape picker with Suggested first and a search for Fernseher, then a drag towards the wall and Done."
+  caption="Putting the TV on the map in Try Kept's sample household. The card says the shape came from its type; the picker shows Suggested first, and a search in German finds the TV."
+/>
+
+### How Kept picks the shape
+
+- **From the type first.** A thing whose type is TV, car, bicycle, motorbike or box gets that
+  shape straight away. A type that only narrows it down (electronics, an appliance, a tool) puts
+  the likely shapes first in **Suggested** and leaves the choice to you. A type you made yourself
+  counts by its name: a type called "Television" works like the TV type.
+- **Then the name**, word by word, in English, Arabic, French, German and Italian, with common
+  other words ("couch", "telly", "Kühlschrank", "تلفزيون"). A name that points at one shape
+  ("Samsung TV") gets it by itself; one that could be two ("Screen": a TV or a monitor) is a guess.
+- **Nothing fits?** Things with no shape of their own, such as a webcam, a router, a speaker or a
+  games console, are suggested the **Small device**, the size of a gadget. Anything else starts as
+  the **Small thing**.
+- **Your choice stays.** Kept never changes a shape someone picked, and things already on the map
+  keep theirs.
+
+### In a location with no rooms yet
+
+An office or a storage unit often starts with everything in **Unplaced** and no rooms, so its map
+is empty ground.
+
+1. Open the location, choose **Map** and tap **Arrange**.
+2. Choose **Draw a room** and drag on the empty ground. The room is a new place in Kept straight
+   away, named Room 1; rename it from **Open the place** on its card.
+3. Tap **Done**.
+4. Give the things a place in that room. On the location, **Sort them** goes through Unplaced one
+   thing at a time with a place picker; or open a thing and use **Actions → Move**.
+5. Back on the map, put them on it as above: **Arrange**, the room, **Put on the map**.
+
+### What Unplaced means here
+
+**Unplaced** holds the things that have no place yet. They are in no room, so they aren't on the
+map and **Put on the map** doesn't list them. Give a thing a place in a room first; it then shows
+up in that room's list.
 
 ## Detailed models
 

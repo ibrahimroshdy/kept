@@ -2,7 +2,7 @@
  * The location map's words (1.x, D237): model names, room kinds and floors, in the reader's
  * language.
  */
-import type { MapModelKey, MapRoomKind, MapSurface } from '@kept/shared';
+import type { MapModelKey, MapRoomKind, MapSurface, ShapeGroup } from '@kept/shared';
 import { useLingui } from '@lingui/react/macro';
 import { useMemo } from 'react';
 
@@ -48,6 +48,7 @@ export function useModelNames(): Record<MapModelKey, string> {
       desk: t`Desk`,
       monitor: t`Monitor`,
       laptop: t`Laptop`,
+      device: t`Small device`,
       chair: t`Desk chair`,
       cabinet: t`Filing cabinet`,
       box: t`Storage box`,
@@ -84,6 +85,25 @@ export function useSurfaceNames(): Record<MapSurface, string> {
       concrete: t`Concrete`,
       deck: t`Deck`,
       grass: t`Grass`,
+    }),
+    [t],
+  );
+}
+
+/** The shape picker's groups (D249). */
+export function useShapeGroupNames(): Record<ShapeGroup, string> {
+  const { t } = useLingui();
+  return useMemo(
+    () => ({
+      furniture: t`Furniture`,
+      storage: t`Storage`,
+      electronics: t`Electronics`,
+      kitchen: t`Kitchen and laundry`,
+      tools: t`Tools`,
+      outdoor: t`Plants and outdoor`,
+      vehicles: t`Vehicles`,
+      building: t`Stairs and areas`,
+      other: t`Other`,
     }),
     [t],
   );

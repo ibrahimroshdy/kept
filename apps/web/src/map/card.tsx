@@ -6,7 +6,6 @@
  * room's kind and floor, or puts a thing of the room on the map.
  */
 import {
-  MAP_MODEL_KEYS,
   MAP_ROOM_KINDS,
   MAP_SURFACES,
   type MapModelKey,
@@ -38,6 +37,7 @@ import {
   type Room,
 } from './layout';
 import { matches, whereOf } from './list';
+import { ShapeField, shapeInputOf } from './shapes';
 
 export type CardSel = { type: 'room' | 'item'; id: string };
 
@@ -570,23 +570,7 @@ export function MapCard(p: CardProps) {
     </div>
   ) : null;
   const shape = p.arranging ? (
-    <>
-      <div className="kmap-sub">
-        <Trans>Shape</Trans>
-      </div>
-      <fieldset className="kmap-palette" aria-label={t`Shape`}>
-        {MAP_MODEL_KEYS.map((k) => (
-          <button
-            key={k}
-            type="button"
-            aria-pressed={it.model === k}
-            onClick={() => p.onShape(it.id, k)}
-          >
-            {models[k]}
-          </button>
-        ))}
-      </fieldset>
-    </>
+    <ShapeField item={it} input={shapeInputOf(view, it)} onShape={p.onShape} />
   ) : null;
   if (!p.detail) {
     return (

@@ -160,6 +160,9 @@ export function mockMapView(state: MockState, locationId: string): MapView | nul
       shortCode: x.shortCode,
       quantity: x.quantity,
       parentId,
+      typeKey: x.type?.builtinKey ?? null,
+      typeName: x.type && !x.type.builtinKey ? x.type.name : null,
+      isContainer: x.isContainer,
     });
   }
   return view;

@@ -12,7 +12,6 @@
  */
 import {
   canHost,
-  guessModel,
   levelShort,
   MAP_MODEL_KEYS,
   MAP_ROOM_KINDS,
@@ -22,7 +21,13 @@ import {
   type MapSurface,
   printedCode,
   ROOM_KIND_SURFACE,
+  SHAPE_GROUP,
+  SHAPE_GROUPS,
+  type ShapeInput,
   STAIR_MODELS,
+  searchShapes,
+  shapeOnAdd,
+  suggestShapes,
 } from '@kept/shared';
 import type {
   MapAttention,
@@ -52,10 +57,14 @@ import {
 import { matches, whereOf } from '../../../../web/src/map/list';
 // Inline, not imported as stylesheets: Astro would link those from every page of the site.
 import mapCss from '../../../../web/src/map/map.css?inline';
+// D249: the shape picker's pictures, the app's own sprite (fetched when the picker first opens).
+import spriteUrl from '../../../../web/src/map/thumbs/shapes.webp?url';
+import { THUMB_CELLS, THUMB_COLS } from '../../../../web/src/map/thumbs/sprite';
 import demoCss from './demo.css?inline';
 import { sampleHome } from './sample';
 import {
   formatter,
+  GROUP_NAMES,
   type Lang,
   MODEL_NAMES,
   ROOM_KIND_NAMES,
@@ -367,10 +376,12 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
           .join('')}</div></div>`
       : '';
     const shape = es.arranging
-      ? `<div class="kmap-sub">${esc(w.shape)}</div><fieldset class="kmap-palette" aria-label="${esc(w.shape)}">${MAP_MODEL_KEYS.map(
-          (k) =>
-            `<button type="button" aria-pressed="${it.model === k}" data-act="shape" data-arg="${k}" data-k="shape:${k}">${esc(pick(MODEL_NAMES[k]))}</button>`,
-        ).join('')}</fieldset>`
+      ? `<div class="kmap-shape"><span>${esc(w.shapeLine(pick(MODEL_NAMES[it.model]), it.shapeFrom))}</span>${btn(
+          'shapes',
+          it.shapeFrom === 'guess' ? w.pickShape : w.change,
+          it.shapeFrom === 'guess' ? 'primary' : '',
+          it.id,
+        ).replace('<button ', '<button aria-haspopup="dialog" ')}</div>`
       : '';
     if (!detail) {
       return `<aside data-map-obstacle class="kmap-panel" aria-live="polite">${headEl}${statusRows(own)}${insideLine}${buttons}${shape}</aside>`;
@@ -568,27 +579,35 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
     engine.setLevel(key);
   }
 
+  /** Shapes picked in this session, kept if the thing goes off the map and back on (D249). */
+  const chosen = new Map<string, MapModelKey>();
+
   function addThing(roomId: string, id: string) {
     const x = view.things.find((t) => t.id === id);
     if (!x) return;
     mutate((p) => {
       const room = p.rooms.find((r) => r.id === roomId);
       if (!room) return;
+      const { model, from } = shapeOnAdd(
+        { name: x.name, typeKey: x.typeKey, typeName: x.typeName, isContainer: x.isContainer },
+        chosen.get(x.id) ?? null,
+      );
       const it: Item = {
         id: x.id,
         subject: 'thing',
         roomId,
         name: x.name,
         shortCode: x.shortCode,
-        model: guessModel({ name: x.name, subject: 'thing' }),
+        model,
         x: room.w / 2 - 0.3,
         z: room.d / 2 - 0.3,
         rot: 0,
         on: null,
         parentId: x.parentId,
-        isContainer: false,
+        isContainer: x.isContainer,
         quantity: x.quantity,
         auto: false,
+        ...(from === 'chosen' ? {} : { shapeFrom: from }),
       };
       clampIn(it, room);
       p.items.push(it);
@@ -602,6 +621,8 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
       const room = p.rooms.find((r) => r.id === it?.roomId);
       if (!it || !room) return;
       it.model = model;
+      delete it.shapeFrom;
+      chosen.set(id, model);
       if (!it.on) clampIn(it, room);
       if (!canHost(model)) for (const c of p.items) if (c.on === id) c.on = null;
     });
@@ -674,6 +695,143 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
     engine.select(target);
     stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
+
+  // ---- The shape picker (apps/web/src/map/shapes.tsx), as a native modal dialog ---------------
+
+  const names = Object.fromEntries(MAP_MODEL_KEYS.map((k) => [k, pick(MODEL_NAMES[k])])) as Record<
+    MapModelKey,
+    string
+  >;
+  const thumb = (m: MapModelKey, size = 52) => {
+    const i = THUMB_CELLS[m];
+    const x = -(i % THUMB_COLS) * size;
+    const y = -Math.floor(i / THUMB_COLS) * size;
+    return `<span class="kshape-thumb" aria-hidden="true" style="width:${size}px;height:${size}px;background-image:url(${spriteUrl});background-size:${THUMB_COLS * size}px auto;background-position:${x}px ${y}px"></span>`;
+  };
+  const shapeInputOf = (it: Item): ShapeInput => {
+    const t = view.things.find((x) => x.id === it.id);
+    return {
+      name: it.name,
+      typeKey: t?.typeKey ?? null,
+      typeName: t?.typeName ?? null,
+      isContainer: it.subject === 'place' || it.isContainer,
+    };
+  };
+
+  function openShapes(id: string) {
+    const it = plan.items.find((x) => x.id === id);
+    if (!it) return;
+    const input = shapeInputOf(it);
+    const dlg = document.createElement('dialog');
+    dlg.className = 'kd-shapes';
+    dlg.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    dlg.setAttribute('aria-labelledby', 'kd-shapes-title');
+    dlg.innerHTML = `<div class="kd-shapes-head"><h2 id="kd-shapes-title">${esc(w.shapeFor(it.name))}</h2><button type="button" class="kmap-x" data-shapes="close" aria-label="${esc(w.close)}">×</button></div>
+      <input type="search" class="kmap-input" enterkeyhint="search" aria-label="${esc(w.findShape)}" placeholder="${esc(w.findShapeHint)}">
+      <div class="kshape-list" role="listbox" aria-label="${esc(w.shapes)}"></div>`;
+    const search = dlg.querySelector('input') as HTMLInputElement;
+    const list = dlg.querySelector<HTMLElement>('[role="listbox"]') as HTMLElement;
+    const option = (m: MapModelKey) =>
+      `<div role="option" class="kshape-option" tabindex="-1" data-model="${m}" aria-selected="${m === it.model}"${m === it.model ? ' data-selected' : ''}>${thumb(m)}<span>${esc(names[m])}</span></div>`;
+    const fill = () => {
+      const q = search.value.trim();
+      const sections: [string, MapModelKey[]][] = q
+        ? [[w.shapesThatMatch, searchShapes(q, names)]]
+        : [
+            [w.suggested, suggestShapes(input).shapes.map((x) => x.model)],
+            ...SHAPE_GROUPS.map(
+              (g) =>
+                [pick(GROUP_NAMES[g]), MAP_MODEL_KEYS.filter((m) => SHAPE_GROUP[m] === g)] as [
+                  string,
+                  MapModelKey[],
+                ],
+            ),
+          ];
+      const shown = sections.filter(([, ms]) => ms.length);
+      list.innerHTML = shown.length
+        ? shown
+            .map(
+              ([title, ms], i) =>
+                `<div role="group" class="kshape-section" aria-labelledby="kd-sh-${i}"><div class="kshape-head" id="kd-sh-${i}" role="presentation">${esc(title)}</div>${ms.map(option).join('')}</div>`,
+            )
+            .join('')
+        : `<p class="kd-shapes-empty">${esc(w.noShape(q))}</p>`;
+      const opts = [...list.querySelectorAll<HTMLElement>('[role="option"]')];
+      const first = opts.find((o) => o.dataset.model === it.model) ?? opts[0];
+      if (first) first.tabIndex = 0;
+    };
+    const choose = (m: MapModelKey) => {
+      dlg.close();
+      if (m !== it.model || it.shapeFrom) setShape(it.id, m);
+    };
+    const focusOption = (to: HTMLElement | undefined) => {
+      if (!to) return;
+      for (const o of list.querySelectorAll<HTMLElement>('[role="option"]')) o.tabIndex = -1;
+      to.tabIndex = 0;
+      to.focus();
+    };
+    list.addEventListener('click', (ev) => {
+      const o = (ev.target as HTMLElement).closest<HTMLElement>('[role="option"]');
+      if (o?.dataset.model) choose(o.dataset.model as MapModelKey);
+    });
+    list.addEventListener('keydown', (ev) => {
+      const cur = (ev.target as HTMLElement).closest<HTMLElement>('[role="option"]');
+      if (!cur) return;
+      const opts = [...list.querySelectorAll<HTMLElement>('[role="option"]')];
+      const i = opts.indexOf(cur);
+      const rtl = dlg.dir === 'rtl';
+      const vertical = (down: boolean) => {
+        const r = cur.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const rows = opts.filter((o) => {
+          const top = o.getBoundingClientRect().top;
+          return down ? top > r.top + 4 : top < r.top - 4;
+        });
+        if (!rows.length) return undefined;
+        const tops = rows.map((o) => o.getBoundingClientRect().top);
+        const row = down ? Math.min(...tops) : Math.max(...tops);
+        return rows
+          .filter((o) => Math.abs(o.getBoundingClientRect().top - row) < 4)
+          .sort((a, b) => {
+            const da = Math.abs(a.getBoundingClientRect().left + a.offsetWidth / 2 - cx);
+            const db = Math.abs(b.getBoundingClientRect().left + b.offsetWidth / 2 - cx);
+            return da - db;
+          })[0];
+      };
+      const next: Record<string, () => HTMLElement | undefined> = {
+        ArrowRight: () => opts[rtl ? i - 1 : i + 1],
+        ArrowLeft: () => opts[rtl ? i + 1 : i - 1],
+        ArrowDown: () => vertical(true),
+        ArrowUp: () => vertical(false),
+        Home: () => opts[0],
+        End: () => opts[opts.length - 1],
+      };
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        if (cur.dataset.model) choose(cur.dataset.model as MapModelKey);
+      } else if (next[ev.key]) {
+        ev.preventDefault();
+        focusOption(next[ev.key]?.());
+      }
+    });
+    search.addEventListener('input', fill);
+    search.addEventListener('keydown', (ev) => {
+      if (ev.key !== 'ArrowDown') return;
+      ev.preventDefault();
+      focusOption(list.querySelector<HTMLElement>('[role="option"][tabindex="0"]') ?? undefined);
+    });
+    dlg.querySelector('[data-shapes="close"]')?.addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (ev) => {
+      if (ev.target === dlg) dlg.close();
+    });
+    dlg.addEventListener('close', () => {
+      dlg.remove();
+      overlay.querySelector<HTMLElement>(`[data-k="${CSS.escape(`shapes:${id}`)}"]`)?.focus();
+    });
+    fill();
+    root.append(dlg);
+    dlg.showModal();
+  }
 
   // ---- Events --------------------------------------------------------------------------------
 
@@ -749,9 +907,8 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
         return e.turnItem(arg);
       case 'remove':
         return removeItem(arg);
-      case 'shape':
-        if (sel?.type === 'item') setShape(sel.id, arg as MapModelKey);
-        return;
+      case 'shapes':
+        return openShapes(arg);
       case 'kind':
         if (sel?.type === 'room') setRoom(sel.id, { kind: arg as MapRoomKind });
         return;

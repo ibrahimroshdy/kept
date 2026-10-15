@@ -23,6 +23,7 @@ import {
   mToCm,
   ROOM_KIND_SURFACE,
   rectsOverlap,
+  type ShapeFrom,
 } from '@kept/shared';
 import type {
   LayoutBody,
@@ -76,6 +77,9 @@ export type Item = {
   /** On the map because of where it is (a place in a room, a container in a room), not because
    * someone put it there: it can't be taken off. */
   auto: boolean;
+  /** Why it has its shape, when it was put on the map in this session (D249): from its type or
+   * its name, or a guess the card asks about. Never stored; picking a shape clears it. */
+  shapeFrom?: ShapeFrom;
 };
 
 export type Plan = { levels: Level[]; rooms: Room[]; items: Item[] };

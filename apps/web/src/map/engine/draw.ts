@@ -618,6 +618,13 @@ export function drawnModels(F: Materials): Record<string, Build> {
       const lid = rb(g, w, 0.008, d, w / 2, 0.11, 0.02, F.steel, 0.004);
       lid.rotation.x = -1.28;
     },
+    /** A small gadget (D249): a dark rounded body, a lens and a status light on its front. */
+    device(g, w, d) {
+      rb(g, w, 0.085, d, w / 2, 0.0425, d / 2, F.black, 0.025);
+      rb(g, w - 0.03, 0.006, d - 0.03, w / 2, 0.088, d / 2, F.blackGloss, 0.003);
+      cy(g, 0.022, 0.022, 0.012, w / 2, 0.045, d + 0.003, F.screen, Math.PI / 2, 0, 20);
+      sp(g, 0.006, w - 0.035, 0.065, d + 0.002, F.green);
+    },
     chair(g, w, d) {
       const cx = w / 2;
       const cz = d / 2;

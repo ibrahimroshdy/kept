@@ -91,7 +91,15 @@ type MapJson = {
       hostId: string | null;
     } | null;
   }[];
-  things: { id: string; name: string; parentId: string; quantity: number }[];
+  things: {
+    id: string;
+    name: string;
+    parentId: string;
+    quantity: number;
+    typeKey: string | null;
+    typeName: string | null;
+    isContainer: boolean;
+  }[];
   more: number;
   attention: { subjectId: string; kind: string; person: string | null; min: number | null }[];
 };
@@ -204,6 +212,13 @@ describe('GET /api/v1/locations/:id/map', () => {
     expect(things.get(ids.batteries)).toMatchObject({ parentId: ids.box, quantity: 2 });
     expect(things.get(ids.drill)?.parentId).toBe(ids.shelf);
     expect(things.get(ids.tv)?.parentId).toBe(ids.living);
+    // D249: what the shape picker ranks a thing's shapes from.
+    expect(things.get(ids.tv)).toMatchObject({
+      typeKey: 'tv_display',
+      typeName: null,
+      isContainer: false,
+    });
+    expect(things.get(ids.box)).toMatchObject({ typeKey: 'box_bin', isContainer: true });
     // The Unplaced area is on no map.
     expect(map.things.some((x) => x.name === 'Car papers')).toBe(false);
     expect(map.more).toBe(0);
@@ -214,6 +229,24 @@ describe('GET /api/v1/locations/:id/map', () => {
         expect.objectContaining({ subjectId: ids.drill, kind: 'lent', person: 'Bruce' }),
       ]),
     );
+  });
+
+  it('names a custom type, so its things get a shape from it (D249)', async () => {
+    const den = await placeOf(bobs, 'Den', null);
+    const typeId = newId();
+    await sql(
+      `INSERT INTO public.types (id, owner_account_id, name, icon)
+       VALUES ($1, $2, 'Fernseher', 'lucide:tv')`,
+      [typeId, bobs.accountId],
+    );
+    const id = await thingOf(bobs, 'Wall screen', { placeId: den });
+    await sql('UPDATE public.things SET type_id = $1 WHERE id = $2', [typeId, id]);
+    const map = await json<MapJson>(getMap(bob, bobs));
+    expect(map.things.find((x) => x.id === id)).toMatchObject({
+      typeKey: null,
+      typeName: 'Fernseher',
+      isContainer: false,
+    });
   });
 
   it('lets members arrange, and is not found outside the location', async () => {

@@ -23735,3 +23735,75 @@ msgstr "أُلغي ربط مستند من Paperless"
 #: src/components/history/labels.ts
 msgid "Paperless document copied into Kept"
 msgstr "نُسخ مستند من Paperless إلى Kept"
+
+#: src/map/labels.ts
+msgid "Small device"
+msgstr "جهاز صغير"
+
+#: src/map/labels.ts
+msgid "Furniture"
+msgstr "أثاث"
+
+#: src/map/labels.ts
+msgid "Storage"
+msgstr "تخزين"
+
+#: src/map/labels.ts
+msgid "Electronics"
+msgstr "إلكترونيات"
+
+#: src/map/labels.ts
+msgid "Kitchen and laundry"
+msgstr "المطبخ والغسيل"
+
+#: src/map/labels.ts
+msgid "Plants and outdoor"
+msgstr "نباتات وخارج المنزل"
+
+#: src/map/labels.ts
+msgid "Stairs and areas"
+msgstr "سلالم ومناطق"
+
+#: src/map/shapes.tsx
+msgid "Shape: {shape}, from its type"
+msgstr "الشكل: {shape}، من نوعه"
+
+#: src/map/shapes.tsx
+msgid "Shape: {shape}, from its name"
+msgstr "الشكل: {shape}، من اسمه"
+
+#: src/map/shapes.tsx
+msgid "Shape: {shape}, a guess"
+msgstr "الشكل: {shape}، تخمين"
+
+#: src/map/shapes.tsx
+msgid "Shape: {shape}"
+msgstr "الشكل: {shape}"
+
+#: src/map/shapes.tsx
+msgid "Pick a shape"
+msgstr "اختر شكلًا"
+
+#: src/map/shapes.tsx
+msgid "Shape for {name}"
+msgstr "شكل {name}"
+
+#: src/map/shapes.tsx
+msgid "Find a shape"
+msgstr "ابحث عن شكل"
+
+#: src/map/shapes.tsx
+msgid "Find a shape: TV, shelf, box…"
+msgstr "ابحث عن شكل: تلفاز، رف، صندوق…"
+
+#: src/map/shapes.tsx
+msgid "Shapes"
+msgstr "الأشكال"
+
+#: src/map/shapes.tsx
+msgid "No shape matches “{query}”. Try Small thing or Small device, and give it a name that says what it is."
+msgstr "لا يوجد شكل يطابق «{query}». جرّب «شيء صغير» أو «جهاز صغير»، وأعطه اسمًا يقول ما هو."
+
+#: src/map/shapes.tsx
+msgid "Shapes that match"
+msgstr "الأشكال المطابقة"

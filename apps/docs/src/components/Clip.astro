@@ -1,0 +1,73 @@
+---
+/**
+ * A short screen recording (D249): a muted loop that plays while it is on screen, unless the
+ * reader asked for reduced motion, who gets the poster and plays it from its controls. Nothing
+ * downloads until it plays (`preload="none"`); the poster is the only image fetched up front, and
+ * lazily. The caption says in words what the recording shows.
+ */
+type Props = {
+  webm: string;
+  mp4: string;
+  poster: string;
+  width: number;
+  height: number;
+  /** What it shows, for anyone who can't watch it. */
+  label: string;
+  caption: string;
+};
+const { webm, mp4, poster, width, height, label, caption } = Astro.props;
+---
+
+<figure class="kd-clip">
+  <video
+    data-clip
+    controls
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster={poster}
+    width={width}
+    height={height}
+    aria-label={label}
+  >
+    <source src={webm} type="video/webm" />
+    <source src={mp4} type="video/mp4" />
+    <img src={poster} alt={label} width={width} height={height} loading="lazy" />
+  </video>
+  <figcaption>{caption}</figcaption>
+</figure>
+
+<script>
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  const watch = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        const v = e.target as HTMLVideoElement;
+        if (e.isIntersecting && !still.matches) v.play().catch(() => {});
+        else if (!e.isIntersecting) v.pause();
+      }
+    },
+    { threshold: 0.5 },
+  );
+  for (const v of document.querySelectorAll<HTMLVideoElement>('video[data-clip]')) watch.observe(v);
+</script>
+
+<style>
+  .kd-clip {
+    margin: 1.5rem 0;
+  }
+  .kd-clip video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background: var(--sl-color-gray-6);
+  }
+  .kd-clip figcaption {
+    margin-block-start: 0.5rem;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+</style>

@@ -127,8 +127,7 @@
 }
 fieldset.kmap-seg,
 fieldset.kmap-chips,
-fieldset.kmap-floors,
-fieldset.kmap-palette {
+fieldset.kmap-floors {
   margin: 0;
   min-inline-size: 0;
 }
@@ -554,27 +553,78 @@ fieldset.kmap-palette {
   background: var(--paper);
   color: var(--ink);
 }
-.kmap-palette {
-  border: 0;
-  padding: 0;
+/* D249: the shape line on a thing's card while arranging, and the shape picker (a sheet, outside
+   .kmap, so it uses the app's own tokens). */
+.kmap-shape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font: 500 13px / 1.35 var(--sans);
+  color: var(--ink-2);
+}
+.kmap-shape > span {
+  flex: 1 1 12rem;
+  overflow-wrap: anywhere;
+}
+.kshape-thumb {
+  display: block;
+  flex: none;
+  border-radius: 8px;
+  background-repeat: no-repeat;
+  /* A plate the pictures read on in either theme: dark gadgets on a dark page would vanish. */
+  background-color: light-dark(var(--sunken), #77726a);
+}
+.kshape-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 14px;
+  outline: none;
+  max-height: min(60dvh, 34rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 2px;
+}
+.kshape-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
   gap: 6px;
 }
-.kmap-palette button {
-  font: 500 12px var(--sans);
-  min-height: 36px;
-  border-radius: 8px;
-  border: 1px solid var(--line);
-  background: var(--paper);
-  color: var(--ink);
-  cursor: pointer;
-  padding: 4px 6px;
+.kshape-head {
+  grid-column: 1 / -1;
+  font: 600 12px / 1.3 var(--sans);
+  color: var(--ink-3);
+  margin: 0;
 }
-.kmap-palette button[aria-pressed="true"] {
-  background: var(--amber);
-  color: var(--amber-ink);
+.kshape-option {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 4px;
+  padding: 6px 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font: 500 12.5px / 1.25 var(--sans);
+  text-align: center;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  outline: none;
+}
+.kshape-option[data-hovered],
+.kshape-option:hover {
+  border-color: var(--ink-3);
+}
+.kshape-option[data-focus-visible],
+.kshape-option:focus-visible {
+  outline: 2px solid var(--info);
+  outline-offset: 1px;
+}
+.kshape-option[data-selected],
+.kshape-option[aria-selected="true"] {
   border-color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 16%, var(--surface));
+  box-shadow: inset 0 0 0 1px var(--amber);
 }
 .kmap-empty {
   color: var(--ink-3);

@@ -268,6 +268,7 @@ const HOUSEHOLD_SHARED = [
   '/src/map/',
   '/node_modules/three/',
   '/packages/shared/src/map.ts',
+  '/packages/shared/src/map-shapes.ts',
   // @visx/text's CSS calc() reducer.
   '/node_modules/balanced-match/',
   '/node_modules/reduce-function-call/',
