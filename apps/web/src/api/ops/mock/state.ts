@@ -19,6 +19,7 @@
  */
 import { BACKUP_KEEP_DEFAULT, BACKUP_STALE_HOURS } from '@kept/shared';
 import { INV_IDS } from '../../inventory/mock/fixtures';
+import { fixtureMoney } from '../../mock/dollars';
 import { IDS, type MockState } from '../../mock/fixtures';
 import type {
   AdminOpsStatus,
@@ -334,7 +335,7 @@ function seed(state: MockState, scenario: OpsScenario): OpsState {
         },
       ],
     },
-    extras: homeExtras(),
+    extras: homeExtras(state),
     https: true,
     serveStatus: true,
   };
@@ -357,12 +358,17 @@ function doc(
   };
 }
 
-function homeExtras(): SyncExtra[] {
+function homeExtras(state: MockState): SyncExtra[] {
+  const egp = (amount: string) => fixtureMoney(state, amount);
+  const bought = (date: string, amount: string) => {
+    const m = egp(amount);
+    return { date, price: m.amount, currency: m.currency };
+  };
   return [
     {
       thingId: INV_IDS.thing.tv,
-      purchase: { date: '2025-11-28', price: '18999.00', currency: 'EGP' },
-      currentValue: { amount: '15000.00', currency: 'EGP' },
+      purchase: bought('2025-11-28', '18999.00'),
+      currentValue: egp('15000.00'),
       documents: [
         doc(1, 'receipt', 'TV receipt', 412_000),
         doc(2, 'warranty_doc', 'TV warranty', 1_310_720),
@@ -370,7 +376,7 @@ function homeExtras(): SyncExtra[] {
     },
     {
       thingId: INV_IDS.thing.kettle,
-      purchase: { date: '2026-02-03', price: '1450.00', currency: 'EGP' },
+      purchase: bought('2026-02-03', '1450.00'),
       currentValue: null,
       documents: [doc(3, 'manual', 'Kettle manual', 2_621_440)],
     },

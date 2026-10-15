@@ -36,6 +36,7 @@ import type {
 import { accessOf, liveThing, type StoredThing } from '../../inventory/mock/db';
 import { INV_IDS } from '../../inventory/mock/fixtures';
 import type { ActorRef, Reading, ReadingSource, TypeDetail } from '../../inventory/types';
+import { fixtureMoney } from '../../mock/dollars';
 import type { MockState } from '../../mock/fixtures';
 import { IDS } from '../../mock/fixtures';
 import { err, type MockReply, notFound } from '../../mock/kit';
@@ -317,6 +318,12 @@ function seedVendors(state: MockState): void {
   add(V.vendor.familyStation, 'محطة الطريق الدائري', 'station', IDS.family);
 }
 
+/** A cost the fixtures write in Egyptian pounds, as a fill or a document holds it (cost, currency). */
+function fillCost(state: MockState, egp: string): { cost: string; currency: string } {
+  const m = fixtureMoney(state, egp);
+  return { cost: m.amount, currency: m.currency };
+}
+
 function seedFills(state: MockState, v: VehiclesState): void {
   const odo = readingList(state, COROLLA.meter);
   COROLLA_FILLS.forEach(([takenAt, amount, isFull, missedBefore, value, cost], i) => {
@@ -335,8 +342,7 @@ function seedFills(state: MockState, v: VehiclesState): void {
       unit: 'L',
       isFull,
       missedBefore,
-      cost,
-      currency: 'EGP',
+      ...fillCost(state, cost),
       vendorId: V.vendor.station,
       readingId,
       receipt:
@@ -364,8 +370,7 @@ function seedFills(state: MockState, v: VehiclesState): void {
       unit: 'L',
       isFull: true,
       missedBefore: false,
-      cost,
-      currency: 'EGP',
+      ...fillCost(state, cost),
       vendorId: V.vendor.familyStation,
       readingId,
       receipt: null,
@@ -445,7 +450,7 @@ function seedServices(state: MockState): void {
       servicedOn,
       reading: { id: readingId, value, unit: 'km' },
       vendor: { id: V.vendor.serviceCentre, name: 'City Service Centre' },
-      total: { amount: total, currency: 'EGP' },
+      total: fixtureMoney(state, total),
       lines,
       completes,
       notes: null,
@@ -455,7 +460,7 @@ function seedServices(state: MockState): void {
       rowVersion: 1,
     });
   };
-  const egp = (amount: string) => ({ amount, currency: 'EGP' });
+  const egp = (amount: string) => fixtureMoney(state, amount);
   service(
     V.serviceRecord.oilChange,
     '2026-06-18',
@@ -560,8 +565,7 @@ function seedDocuments(state: MockState, v: VehiclesState): void {
   });
   v.documentCosts.set(V.document.licence, {
     issuedOn: `${Number(licenceExpires.slice(0, 4)) - 1}${licenceExpires.slice(4)}`,
-    cost: '1200',
-    currency: 'EGP',
+    ...fillCost(state, '1200'),
   });
   doc({
     id: V.document.insurance,
@@ -574,8 +578,7 @@ function seedDocuments(state: MockState, v: VehiclesState): void {
   });
   v.documentCosts.set(V.document.insurance, {
     issuedOn: '2026-05-15',
-    cost: '3500',
-    currency: 'EGP',
+    ...fillCost(state, '3500'),
   });
   doc({
     id: V.document.elantraLicence,
