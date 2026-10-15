@@ -3,6 +3,22 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.7.1 (2026-10-15)
+
+### Features
+
+- **help:** a guided tour that matches today's screens, skippable and resumable (D242) (#96) (906f7ee)
+
+### Fixes
+
+- **map:** Arabic on the map: its font, floor initials and two card words (#97) (d39c9cf)
+
+### Documentation
+
+- **site:** a landing page that fits on a phone, with Kept open on desktop and phone (D243) (#95) (718ae5a)
+- **site:** try the 3D map in the browser (D241) (#94) (d9b692c)
+- **release:** the 1.7.0 record (#93) (a2a1acb)
+
 ## 1.7.0 (2026-10-15)
 
 ### Features
