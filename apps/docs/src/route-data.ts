@@ -9,7 +9,14 @@
  *   absolute, so it is built from the configured `site` and base path (KEPT_DOCS_SITE and
  *   KEPT_DOCS_BASE); a build without a site (a local one) has no og:image.
  * - og:locale as language_TERRITORY (Starlight writes the bare language tag);
- * - og:type `website` on the landing pages (Starlight writes `article` everywhere).
+ * - og:type `website` on the landing pages (Starlight writes `article` everywhere);
+ * - on the landing pages, a schema.org `SoftwareApplication` as JSON-LD: free (price 0), AGPL-3.0,
+ *   category `HomeApplication` (one of the values Google's software-app structured data accepts,
+ *   read 2026-10-15). No rating or review: Kept has none to state, and Google shows a rich result
+ *   only with one, so this describes the app without asking for one.
+ *
+ * Starlight already writes the canonical link, an hreflang alternate per locale and x-default,
+ * and the sitemap link, all from `site`.
  */
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
 
@@ -26,6 +33,9 @@ const CARDS: Record<string, { file: string; alt: string }> = {
   },
 };
 
+const LICENSE = 'https://www.gnu.org/licenses/agpl-3.0.html';
+const REPOSITORY = 'https://github.com/ibrahimroshdy/kept';
+
 const OG_LOCALES: Record<string, string> = {
   en: 'en_US',
   ar: 'ar_AR',
@@ -37,6 +47,7 @@ const OG_LOCALES: Record<string, string> = {
 export const onRequest = defineRouteMiddleware((context) => {
   const route = context.locals.starlightRoute;
   const { head } = route;
+  const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
 
   /** Sets a <meta>'s content, replacing Starlight's own tag when there is one. */
   const meta = (key: 'name' | 'property', value: string, content: string) => {
@@ -46,12 +57,34 @@ export const onRequest = defineRouteMiddleware((context) => {
   };
 
   meta('property', 'og:locale', OG_LOCALES[route.lang] ?? route.lang);
-  if (route.entry.data.hero) meta('property', 'og:type', 'website');
+  if (route.entry.data.hero) {
+    meta('property', 'og:type', 'website');
+    const app = {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'Kept',
+      description: route.entry.data.description,
+      applicationCategory: 'HomeApplication',
+      operatingSystem:
+        'Linux (Docker Compose or Kubernetes, amd64 or arm64); the app runs in a web browser',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      isAccessibleForFree: true,
+      license: LICENSE,
+      sameAs: [REPOSITORY],
+      inLanguage: route.entryMeta.lang,
+      ...(context.site ? { url: new URL(`${base}/`, context.site).href } : {}),
+    };
+    head.push({
+      tag: 'script',
+      attrs: { type: 'application/ld+json' },
+      // `<` escaped, so no text in it can close the script element.
+      content: JSON.stringify(app).replaceAll('<', '\\u003c'),
+    });
+  }
 
   if (!context.site) return;
   const card = CARDS[route.lang] ?? CARDS.en;
   if (!card) return;
-  const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
   const image = new URL(`${base}/${card.file}`, context.site).href;
   meta('property', 'og:image', image);
   meta('property', 'og:image:type', 'image/png');

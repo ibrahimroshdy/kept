@@ -1,0 +1,52 @@
+---
+/**
+ * What feeds into Kept (src/data/integrations.ts): one heading per group, then its entries as the
+ * kit's cards, each a link to the page that sets it up. On an Arabic page the words are the
+ * Arabic ones and the links go under /ar/ (English where a page isn't translated yet).
+ */
+import { integrationGroups } from '../../data/integrations';
+import Cards from './Cards.astro';
+
+const ar = Astro.locals.starlightRoute.lang === 'ar';
+const localized = (href: string) => (ar ? `/ar${href}` : href);
+---
+
+<div class="kd-integrations">
+  {
+    integrationGroups.map((group) => (
+      <div class="kd-integration-group" id={group.id}>
+        <h3>{ar ? group.ar : group.en}</h3>
+        <Cards
+          items={group.items.map((item) => {
+            const words = ar ? item.ar : item.en;
+            return { icon: item.icon, title: words.name, body: words.body, href: localized(item.href) };
+          })}
+        />
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .kd-integrations {
+    display: grid;
+    gap: 2rem;
+  }
+  .kd-integration-group {
+    display: grid;
+    gap: 0.875rem;
+  }
+  h3 {
+    margin: 0;
+    font: 600 0.75rem / 1 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  :global(:root:lang(ar)) h3 {
+    font-family: var(--arabic);
+    font-size: 0.875rem;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+</style>

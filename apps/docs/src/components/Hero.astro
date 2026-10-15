@@ -1,24 +1,46 @@
 ---
+import { Image } from 'astro:assets';
 /**
  * The landing page's hero (a Starlight component override; only pages with `hero` frontmatter
  * render it). The copy comes from the page's frontmatter as in Starlight's own Hero; the art is
- * the app itself, a desktop capture with the phone in front, in the page's theme. On the Arabic
- * landing page both are the app in Arabic with the Arabic household (بيت العائلة), not the English
- * home screen: Shot.astro picks the Arabic captures.
+ * the 3D location map (D237) in a browser frame, the page's headline.
+ *
+ * The captures are src/assets/landing/map-hero-{light,dark}.webp (1600 × 1000, 16:10), the light
+ * one under the light theme and the dark one under dark, as Shot.astro does. The Arabic page uses
+ * map-hero-ar-{light,dark}.webp when both exist (the app in Arabic); until then it shows the
+ * English map, the one place an Arabic page does. Astro serves them as WebP at the widths below,
+ * eagerly and first (the largest paint on the page). Keep the alt text true to the capture.
  */
 import { LinkButton } from '@astrojs/starlight/components';
+import type { ImageMetadata } from 'astro';
 import { withBase } from './landing/base';
-import Shot from './landing/Shot.astro';
 
 const { entry, lang } = Astro.locals.starlightRoute;
 const { title = entry.data.title, tagline, actions = [] } = entry.data.hero || {};
 const ar = lang === 'ar';
 
-const eyebrow = ar ? 'مستضاف ذاتيًا · مفتوح المصدر' : 'Self-hosted · Open source';
-const desktopAlt = ar
-  ? 'موقع «بيت العائلة» في Kept على حاسوب: غرفه، وما ينتظر مكانًا، والأشياء فيه'
-  : "Kept's home screen on a desktop: what needs you, the get-started checklist and recent activity";
-const phoneAlt = ar ? 'موقع «بيت العائلة» في Kept على هاتف' : "Kept's home screen on a phone";
+const eyebrow = ar ? 'جديد · الخريطة ثلاثية الأبعاد' : 'New · The 3D map';
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/landing/map-hero*.webp', {
+  eager: true,
+});
+const capture = (suffix: string) => files[`../assets/landing/map-hero${suffix}.webp`]?.default;
+const arabic = ar && capture('-ar-light') && capture('-ar-dark');
+const light = capture(arabic ? '-ar-light' : '-light');
+const dark = capture(arabic ? '-ar-dark' : '-dark');
+if (!light || !dark) throw new Error('missing src/assets/landing/map-hero-{light,dark}.webp');
+const mapAlt = ar
+  ? 'خريطة Kept ثلاثية الأبعاد لمنزل: غرفه في منظر مائل، لكلٍّ منها اسمها، بأثاثها وصناديقها، بجانب شجرة أماكن الموقع'
+  : "Kept's 3D map of a home: its rooms in an isometric view, each labelled, with furniture and boxes, beside the location's tree of places";
+const image = {
+  alt: mapAlt,
+  widths: [480, 720, 960, 1280, 1600],
+  sizes: '(min-width: 72rem) 36rem, (min-width: 50rem) 52vw, calc(100vw - 2rem)',
+  loading: 'eager',
+  fetchpriority: 'high',
+  decoding: 'async',
+  format: 'webp',
+  quality: 80,
+} as const;
 ---
 
 <div class="kd-hero">
@@ -39,13 +61,11 @@ const phoneAlt = ar ? 'موقع «بيت العائلة» في Kept على ها�
       )
     }
   </div>
-  <div class="kd-hero-art" aria-hidden="false">
-    <div class="kd-frame kd-frame-desktop">
+  <div class="kd-hero-art">
+    <div class="kd-frame">
       <div class="kd-frame-bar" aria-hidden="true"><i></i><i></i><i></i></div>
-      <Shot name="home" alt={desktopAlt} sizes="(min-width: 72rem) 36rem, (min-width: 50rem) 52vw, calc(100vw - 6rem)" eager />
-    </div>
-    <div class="kd-frame kd-frame-phone">
-      <Shot name="phone" alt={phoneAlt} sizes="11.5rem" eager />
+      <Image src={light} {...image} class="kd-only-light" />
+      <Image src={dark} {...image} class="kd-only-dark" />
     </div>
   </div>
 </div>
@@ -120,13 +140,11 @@ const phoneAlt = ar ? 'موقع «بيت العائلة» في Kept على ها�
   }
 
   .kd-hero-art {
-    position: relative;
     min-width: 0;
-    padding-block-end: 2.5rem;
-    padding-inline-end: 3.5rem;
   }
   .kd-frame {
     border: 1px solid var(--line);
+    border-radius: 12px;
     background: var(--surface);
     overflow: hidden;
     box-shadow:
@@ -137,9 +155,6 @@ const phoneAlt = ar ? 'موقع «بيت العائلة» في Kept على ها�
     display: block;
     inline-size: 100%;
     block-size: auto;
-  }
-  .kd-frame-desktop {
-    border-radius: 12px;
   }
   .kd-frame-bar {
     display: flex;
@@ -154,18 +169,6 @@ const phoneAlt = ar ? 'موقع «بيت العائلة» في Kept على ها�
     border-radius: 50%;
     background: var(--line);
   }
-  .kd-frame-phone {
-    position: absolute;
-    inset-block-end: 0;
-    inset-inline-end: 0;
-    inline-size: clamp(7.5rem, 28%, 11.5rem);
-    border-radius: 22px;
-    border: 5px solid var(--charcoal);
-  }
-  .kd-frame-phone :global(img) {
-    border-radius: 16px;
-  }
-
   @media (min-width: 50rem) {
     .kd-hero {
       grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
