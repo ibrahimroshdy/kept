@@ -17,7 +17,7 @@
  * The short ID's own format never changes (D120, D208).
  */
 import { isShortCode, normaliseInputCode } from '@kept/shared';
-import { useQuery } from '@tanstack/react-query';
+import { type QueryClient, useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { captureApi } from '@/api/capture/queries';
@@ -70,12 +70,26 @@ export type Address =
 
 const notFound = () => new ApiError(404, 'not_found', 'Not found');
 
+/** The query that holds the id a short ID resolved to. */
+const addressKey = (kind: AddressKind, code: string) => ['address', kind, code] as const;
+
+/**
+ * The id a route parameter names, if this tab already knows it: a UUID, or a short ID the page
+ * (or the scanner) has resolved. Never a request: the sidebar reads it to follow the page.
+ */
+export function knownAddress(qc: QueryClient, kind: AddressKind, param: string): string | null {
+  if (isUuid(param)) return param.toLowerCase();
+  const code = normaliseInputCode(param);
+  const cached = qc.getQueryData(addressKey(kind, code));
+  return typeof cached === 'string' ? cached : (known.get(keyOf(kind, code)) ?? null);
+}
+
 /** The id a route parameter (a UUID or a short ID) names; see the header. */
 export function useAddress(kind: AddressKind, param: string): Address {
   const uuid = isUuid(param);
   const code = uuid ? '' : normaliseInputCode(param);
   const query = useQuery({
-    queryKey: ['address', kind, code],
+    queryKey: addressKey(kind, code),
     queryFn: async () => {
       if (!isShortCode(code)) throw notFound();
       const id = await resolveAddress(kind, code);
