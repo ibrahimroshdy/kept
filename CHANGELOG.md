@@ -3,6 +3,13 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.9.2 (2026-10-15)
+
+### Documentation
+
+- **site:** what Kept connects to, as one picture on the integrations page (#122) (6442ab6)
+- **release:** the 1.9.1 record (#121) (931a8fe)
+
 ## 1.9.1 (2026-10-15)
 
 ### Documentation
