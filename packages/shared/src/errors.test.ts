@@ -92,6 +92,7 @@ describe('ErrorCode', () => {
       'https_required',
       'downgrade_refused',
       'keep_offline_too_large',
+      'paperless_unreachable',
       'database_unavailable',
       'internal',
     ];

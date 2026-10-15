@@ -54,7 +54,10 @@ export function limiterKey(
     // 1.4 (D231): signing in to a location's mailbox to check it, per person.
     | 'mailbox-check'
     // 1.5 (D233): a share link's page views, per link.
-    | 'share-link',
+    | 'share-link'
+    // 1.x (D248): testing a location's Paperless connection, and searching it, per person.
+    | 'paperless-check'
+    | 'paperless-search',
   ...parts: string[]
 ): string {
   const normalised = parts.map((p) => p.trim().toLowerCase());

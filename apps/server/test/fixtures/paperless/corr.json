@@ -1,0 +1,30 @@
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "all": [2, 1],
+  "results": [
+    {
+      "id": 2,
+      "slug": "bosch",
+      "name": "Bosch",
+      "match": "",
+      "matching_algorithm": 1,
+      "is_insensitive": true,
+      "document_count": 2,
+      "owner": 2,
+      "user_can_change": true
+    },
+    {
+      "id": 1,
+      "slug": "hardware-store",
+      "name": "Hardware Store",
+      "match": "",
+      "matching_algorithm": 1,
+      "is_insensitive": true,
+      "document_count": 1,
+      "owner": 2,
+      "user_can_change": true
+    }
+  ]
+}

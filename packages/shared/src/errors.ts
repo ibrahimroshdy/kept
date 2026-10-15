@@ -153,6 +153,9 @@ export const ErrorCode = Object.freeze({
   downgrade_refused: 'downgrade_refused',
   /** Step 8: keeping this offline would pass the device's cap (KEEP_OFFLINE, plan Q21). */
   keep_offline_too_large: 'keep_offline_too_large',
+  /** 1.x (D248): the location's Paperless-ngx server didn't answer, refused its token, or
+   * answered unlike Paperless (502); the body's `paperlessError` says which. */
+  paperless_unreachable: 'paperless_unreachable',
   /** Postgres can't be reached: refused, ended, restarting, out of connections (503). Nothing
    * the request did; the same request works once the database is back. */
   database_unavailable: 'database_unavailable',
@@ -333,6 +336,15 @@ export const OPS_ERROR_MESSAGES: Readonly<Record<OpsErrorCode, string>> = Object
   downgrade_refused: 'This database is from a newer version of Kept.',
   keep_offline_too_large: 'That is more than this device can keep offline.',
 });
+
+/** 1.x's integration error codes (D248). */
+export type IntegrationErrorCode = 'paperless_unreachable';
+
+/** The English sentence for each integration code (spread into the server's `MESSAGES`). */
+export const INTEGRATION_ERROR_MESSAGES: Readonly<Record<IntegrationErrorCode, string>> =
+  Object.freeze({
+    paperless_unreachable: "Paperless can't be reached.",
+  });
 
 export type ApiError = { error: string; hint?: string; code: ErrorCode };
 

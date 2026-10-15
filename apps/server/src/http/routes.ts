@@ -39,6 +39,7 @@ import { moneyRoutes } from '../money/routes.js';
 import type { NotifyDeps } from '../notify/channels.js';
 import { notifyRoutes } from '../notify/routes.js';
 import { oauthRoutes } from '../oauth/routes.js';
+import { paperlessRoutes } from '../paperless/routes.js';
 import { paperworkRoutes } from '../paperwork/routes.js';
 import { placeRoutes } from '../places/routes.js';
 import { purchaseRoutes } from '../purchases/routes.js';
@@ -181,6 +182,8 @@ export const INVENTORY_ROUTE_MODULES = [
   updateRoutes,
   // 1.4 (D231): a location's mailbox for email-in.
   mailboxRoutes,
+  // 1.x (D248): a location's Paperless-ngx connection, and things' links to its documents.
+  paperlessRoutes,
   // 1.x (D235): renters' condition reports.
   conditionRoutes,
   // 1.5 (D233): read-only share links, and their public page.

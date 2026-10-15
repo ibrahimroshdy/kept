@@ -23475,3 +23475,263 @@ msgstr "Dein eigenes Kept erstellt hier das PDF. Diese Demo hat keine Dateien."
 #: src/assistant/conversation.tsx
 msgid "Sample answers in this demo: no AI is asked."
 msgstr "Beispielantworten in dieser Demo: Es wird keine KI gefragt."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless-ngx"
+msgstr "Paperless-ngx"
+
+#: src/components/location-settings.tsx
+msgid "Paperless"
+msgstr "Paperless"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless answers: version {0}"
+msgstr "Paperless antwortet: Version {0}"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless couldn't answer."
+msgstr "Paperless konnte nicht antworten."
+
+#: src/components/history/labels.ts
+msgid "Paperless disconnected"
+msgstr "Paperless getrennt"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Disconnect Paperless?"
+msgstr "Paperless trennen?"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "The {links} links to its documents go too. Documents copied into Kept stay."
+msgstr "Die {links} Verknüpfungen zu seinen Dokumenten entfallen ebenfalls. In Kept kopierte Dokumente bleiben."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Members can no longer link its documents."
+msgstr "Mitglieder können seine Dokumente dann nicht mehr verknüpfen."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Disconnect"
+msgstr "Trennen"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Not encrypted"
+msgstr "Nicht verschlüsselt"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "This address is plain http, so the token travels unencrypted on your network. Use https if Paperless has it."
+msgstr "Diese Adresse ist einfaches http, das Token wird in Ihrem Netz also unverschlüsselt übertragen. Nutzen Sie https, wenn Paperless es anbietet."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Version unknown"
+msgstr "Version unbekannt"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "{0, plural, one {# linked document} other {# linked documents}}"
+msgstr "{0, plural, one {# verknüpftes Dokument} other {# verknüpfte Dokumente}}"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Connected by {0}, changed {1}"
+msgstr "Verbunden von {0}, geändert {1}"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless saved"
+msgstr "Paperless gespeichert"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless connected: version {0}"
+msgstr "Paperless verbunden: Version {0}"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Change the connection"
+msgstr "Verbindung ändern"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Connect Paperless-ngx"
+msgstr "Paperless-ngx verbinden"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Members can then link a thing or a place to its receipts, manuals and warranty cards in Paperless, without uploading them twice. Kept stores the document's number and title, not the file, unless someone copies it into Kept."
+msgstr "Mitglieder können dann ein Ding oder einen Ort mit seinen Belegen, Anleitungen und Garantiekarten in Paperless verknüpfen, ohne sie doppelt hochzuladen. Kept speichert Nummer und Titel des Dokuments, nicht die Datei, außer jemand kopiert es in Kept."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless address"
+msgstr "Paperless-Adresse"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "The address you open Paperless at, for example https://paperless.example.com."
+msgstr "Die Adresse, unter der Sie Paperless öffnen, zum Beispiel https://paperless.example.com."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Plain http"
+msgstr "Einfaches http"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Kept accepts http only for an address on your own network, and only when an instance admin allows private addresses. The token travels unencrypted there."
+msgstr "Kept akzeptiert http nur für eine Adresse in Ihrem eigenen Netz und nur, wenn ein Instanz-Admin private Adressen erlaubt. Das Token wird dort unverschlüsselt übertragen."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "API token"
+msgstr "API-Token"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "In Paperless, open My Profile and press the circular arrow by the API token. Kept sees what that user sees."
+msgstr "Öffnen Sie in Paperless „Mein Profil“ und drücken Sie den Kreispfeil beim API-Token. Kept sieht, was dieser Benutzer sieht."
+
+#: src/components/paperless/documents.tsx
+msgid "From Paperless-ngx"
+msgstr "Aus Paperless-ngx"
+
+#: src/components/paperless/documents.tsx
+msgid "Link from Paperless"
+msgstr "Aus Paperless verknüpfen"
+
+#: src/components/paperless/documents.tsx
+msgid "Paperless can't be reached"
+msgstr "Paperless ist nicht erreichbar"
+
+#: src/components/paperless/documents.tsx
+msgid "The titles below are as Kept last saw them."
+msgstr "Die Titel unten sind so, wie Kept sie zuletzt gesehen hat."
+
+#: src/components/paperless/documents.tsx
+msgid "No Paperless documents of this kind."
+msgstr "Keine Paperless-Dokumente dieser Art."
+
+#: src/components/paperless/documents.tsx
+msgid "Nothing linked yet. Link a receipt or a manual you already keep in Paperless."
+msgstr "Noch nichts verknüpft. Verknüpfen Sie einen Beleg oder eine Anleitung, die Sie schon in Paperless haben."
+
+#: src/components/paperless/documents.tsx
+msgid "Paperless documents"
+msgstr "Paperless-Dokumente"
+
+#: src/components/paperless/documents.tsx
+msgid "Copied into Kept"
+msgstr "In Kept kopiert"
+
+#: src/components/paperless/documents.tsx
+msgid "Couldn't copy it"
+msgstr "Konnte nicht kopiert werden"
+
+#: src/components/paperless/documents.tsx
+msgid "Unlink this document?"
+msgstr "Verknüpfung dieses Dokuments aufheben?"
+
+#: src/components/paperless/documents.tsx
+msgid "It comes off {name}. Paperless keeps it, and the copy in Kept stays."
+msgstr "Es wird von {name} entfernt. Paperless behält es, und die Kopie in Kept bleibt."
+
+#: src/components/paperless/documents.tsx
+msgid "It comes off {name}. Paperless keeps it."
+msgstr "Es wird von {name} entfernt. Paperless behält es."
+
+#: src/components/paperless/documents.tsx
+msgid "Couldn't unlink it"
+msgstr "Verknüpfung konnte nicht aufgehoben werden"
+
+#: src/components/paperless/documents.tsx
+msgid "Open in Paperless"
+msgstr "In Paperless öffnen"
+
+#: src/components/paperless/documents.tsx
+msgid "Copy into Kept"
+msgstr "In Kept kopieren"
+
+#: src/components/paperless/documents.tsx
+msgid "Unlink {0}"
+msgstr "Verknüpfung von {0} aufheben"
+
+#: src/components/paperless/picker.tsx
+msgid "Linked {n} from Paperless"
+msgstr "{n} aus Paperless verknüpft"
+
+#: src/components/paperless/picker.tsx
+msgid "Link from Paperless to {name}"
+msgstr "Aus Paperless mit {name} verknüpfen"
+
+#: src/components/paperless/picker.tsx
+msgid "Search Paperless"
+msgstr "Paperless durchsuchen"
+
+#: src/components/paperless/picker.tsx
+msgid "Words from the title or the text, a correspondent, a type or a tag."
+msgstr "Wörter aus Titel oder Text, ein Korrespondent, ein Typ oder ein Tag."
+
+#: src/components/paperless/picker.tsx
+msgid "Searching Paperless"
+msgstr "Paperless wird durchsucht"
+
+#: src/components/paperless/picker.tsx
+msgid "No documents found"
+msgstr "Keine Dokumente gefunden"
+
+#: src/components/paperless/picker.tsx
+msgid "Try other words."
+msgstr "Versuchen Sie andere Wörter."
+
+#: src/components/paperless/picker.tsx
+msgid "This Paperless has no documents yet."
+msgstr "Dieses Paperless hat noch keine Dokumente."
+
+#: src/components/paperless/picker.tsx
+msgid "Page {page} of {pages}"
+msgstr "Seite {page} von {pages}"
+
+#: src/components/paperless/picker.tsx
+msgid "{0, plural, =0 {Link} one {Link # document} other {Link # documents}}"
+msgstr "{0, plural, =0 {Verknüpfen} one {# Dokument verknüpfen} other {# Dokumente verknüpfen}}"
+
+#: src/components/paperless/words.ts
+msgid "Use https:// for a Paperless outside your network. Over http the token would travel unencrypted."
+msgstr "Nutzen Sie https:// für ein Paperless außerhalb Ihres Netzes. Über http würde das Token unverschlüsselt übertragen."
+
+#: src/components/paperless/words.ts
+msgid "Kept couldn't reach Paperless at that address."
+msgstr "Kept konnte Paperless unter dieser Adresse nicht erreichen."
+
+#: src/components/paperless/words.ts
+msgid "Paperless didn't answer within 10 seconds."
+msgstr "Paperless hat nicht innerhalb von 10 Sekunden geantwortet."
+
+#: src/components/paperless/words.ts
+msgid "That address answered with a redirect. Use the address it leads to."
+msgstr "Diese Adresse hat mit einer Weiterleitung geantwortet. Nutzen Sie die Adresse, zu der sie führt."
+
+#: src/components/paperless/words.ts
+msgid "Paperless refused the token."
+msgstr "Paperless hat das Token abgelehnt."
+
+#: src/components/paperless/words.ts
+msgid "That address doesn't answer like Paperless-ngx."
+msgstr "Diese Adresse antwortet nicht wie Paperless-ngx."
+
+#: src/components/paperless/words.ts
+msgid "Kept needs Paperless-ngx 2.16 or later."
+msgstr "Kept braucht Paperless-ngx 2.16 oder neuer."
+
+#: src/components/paperless/words.ts
+msgid "Paperless no longer has this document, or the token's user can't see it."
+msgstr "Paperless hat dieses Dokument nicht mehr, oder der Benutzer des Tokens kann es nicht sehen."
+
+#: src/components/paperless/words.ts
+msgid "That document is larger than Kept takes."
+msgstr "Dieses Dokument ist größer, als Kept annimmt."
+
+#: src/components/history/labels.ts
+msgid "Paperless connected"
+msgstr "Paperless verbunden"
+
+#: src/components/history/labels.ts
+msgid "Paperless connection changed"
+msgstr "Paperless-Verbindung geändert"
+
+#: src/components/history/labels.ts
+msgid "Paperless document linked"
+msgstr "Paperless-Dokument verknüpft"
+
+#: src/components/history/labels.ts
+msgid "Paperless document unlinked"
+msgstr "Verknüpfung zum Paperless-Dokument aufgehoben"
+
+#: src/components/history/labels.ts
+msgid "Paperless document copied into Kept"
+msgstr "Paperless-Dokument in Kept kopiert"

@@ -162,6 +162,22 @@ export const integrationGroups: IntegrationGroup[] = [
         },
       },
       {
+        id: 'paperless',
+        icon: 'paperwork',
+        href: '/users/paperless/',
+        code: ['apps/server/src/paperless/', 'apps/web/src/components/paperless/'],
+        en: {
+          name: 'Paperless-ngx',
+          title: 'Paperless-ngx documents',
+          body: 'Link a thing to its receipts and manuals in Paperless. Copy one in when you want it kept.',
+        },
+        ar: {
+          name: 'Paperless-ngx',
+          title: 'مستندات Paperless-ngx',
+          body: 'اربط الشيء بإيصالاته وأدلته في Paperless. وانسخ أحدها إلى Kept حين تريد الاحتفاظ به.',
+        },
+      },
+      {
         id: 'reading',
         icon: 'paperwork',
         href: '/users/ai-providers/#what-uses-ai-and-what-it-costs',

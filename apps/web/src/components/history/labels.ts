@@ -401,6 +401,13 @@ export function useSummary() {
       // 1.5 (D233): read-only share links.
       'share_link.create': t`Share link made`,
       'share_link.revoke': t`Share link revoked`,
+      // 1.x (D248): Paperless-ngx, the connection and the links to its documents.
+      'paperless.connect': t`Paperless connected`,
+      'paperless.update': t`Paperless connection changed`,
+      'paperless.disconnect': t`Paperless disconnected`,
+      'paperless_link.create': t`Paperless document linked`,
+      'paperless_link.delete': t`Paperless document unlinked`,
+      'paperless_link.copy': t`Paperless document copied into Kept`,
       'purchase.reextract': t`Receipt read again`,
       'thing.enrich': t`Other names added`,
       'import.enrich': t`Other names requested for an import`,

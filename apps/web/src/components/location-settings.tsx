@@ -1,7 +1,7 @@
 /**
  * The frame for Location settings pages (screens §5): the location's name, the section tabs
  * (General · What to track · Members; Personal has no Members, D114; Webhooks for its owner and
- * admins, step 6; Email-in for them too, 1.4; Share links for them, never in Personal, 1.5) and the
+ * admins, step 6; Email-in for them too, 1.4; Paperless-ngx for them too, 1.x; Share links for them, never in Personal, 1.5) and the
  * owner/admin gate.
  */
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -20,7 +20,7 @@ export function LocationSettingsPage({
 }: {
   id: string;
   /** Which tab a sub-page belongs to (Invite belongs to Members). */
-  section?: 'general' | 'members' | 'track' | 'webhooks' | 'email-in' | 'share-links';
+  section?: 'general' | 'members' | 'track' | 'webhooks' | 'email-in' | 'paperless' | 'share-links';
   /** The page title; defaults to "Location settings". */
   title?: (location: LocationDetail) => ReactNode;
   children: (location: LocationDetail) => ReactNode;
@@ -89,6 +89,12 @@ export function LocationSettingsPage({
                   key: 'email-in',
                   label: <Trans>Email-in</Trans>,
                   link: { to: '/settings/location/$id/email-in' as const, params: { id } },
+                },
+                // Paperless-ngx (1.x, D248): the location's Paperless server.
+                {
+                  key: 'paperless',
+                  label: <Trans>Paperless</Trans>,
+                  link: { to: '/settings/location/$id/paperless' as const, params: { id } },
                 },
               ]
             : []),

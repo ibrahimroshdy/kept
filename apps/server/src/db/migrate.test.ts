@@ -341,6 +341,10 @@ const KEPT_FUNCTION_EXECUTE: Record<string, string[]> = {
   'kept.webhooks_listening(uuid,text)': APP_ONLY,
   'kept.disable_webhooks_in(uuid,uuid)': OWNER_ONLY,
   'kept.disable_webhooks_for(uuid,uuid)': APP_AND_SYSTEM,
+  // 1.x (0135, D248): a location's Paperless-ngx connection with its sealed token, for the server
+  // after kept_app's checks; and the trigger that drops a moved thing's links.
+  'kept.paperless_config(uuid)': SYSTEM_ONLY,
+  'kept.drop_moved_paperless_links()': OWNER_ONLY,
   // Step 7 (0080): an archive import's target, the prune-imports doors, and D180's end of a
   // former admin's unfinished exports and imports.
   'kept.set_import_target(uuid,uuid)': APP_ONLY,

@@ -298,6 +298,19 @@ export const TOOL_DEFS = Object.freeze({
             }),
           )
           .optional(),
+        // 1.x (D248): documents linked from the location's Paperless-ngx, as Kept cached them.
+        paperless_documents: z
+          .array(
+            z.object({
+              document_id: z.number().int().describe('The document’s id in Paperless-ngx'),
+              kind: z.enum(['receipt', 'invoice', 'manual', 'warranty_doc', 'document']),
+              date: z.string().nullable(),
+              copied: z.boolean().describe('A copy is also attached in Kept'),
+              untrusted: z.object({ title: z.string(), type: z.string().nullable() }),
+            }),
+          )
+          .optional()
+          .describe('Receipts, manuals and other documents linked from Paperless-ngx'),
         url: z.string().describe('The thing’s page in Kept'),
       }),
     }),

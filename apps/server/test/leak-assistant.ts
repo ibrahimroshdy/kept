@@ -144,6 +144,23 @@ export async function fillAssistant(c: pg.ClientBase, t: Tenant, label: string):
     [t.locationId, mailbox],
   );
 
+  // Paperless-ngx (1.x, D248): a connection with a (fake) sealed token, and a thing's link to one
+  // of its documents.
+  const paperless = await one(
+    `INSERT INTO public.paperless_connections (location_id, base_url, config_ciphertext,
+                                               key_version, server_version, created_by)
+     VALUES ($1, $2, '{"v": 1, "c": "x"}', 1, '3.3.1', $3)
+     RETURNING id`,
+    [t.locationId, `https://paperless.${label}.example.test`, t.userId],
+  );
+  await c.query(
+    `INSERT INTO public.paperless_links (location_id, connection_id, thing_id, document_id, title,
+                                         kind, created_by)
+     SELECT $1, $2, x.id, 7, 'Drill manual', 'manual', $3 FROM public.things x
+      WHERE x.location_id = $1 AND x.name = $4`,
+    [t.locationId, paperless, t.userId, `${label} thing`],
+  );
+
   // Share links (1.5, D233): a filtered list shared until next month (the token is fake).
   await c.query(
     `INSERT INTO public.share_links (location_id, scope_type, filter, title, token_hash,

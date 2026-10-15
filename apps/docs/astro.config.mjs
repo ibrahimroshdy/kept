@@ -82,6 +82,7 @@ const sidebar = [
     page('users/mcp-clients'),
     page('users/home-assistant'),
     page('users/dashboards'),
+    page('users/paperless'),
     page('users/import-export'),
     page('integrations'),
     group('Backups and restore', 'النسخ الاحتياطي والاستعادة', [

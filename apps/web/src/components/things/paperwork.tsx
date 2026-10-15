@@ -3,6 +3,7 @@
  * as a filter in the URL (`f.role`), under the thing's warranties and their coverage bars (step 4,
  * T20: components/warranties).
  * Originals open only for members and above (D117); viewers get the display copy.
+ * 1.x (D248): below the files, the documents linked from the location's Paperless-ngx.
  */
 import { ATTACHMENT_ROLES } from '@kept/shared';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -12,6 +13,7 @@ import type { AttachmentRole, AttachmentView } from '@/api/inventory/types';
 import { DocumentIcon, ShareIcon, TrashIcon } from '@/components/icons';
 import { ListSurface } from '@/components/list-surface';
 import { EmptyState, Row, Section, useErrorText } from '@/components/page';
+import { PaperlessDocuments } from '@/components/paperless/documents';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@/components/ui/combobox';
 import { useConfirm } from '@/components/ui/confirm';
@@ -25,7 +27,7 @@ import { useAttachmentFile } from './purchase-section';
 import { UploadButton } from './upload';
 
 export function PaperworkSection() {
-  const { thing, can, moduleOn } = useThingCtx();
+  const { thing, can, moduleOn, role: myRole } = useThingCtx();
   const { t } = useLingui();
   const roles = useRoleLabels();
   const [list] = useListState();
@@ -89,6 +91,15 @@ export function PaperworkSection() {
             <Trans>Receipts, manuals and warranty cards live here, as the originals.</Trans>
           </EmptyState>
         }
+      />
+      {/* 1.x (D248): documents linked from the location's Paperless-ngx, when it has one. */}
+      <PaperlessDocuments
+        subject={{ thingId: thing.id }}
+        locationId={thing.locationId}
+        role={myRole}
+        name={thing.name ?? ''}
+        kind={role}
+        onCopied={() => void invalidate(thing.id)}
       />
     </Section>
   );
