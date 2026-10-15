@@ -5,6 +5,13 @@
  * The map itself is never mirrored (M9): positions on the canvas are the scene's, so the labels and
  * the hover tip are placed from the canvas's left edge; the controls around it use logical sides.
  */
+/* D132: Plex Sans Arabic for Arabic. The rules below name var(--sans) and var(--mono), which
+   would set the map in Plex Sans and Plex Mono, neither of which has Arabic letters; here the
+   Arabic face takes the Arabic and Plex Mono keeps the codes and figures. */
+:root:lang(ar) .kmap {
+  --sans: var(--arabic);
+  --mono: "IBM Plex Mono", var(--arabic);
+}
 .kmap-stage {
   position: relative;
   /* map-view.tsx sizes it to the space between the page's top and the tab bar; until then, about
@@ -485,6 +492,13 @@ fieldset.kmap-palette {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--ink-3);
+}
+/* Arabic has no capitals and letter spacing breaks its joins (the app's .eyebrow rule): plain,
+   in the Arabic face, a bit larger. */
+:root:lang(ar) .kmap-sub {
+  font: 600 13px / 1.2 var(--arabic);
+  letter-spacing: 0;
+  text-transform: none;
 }
 .kmap-inv {
   margin: 0;

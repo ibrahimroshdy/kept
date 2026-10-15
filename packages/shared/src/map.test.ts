@@ -96,8 +96,25 @@ describe('levelShort', () => {
     expect(levelShort('Floor 2', 2)).toBe('2');
     expect(levelShort('Ground floor', 0)).toBe('G');
     expect(levelShort('Roof', 3)).toBe('R');
-    expect(levelShort('الطابق الأول', 1)).toBe('ا');
     expect(levelShort('', 4)).toBe('4');
+    expect(levelShort(null, 0)).toBe('0');
+    expect(levelShort('  basement  ', 0)).toBe('B');
+    expect(levelShort('Level 12', 5)).toBe('12');
+  });
+
+  it('skips the Arabic article ال, so the floors do not all read ا', () => {
+    expect(levelShort('الطابق الأرضي', 0)).toBe('ط');
+    expect(levelShort('السطح', 3)).toBe('س');
+    expect(levelShort('بدروم', 0)).toBe('ب');
+    // a two-letter word is not an article plus a word
+    expect(levelShort('ال', 2)).toBe('ا');
+  });
+
+  it('takes the number in an Arabic name, in its own digits', () => {
+    expect(levelShort('الطابق 1', 1)).toBe('1');
+    expect(levelShort('الطابق ٢', 2)).toBe('٢');
+    expect(levelShort('الطابق ١٢', 12)).toBe('١٢');
+    expect(levelShort('Floor ٣', 3)).toBe('٣');
   });
 });
 

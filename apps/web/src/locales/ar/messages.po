@@ -23412,3 +23412,13 @@ msgstr "أعدها من هنا متى شئت. إن أغلقتها مبكرًا �
 #: src/routes/_app/settings.index.tsx
 msgid "What reaches you and how, for all your locations or one at a time."
 msgstr "ما يصلك وكيف، لكل مواقعك أو لموقع واحد في كل مرة."
+
+#: src/map/card.tsx
+msgctxt "map: go into the room"
+msgid "Open"
+msgstr "افتح"
+
+#: src/map/card.tsx
+msgctxt "map: go up a floor"
+msgid "Up to {0}"
+msgstr "صعودًا إلى {0}"

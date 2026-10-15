@@ -23412,3 +23412,13 @@ msgstr "Ripetilo da qui quando vuoi. Se lo chiudi prima, riprende da dove ti sei
 #: src/routes/_app/settings.index.tsx
 msgid "What reaches you and how, for all your locations or one at a time."
 msgstr "Cosa ti arriva e come, per tutti i tuoi luoghi o uno alla volta."
+
+#: src/map/card.tsx
+msgctxt "map: go into the room"
+msgid "Open"
+msgstr "Apri"
+
+#: src/map/card.tsx
+msgctxt "map: go up a floor"
+msgid "Up to {0}"
+msgstr "Sali a {0}"

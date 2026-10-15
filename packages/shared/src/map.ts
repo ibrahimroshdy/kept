@@ -360,15 +360,19 @@ export function guessModel(input: GuessInput): MapModelKey {
 }
 
 /**
- * A floor's button: the first number in its name ("Floor 2" → "2"), else its first letter
- * ("Ground floor" → "G", "Roof" → "R"), else its position from the ground.
+ * A floor's button: the first number in its name, in the digits it was written in ("Floor 2" →
+ * "2", "الطابق ٢" → "٢"), else the first letter of its first word ("Ground floor" → "G",
+ * "Roof" → "R"), else its position from the ground. An Arabic word's article ال is skipped:
+ * nearly every Arabic floor name starts with it, so every button would read ا ("الطابق الأرضي"
+ * → "ط", "السطح" → "س").
  */
 export function levelShort(name: string | null, index: number): string {
   const n = (name ?? '').trim();
-  const digits = /\d+/.exec(n);
-  if (digits) return digits[0].slice(0, 3);
-  const letter = /\p{L}/u.exec(n);
-  return letter ? letter[0].toLocaleUpperCase() : String(index);
+  const digits = /\p{Nd}+/u.exec(n);
+  if (digits) return [...digits[0]].slice(0, 3).join('');
+  const word = /\p{L}+/u.exec(n)?.[0] ?? '';
+  const letter = word.length > 2 && word.startsWith('ال') ? word[2] : word[0];
+  return letter ? letter.toLocaleUpperCase() : String(index);
 }
 
 /** Centimetres → metres, and back (layout is stored in whole centimetres). */
