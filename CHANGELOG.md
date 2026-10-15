@@ -3,6 +3,17 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.9.0 (2026-10-15)
+
+### Features
+
+- **map:** suggested shapes with pictures and search, picked for you when it's clear (D249) (#116) (dfd0be2)
+- **paperwork:** link things to their Paperless-ngx documents (D248) (#111) (13ad08f)
+
+### Documentation
+
+- **release:** the 1.8.1 record (#109) (2a6d497)
+
 ## 1.8.1 (2026-10-15)
 
 ### Fixes
