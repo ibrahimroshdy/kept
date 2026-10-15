@@ -1,0 +1,151 @@
+---
+/**
+ * "Try the map" (D241): Kept's shipped 3D map with a sample home, on the docs site's Try page
+ * only. This renders the note, the box the map draws into and the credit; the map itself
+ * (three.js, the app's engine, its CSS) is one chunk the small script below imports when the page
+ * loads, so no other page carries it. Its .glb models are fetched later, only for the floor in
+ * view, and none at all with Detailed models off.
+ */
+import { withBase } from '../landing/base';
+
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const install = withBase(lang === 'ar' ? '/ar/install/compose/' : '/install/compose/');
+const t = {
+  en: {
+    note: 'A sample home, in your browser. Nothing you change is saved or sent anywhere.',
+    reset: 'Reset',
+    install: 'Install Kept',
+    loading: 'Loading the map…',
+    failed: 'The map couldn’t load. Reload the page to try again.',
+    noscript: 'The map needs JavaScript.',
+    credit: [
+      'Furniture, plants and the AC units are free models from ',
+      ' (CC0), shrunk for phones. Turn off Detailed models to download none.',
+    ],
+  },
+  ar: {
+    note: 'منزل تجريبي في متصفحك. لا يُحفظ أي شيء تغيّره ولا يُرسل إلى أي مكان.',
+    reset: 'إعادة تعيين',
+    install: 'ثبّت Kept',
+    loading: 'جارٍ تحميل الخريطة…',
+    failed: 'تعذّر تحميل الخريطة. أعد تحميل الصفحة للمحاولة مجددًا.',
+    noscript: 'تحتاج الخريطة إلى JavaScript.',
+    credit: [
+      'الأثاث والنباتات ووحدات التكييف نماذج مجانية من ',
+      ' ‏(CC0)، مُصغَّرة للهواتف. أوقف «نماذج مفصّلة» كي لا يُنزَّل أي منها.',
+    ],
+  },
+}[lang];
+---
+
+<div class="kd-try not-content" data-lang={lang} data-install={install} data-failed={t.failed}>
+  <div class="kd-note">
+    <p>{t.note}</p>
+    <div class="kd-note-actions">
+      <button type="button" class="kd-btn" data-act="reset" hidden>{t.reset}</button>
+      <a class="kd-btn primary" href={install}>{t.install}</a>
+    </div>
+  </div>
+  <div data-try-map>
+    <div class="kd-placeholder">
+      <noscript>{t.noscript}</noscript>
+      <span class="kd-loading" data-loading>{t.loading}</span>
+    </div>
+  </div>
+  <p class="kd-credit">
+    {t.credit[0]}<a href="https://polyhaven.com">Poly Haven</a>{t.credit[1]}
+  </p>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('.kd-try');
+  if (root) {
+    const lang = root.dataset.lang === 'ar' ? 'ar' : 'en';
+    import('./demo')
+      .then(({ mount }) => mount(root, { lang, installHref: root.dataset.install ?? '/' }))
+      .catch((err: unknown) => {
+        console.warn(err);
+        const loading = root.querySelector<HTMLElement>('[data-loading]');
+        if (loading) loading.textContent = root.dataset.failed ?? '';
+      });
+  }
+</script>
+
+<style>
+  .kd-try {
+    display: grid;
+    gap: 1rem;
+    margin-block-start: 0.5rem;
+  }
+  .kd-note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+  .kd-note p {
+    margin: 0;
+  }
+  .kd-note-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .kd-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 0 13px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font: 600 13px / 1 var(--sans);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  :root:lang(ar) .kd-btn {
+    font-family: var(--arabic);
+  }
+  .kd-btn.primary {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: var(--amber-ink);
+  }
+  .kd-btn[hidden] {
+    display: none;
+  }
+  .kd-btn:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
+  .kd-placeholder {
+    display: grid;
+    place-items: center;
+    height: clamp(420px, calc(100svh - 12rem), 860px);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--paper);
+    color: var(--ink-3);
+    font-size: 0.9375rem;
+  }
+  .kd-credit {
+    margin: 0;
+    color: var(--ink-3);
+    font-size: 0.8125rem;
+  }
+  .kd-credit a {
+    color: inherit;
+  }
+</style>

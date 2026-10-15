@@ -11,7 +11,7 @@
     "gen:openapi": "tsx scripts/openapi.ts openapi/kept.json",
     "gen:config": "tsx scripts/env-reference.ts src/content/docs/reference/configuration.md",
     "check:config": "tsx scripts/env-reference.ts --check src/content/docs/reference/configuration.md",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.try-map.json"
   },
   "devDependencies": {
     "@astrojs/markdown-remark": "7.3.1",
@@ -20,6 +20,7 @@
     "@fontsource/ibm-plex-mono": "5.3.0",
     "@fontsource/ibm-plex-sans": "5.3.0",
     "@fontsource/ibm-plex-sans-arabic": "5.3.0",
+    "@kept/shared": "workspace:*",
     "@types/node": "26.6.3",
     "astro": "7.3.5",
     "satteri": "0.10.5",

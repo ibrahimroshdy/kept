@@ -20,6 +20,10 @@
 // A link to the site shares as a card (src/route-data.ts): the image is public/social-card.png
 // (public/social-card-ar.png on Arabic pages), drawn by scripts/render-social-preview.mjs.
 //
+// /try/map/ (D241) is the app's 3D map with a sample home: the engine, three.js and the map's
+// .glb models are bundled from apps/web/src/map into that page's own chunk and assets, never
+// loaded by any other page.
+//
 // Nothing here loads a remote font, script or stylesheet. Astro's telemetry is turned off by the
 // package scripts (ASTRO_TELEMETRY_DISABLED=1), so a build makes no network call at all.
 //
@@ -127,6 +131,10 @@ export default defineConfig({
   site,
   base,
   markdown: { processor: satteri({ mdastPlugins: prefix ? [baseLinks] : [] }) },
+  // Try the map (D241, src/components/try-map/) bundles the app's own map, which imports
+  // @kept/shared; that reads process.env.KEPT_VERSION for the server, and a browser has no
+  // `process` (apps/web/vite.config.ts does the same).
+  vite: { define: { 'process.env.KEPT_VERSION': 'undefined' } },
   integrations: [
     starlight({
       title: 'Kept',

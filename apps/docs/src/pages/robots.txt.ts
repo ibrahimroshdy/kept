@@ -1,8 +1,8 @@
 /**
  * robots.txt: every page may be indexed, and the sitemap is named. Starlight writes the sitemap
  * (@astrojs/sitemap, sitemap-index.xml) only when the build knows its site (KEPT_DOCS_SITE), so a
- * build without one names none. Pages that shouldn't be indexed say so themselves (a robots
- * meta tag in their frontmatter, as try/map does while it is a placeholder).
+ * build without one names none. A page that shouldn't be indexed says so itself, with a robots
+ * meta tag in its frontmatter (none does today).
  */
 import type { APIRoute } from 'astro';
 

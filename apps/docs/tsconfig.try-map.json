@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "declaration": false,
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "types": ["astro/client"],
+    "paths": { "@/*": ["../web/src/*"] }
+  },
+  "include": ["src/components/try-map/*.ts"]
+}

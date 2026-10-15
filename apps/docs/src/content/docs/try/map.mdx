@@ -1,0 +1,21 @@
+---
+title: Try the map
+description: "Kept's 3D map in your browser, with a sample home: floors, rooms, shelves and boxes, and pins for what's low, lent out or due. Nothing is saved."
+template: splash
+---
+
+import TryMap from '../../../components/try-map/TryMap.astro';
+
+<TryMap lang="en" />
+
+## What to try
+
+- Tap a room, a shelf or a box: the card says where it is and what's inside. **Details** has the rest.
+- **Plan** looks straight down. The floor buttons (**G**, **F**, **R**) go up and down; **All** stacks them.
+- **Low stock**, **Lent out** and **Due soon** turn their pins on and off.
+- **Arrange**: drag things, resize a room by its amber corner, draw a room. **Done** keeps it until you leave the page.
+- Turn off **Detailed models** and the map downloads no models at all.
+
+This is the map Kept ships, with the same models. [The location map](/users/location-map/) explains
+how a real location gets its floors and rooms. To run Kept on your own server, start with
+[Install with Docker Compose](/install/compose/).
