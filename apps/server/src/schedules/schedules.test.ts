@@ -267,6 +267,136 @@ describe('the due point (D29, D146, D162; Q2, Q28)', () => {
     });
   });
 
+  it('a one-off is done once completed (D247): off the agenda, done in the lists, due again on undo', async () => {
+    const car = await newCar('Inspected');
+    const s = await schedule(ibrahim, {
+      subject: { thingId: car.thing.id },
+      name: 'Annual inspection',
+      dueOn: addDays(today, 3),
+    });
+    const onAgenda = () =>
+      own(db, 'SELECT state FROM public.agenda_items WHERE source_id = $1', [s.id]);
+    expect(await onAgenda()).toEqual([{ state: 'due' }]);
+
+    // A draft completing it (an invoice still being read) counts nowhere (Q12).
+    const [draft] = await own<{ id: string }>(
+      db,
+      `INSERT INTO public.service_records (location_id, thing_id, serviced_on, logged_by,
+                                           review_state)
+       VALUES ($1, $2, $3, $4, 'draft') RETURNING id`,
+      [home.id, car.thing.id, today, ibrahim.userId],
+    );
+    await own(
+      db,
+      `INSERT INTO public.service_completions (location_id, service_record_id, schedule_id)
+       VALUES ($1, $2, $3)`,
+      [home.id, draft?.id, s.id],
+    );
+    expect((await scheduleOf(s.id)).next).toMatchObject({ state: 'due' });
+    await own(db, 'DELETE FROM public.service_records WHERE id = $1', [draft?.id]);
+
+    const done = ok(await post(louis, `/api/v1/schedules/${s.id}/complete`, {}, 1));
+    expect(done.schedule).toMatchObject({
+      dueOn: addDays(today, 3),
+      next: { dueOn: null, dueValue: null, state: 'done', basis: 'once' },
+      lastService: { servicedOn: today },
+    });
+    expect(await onAgenda()).toEqual([]);
+
+    // The Schedules screen still lists it, as done and after everything due, counted nowhere.
+    const list = ok(
+      await call(t, `/api/v1/schedules?locationId=${home.id}&limit=200`, { as: talia }),
+    );
+    const items = list.items as Json[];
+    expect(items.find((x) => x.id === s.id)).toMatchObject({
+      next: { state: 'done' },
+      lastService: { servicedOn: today },
+    });
+    const states = items.map((x) => (x.next as { state: string }).state);
+    expect(states.slice(states.indexOf('done')).every((x) => x === 'done')).toBe(true);
+    const [agenda] = await own<{ due: number; overdue: number }>(
+      db,
+      `SELECT count(*) FILTER (WHERE state = 'due')::int AS due,
+              count(*) FILTER (WHERE state = 'overdue')::int AS overdue
+         FROM public.agenda_items WHERE source_type = 'schedule' AND location_id = $1`,
+      [home.id],
+    );
+    expect(list.counts).toEqual(agenda);
+    const onlyDone = ok(
+      await call(t, '/api/v1/schedules?state=done&q=annual%20inspection', { as: louis }),
+    );
+    expect((onlyDone.items as Json[]).map((x) => x.id)).toEqual([s.id]);
+    const onlyDue = ok(
+      await call(t, '/api/v1/schedules?state=due&q=annual%20inspection', { as: louis }),
+    );
+    expect(onlyDue.items).toEqual([]);
+    const ofThing = ok(await call(t, `/api/v1/things/${car.thing.id}/schedules`, { as: talia }));
+    expect((ofThing.items as Json[]).find((x) => x.id === s.id)).toMatchObject({
+      next: { state: 'done' },
+    });
+
+    // Done is done: completing or snoozing it again is refused, and nothing is written.
+    const version = (done.schedule as Json).rowVersion as number;
+    const again = await post(louis, `/api/v1/schedules/${s.id}/complete`, {}, version);
+    expect(again.statusCode).toBe(409);
+    const snooze = await post(
+      louis,
+      `/api/v1/schedules/${s.id}/snooze`,
+      { untilDate: addDays(today, 9) },
+      version,
+    );
+    expect(snooze.statusCode).toBe(409);
+    expect(
+      await own(db, 'SELECT 1 FROM public.service_records WHERE thing_id = $1', [car.thing.id]),
+    ).toHaveLength(1);
+
+    // Undo the completion: it is due again, on its own date.
+    const record = done.serviceRecord as Json;
+    const [event] = await eventsOf(db, home.id, record.id as string);
+    ok(await undo(louis, event?.id as string));
+    expect(await scheduleOf(s.id)).toMatchObject({
+      next: { dueOn: addDays(today, 3), state: 'due' },
+      lastService: null,
+    });
+    expect(await onAgenda()).toEqual([{ state: 'due' }]);
+  });
+
+  it('a one-off done late, back-dated, is done too; made to repeat, it counts from then', async () => {
+    const car = await newCar('Latecomer');
+    const s = await schedule(ibrahim, {
+      subject: { thingId: car.thing.id },
+      name: 'Wheel alignment',
+      dueOn: addDays(today, -10),
+      anchorOn: addDays(today, -40),
+    });
+    expect(s.next).toMatchObject({ state: 'overdue' });
+    const done = ok(
+      await post(
+        ibrahim,
+        `/api/v1/schedules/${s.id}/complete`,
+        { servicedOn: addDays(today, -5) },
+        s.rowVersion as number,
+      ),
+    );
+    expect(done.schedule).toMatchObject({
+      next: { state: 'done' },
+      lastService: { servicedOn: addDays(today, -5) },
+    });
+    const repeat = ok(
+      await patch(
+        ibrahim,
+        `/api/v1/schedules/${s.id}`,
+        { dueOn: null, everyMonths: 12 },
+        (done.schedule as Json).rowVersion as number,
+      ),
+    );
+    expect(repeat.next).toMatchObject({
+      dueOn: addMonthsClamped(addDays(today, -5), 12),
+      state: 'upcoming',
+      basis: 'months',
+    });
+  });
+
   // catalogue: POST /api/v1/schedules/:id/skip
   it('skip moves the due point one interval on, audited and undoable', async () => {
     const car = await newCar('Skipper');

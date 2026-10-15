@@ -217,6 +217,31 @@ describe('schedules and upcoming', () => {
     expect(records).toHaveLength(1);
   });
 
+  it('completes a one-off: it is done, has no next date, and upcoming leaves it out (D247)', async () => {
+    const heater = await createThing(t, ibrahim, home, { name: 'Water heater' });
+    const s = ok(
+      await call(t, '/api/v1/schedules', {
+        as: ibrahim,
+        body: { subject: { thingId: heater.id }, name: 'Flush the tank', dueOn: addDays(today, 4) },
+      }),
+      201,
+    );
+    const listed = async () =>
+      (await data(louis, 'upcoming', { location_id: home.id, within_days: 30 })).items.some(
+        (i: Json) => i.source_id === s.id,
+      );
+    expect(await listed()).toBe(true);
+    const done = await data(louis, 'complete_schedule', { schedule_id: s.id });
+    expect(done).toMatchObject({ schedule_id: s.id, next_due_on: null });
+    expect(await listed()).toBe(false);
+    const again = await tool(louis, 'complete_schedule', { schedule_id: s.id });
+    expect(again).toMatchObject({ error: 'conflict' });
+    const records = await own(db, 'SELECT 1 FROM public.service_records WHERE thing_id = $1', [
+      heater.id,
+    ]);
+    expect(records).toHaveLength(1);
+  });
+
   it('upcoming lists low stock as low_stock (0104), and leaves it out when not asked for', async () => {
     const aa = await createThing(t, ibrahim, home, {
       name: 'AA batteries',

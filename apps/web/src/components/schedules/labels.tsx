@@ -5,11 +5,10 @@
  * together, never colour alone (D134). The due point comes from the server's agenda (`next`),
  * never recomputed here; only the day count is, against today in the location's zone.
  */
-import type { ScheduleState } from '@kept/shared';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import type { Schedule } from '@/api/household/types';
-import { AlertIcon, CalendarIcon, ClockIcon } from '@/components/icons';
+import type { Schedule, ScheduleNextState } from '@/api/household/types';
+import { AlertIcon, CalendarIcon, CheckIcon, ClockIcon } from '@/components/icons';
 import { Pill, type PillTone } from '@/components/page';
 import { useFormat } from '@/lib/format';
 import { useMeterUnit } from '@/lib/units';
@@ -69,6 +68,12 @@ export function useScheduleText() {
    * "At 60,000 km", "In 12 days or at 60,000 km").
    */
   const due = (s: Schedule, today: string): string => {
+    // A one-off that is done (D247): when it was done, not when it is due.
+    if (s.next.state === 'done') {
+      if (!s.lastService) return t({ message: 'Done', context: 'schedule state' });
+      const day = f.day(s.lastService.servicedOn);
+      return t`Done ${day}`;
+    }
     const unit = s.meter?.unit ?? null;
     const at = s.next.dueValue ? units(s.next.dueValue, unit) : null;
     const days = s.next.dueOn ? count(today, s.next.dueOn) : null;
@@ -116,19 +121,31 @@ export function useScheduleText() {
   return { interval, due, dueDay, held, last };
 }
 
-export function useScheduleStateLabels(): Record<ScheduleState, string> {
+export function useScheduleStateLabels(): Record<ScheduleNextState, string> {
   const { t } = useLingui();
-  return { upcoming: t`Upcoming`, due: t`Due`, overdue: t`Overdue` };
+  return {
+    upcoming: t`Upcoming`,
+    due: t`Due`,
+    overdue: t`Overdue`,
+    done: t({ message: 'Done', context: 'schedule state' }),
+  };
 }
 
-const STATE_PILL: Record<ScheduleState, { tone: PillTone; icon: React.ReactNode }> = {
+const STATE_PILL: Record<ScheduleNextState, { tone: PillTone; icon: React.ReactNode }> = {
   upcoming: { tone: 'neutral', icon: <CalendarIcon /> },
   due: { tone: 'warn', icon: <ClockIcon /> },
   overdue: { tone: 'danger', icon: <AlertIcon /> },
+  done: { tone: 'ok', icon: <CheckIcon /> },
 };
 
 /** The state as a pill, with the day count as its words ("In 12 days", "3 days overdue"). */
-export function ScheduleStatePill({ state, children }: { state: ScheduleState; children: string }) {
+export function ScheduleStatePill({
+  state,
+  children,
+}: {
+  state: ScheduleNextState;
+  children: string;
+}) {
   const s = STATE_PILL[state];
   return (
     <span data-state={state} className="contents">

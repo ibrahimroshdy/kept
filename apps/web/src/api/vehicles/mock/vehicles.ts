@@ -21,7 +21,7 @@ import {
   scheduleView,
 } from '../../household/mock/db';
 import type { StoredSchedule } from '../../household/mock/state';
-import type { Schedule } from '../../household/types';
+import type { Schedule, ScheduleState } from '../../household/types';
 import { accessOf, paginate, type StoredThing, versionError } from '../../inventory/mock/db';
 import { homeRoutes } from '../../inventory/mock/home';
 import { thingsRoutes } from '../../inventory/mock/things';
@@ -93,13 +93,17 @@ export function scheduleEstimate(state: MockState, s: Schedule) {
   return { estimatedOn, estimated, dueOn: estimated ? estimatedOn : s.next.dueOn };
 }
 
+/** A schedule on the agenda: not a one-off that is done (D247), which the server's list skips. */
+type DueSchedule = Schedule & { next: Schedule['next'] & { state: ScheduleState } };
+const onAgenda = (s: Schedule | null): s is DueSchedule => s !== null && s.next.state !== 'done';
+
 function vehicleRow(state: MockState, t: StoredThing): VehicleRow {
   const m = mainMeter(t);
   const latest = m ? acceptedReadings(state, m.id).at(-1) : undefined;
   const schedules = hh(state)
     .schedules.filter((s) => s.active && 'thingId' in s.subject && s.subject.thingId === t.id)
     .map((s) => scheduleView(state, s))
-    .filter((s): s is Schedule => s !== null)
+    .filter(onAgenda)
     .map((s) => ({ s, e: scheduleEstimate(state, s) }))
     .sort(
       (a, b) =>

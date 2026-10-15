@@ -3,7 +3,7 @@
  * across your locations with Schedules on, next due first, with Complete, Snooze and Skip.
  *
  * The list standard on the filter strip (D205, surface `schedules`): search, location, state
- * (overdue, due, upcoming) and what it's for (a thing or a place), with saved views; the Display
+ * (overdue, due, upcoming, done: a one-off completed, D247, listed last) and what it's for (a thing or a place), with saved views; the Display
  * button (D211) sorts by due (soonest first) or name and groups by location or by what it's for.
  * All of it is in the URL. Each row's due point is the server's (the agenda's), never recomputed
  * here. A new schedule is made here (choosing its thing or place) or from a thing's page. The
@@ -43,7 +43,7 @@ export const Route = createFileRoute('/_app/schedules')({
   errorComponent: (p) => <StepFourRouteError {...p} page="schedules" />,
 });
 
-const RANK = { overdue: 0, due: 1, upcoming: 2 } as const;
+const RANK = { overdue: 0, due: 1, upcoming: 2, done: 3 } as const;
 
 type Open = { action: ScheduleRowAction | 'new'; schedule: Schedule | null } | null;
 
@@ -70,7 +70,9 @@ function SchedulesPage() {
   const params: SchedulesParams = {
     ...(list.q ? { q: list.q } : {}),
     ...(location ? { locationId: location } : {}),
-    ...(state === 'upcoming' || state === 'due' || state === 'overdue' ? { state } : {}),
+    ...(state === 'upcoming' || state === 'due' || state === 'overdue' || state === 'done'
+      ? { state }
+      : {}),
     ...(subject === 'thing' || subject === 'place' ? { subjectType: subject } : {}),
   };
   const query = useSchedules(params);
@@ -96,7 +98,7 @@ function SchedulesPage() {
       sort === 'name'
         ? a.name.localeCompare(b.name)
         : RANK[a.next.state] - RANK[b.next.state] ||
-          (a.next.dueOn ?? '9999').localeCompare(b.next.dueOn ?? '9999');
+          (a.next.dueOn ?? a.dueOn ?? '9999').localeCompare(b.next.dueOn ?? b.dueOn ?? '9999');
     return dir === 'desc' ? -by : by;
   };
   const ordered = useOrderedQuery(query, keep, compare);
@@ -120,10 +122,10 @@ function SchedulesPage() {
       kind: 'multi',
       values: {
         from: 'static',
-        options: (['overdue', 'due', 'upcoming'] as const).map((s) => ({
+        options: (['overdue', 'due', 'upcoming', 'done'] as const).map((s) => ({
           value: s,
           label: stateLabels[s],
-          ...(s !== 'upcoming' && counts ? { count: counts[s] } : {}),
+          ...((s === 'overdue' || s === 'due') && counts ? { count: counts[s] } : {}),
         })),
       },
     },

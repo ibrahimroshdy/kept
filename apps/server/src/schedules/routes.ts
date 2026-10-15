@@ -39,6 +39,7 @@ import { ScheduleSchema, ServiceRecordSchema } from './view.js';
 // DELETE /api/v1/schedules/:id (If-Match)     → 204             schedule.delete, undoable
 // POST   /api/v1/schedules/:id/complete (If-Match) → {serviceRecord, schedule}   undoable
 // POST   /api/v1/schedules/:id/snooze (If-Match) {untilDate} | {untilValue} | {} → Schedule
+//          (both 409 `conflict` on a one-off that is done, D247)
 // POST   /api/v1/schedules/:id/skip · …/unsnooze (If-Match) → Schedule           undoable
 // GET    /api/v1/things/:id/service-records · /api/v1/places/:id/service-records
 //          ?q&f.when&f.vendor*&f.kind*&f.draft&not*&sort&dir&cursor&limit (step 5, T9)
@@ -167,7 +168,7 @@ const UpdateServiceBody = z.strictObject({
 
 const ListQuery = z.object({
   locationId: Id.optional(),
-  state: z.enum(['upcoming', 'due', 'overdue']).optional(),
+  state: z.enum(['upcoming', 'due', 'overdue', 'done']).optional(),
   subjectType: z.enum(['thing', 'place']).optional(),
   q: z.string().trim().max(200).optional(),
   limit: z.coerce.number().int().min(1).max(PAGE_MAX).default(PAGE_DEFAULT),

@@ -7,6 +7,7 @@
  * with the reason offline. Complete is the row's button; the rest (Snooze or Unsnooze, Skip once,
  * Log a service, Edit, Delete) are buttons from `md` and fold into **More** on a phone (the
  * inbox's bottom sheet), so no second row of controls. Every write but a new one offers Undo.
+ * A one-off that is done (D247) has nothing to complete or snooze: it says when it was done.
  */
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Link } from '@tanstack/react-router';
@@ -58,6 +59,7 @@ export function ScheduleRowView({
   const last = text.last(s);
   const recurring = s.everyMonths != null || s.everyUnits != null;
   const snoozed = !!(s.snoozedUntil || s.snoozedUntilValue);
+  const done = s.next.state === 'done';
 
   const run = async (
     write: () => Promise<{ auditEvents: string[] }>,
@@ -75,18 +77,22 @@ export function ScheduleRowView({
 
   const actions: OverflowAction[] = canManage
     ? [
-        snoozed
-          ? {
-              id: 'unsnooze',
-              label: t`Unsnooze`,
-              onAction: () =>
-                void run(
-                  () => householdApi.unsnoozeSchedule(s.id, s.rowVersion),
-                  t`Unsnoozed ${s.name}`,
-                  t`Couldn't unsnooze it`,
-                ),
-            }
-          : { id: 'snooze', label: t`Snooze`, onAction: () => onOpen('snooze', s) },
+        ...(done
+          ? []
+          : [
+              snoozed
+                ? {
+                    id: 'unsnooze',
+                    label: t`Unsnooze`,
+                    onAction: () =>
+                      void run(
+                        () => householdApi.unsnoozeSchedule(s.id, s.rowVersion),
+                        t`Unsnoozed ${s.name}`,
+                        t`Couldn't unsnooze it`,
+                      ),
+                  }
+                : { id: 'snooze', label: t`Snooze`, onAction: () => onOpen('snooze', s) },
+            ]),
         ...(recurring && !s.skipNext
           ? [
               {
@@ -176,7 +182,7 @@ export function ScheduleRowView({
           </div>
           <div className="text-small text-ink-2 [overflow-wrap:anywhere]">
             {text.interval(s)}
-            {last ? `${sep()}${last}` : null}
+            {last && !done ? `${sep()}${last}` : null}
           </div>
           <div className="flex flex-wrap items-center gap-1.5">
             <ScheduleStatePill state={s.next.state}>{text.due(s, access.today)}</ScheduleStatePill>
@@ -188,14 +194,16 @@ export function ScheduleRowView({
       </div>
       {canManage ? (
         <div className="flex flex-wrap gap-2 ps-13 md:ps-0">
-          <Button
-            size="small"
-            isDisabled={!online}
-            onPress={() => onOpen('complete', s)}
-            aria-label={t`Complete ${s.name}`}
-          >
-            <Trans context="schedule action">Complete</Trans>
-          </Button>
+          {done ? null : (
+            <Button
+              size="small"
+              isDisabled={!online}
+              onPress={() => onOpen('complete', s)}
+              aria-label={t`Complete ${s.name}`}
+            >
+              <Trans context="schedule action">Complete</Trans>
+            </Button>
+          )}
           <OverflowActions actions={actions} title={s.name} isDisabled={!online} />
         </div>
       ) : null}
