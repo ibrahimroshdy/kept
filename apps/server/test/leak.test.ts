@@ -450,6 +450,11 @@ const FUNCTIONS: Record<string, { roles: string[]; definer: boolean }> = {
   'kept.share_link_preview(uuid,integer)': { roles: APP, definer: true },
   'kept.webhooks_listening(uuid,text)': { roles: APP, definer: true },
   'kept.disable_webhooks_for(uuid,uuid)': { roles: BOTH, definer: true },
+  // (0135, 1.x D248) Paperless-ngx: a location's connection with its sealed token, opened by the
+  // server once kept_app's checks passed; and the trigger that drops a moved thing's links (it
+  // must see links the mover can't). Nobody calls the trigger.
+  'kept.paperless_config(uuid)': { roles: SYS, definer: true },
+  'kept.drop_moved_paperless_links()': { roles: NOBODY, definer: true },
   // (0080, step-7 T4) An archive import's target, set once by its creator; the prune-imports
   // job's view of abandoned runs and the door that clears one.
   'kept.set_import_target(uuid,uuid)': { roles: APP, definer: true },
@@ -942,6 +947,9 @@ describe('catalogue', () => {
                    has_column_privilege(r, 'public.webhooks', 'secret_ciphertext', 'SELECT')),
                   ('SELECT mailboxes.config_ciphertext',
                    has_column_privilege(r, 'public.mailboxes', 'config_ciphertext', 'SELECT')),
+                  ('SELECT paperless_connections.config_ciphertext',
+                   has_column_privilege(r, 'public.paperless_connections', 'config_ciphertext',
+                                        'SELECT')),
                   ('SELECT share_links.token_hash',
                    has_column_privilege(r, 'public.share_links', 'token_hash', 'SELECT')),
                   ('INSERT llm_calls', has_table_privilege(r, 'public.llm_calls', 'INSERT')),

@@ -69,6 +69,10 @@ export const TOKEN_ROUTES: Readonly<Record<string, Exclude<TokenAccess, 'none'>>
   'GET /api/v1/agenda': 'read',
   'GET /api/v1/schedules': 'read',
   'POST /api/v1/schedules/:id/complete': 'write',
+  // 1.x (D248): a thing's or place's Paperless-ngx links, as Kept cached them (titles, kinds,
+  // dates). Never the connection, a search, a thumbnail or a document: those go through the
+  // location's Paperless token, which is the app's to use.
+  'GET /api/v1/paperless-links': 'read',
   // Undo: a token undoes only its own changes (audit/undo.ts).
   'POST /api/v1/audit/:eventId/undo': 'write',
 });
@@ -97,6 +101,8 @@ export const NEVER_FOR_TOKENS: readonly RegExp[] = [
   /\/webhooks(\/|$)/,
   // 1.5 (D233): share links are made and revoked in the app only.
   /\/share-links(\/|$)/,
+  // 1.x (D248): a location's Paperless-ngx connection, its search and its thumbnails.
+  /\/paperless(\/|$)/,
   /^\/mcp(\/|$)/,
 ];
 

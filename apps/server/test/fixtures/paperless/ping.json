@@ -1,0 +1,11 @@
+{
+  "count": 5,
+  "next": "http://127.0.0.1:8301/api/documents/?fields=id&page=2&page_size=1",
+  "previous": null,
+  "all": [3, 1, 5, 2, 4],
+  "results": [
+    {
+      "id": 3
+    }
+  ]
+}

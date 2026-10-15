@@ -53,6 +53,8 @@ const ALLOWLIST: Record<string, string> = {
     "a test ping to a location webhook its caller administers, rate-limited to 6 a minute; it records the ping's delivery row (as kept_system, the delivery job's own bookkeeping) and changes nothing else; adding, changing and removing the hook are audited (webhook.create, webhook.update, webhook.delete)",
   'POST /api/v1/locations/:id/mailbox/check':
     "signs in to the location's saved mailbox to say whether it works, rate-limited to 6 a minute; it changes nothing (connecting, changing and removing the mailbox are audited: mailbox.create, mailbox.update, mailbox.delete)",
+  'POST /api/v1/locations/:id/paperless/check':
+    "signs in to the location's saved Paperless-ngx to say whether it works and which version it runs, rate-limited to 6 a minute; it changes nothing (connecting, changing and disconnecting are audited: paperless.connect, paperless.update, paperless.disconnect)",
   'POST /api/v1/notifications/read':
     "marks the caller's own notifications read (read_at only): a read receipt is the person's own bookkeeping, not a change to the household's data (plan T16)",
   'POST /api/v1/assistant/threads':

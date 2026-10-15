@@ -1,0 +1,54 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "all": [2, 1, 3],
+  "results": [
+    {
+      "id": 2,
+      "correspondent": 2,
+      "document_type": 2,
+      "title": "Bosch GSR 18V-55 manual",
+      "tags": [1],
+      "created": "2025-11-02",
+      "mime_type": "application/pdf",
+      "__search_hit__": {
+        "score": 4.351905822753906,
+        "highlights": "<b>Bosch</b> GSR 18V-55\nOperating instructions\nCharge the battery before first use.\nSafety\nWear eye protection",
+        "note_highlights": null,
+        "rank": 1
+      }
+    },
+    {
+      "id": 1,
+      "correspondent": 1,
+      "document_type": 1,
+      "title": "Bosch drill receipt",
+      "tags": [1],
+      "created": "2026-03-14",
+      "mime_type": "application/pdf",
+      "__search_hit__": {
+        "score": 3.705080986022949,
+        "highlights": "Hardware Store\nReceipt 2026-03-14\n<b>Bosch</b> GSR 18V-55 drill EUR 129.00\nTotal EUR 129.00",
+        "note_highlights": null,
+        "rank": 2
+      }
+    },
+    {
+      "id": 3,
+      "correspondent": 2,
+      "document_type": null,
+      "title": "Drill guarantee card",
+      "tags": [2],
+      "created": "2026-03-14",
+      "mime_type": "application/pdf",
+      "__search_hit__": {
+        "score": 2.985055446624756,
+        "highlights": "<b>Bosch</b>\nGuarantee card\nTwo years from the date of purchase",
+        "note_highlights": null,
+        "rank": 3
+      }
+    }
+  ],
+  "corrected_query": null
+}

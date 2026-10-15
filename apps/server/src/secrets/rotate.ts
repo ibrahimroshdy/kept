@@ -110,6 +110,15 @@ export const CIPHERTEXTS: readonly SealedColumn[] = Object.freeze([
     fieldKey: { constant: 'config' },
     ciphertextColumn: 'config_ciphertext',
   }),
+  // 1.x (D248, migration 0134): a location's Paperless-ngx address and API token, sealed with AAD
+  // `paperless_connections|<id>|config` (paperless/config.ts).
+  sealedColumn({
+    name: 'Paperless-ngx connections',
+    table: 'public.paperless_connections',
+    aadTable: 'paperless_connections',
+    fieldKey: { constant: 'config' },
+    ciphertextColumn: 'config_ciphertext',
+  }),
 ]);
 
 /**

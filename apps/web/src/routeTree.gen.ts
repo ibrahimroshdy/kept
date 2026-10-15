@@ -99,6 +99,7 @@ import { Route as AppSettingsLocationIdEmailInRouteImport } from './routes/_app/
 import { Route as AppSettingsLocationIdGeneralRouteImport } from './routes/_app/settings.location.$id.general'
 import { Route as AppSettingsLocationIdInviteRouteImport } from './routes/_app/settings.location.$id.invite'
 import { Route as AppSettingsLocationIdMembersRouteImport } from './routes/_app/settings.location.$id.members'
+import { Route as AppSettingsLocationIdPaperlessRouteImport } from './routes/_app/settings.location.$id.paperless'
 import { Route as AppSettingsLocationIdShareLinksRouteImport } from './routes/_app/settings.location.$id.share-links'
 import { Route as AppSettingsLocationIdTrackRouteImport } from './routes/_app/settings.location.$id.track'
 import { Route as AppSettingsLocationIdWebhooksRouteImport } from './routes/_app/settings.location.$id.webhooks'
@@ -562,6 +563,12 @@ const AppSettingsLocationIdMembersRoute =
     path: '/settings/location/$id/members',
     getParentRoute: () => AppRoute,
   } as any)
+const AppSettingsLocationIdPaperlessRoute =
+  AppSettingsLocationIdPaperlessRouteImport.update({
+    id: '/settings/location/$id/paperless',
+    path: '/settings/location/$id/paperless',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppSettingsLocationIdShareLinksRoute =
   AppSettingsLocationIdShareLinksRouteImport.update({
     id: '/settings/location/$id/share-links',
@@ -670,6 +677,7 @@ export interface FileRoutesByFullPath {
   '/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
   '/settings/location/$id/members': typeof AppSettingsLocationIdMembersRoute
+  '/settings/location/$id/paperless': typeof AppSettingsLocationIdPaperlessRoute
   '/settings/location/$id/share-links': typeof AppSettingsLocationIdShareLinksRoute
   '/settings/location/$id/track': typeof AppSettingsLocationIdTrackRoute
   '/settings/location/$id/webhooks': typeof AppSettingsLocationIdWebhooksRoute
@@ -761,6 +769,7 @@ export interface FileRoutesByTo {
   '/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
   '/settings/location/$id/members': typeof AppSettingsLocationIdMembersRoute
+  '/settings/location/$id/paperless': typeof AppSettingsLocationIdPaperlessRoute
   '/settings/location/$id/share-links': typeof AppSettingsLocationIdShareLinksRoute
   '/settings/location/$id/track': typeof AppSettingsLocationIdTrackRoute
   '/settings/location/$id/webhooks': typeof AppSettingsLocationIdWebhooksRoute
@@ -857,6 +866,7 @@ export interface FileRoutesById {
   '/_app/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/_app/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
   '/_app/settings/location/$id/members': typeof AppSettingsLocationIdMembersRoute
+  '/_app/settings/location/$id/paperless': typeof AppSettingsLocationIdPaperlessRoute
   '/_app/settings/location/$id/share-links': typeof AppSettingsLocationIdShareLinksRoute
   '/_app/settings/location/$id/track': typeof AppSettingsLocationIdTrackRoute
   '/_app/settings/location/$id/webhooks': typeof AppSettingsLocationIdWebhooksRoute
@@ -952,6 +962,7 @@ export interface FileRouteTypes {
     | '/settings/location/$id/general'
     | '/settings/location/$id/invite'
     | '/settings/location/$id/members'
+    | '/settings/location/$id/paperless'
     | '/settings/location/$id/share-links'
     | '/settings/location/$id/track'
     | '/settings/location/$id/webhooks'
@@ -1043,6 +1054,7 @@ export interface FileRouteTypes {
     | '/settings/location/$id/general'
     | '/settings/location/$id/invite'
     | '/settings/location/$id/members'
+    | '/settings/location/$id/paperless'
     | '/settings/location/$id/share-links'
     | '/settings/location/$id/track'
     | '/settings/location/$id/webhooks'
@@ -1138,6 +1150,7 @@ export interface FileRouteTypes {
     | '/_app/settings/location/$id/general'
     | '/_app/settings/location/$id/invite'
     | '/_app/settings/location/$id/members'
+    | '/_app/settings/location/$id/paperless'
     | '/_app/settings/location/$id/share-links'
     | '/_app/settings/location/$id/track'
     | '/_app/settings/location/$id/webhooks'
@@ -1791,6 +1804,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsLocationIdMembersRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/settings/location/$id/paperless': {
+      id: '/_app/settings/location/$id/paperless'
+      path: '/settings/location/$id/paperless'
+      fullPath: '/settings/location/$id/paperless'
+      preLoaderRoute: typeof AppSettingsLocationIdPaperlessRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/settings/location/$id/share-links': {
       id: '/_app/settings/location/$id/share-links'
       path: '/settings/location/$id/share-links'
@@ -1973,6 +1993,7 @@ interface AppRouteChildren {
   AppSettingsLocationIdGeneralRoute: typeof AppSettingsLocationIdGeneralRoute
   AppSettingsLocationIdInviteRoute: typeof AppSettingsLocationIdInviteRoute
   AppSettingsLocationIdMembersRoute: typeof AppSettingsLocationIdMembersRoute
+  AppSettingsLocationIdPaperlessRoute: typeof AppSettingsLocationIdPaperlessRoute
   AppSettingsLocationIdShareLinksRoute: typeof AppSettingsLocationIdShareLinksRoute
   AppSettingsLocationIdTrackRoute: typeof AppSettingsLocationIdTrackRoute
   AppSettingsLocationIdWebhooksRoute: typeof AppSettingsLocationIdWebhooksRoute
@@ -2032,6 +2053,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSettingsLocationIdGeneralRoute: AppSettingsLocationIdGeneralRoute,
   AppSettingsLocationIdInviteRoute: AppSettingsLocationIdInviteRoute,
   AppSettingsLocationIdMembersRoute: AppSettingsLocationIdMembersRoute,
+  AppSettingsLocationIdPaperlessRoute: AppSettingsLocationIdPaperlessRoute,
   AppSettingsLocationIdShareLinksRoute: AppSettingsLocationIdShareLinksRoute,
   AppSettingsLocationIdTrackRoute: AppSettingsLocationIdTrackRoute,
   AppSettingsLocationIdWebhooksRoute: AppSettingsLocationIdWebhooksRoute,

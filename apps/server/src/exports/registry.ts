@@ -597,6 +597,9 @@ export const NOT_EXPORTED: Readonly<Record<string, string>> = Object.freeze({
   webhook_deliveries: "this server's integrations",
   mailboxes: "this server's integrations and their passwords",
   mailbox_messages: "this server's bookkeeping",
+  paperless_connections: "this server's integrations and their tokens",
+  paperless_links:
+    "links into this server's Paperless-ngx connection, which an export doesn't carry; a document copied into Kept travels as its attachment",
   share_links: "links to this server's pages, whose tokens are never shown again",
 });
 

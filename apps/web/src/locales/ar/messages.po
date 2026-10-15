@@ -23475,3 +23475,263 @@ msgstr "‏Kept الخاص بك يصنع ملف PDF هنا. لا ملفات في
 #: src/assistant/conversation.tsx
 msgid "Sample answers in this demo: no AI is asked."
 msgstr "إجابات تجريبية في هذا العرض: لا يُسأل أي ذكاء اصطناعي."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless-ngx"
+msgstr "Paperless-ngx"
+
+#: src/components/location-settings.tsx
+msgid "Paperless"
+msgstr "Paperless"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless answers: version {0}"
+msgstr "Paperless يستجيب: الإصدار {0}"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless couldn't answer."
+msgstr "تعذّر على Paperless الرد."
+
+#: src/components/history/labels.ts
+msgid "Paperless disconnected"
+msgstr "فُصل Paperless"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Disconnect Paperless?"
+msgstr "فصل Paperless؟"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "The {links} links to its documents go too. Documents copied into Kept stay."
+msgstr "ستُحذف أيضًا الروابط إلى مستنداته ({links}). تبقى المستندات المنسوخة إلى Kept."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Members can no longer link its documents."
+msgstr "لن يتمكن الأعضاء بعد ذلك من ربط مستنداته."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Disconnect"
+msgstr "افصل"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Not encrypted"
+msgstr "غير مشفّر"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "This address is plain http, so the token travels unencrypted on your network. Use https if Paperless has it."
+msgstr "هذا العنوان يستخدم http عاديًا، لذا يمر الرمز غير مشفّر عبر شبكتك. استخدم https إن كان Paperless يدعمه."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Version unknown"
+msgstr "الإصدار غير معروف"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "{0, plural, one {# linked document} other {# linked documents}}"
+msgstr "{0, plural, zero {لا مستندات مرتبطة} one {مستند مرتبط واحد} two {مستندان مرتبطان} few {# مستندات مرتبطة} many {# مستندًا مرتبطًا} other {# مستند مرتبط}}"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Connected by {0}, changed {1}"
+msgstr "وصله {0}، وتغيّر {1}"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless saved"
+msgstr "حُفظ Paperless"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless connected: version {0}"
+msgstr "وُصل Paperless: الإصدار {0}"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Change the connection"
+msgstr "غيّر الاتصال"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Connect Paperless-ngx"
+msgstr "صِل Paperless-ngx"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Members can then link a thing or a place to its receipts, manuals and warranty cards in Paperless, without uploading them twice. Kept stores the document's number and title, not the file, unless someone copies it into Kept."
+msgstr "يمكن للأعضاء عندها ربط شيء أو مكان بإيصالاته وأدلته وبطاقات ضمانه في Paperless، دون رفعها مرتين. يحفظ Kept رقم المستند وعنوانه، لا الملف، إلا إذا نسخه أحدهم إلى Kept."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Paperless address"
+msgstr "عنوان Paperless"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "The address you open Paperless at, for example https://paperless.example.com."
+msgstr "العنوان الذي تفتح به Paperless، مثل https://paperless.example.com."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Plain http"
+msgstr "http عادي"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "Kept accepts http only for an address on your own network, and only when an instance admin allows private addresses. The token travels unencrypted there."
+msgstr "يقبل Kept عنوان http فقط إن كان على شبكتك، وفقط حين يسمح مسؤول الخادم بالعناوين الخاصة. يمر الرمز هناك غير مشفّر."
+
+#: src/components/paperless/connection-settings.tsx
+msgid "API token"
+msgstr "رمز API"
+
+#: src/components/paperless/connection-settings.tsx
+msgid "In Paperless, open My Profile and press the circular arrow by the API token. Kept sees what that user sees."
+msgstr "في Paperless، افتح ملفي الشخصي واضغط السهم الدائري بجانب رمز API. يرى Kept ما يراه ذلك المستخدم."
+
+#: src/components/paperless/documents.tsx
+msgid "From Paperless-ngx"
+msgstr "من Paperless-ngx"
+
+#: src/components/paperless/documents.tsx
+msgid "Link from Paperless"
+msgstr "اربط من Paperless"
+
+#: src/components/paperless/documents.tsx
+msgid "Paperless can't be reached"
+msgstr "تعذّر الوصول إلى Paperless"
+
+#: src/components/paperless/documents.tsx
+msgid "The titles below are as Kept last saw them."
+msgstr "العناوين أدناه كما رآها Kept آخر مرة."
+
+#: src/components/paperless/documents.tsx
+msgid "No Paperless documents of this kind."
+msgstr "لا مستندات Paperless من هذا النوع."
+
+#: src/components/paperless/documents.tsx
+msgid "Nothing linked yet. Link a receipt or a manual you already keep in Paperless."
+msgstr "لا شيء مرتبط بعد. اربط إيصالًا أو دليلًا تحتفظ به في Paperless."
+
+#: src/components/paperless/documents.tsx
+msgid "Paperless documents"
+msgstr "مستندات Paperless"
+
+#: src/components/paperless/documents.tsx
+msgid "Copied into Kept"
+msgstr "نُسخ إلى Kept"
+
+#: src/components/paperless/documents.tsx
+msgid "Couldn't copy it"
+msgstr "تعذّر نسخه"
+
+#: src/components/paperless/documents.tsx
+msgid "Unlink this document?"
+msgstr "إلغاء ربط هذا المستند؟"
+
+#: src/components/paperless/documents.tsx
+msgid "It comes off {name}. Paperless keeps it, and the copy in Kept stays."
+msgstr "سيُزال من {name}. يحتفظ به Paperless، وتبقى النسخة في Kept."
+
+#: src/components/paperless/documents.tsx
+msgid "It comes off {name}. Paperless keeps it."
+msgstr "سيُزال من {name}. يحتفظ به Paperless."
+
+#: src/components/paperless/documents.tsx
+msgid "Couldn't unlink it"
+msgstr "تعذّر إلغاء ربطه"
+
+#: src/components/paperless/documents.tsx
+msgid "Open in Paperless"
+msgstr "افتح في Paperless"
+
+#: src/components/paperless/documents.tsx
+msgid "Copy into Kept"
+msgstr "انسخ إلى Kept"
+
+#: src/components/paperless/documents.tsx
+msgid "Unlink {0}"
+msgstr "ألغِ ربط {0}"
+
+#: src/components/paperless/picker.tsx
+msgid "Linked {n} from Paperless"
+msgstr "رُبط {n} من Paperless"
+
+#: src/components/paperless/picker.tsx
+msgid "Link from Paperless to {name}"
+msgstr "اربط من Paperless إلى {name}"
+
+#: src/components/paperless/picker.tsx
+msgid "Search Paperless"
+msgstr "ابحث في Paperless"
+
+#: src/components/paperless/picker.tsx
+msgid "Words from the title or the text, a correspondent, a type or a tag."
+msgstr "كلمات من العنوان أو النص، أو مُراسِل، أو نوع، أو وسم."
+
+#: src/components/paperless/picker.tsx
+msgid "Searching Paperless"
+msgstr "جارٍ البحث في Paperless"
+
+#: src/components/paperless/picker.tsx
+msgid "No documents found"
+msgstr "لم يُعثر على مستندات"
+
+#: src/components/paperless/picker.tsx
+msgid "Try other words."
+msgstr "جرّب كلمات أخرى."
+
+#: src/components/paperless/picker.tsx
+msgid "This Paperless has no documents yet."
+msgstr "لا مستندات في Paperless هذا بعد."
+
+#: src/components/paperless/picker.tsx
+msgid "Page {page} of {pages}"
+msgstr "الصفحة {page} من {pages}"
+
+#: src/components/paperless/picker.tsx
+msgid "{0, plural, =0 {Link} one {Link # document} other {Link # documents}}"
+msgstr "{0, plural, =0 {اربط} zero {اربط} one {اربط مستندًا واحدًا} two {اربط مستندين} few {اربط # مستندات} many {اربط # مستندًا} other {اربط # مستند}}"
+
+#: src/components/paperless/words.ts
+msgid "Use https:// for a Paperless outside your network. Over http the token would travel unencrypted."
+msgstr "استخدم https:// لـ Paperless خارج شبكتك. عبر http سيمر الرمز غير مشفّر."
+
+#: src/components/paperless/words.ts
+msgid "Kept couldn't reach Paperless at that address."
+msgstr "تعذّر على Kept الوصول إلى Paperless على ذلك العنوان."
+
+#: src/components/paperless/words.ts
+msgid "Paperless didn't answer within 10 seconds."
+msgstr "لم يردّ Paperless خلال 10 ثوانٍ."
+
+#: src/components/paperless/words.ts
+msgid "That address answered with a redirect. Use the address it leads to."
+msgstr "ردّ ذلك العنوان بإعادة توجيه. استخدم العنوان الذي يؤدي إليه."
+
+#: src/components/paperless/words.ts
+msgid "Paperless refused the token."
+msgstr "رفض Paperless الرمز."
+
+#: src/components/paperless/words.ts
+msgid "That address doesn't answer like Paperless-ngx."
+msgstr "ذلك العنوان لا يردّ كما يردّ Paperless-ngx."
+
+#: src/components/paperless/words.ts
+msgid "Kept needs Paperless-ngx 2.16 or later."
+msgstr "يحتاج Kept إلى Paperless-ngx 2.16 أو أحدث."
+
+#: src/components/paperless/words.ts
+msgid "Paperless no longer has this document, or the token's user can't see it."
+msgstr "لم يعد هذا المستند في Paperless، أو لا يستطيع مستخدم الرمز رؤيته."
+
+#: src/components/paperless/words.ts
+msgid "That document is larger than Kept takes."
+msgstr "هذا المستند أكبر مما يقبله Kept."
+
+#: src/components/history/labels.ts
+msgid "Paperless connected"
+msgstr "وُصل Paperless"
+
+#: src/components/history/labels.ts
+msgid "Paperless connection changed"
+msgstr "تغيّر اتصال Paperless"
+
+#: src/components/history/labels.ts
+msgid "Paperless document linked"
+msgstr "رُبط مستند من Paperless"
+
+#: src/components/history/labels.ts
+msgid "Paperless document unlinked"
+msgstr "أُلغي ربط مستند من Paperless"
+
+#: src/components/history/labels.ts
+msgid "Paperless document copied into Kept"
+msgstr "نُسخ مستند من Paperless إلى Kept"

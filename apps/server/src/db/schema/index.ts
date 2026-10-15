@@ -20,6 +20,7 @@ export * from './meters.js';
 export * from './money.js';
 export * from './notify.js';
 export * from './operations.js';
+export * from './paperless.js';
 export * from './places.js';
 export * from './purchases.js';
 export * from './registries.js';

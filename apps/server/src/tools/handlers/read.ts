@@ -243,6 +243,32 @@ export const getThing: Handler<'get_thing'> = {
       : undefined;
     const loans = await openLoansOf(op.client, [id]);
     const loan = loans.get(id);
+    // 1.x (D248): its Paperless-ngx links, as cached (Paperless is never called here); receipts
+    // and invoices only where the gate shows money.
+    const showMoney = (await gateFor(op.tx, loc.id, op.scope)).showMoney;
+    const { rows: papers } = await op.client.query<{
+      document_id: number;
+      kind: 'receipt' | 'invoice' | 'manual' | 'warranty_doc' | 'document';
+      created_on: string | null;
+      copied: boolean;
+      title: string;
+      type_name: string | null;
+    }>(
+      `SELECT document_id, kind, created_on::text, copied_attachment_id IS NOT NULL AS copied,
+              title, type_name
+         FROM public.paperless_links WHERE thing_id = $1
+        ORDER BY created_on DESC NULLS LAST, created_at DESC, id LIMIT 50`,
+      [id],
+    );
+    const paperless = papers
+      .filter((p) => showMoney || (p.kind !== 'receipt' && p.kind !== 'invoice'))
+      .map((p) => ({
+        document_id: p.document_id,
+        kind: p.kind,
+        date: p.created_on,
+        copied: p.copied,
+        untrusted: { title: p.title, type: p.type_name },
+      }));
     return {
       data: {
         thing: {
@@ -276,6 +302,7 @@ export const getThing: Handler<'get_thing'> = {
                 })),
               }
             : {}),
+          ...(paperless.length > 0 ? { paperless_documents: paperless } : {}),
           url: op.link(thingPath(ref)),
         },
       },
