@@ -31,6 +31,9 @@ export const INSTANCES = {
   // The spreadsheet view (e2e/sheet.spec.ts, D250) edits and moves things: a seeded instance of
   // its own, so no other spec sees its changes.
   sheet: { name: 'sheet', port: 8198, seed: true },
+  // Moving mode (e2e/moving.spec.ts, D251) moves boxes between the seed's Garage and Home: a
+  // seeded instance of its own, so no other spec sees its changes.
+  moving: { name: 'moving', port: 8199, seed: true },
 } as const satisfies Record<string, Instance>;
 
 /**

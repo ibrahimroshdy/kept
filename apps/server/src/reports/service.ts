@@ -1,6 +1,6 @@
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { can, newId, REPORT_MAIL_MAX_BYTES } from '@kept/shared';
+import { can, MAX_SHEET_BOXES, newId, REPORT_MAIL_MAX_BYTES } from '@kept/shared';
 import type pg from 'pg';
 import sharp from 'sharp';
 import { renderSVG } from 'uqr';
@@ -34,6 +34,8 @@ import {
   TooManyThingsError,
 } from './gather.js';
 import type { ReportLocale } from './labels.js';
+import { gatherMove, type MoveReportOptions } from './move/gather.js';
+import { buildMoveView } from './move/view.js';
 import {
   RenderError,
   type RenderOptions,
@@ -83,6 +85,12 @@ import { buildView } from './view.js';
 // template/condition.typ from reports/condition/{gather,view}.ts, its photos larger than a
 // thumbnail and never cropped. Who: anyone who can see the report, viewers included; it holds no
 // money. A draft prints too, marked as not finished.
+//
+// A move's contents sheets (1.x, D251) are the fifth: POST /api/v1/reports/move records a run with
+// `kind = 'move'` in the move's location, MoveReportOptions in `options` (the move, and which of
+// its boxes), and the job renders template/move.typ from reports/move/{gather,view}.ts: a page per
+// box with its QR code. Who: anyone who can see the move, viewers included, where Moving mode is
+// on (the route's module gate); it holds no money.
 
 export const RATE_LIMIT = 5;
 export const RATE_WINDOW_SECONDS = 3600;
@@ -154,13 +162,19 @@ export type ReportRunView = z.infer<typeof ReportRunView>;
 
 type RunRow = {
   id: string;
-  kind: 'inventory' | 'insurance' | 'vehicle_history' | 'condition';
+  kind: 'inventory' | 'insurance' | 'vehicle_history' | 'condition' | 'move';
   location_id: string | null;
   owner_account_id: string | null;
   location_ids: string[];
   /** ReportOptions for an inventory run, InsuranceOptions for an insurance run,
-   * VehicleReportOptions for a vehicle history run, ConditionReportOptions for a condition run. */
-  options: ReportOptions | InsuranceOptions | VehicleReportOptions | ConditionReportOptions;
+   * VehicleReportOptions for a vehicle history run, ConditionReportOptions for a condition run,
+   * MoveReportOptions for a move's contents sheets. */
+  options:
+    | ReportOptions
+    | InsuranceOptions
+    | VehicleReportOptions
+    | ConditionReportOptions
+    | MoveReportOptions;
   status: 'queued' | 'running' | 'done' | 'failed';
   progress_done: number;
   progress_total: number;
@@ -665,6 +679,80 @@ export async function createConditionRun(
 }
 
 // ---------------------------------------------------------------------------------------------
+// POST /api/v1/reports/move (1.x, D251)
+// ---------------------------------------------------------------------------------------------
+
+export const MoveReportBody = z
+  .object({
+    moveId: z.uuid(),
+    /** Only these boxes (their containers); omitted: every box of the move. */
+    containerIds: z.array(z.uuid()).min(1).max(MAX_SHEET_BOXES).optional(),
+    locale: z.enum(['en', 'ar']).optional(),
+    digits: z.enum(['western', 'eastern']).optional(),
+  })
+  .strict();
+export type MoveReportBody = z.infer<typeof MoveReportBody>;
+
+export async function createMoveRun(
+  tx: Tx,
+  client: pg.ClientBase,
+  scope: Scope,
+  jobs: JobQueue,
+  body: MoveReportBody,
+  requestId: string,
+): Promise<CreatedRun> {
+  const moveId = body.moveId.toLowerCase();
+  const { rows: found } = await client.query<{ location_id: string }>(
+    'SELECT location_id FROM public.moves WHERE id = $1',
+    [moveId],
+  );
+  const locationId = found[0]?.location_id;
+  if (!locationId) throw notFound();
+  await requireMembership(client, locationId);
+  await checkRate(client);
+  const { rows: me } = await client.query<{ locale: string; digits: 'western' | 'eastern' }>(
+    'SELECT locale, digits FROM public.user_profiles WHERE user_id = kept.current_user_id()',
+  );
+  const locale = body.locale ?? reportLocaleOf(me[0]?.locale);
+  const containerIds = body.containerIds
+    ? [...new Set(body.containerIds.map((x) => x.toLowerCase()))]
+    : null;
+  const options: MoveReportOptions = {
+    kind: 'move',
+    moveId,
+    containerIds,
+    locale,
+    digits: body.digits ?? me[0]?.digits ?? (locale === 'ar' ? 'eastern' : 'western'),
+  };
+  const id = newId();
+  const { rows } = await client.query<{ expires_at: Date }>(
+    `INSERT INTO public.report_runs (id, kind, user_id, location_id, location_ids, options)
+     VALUES ($1, 'move', kept.current_user_id(), $2, ARRAY[$2]::uuid[], $3::jsonb)
+     RETURNING expires_at`,
+    [id, locationId, JSON.stringify(options)],
+  );
+  await auditedMany(tx, [
+    {
+      locationId,
+      actor: { type: 'user' as const, id: scope.userId },
+      action: 'report.generate',
+      entity: { type: 'report', id },
+      after: {
+        kind: 'move',
+        moveId,
+        boxes: containerIds?.length ?? null,
+        locale: options.locale,
+        digits: options.digits,
+      },
+      requestId,
+    },
+  ]);
+  await jobs.sendTenant(client, 'report', { runId: id });
+  const expiresAt = rows[0]?.expires_at ?? new Date(Date.now() + 24 * 3600 * 1000);
+  return { id, status: 'queued', expiresAt: expiresAt.toISOString() };
+}
+
+// ---------------------------------------------------------------------------------------------
 // GET /api/v1/reports/:id
 // ---------------------------------------------------------------------------------------------
 
@@ -673,6 +761,7 @@ const FILE_STEM: Record<RunRow['kind'], string> = {
   insurance: 'insurance',
   vehicle_history: 'vehicle-history',
   condition: 'condition-report',
+  move: 'contents-sheets',
 };
 
 /** A download name: `kept-inventory-<date>.pdf`, `kept-insurance-<date>.pdf`,
@@ -917,6 +1006,22 @@ async function prepareCondition(
   };
 }
 
+/** A move's contents sheets (reports/move/): each box's QR code by its container's id. */
+async function prepareMove(
+  client: pg.PoolClient,
+  options: MoveReportOptions,
+  ctx: PrepareContext,
+): Promise<PreparedReport> {
+  const g = await gatherMove(client, options);
+  return {
+    template: 'move',
+    things: g.boxes.map((b) => ({ id: b.containerId, thumbKey: null, shortCode: b.shortCode })),
+    qr: true,
+    view: ({ withQr }) =>
+      buildMoveView(g, options, { instance: hostOf(ctx.publicUrl), now: ctx.now(), withQr }),
+  };
+}
+
 /** The insurance report (incidents/report.ts), for a report run and for a claim pack's PDF. */
 export async function prepareInsurance(
   tx: Tx,
@@ -1040,7 +1145,9 @@ export async function runReport(
           ? prepareVehicle(tx, c, scope, run.options as VehicleReportOptions, { publicUrl, now })
           : run.kind === 'condition'
             ? prepareCondition(c, run.options as ConditionReportOptions, { publicUrl, now })
-            : prepareInventory(tx, c, scope, run, { publicUrl, now }),
+            : run.kind === 'move'
+              ? prepareMove(c, run.options as MoveReportOptions, { publicUrl, now })
+              : prepareInventory(tx, c, scope, run, { publicUrl, now }),
     );
     const total = prepared.things.length + 1;
     await setProgress(deps, scope, runId, 0, total);
@@ -1083,11 +1190,11 @@ export async function runReport(
       },
       'report rendered',
     );
-    if (run.email_when_done && run.kind !== 'condition') {
+    if (run.email_when_done && run.kind !== 'condition' && run.kind !== 'move') {
       await mailReport(
         deps,
         scope,
-        run as RunRow & { kind: Exclude<RunRow['kind'], 'condition'> },
+        run as RunRow & { kind: Exclude<RunRow['kind'], 'condition' | 'move'> },
         rendered.file,
         rendered.bytes,
       ).catch((err: unknown) => deps.log.error({ err, runId }, 'report not mailed'));
@@ -1118,8 +1225,9 @@ export async function runReport(
 async function mailReport(
   deps: ReportJobDeps,
   scope: Scope,
-  /** A condition report is never asked to be mailed (no `email` on its request). */
-  run: RunRow & { kind: Exclude<RunRow['kind'], 'condition'> },
+  /** A condition report or contents sheets are never asked to be mailed (no `email` on their
+   * request). */
+  run: RunRow & { kind: Exclude<RunRow['kind'], 'condition' | 'move'> },
   file: string,
   bytes: number,
 ): Promise<void> {

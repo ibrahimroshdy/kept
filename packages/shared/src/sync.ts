@@ -17,6 +17,7 @@ import { CAPTURE_MODES } from './capture.js';
 import type { LoanDirection } from './household.js';
 import { ATTACHMENT_ROLES, type Lifecycle } from './inventory.js';
 import type { ModuleId } from './modules.js';
+import { BOX_STATES } from './moving.js';
 import type { Role } from './roles.js';
 import { SHORT_CODE } from './short-code.js';
 import { AMOUNT_STRING } from './type-fields.js';
@@ -35,6 +36,8 @@ export const OP_KINDS = [
   'not_here',
   'create_area',
   'box_check',
+  // 1.x (D251): a moving box marked packed, in transit or unpacked; unpacked into a room moves it.
+  'move_box',
 ] as const;
 export type OpKind = (typeof OP_KINDS)[number];
 
@@ -187,6 +190,19 @@ export const BoxCheckPayload = z.strictObject({
   foundElsewhereIds: z.array(uuid).max(SYNC_LIMITS.moveThings).default([]),
 });
 
+/**
+ * A box of a move (D251) changes state on the phone: carried out (`in_transit`), back to
+ * `packed`, or `unpacked`, which with `placeId` also moves the box, with everything in it, into
+ * that room. The op's `takenAt` orders it against the box's last change: an older one changes
+ * nothing (another phone said something newer).
+ */
+export const MoveBoxPayload = z.strictObject({
+  moveId: uuid,
+  containerId: uuid,
+  state: z.enum(BOX_STATES),
+  placeId: uuid.optional(),
+});
+
 /** The v1 payload schema per op. */
 export const OP_SCHEMAS = Object.freeze({
   create_thing: CreateThingPayload,
@@ -197,6 +213,7 @@ export const OP_SCHEMAS = Object.freeze({
   not_here: NotHerePayload,
   create_area: CreateAreaPayload,
   box_check: BoxCheckPayload,
+  move_box: MoveBoxPayload,
 } satisfies Record<OpKind, z.ZodType>);
 
 export type OpPayload<K extends OpKind> = z.output<(typeof OP_SCHEMAS)[K]>;

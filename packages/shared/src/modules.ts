@@ -49,6 +49,7 @@ export const MODULE_NAV = [
   'vehicles',
   'insights',
   'consumables',
+  'moving',
 ] as const;
 export type ModuleNav = (typeof MODULE_NAV)[number];
 
@@ -77,6 +78,7 @@ const NAV: Partial<Record<ModuleId, readonly ModuleNav[]>> = {
   paperwork: ['paperwork'],
   vehicles: ['vehicles'],
   consumables: ['consumables'],
+  moving: ['moving'],
 };
 
 const def = (
@@ -107,8 +109,8 @@ export const MODULES: Readonly<Record<ModuleId, ModuleDef>> = Object.freeze({
   vehicles: def('vehicles', 'Vehicles', H),
   fuel: def('fuel', 'Fuel & charging', C, ['vehicles']),
   consumables: def('consumables', 'Things you run out of', C),
-  // 1.x: the module could be switched on with nothing behind it (review, 2026-10-14).
-  moving: def('moving', 'Moving mode', C, ['labels'], false, true),
+  // 1.x (D251): built; in Complete, and any location can turn it on.
+  moving: def('moving', 'Moving mode', C, ['labels']),
   secrets: def('secrets', 'Passwords and codes', C),
   ai_capture: def('ai_capture', 'AI capture', E, [], true),
   ai_assistant: def('ai_assistant', 'AI assistant', E, [], true),

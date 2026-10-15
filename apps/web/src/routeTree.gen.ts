@@ -28,6 +28,7 @@ import { Route as AppInsightsRouteImport } from './routes/_app/insights'
 import { Route as AppLabelsRouteImport } from './routes/_app/labels'
 import { Route as AppLendingRouteImport } from './routes/_app/lending'
 import { Route as AppMoreRouteImport } from './routes/_app/more'
+import { Route as AppMovingRouteImport } from './routes/_app/moving'
 import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
 import { Route as AppPaperworkRouteImport } from './routes/_app/paperwork'
 import { Route as AppScanRouteImport } from './routes/_app/scan'
@@ -65,6 +66,7 @@ import { Route as AppLCodeRouteImport } from './routes/_app/l.$code'
 import { Route as AppLocIdRouteImport } from './routes/_app/loc.$id'
 import { Route as AppLocationUuidRouteImport } from './routes/_app/location.$uuid'
 import { Route as AppLocationsNewRouteImport } from './routes/_app/locations.new'
+import { Route as AppMovingIdRouteImport } from './routes/_app/moving.$id'
 import { Route as AppPIdRouteImport } from './routes/_app/p.$id'
 import { Route as AppPeopleIdRouteImport } from './routes/_app/people.$id'
 import { Route as AppReportsKindRouteImport } from './routes/_app/reports.$kind'
@@ -95,6 +97,7 @@ import { Route as AppSettingsAccountVendorsRouteImport } from './routes/_app/set
 import { Route as AppSettingsAiUsageRouteImport } from './routes/_app/settings.ai.usage'
 import { Route as AppSettingsMeAiRouteImport } from './routes/_app/settings.me.ai'
 import { Route as AppSettingsMeNotificationsRouteImport } from './routes/_app/settings.me.notifications'
+import { Route as AppMovingIdBoxesBoxIdRouteImport } from './routes/_app/moving.$id.boxes.$boxId'
 import { Route as AppSettingsLocationIdEmailInRouteImport } from './routes/_app/settings.location.$id.email-in'
 import { Route as AppSettingsLocationIdGeneralRouteImport } from './routes/_app/settings.location.$id.general'
 import { Route as AppSettingsLocationIdInviteRouteImport } from './routes/_app/settings.location.$id.invite'
@@ -195,6 +198,11 @@ const AppLendingRoute = AppLendingRouteImport.update({
 const AppMoreRoute = AppMoreRouteImport.update({
   id: '/more',
   path: '/more',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMovingRoute = AppMovingRouteImport.update({
+  id: '/moving',
+  path: '/moving',
   getParentRoute: () => AppRoute,
 } as any)
 const AppNotificationsRoute = AppNotificationsRouteImport.update({
@@ -382,6 +390,11 @@ const AppLocationsNewRoute = AppLocationsNewRouteImport.update({
   path: '/locations/new',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMovingIdRoute = AppMovingIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppMovingRoute,
+} as any)
 const AppPIdRoute = AppPIdRouteImport.update({
   id: '/p/$id',
   path: '/p/$id',
@@ -539,6 +552,11 @@ const AppSettingsMeNotificationsRoute =
     path: '/settings/me/notifications',
     getParentRoute: () => AppRoute,
   } as any)
+const AppMovingIdBoxesBoxIdRoute = AppMovingIdBoxesBoxIdRouteImport.update({
+  id: '/boxes/$boxId',
+  path: '/boxes/$boxId',
+  getParentRoute: () => AppMovingIdRoute,
+} as any)
 const AppSettingsLocationIdEmailInRoute =
   AppSettingsLocationIdEmailInRouteImport.update({
     id: '/settings/location/$id/email-in',
@@ -606,6 +624,7 @@ export interface FileRoutesByFullPath {
   '/labels': typeof AppLabelsRoute
   '/lending': typeof AppLendingRoute
   '/more': typeof AppMoreRoute
+  '/moving': typeof AppMovingRouteWithChildren
   '/notifications': typeof AppNotificationsRoute
   '/paperwork': typeof AppPaperworkRoute
   '/scan': typeof AppScanRoute
@@ -641,6 +660,7 @@ export interface FileRoutesByFullPath {
   '/loc/$id': typeof AppLocIdRoute
   '/location/$uuid': typeof AppLocationUuidRoute
   '/locations/new': typeof AppLocationsNewRoute
+  '/moving/$id': typeof AppMovingIdRouteWithChildren
   '/p/$id': typeof AppPIdRoute
   '/people/$id': typeof AppPeopleIdRoute
   '/reports/$kind': typeof AppReportsKindRoute
@@ -673,6 +693,7 @@ export interface FileRoutesByFullPath {
   '/settings/me/ai': typeof AppSettingsMeAiRoute
   '/settings/me/notifications': typeof AppSettingsMeNotificationsRoute
   '/settings/account/': typeof AppSettingsAccountIndexRoute
+  '/moving/$id/boxes/$boxId': typeof AppMovingIdBoxesBoxIdRoute
   '/settings/location/$id/email-in': typeof AppSettingsLocationIdEmailInRoute
   '/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
@@ -699,6 +720,7 @@ export interface FileRoutesByTo {
   '/labels': typeof AppLabelsRoute
   '/lending': typeof AppLendingRoute
   '/more': typeof AppMoreRoute
+  '/moving': typeof AppMovingRouteWithChildren
   '/notifications': typeof AppNotificationsRoute
   '/paperwork': typeof AppPaperworkRoute
   '/scan': typeof AppScanRoute
@@ -734,6 +756,7 @@ export interface FileRoutesByTo {
   '/loc/$id': typeof AppLocIdRoute
   '/location/$uuid': typeof AppLocationUuidRoute
   '/locations/new': typeof AppLocationsNewRoute
+  '/moving/$id': typeof AppMovingIdRouteWithChildren
   '/p/$id': typeof AppPIdRoute
   '/people/$id': typeof AppPeopleIdRoute
   '/reports/$kind': typeof AppReportsKindRoute
@@ -765,6 +788,7 @@ export interface FileRoutesByTo {
   '/settings/me/ai': typeof AppSettingsMeAiRoute
   '/settings/me/notifications': typeof AppSettingsMeNotificationsRoute
   '/settings/account': typeof AppSettingsAccountIndexRoute
+  '/moving/$id/boxes/$boxId': typeof AppMovingIdBoxesBoxIdRoute
   '/settings/location/$id/email-in': typeof AppSettingsLocationIdEmailInRoute
   '/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
@@ -794,6 +818,7 @@ export interface FileRoutesById {
   '/_app/labels': typeof AppLabelsRoute
   '/_app/lending': typeof AppLendingRoute
   '/_app/more': typeof AppMoreRoute
+  '/_app/moving': typeof AppMovingRouteWithChildren
   '/_app/notifications': typeof AppNotificationsRoute
   '/_app/paperwork': typeof AppPaperworkRoute
   '/_app/scan': typeof AppScanRoute
@@ -830,6 +855,7 @@ export interface FileRoutesById {
   '/_app/loc/$id': typeof AppLocIdRoute
   '/_app/location/$uuid': typeof AppLocationUuidRoute
   '/_app/locations/new': typeof AppLocationsNewRoute
+  '/_app/moving/$id': typeof AppMovingIdRouteWithChildren
   '/_app/p/$id': typeof AppPIdRoute
   '/_app/people/$id': typeof AppPeopleIdRoute
   '/_app/reports/$kind': typeof AppReportsKindRoute
@@ -862,6 +888,7 @@ export interface FileRoutesById {
   '/_app/settings/me/ai': typeof AppSettingsMeAiRoute
   '/_app/settings/me/notifications': typeof AppSettingsMeNotificationsRoute
   '/_app/settings/account/': typeof AppSettingsAccountIndexRoute
+  '/_app/moving/$id/boxes/$boxId': typeof AppMovingIdBoxesBoxIdRoute
   '/_app/settings/location/$id/email-in': typeof AppSettingsLocationIdEmailInRoute
   '/_app/settings/location/$id/general': typeof AppSettingsLocationIdGeneralRoute
   '/_app/settings/location/$id/invite': typeof AppSettingsLocationIdInviteRoute
@@ -891,6 +918,7 @@ export interface FileRouteTypes {
     | '/labels'
     | '/lending'
     | '/more'
+    | '/moving'
     | '/notifications'
     | '/paperwork'
     | '/scan'
@@ -926,6 +954,7 @@ export interface FileRouteTypes {
     | '/loc/$id'
     | '/location/$uuid'
     | '/locations/new'
+    | '/moving/$id'
     | '/p/$id'
     | '/people/$id'
     | '/reports/$kind'
@@ -958,6 +987,7 @@ export interface FileRouteTypes {
     | '/settings/me/ai'
     | '/settings/me/notifications'
     | '/settings/account/'
+    | '/moving/$id/boxes/$boxId'
     | '/settings/location/$id/email-in'
     | '/settings/location/$id/general'
     | '/settings/location/$id/invite'
@@ -984,6 +1014,7 @@ export interface FileRouteTypes {
     | '/labels'
     | '/lending'
     | '/more'
+    | '/moving'
     | '/notifications'
     | '/paperwork'
     | '/scan'
@@ -1019,6 +1050,7 @@ export interface FileRouteTypes {
     | '/loc/$id'
     | '/location/$uuid'
     | '/locations/new'
+    | '/moving/$id'
     | '/p/$id'
     | '/people/$id'
     | '/reports/$kind'
@@ -1050,6 +1082,7 @@ export interface FileRouteTypes {
     | '/settings/me/ai'
     | '/settings/me/notifications'
     | '/settings/account'
+    | '/moving/$id/boxes/$boxId'
     | '/settings/location/$id/email-in'
     | '/settings/location/$id/general'
     | '/settings/location/$id/invite'
@@ -1078,6 +1111,7 @@ export interface FileRouteTypes {
     | '/_app/labels'
     | '/_app/lending'
     | '/_app/more'
+    | '/_app/moving'
     | '/_app/notifications'
     | '/_app/paperwork'
     | '/_app/scan'
@@ -1114,6 +1148,7 @@ export interface FileRouteTypes {
     | '/_app/loc/$id'
     | '/_app/location/$uuid'
     | '/_app/locations/new'
+    | '/_app/moving/$id'
     | '/_app/p/$id'
     | '/_app/people/$id'
     | '/_app/reports/$kind'
@@ -1146,6 +1181,7 @@ export interface FileRouteTypes {
     | '/_app/settings/me/ai'
     | '/_app/settings/me/notifications'
     | '/_app/settings/account/'
+    | '/_app/moving/$id/boxes/$boxId'
     | '/_app/settings/location/$id/email-in'
     | '/_app/settings/location/$id/general'
     | '/_app/settings/location/$id/invite'
@@ -1305,6 +1341,13 @@ declare module '@tanstack/react-router' {
       path: '/more'
       fullPath: '/more'
       preLoaderRoute: typeof AppMoreRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/moving': {
+      id: '/_app/moving'
+      path: '/moving'
+      fullPath: '/moving'
+      preLoaderRoute: typeof AppMovingRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/notifications': {
@@ -1566,6 +1609,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLocationsNewRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/moving/$id': {
+      id: '/_app/moving/$id'
+      path: '/$id'
+      fullPath: '/moving/$id'
+      preLoaderRoute: typeof AppMovingIdRouteImport
+      parentRoute: typeof AppMovingRoute
+    }
     '/_app/p/$id': {
       id: '/_app/p/$id'
       path: '/p/$id'
@@ -1776,6 +1826,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsMeNotificationsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/moving/$id/boxes/$boxId': {
+      id: '/_app/moving/$id/boxes/$boxId'
+      path: '/boxes/$boxId'
+      fullPath: '/moving/$id/boxes/$boxId'
+      preLoaderRoute: typeof AppMovingIdBoxesBoxIdRouteImport
+      parentRoute: typeof AppMovingIdRoute
+    }
     '/_app/settings/location/$id/email-in': {
       id: '/_app/settings/location/$id/email-in'
       path: '/settings/location/$id/email-in'
@@ -1900,6 +1957,30 @@ const AppIncidentsRouteWithChildren = AppIncidentsRoute._addFileChildren(
   AppIncidentsRouteChildren,
 )
 
+interface AppMovingIdRouteChildren {
+  AppMovingIdBoxesBoxIdRoute: typeof AppMovingIdBoxesBoxIdRoute
+}
+
+const AppMovingIdRouteChildren: AppMovingIdRouteChildren = {
+  AppMovingIdBoxesBoxIdRoute: AppMovingIdBoxesBoxIdRoute,
+}
+
+const AppMovingIdRouteWithChildren = AppMovingIdRoute._addFileChildren(
+  AppMovingIdRouteChildren,
+)
+
+interface AppMovingRouteChildren {
+  AppMovingIdRoute: typeof AppMovingIdRouteWithChildren
+}
+
+const AppMovingRouteChildren: AppMovingRouteChildren = {
+  AppMovingIdRoute: AppMovingIdRouteWithChildren,
+}
+
+const AppMovingRouteWithChildren = AppMovingRoute._addFileChildren(
+  AppMovingRouteChildren,
+)
+
 interface AppSettingsAccountRouteChildren {
   AppSettingsAccountBrandsRoute: typeof AppSettingsAccountBrandsRoute
   AppSettingsAccountExchangeRatesRoute: typeof AppSettingsAccountExchangeRatesRoute
@@ -1953,6 +2034,7 @@ interface AppRouteChildren {
   AppLabelsRoute: typeof AppLabelsRoute
   AppLendingRoute: typeof AppLendingRoute
   AppMoreRoute: typeof AppMoreRoute
+  AppMovingRoute: typeof AppMovingRouteWithChildren
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppPaperworkRoute: typeof AppPaperworkRoute
   AppScanRoute: typeof AppScanRoute
@@ -2013,6 +2095,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppLabelsRoute: AppLabelsRoute,
   AppLendingRoute: AppLendingRoute,
   AppMoreRoute: AppMoreRoute,
+  AppMovingRoute: AppMovingRouteWithChildren,
   AppNotificationsRoute: AppNotificationsRoute,
   AppPaperworkRoute: AppPaperworkRoute,
   AppScanRoute: AppScanRoute,

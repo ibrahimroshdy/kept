@@ -1,6 +1,7 @@
 /**
  * Scan (plan T26; D137, D175; screens §5, §6): the scanner with its six outcomes, "Type the code",
- * and the carrying tray (`?tray=1`, "Scan destination"). The screen is
+ * the carrying tray (`?tray=1`, "Scan destination"), and a move's "Scan to unpack"
+ * (`?unpack=<move id>`, D251). The screen is
  * components/scan/scan-screen.tsx; this route gives it the person's offline store and navigates
  * to what a scan opens. A box opened by its label leads with its photo grid (D195).
  *
@@ -15,14 +16,17 @@ import { ScanScreen } from '@/components/scan/scan-screen';
 import { useKick, useScanStore } from '@/components/scan/use-scan-store';
 
 export const Route = createFileRoute('/_app/scan')({
-  validateSearch: (s: Record<string, unknown>): { tray?: 1 } =>
-    s.tray === 1 || s.tray === '1' ? { tray: 1 } : {},
+  validateSearch: (s: Record<string, unknown>): { tray?: 1; unpack?: string } => {
+    if (typeof s.unpack === 'string' && /^[0-9a-f-]{36}$/i.test(s.unpack))
+      return { unpack: s.unpack };
+    return s.tray === 1 || s.tray === '1' ? { tray: 1 } : {};
+  },
   component: ScanPage,
 });
 
 function ScanPage() {
   const { t } = useLingui();
-  const { tray } = Route.useSearch();
+  const { tray, unpack } = Route.useSearch();
   const store = useScanStore();
   const kick = useKick();
   const navigate = useNavigate();
@@ -54,9 +58,10 @@ function ScanPage() {
     );
   return (
     <ScanScreen
-      key={tray ? 'tray' : 'scan'}
+      key={unpack ? `unpack:${unpack}` : tray ? 'tray' : 'scan'}
       store={store}
       tray={tray === 1}
+      unpack={unpack}
       onExit={exit}
       onOpen={open}
       onQueued={kick}

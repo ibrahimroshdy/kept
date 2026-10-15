@@ -83,15 +83,17 @@ describe('presets (D75 re-cut by D191)', () => {
     );
   });
 
-  it('Complete is everything that is built (Moving mode is coming later)', () => {
-    expect(presetModules('complete')).toEqual(new Set([...all].filter((id) => id !== 'moving')));
+  it('Complete is every module, Moving mode included (D251)', () => {
+    expect(presetModules('complete')).toEqual(new Set(all));
   });
 
-  it('never counts a module that is coming later as on, even where it was enabled', () => {
-    expect(MODULES.moving.soon).toBe(true);
+  it('Moving mode is built (D251): on with Labels, its nav entry with it', () => {
+    expect(MODULE_IDS.filter((id) => MODULES[id].soon)).toEqual([]);
     expect(effectiveModules(['labels', 'moving'], { providerResolved: true })).toEqual(
-      new Set(['labels']),
+      new Set(['labels', 'moving']),
     );
+    expect(effectiveModules(['moving'], { providerResolved: true })).toEqual(new Set());
+    expect(MODULES.moving.nav).toEqual(['moving']);
   });
 
   it('each module lists the presets that include it', () => {

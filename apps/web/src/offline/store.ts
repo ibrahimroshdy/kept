@@ -523,6 +523,11 @@ export function applyOptimistic(rows: Map<string, SnapThing>, e: QueueEntry) {
         rows.set(id, { ...t, placeId: to.placeId ?? null, containerId: to.containerId ?? null });
     }
   }
+  // A moving box unpacked into its room (D251): the box goes there, its contents inside it.
+  if (op === 'move_box' && p.state === 'unpacked' && typeof p.placeId === 'string') {
+    const t = typeof p.containerId === 'string' ? rows.get(p.containerId) : undefined;
+    if (t) rows.set(t.id, { ...t, placeId: p.placeId, containerId: null });
+  }
 }
 
 /** A re-issued Kept label's live target (`byCode`'s last step): the first legacy hit. */

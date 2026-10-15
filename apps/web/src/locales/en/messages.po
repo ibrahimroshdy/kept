@@ -23991,3 +23991,394 @@ msgstr "Check the highlighted cells."
 #: src/components/sheet/sheet-view.tsx
 msgid "Discard my change"
 msgstr "Discard my change"
+#: src/components/app-shell.tsx
+msgid "Moving"
+msgstr "Moving"
+
+#: src/components/moving/move-screen.tsx
+msgid "Scan to unpack"
+msgstr "Scan to unpack"
+
+#: src/components/scan/scan-screen.tsx
+msgid "Point at a box's label, or the code on its contents sheet."
+msgstr "Point at a box's label, or the code on its contents sheet."
+
+#: src/components/moving/box-screen.tsx
+msgid "Not a box of this move"
+msgstr "Not a box of this move"
+
+#: src/components/moving/box-screen.tsx
+msgid "{title} taken out of the move. The box stays where it is."
+msgstr "{title} taken out of the move. The box stays where it is."
+
+#: src/components/moving/box-screen.tsx
+msgid "Since {when}, by <0>{by}</0>"
+msgstr "Since {when}, by <0>{by}</0>"
+
+#: src/components/moving/box-screen.tsx
+msgid "Since {when}"
+msgstr "Since {when}"
+
+#: src/components/moving/box-screen.tsx
+msgid "Goes to"
+msgstr "Goes to"
+
+#: src/components/moving/box-screen.tsx
+msgid "No room chosen yet"
+msgstr "No room chosen yet"
+
+#: src/components/moving/box-screen.tsx
+msgid "Choose"
+msgstr "Choose"
+
+#: src/components/moving/box-screen.tsx
+msgid "Now in <0>{0}</0>"
+msgstr "Now in <0>{0}</0>"
+
+#: src/components/moving/box-screen.tsx
+msgid "It was unpacked into a location you can't see."
+msgstr "It was unpacked into a location you can't see."
+
+#: src/components/moving/box-screen.tsx
+msgid "Unpack"
+msgstr "Unpack"
+
+#: src/components/moving/box-screen.tsx
+msgid "Mark in transit"
+msgstr "Mark in transit"
+
+#: src/components/moving/box-screen.tsx
+msgid "Back to packed"
+msgstr "Back to packed"
+
+#: src/components/moving/box-screen.tsx
+msgid "{0, plural, one {Inside: # thing} other {Inside: # things}}"
+msgstr "{0, plural, one {Inside: # thing} other {Inside: # things}}"
+
+#: src/components/moving/box-screen.tsx
+msgid "Loading what's inside"
+msgstr "Loading what's inside"
+
+#: src/components/moving/box-screen.tsx
+msgid "Nothing in it yet"
+msgstr "Nothing in it yet"
+
+#: src/components/moving/box-screen.tsx
+msgid "Open the box to add things here, or pack with the scanner."
+msgstr "Open the box to add things here, or pack with the scanner."
+
+#: src/components/moving/box-screen.tsx
+msgid "{0, plural, one {Holds # thing} other {Holds # things}}"
+msgstr "{0, plural, one {Holds # thing} other {Holds # things}}"
+
+#: src/components/moving/box-screen.tsx
+msgid "As this phone last saw it."
+msgstr "As this phone last saw it."
+
+#: src/components/moving/box-screen.tsx
+msgid "Open the box"
+msgstr "Open the box"
+
+#: src/components/moving/box-screen.tsx
+msgid "Pack with the scanner"
+msgstr "Pack with the scanner"
+
+#: src/components/moving/box-screen.tsx
+msgid "Contents sheet"
+msgstr "Contents sheet"
+
+#: src/components/moving/box-screen.tsx
+msgid "Take {title} out of the move?"
+msgstr "Take {title} out of the move?"
+
+#: src/components/moving/box-screen.tsx
+msgid "The box and what's in it stay where they are."
+msgstr "The box and what's in it stay where they are."
+
+#: src/components/moving/box-screen.tsx
+msgid "Take it out"
+msgstr "Take it out"
+
+#: src/components/moving/box-screen.tsx
+msgid "Take it out of the move"
+msgstr "Take it out of the move"
+
+#: src/components/moving/box-screen.tsx
+msgid "Unpack {title}"
+msgstr "Unpack {title}"
+
+#: src/components/moving/box-screen.tsx
+msgid "Room it goes to"
+msgstr "Room it goes to"
+
+#: src/components/moving/box-write.tsx
+msgid "{name} unpacked into {where}"
+msgstr "{name} unpacked into {where}"
+
+#: src/components/moving/box-write.tsx
+msgid "{name}: {0}"
+msgstr "{name}: {0}"
+
+#: src/components/moving/box-write.tsx
+msgid "Everything in the box goes with it."
+msgstr "Everything in the box goes with it."
+
+#: src/components/moving/box-write.tsx
+msgid "Unpack into {where}"
+msgstr "Unpack into {where}"
+
+#: src/components/moving/box-write.tsx
+msgid "Choose a room"
+msgstr "Choose a room"
+
+#: src/components/moving/labels.ts
+msgid "Packed"
+msgstr "Packed"
+
+#: src/components/moving/labels.ts
+msgid "In transit"
+msgstr "In transit"
+
+#: src/components/moving/labels.ts
+msgid "Unpacked"
+msgstr "Unpacked"
+
+#: src/components/moving/labels.ts
+msgid "In progress"
+msgstr "In progress"
+
+#: src/components/moving/labels.ts
+msgid "Box {number}"
+msgstr "Box {number}"
+
+#: src/components/moving/move-screen.tsx
+msgid "Loading the move"
+msgstr "Loading the move"
+
+#: src/components/moving/move-screen.tsx
+msgid "Open this move once with a connection, and it is on this phone after that."
+msgstr "Open this move once with a connection, and it is on this phone after that."
+
+#: src/components/moving/move-screen.tsx
+msgid "Every box is unpacked"
+msgstr "Every box is unpacked"
+
+#: src/components/moving/move-screen.tsx
+msgid "Mark the move done when you're settled in."
+msgstr "Mark the move done when you're settled in."
+
+#: src/components/moving/move-screen.tsx
+msgid "{0, plural, one {# box still to unpack} other {# boxes still to unpack}}"
+msgstr "{0, plural, one {# box still to unpack} other {# boxes still to unpack}}"
+
+#: src/components/moving/move-screen.tsx
+msgid "Goes to <0>{0}</0>"
+msgstr "Goes to <0>{0}</0>"
+
+#: src/components/moving/move-screen.tsx
+msgid "In a location you can't see"
+msgstr "In a location you can't see"
+
+#: src/components/moving/move-screen.tsx
+msgid "Move deleted. Its boxes stay where they are."
+msgstr "Move deleted. Its boxes stay where they are."
+
+#: src/components/moving/move-screen.tsx
+msgid "As of {asOf}. Changes you make wait on this phone and sync when you're online."
+msgstr "As of {asOf}. Changes you make wait on this phone and sync when you're online."
+
+#: src/components/moving/move-screen.tsx
+msgid "This move is marked done. Open it again to change its boxes."
+msgstr "This move is marked done. Open it again to change its boxes."
+
+#: src/components/moving/move-screen.tsx
+msgid "Add a box"
+msgstr "Add a box"
+
+#: src/components/moving/move-screen.tsx
+msgid "Contents sheets"
+msgstr "Contents sheets"
+
+#: src/components/moving/move-screen.tsx
+msgid "Mark every packed box in transit?"
+msgstr "Mark every packed box in transit?"
+
+#: src/components/moving/move-screen.tsx
+msgid "{0, plural, one {# box is going in the van.} other {# boxes are going in the van.}}"
+msgstr "{0, plural, one {# box is going in the van.} other {# boxes are going in the van.}}"
+
+#: src/components/moving/move-screen.tsx
+msgid "Mark all in transit"
+msgstr "Mark all in transit"
+
+#: src/components/moving/move-screen.tsx
+msgid "Search boxes"
+msgstr "Search boxes"
+
+#: src/components/moving/move-screen.tsx
+msgid "Number, name or room"
+msgstr "Number, name or room"
+
+#: src/components/moving/move-screen.tsx
+msgid "by room"
+msgstr "by room"
+
+#: src/components/moving/move-screen.tsx
+msgid "No boxes yet"
+msgstr "No boxes yet"
+
+#: src/components/moving/move-screen.tsx
+msgid "Each box gets a number. Print its label, pack it, and scan it at the other end."
+msgstr "Each box gets a number. Print its label, pack it, and scan it at the other end."
+
+#: src/components/moving/move-screen.tsx
+msgid "Mark the move done"
+msgstr "Mark the move done"
+
+#: src/components/moving/move-screen.tsx
+msgid "Open it again"
+msgstr "Open it again"
+
+#: src/components/moving/move-screen.tsx
+msgid "Delete this move?"
+msgstr "Delete this move?"
+
+#: src/components/moving/move-screen.tsx
+msgid "The boxes and everything in them stay where they are; only their numbers and states go."
+msgstr "The boxes and everything in them stay where they are; only their numbers and states go."
+
+#: src/components/moving/move-screen.tsx
+msgid "Delete the move"
+msgstr "Delete the move"
+
+#: src/components/moving/move-screen.tsx
+msgid "{name} added"
+msgstr "{name} added"
+
+#: src/components/moving/moves-screen.tsx
+msgid "{0, plural, one {# box} other {# boxes}}"
+msgstr "{0, plural, one {# box} other {# boxes}}"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Start a move"
+msgstr "Start a move"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Offline: these are the moves this phone has opened."
+msgstr "Offline: these are the moves this phone has opened."
+
+#: src/components/moving/moves-screen.tsx
+msgid "Moves"
+msgstr "Moves"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Search moves"
+msgstr "Search moves"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Name or location"
+msgstr "Name or location"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Started"
+msgstr "Started"
+
+#: src/components/moving/moves-screen.tsx
+msgid "by status"
+msgstr "by status"
+
+#: src/components/moving/moves-screen.tsx
+msgid "No moves yet"
+msgstr "No moves yet"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Moving house? Pack into numbered boxes, print a label and a contents sheet for each, and scan a box at the other end to unpack it into its room."
+msgstr "Moving house? Pack into numbered boxes, print a label and a contents sheet for each, and scan a box at the other end to unpack it into its room."
+
+#: src/components/moving/moves-screen.tsx
+msgid "Give the move a name."
+msgstr "Give the move a name."
+
+#: src/components/moving/moves-screen.tsx
+msgid "To the new house"
+msgstr "To the new house"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Packing up"
+msgstr "Packing up"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Going to"
+msgstr "Going to"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Rooms of {fromName}"
+msgstr "Rooms of {fromName}"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Moving to a new home? Add it as a location first, so each box can be unpacked into its rooms."
+msgstr "Moving to a new home? Add it as a location first, so each box can be unpacked into its rooms."
+
+#: src/components/moving/room-picker.tsx
+msgid "This location has no rooms yet."
+msgstr "This location has no rooms yet."
+
+#: src/components/moving/sheets.tsx
+msgid "It gets the next number. Put things in it from its page, or with the scanner."
+msgstr "It gets the next number. Put things in it from its page, or with the scanner."
+
+#: src/components/moving/sheets.tsx
+msgid "Room it goes to (optional)"
+msgstr "Room it goes to (optional)"
+
+#: src/components/moving/sheets.tsx
+msgid "Add the box"
+msgstr "Add the box"
+
+#: src/components/moving/sheets.tsx
+msgid "A page per box: its number, the room it goes to, what's inside and its code. Tape it to the box; scanning the code opens the box in Kept."
+msgstr "A page per box: its number, the room it goes to, what's inside and its code. Tape it to the box; scanning the code opens the box in Kept."
+
+#: src/components/moving/sheets.tsx
+msgid "Add a box first."
+msgstr "Add a box first."
+
+#: src/components/moving/unpack-answer.tsx
+msgid "Already unpacked into <0>{0}</0>."
+msgstr "Already unpacked into <0>{0}</0>."
+
+#: src/components/moving/unpack-answer.tsx
+msgid "Already unpacked."
+msgstr "Already unpacked."
+
+#: src/components/moving/unpack-answer.tsx
+msgid "Scan another box"
+msgstr "Scan another box"
+
+#: src/components/history/labels.ts
+msgid "Move started"
+msgstr "Move started"
+
+#: src/components/history/labels.ts
+msgid "Move changed"
+msgstr "Move changed"
+
+#: src/components/history/labels.ts
+msgid "Move deleted"
+msgstr "Move deleted"
+
+#: src/components/history/labels.ts
+msgid "Added to a move as a box"
+msgstr "Added to a move as a box"
+
+#: src/components/history/labels.ts
+msgid "Moving box changed"
+msgstr "Moving box changed"
+
+#: src/components/history/labels.ts
+msgid "Box unpacked"
+msgstr "Box unpacked"
+
+#: src/components/history/labels.ts
+msgid "Taken out of a move"
+msgstr "Taken out of a move"

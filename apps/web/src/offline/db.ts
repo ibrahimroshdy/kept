@@ -125,7 +125,10 @@ export type MetaKey =
    * The signed-in frame's last-known `/me` and locations (shell.ts), for a cold start offline.
    * Cache: a 401 clears it with the rest of the meta (wipe.ts).
    */
-  | 'shell';
+  | 'shell'
+  /** 1.x (D251): the moves last opened on this phone, for the board offline in the middle of a
+   * move. Cache: a 401 clears it with the rest of the meta (wipe.ts). */
+  | 'moves';
 
 export type MetaRow = { key: MetaKey; value: unknown };
 /** The app lock (v4). */

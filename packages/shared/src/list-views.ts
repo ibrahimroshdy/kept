@@ -27,6 +27,9 @@ export const LIST_SURFACES = [
   'readings',
   // 1.x (D235): condition reports.
   'condition-reports',
+  // 1.x (D251): moves, and the boxes of one move.
+  'moves',
+  'move-boxes',
 ] as const;
 export type ListSurface = (typeof LIST_SURFACES)[number];
 
@@ -59,6 +62,9 @@ export type ListSurface = (typeof LIST_SURFACES)[number];
  * - readings (a meter's readings): date (`when`), source, state.
  * - condition-reports (D235): location, kind (move_in, move_out), state (open, finished), date
  *   (`when`).
+ * - moves (D251): location, status (active, done).
+ * - move-boxes (a move's boxes, D251): state (packed, in_transit, unpacked), the room it goes to
+ *   (`room`).
  */
 export const SURFACE_FILTER_KEYS: Record<ListSurface, readonly string[]> = {
   search: ['location', 'place', 'type', 'tag', 'state', 'priceMin', 'priceMax', 'currency'],
@@ -95,6 +101,8 @@ export const SURFACE_FILTER_KEYS: Record<ListSurface, readonly string[]> = {
   fuel: ['when', 'unit', 'vendor', 'full'],
   readings: ['when', 'source', 'state'],
   'condition-reports': ['location', 'kind', 'state', 'when'],
+  moves: ['location', 'status'],
+  'move-boxes': ['state', 'room'],
 };
 
 /** Filter keys that carry money: a view holding one is withheld where money is hidden. */

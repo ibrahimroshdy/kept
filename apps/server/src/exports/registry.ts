@@ -601,6 +601,10 @@ export const NOT_EXPORTED: Readonly<Record<string, string>> = Object.freeze({
   paperless_links:
     "links into this server's Paperless-ngx connection, which an export doesn't carry; a document copied into Kept travels as its attachment",
   share_links: "links to this server's pages, whose tokens are never shown again",
+  moves:
+    'a plan for one house move (D251); its boxes are containers and travel as things, with their contents',
+  move_boxes:
+    "a box's number and state in a move (D251); the box itself travels as a thing, its contents inside it",
 });
 
 const SNAKE = /_([a-z0-9])/g;

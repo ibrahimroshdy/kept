@@ -83,6 +83,9 @@ export const UNDOABLE_ACTIONS: ReadonlySet<string> = new Set([
   'service_record.confirm',
   // Step 7 (T17): a consumable's "keep at least" set, changed or removed (consumables/).
   'thing.stock_rule',
+  // 1.x (D251): a moving box's state changed, and a box unpacked into its room (moving/).
+  'move_box.update',
+  'move_box.unpack',
 ]);
 
 /** How long the Undo toast stays: 10 s (D150). */

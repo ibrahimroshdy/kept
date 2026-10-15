@@ -150,7 +150,7 @@ The request pool logs in as `kept_app`; the wrapper only sets `app.user_id` insi
 | `export_runs` | `id`, `location_id`, `include_secrets` bool, `status`, `file_id`, `expires_at` | D68, D69 |
 | `user_hints` | PK (`user_id`, `hint_key`), `seen_at`, `dismissed` bool | One-time hints and the checklist's dismissed state, stored server-side (D138); checklist progress itself is computed from data |
 | `box_checks` | `id`, `location_id`, `container_id`, `by`, `at` | D40; counted lines in `box_check_lines` (§7.13) |
-| `moves`, `move_boxes` | moves: `id`, `from_location_id`, `to_location_id`, `name`, `status`; boxes: PK (`move_id`, `container_id`), `state` (packed · in_transit · unpacked) | 1.x (D130) |
+| `moves`, `move_boxes` | moves: `id`, `location_id` (the location being packed), `to_location_id` null, `name`, `status` (active · done), `finished_at`; boxes: PK (`move_id`, `container_id`), `location_id` (the move's), `number`, `state` (packed · in_transit · unpacked), `destination_place_id`, `state_at`, `state_by` | 1.x (D130, D251) |
 | `backup_runs` | `id`, `started_at`, `finished_at`, `bytes`, `status`, `snapshot_id`, `verified_at`, `storage_mode` (local · s3), `bucket_versioning_ok` bool | Instance scope (D66, D144) |
 
 Jobs (extraction, reminders, imports, exports, webhooks, backups) run on pg-boss (D94); its tables
