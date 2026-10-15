@@ -76,6 +76,8 @@ const sidebar = [
     page('users/ai-providers'),
     page('admin/ollama'),
     page('users/mcp-clients'),
+    page('users/home-assistant'),
+    page('users/dashboards'),
     page('users/import-export'),
     page('integrations'),
     group('Backups and restore', 'النسخ الاحتياطي والاستعادة', [

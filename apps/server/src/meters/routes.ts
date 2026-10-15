@@ -31,7 +31,8 @@ import { registerReadingUndo } from './undo.js';
 // POST   /api/v1/meters/:id/replaced {at, offset} (If-Match optional) → 201 {event, meter}
 // GET    /api/v1/meters/:id/readings?f.when&f.source*&f.state*&not*&sort&dir&cursor&limit
 //                                                                    → {items: Reading[], next_cursor}
-// POST   /api/v1/meters/:id/readings {id?, value, takenAt, note?, confirmJump?, proofFileId?}
+// POST   /api/v1/meters/:id/readings {id?, value, takenAt, note?, confirmJump?, proofFileId?,
+//                                     source? (manual · home_assistant, D244)}
 //                                             → 201 {reading, state, reason?, undo}  undoable
 //                                               409 {reason} when backwards (confirmJump or not)
 // PATCH  /api/v1/readings/:id {value?, takenAt?, note?} (If-Match optional) → Reading
@@ -78,6 +79,9 @@ const CreateReadingBody = z.strictObject({
   note: Note.optional().transform((s) => (s === '' ? undefined : s)),
   confirmJump: z.literal(true).optional(),
   proofFileId: z.uuid().optional(),
+  /** D244: a reading Home Assistant sends says so (the readings list's Source filter); a proof
+   * photo makes it `photo` whatever this says. */
+  source: z.enum(['manual', 'home_assistant']).optional(),
 });
 const UpdateReadingBody = z.strictObject({
   value: Value.optional(),
@@ -236,7 +240,7 @@ export async function meterRoutes(app: KeptApp, deps: InventoryDeps): Promise<vo
           ctx,
           req.params.id.toLowerCase(),
           req.body,
-          req.body.proofFileId ? 'photo' : 'manual',
+          req.body.proofFileId ? 'photo' : (req.body.source ?? 'manual'),
           { undoable: true },
         ),
       ),

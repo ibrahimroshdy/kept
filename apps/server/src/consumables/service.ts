@@ -149,7 +149,8 @@ export type ListQuery = {
 type ListKey = [low: boolean, name: string, id: string];
 
 const ICU = 'COLLATE "und-x-icu"';
-const LOW = 't.quantity < r.min_quantity';
+/** A thing below its "keep at least" (plan Q19), over `stock_rules r JOIN things t`. */
+export const LOW = 't.quantity < r.min_quantity';
 const NAME = `lower(coalesce(t.name, '')) ${ICU}`;
 
 /**

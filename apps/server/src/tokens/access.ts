@@ -59,6 +59,16 @@ export const TOKEN_ROUTES: Readonly<Record<string, Exclude<TokenAccess, 'none'>>
   'GET /api/v1/labels/batches/:id': 'read',
   // Files' metadata (read): never the bytes or a signed URL.
   'GET /api/v1/locations/:id/attachments': 'read',
+  // 1.x (D244; D59): what Home Assistant and dashboard widgets read and do. Home's counts per
+  // location, the vehicles list (each one's latest reading and next service), the agenda (the
+  // dated items a calendar shows) and the schedules list (a schedule's rowVersion, for If-Match),
+  // and marking a schedule done: the REST twins of the MCP tools `upcoming` and
+  // `complete_schedule`, which a personal token already reaches over /mcp.
+  'GET /api/v1/summary': 'read',
+  'GET /api/v1/vehicles': 'read',
+  'GET /api/v1/agenda': 'read',
+  'GET /api/v1/schedules': 'read',
+  'POST /api/v1/schedules/:id/complete': 'write',
   // Undo: a token undoes only its own changes (audit/undo.ts).
   'POST /api/v1/audit/:eventId/undo': 'write',
 });
