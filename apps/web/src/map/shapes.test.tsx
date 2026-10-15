@@ -1,5 +1,5 @@
 import { MAP_MODEL_KEYS, type ShapeInput } from '@kept/shared';
-import { screen, within } from '@testing-library/react';
+import { act, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { expectLogicalOnly, renderUI } from '@/test/render';
 import { ShapeField, ShapePicker } from './shapes';
@@ -12,7 +12,7 @@ const tv: ShapeInput = {
   isContainer: false,
 };
 
-function picker(onPick = vi.fn(), input = tv, locale: 'en' | 'ar' = 'en') {
+function picker(onPick = vi.fn(), input = tv, locale: 'en' | 'ar' | 'fr' = 'en') {
   return renderUI(
     <ShapePicker
       isOpen
@@ -75,11 +75,86 @@ describe('ShapePicker', () => {
     expect(options.map((o) => o.textContent)).toEqual(['TV']);
     await user.clear(screen.getByRole('searchbox', { name: 'Find a shape' }));
     await user.type(screen.getByRole('searchbox', { name: 'Find a shape' }), 'webcam');
-    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Small device']);
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Webcam']);
     await user.clear(screen.getByRole('searchbox', { name: 'Find a shape' }));
     await user.type(screen.getByRole('searchbox', { name: 'Find a shape' }), 'zzqx');
     expect(document.querySelectorAll('.kshape-option')).toHaveLength(0);
     expect(screen.getByText(/No shape matches/)).toBeTruthy();
+  });
+
+  it('shows only the matches while searching, word starts first, and the groups again after (#130)', async () => {
+    const { user } = await picker(vi.fn(), {
+      name: '4K webcam',
+      typeKey: null,
+      typeName: null,
+      isContainer: false,
+    });
+    const box = screen.getByRole('searchbox', { name: 'Find a shape' });
+    await user.type(box, 'Ca');
+    // One grid of matches: no Suggested, no group headings.
+    expect(within(screen.getByRole('listbox')).queryAllByRole('group')).toHaveLength(0);
+    expect(screen.queryByText('Suggested')).toBeNull();
+    const names = screen.getAllByRole('option').map((o) => o.textContent ?? '');
+    for (const m of ['Camera', 'Webcam']) {
+      expect(names).toContain(m);
+      for (const later of ['Tool cart', 'Watering can', 'Filing cabinet'])
+        if (names.includes(later)) expect(names.indexOf(m)).toBeLessThan(names.indexOf(later));
+    }
+    await user.type(box, 'm');
+    expect(
+      screen
+        .getAllByRole('option')
+        .map((o) => o.textContent)
+        .slice(0, 2),
+    ).toEqual(['Webcam', 'Camera']);
+    await user.clear(box);
+    const [suggested, ...groups] = sections();
+    expect(suggested?.textContent).toMatch(/^Suggested/);
+    expect(within(suggested as HTMLElement).getAllByRole('option')[0]?.textContent).toBe('Webcam');
+    expect(groups.length).toBeGreaterThanOrEqual(8);
+  });
+
+  it('searches the reader’s language by word starts, the other languages by whole words (#130)', async () => {
+    const { user } = await picker();
+    await user.type(screen.getByRole('searchbox', { name: 'Find a shape' }), 'ca');
+    const en = screen.getAllByRole('option').map((o) => o.textContent);
+    expect(en.slice(0, 3)).toEqual(['Car', 'Camera', 'Webcam']);
+    // canapé, cassa, casque and cage d’escalier are other languages' words: not for "ca".
+    for (const n of ['Sofa', 'Desk speaker', 'Headphones', 'Stairwell'])
+      expect(en).not.toContain(n);
+  });
+
+  it('finds the sofa for “ca” in French', async () => {
+    const { user } = await picker(vi.fn(), tv, 'fr');
+    await user.type(screen.getByRole('searchbox'), 'ca');
+    const fr = screen.getAllByRole('option').map((o) => o.textContent);
+    expect(fr).toContain('Canapé');
+    // Names that start with it first: Canapé before Webcam (by "cam").
+    expect(fr.indexOf('Canapé')).toBeLessThan(fr.indexOf('Webcam'));
+  });
+
+  it('stays above the on-screen keyboard: the sheet follows the visual viewport (#130)', async () => {
+    const vv = Object.assign(new EventTarget(), { height: 844, offsetTop: 0, scale: 1 });
+    const real = Object.getOwnPropertyDescriptor(window, 'visualViewport');
+    Object.defineProperty(window, 'visualViewport', { configurable: true, value: vv });
+    try {
+      await picker();
+      const overlay = screen.getByRole('dialog').closest('[data-fit-keyboard]')
+        ?.parentElement as HTMLElement;
+      expect(overlay.style.height).toBe('844px');
+      // The keyboard and the form bar take 380 px; the page scrolled 12 px to show the field.
+      vv.height = 464;
+      vv.offsetTop = 12;
+      act(() => {
+        vv.dispatchEvent(new Event('resize'));
+      });
+      expect(overlay.style.height).toBe('464px');
+      expect(overlay.style.top).toBe('12px');
+      expect(overlay.style.getPropertyValue('--sheet-vh')).toBe('464px');
+    } finally {
+      if (real) Object.defineProperty(window, 'visualViewport', real);
+      else Reflect.deleteProperty(window, 'visualViewport');
+    }
   });
 
   it('picks a shape with a click', async () => {
@@ -115,7 +190,7 @@ describe('ShapePicker', () => {
     expect(document.activeElement?.textContent).not.toBe('TV');
   });
 
-  it('suggests the small device first for a webcam', async () => {
+  it('suggests the webcam first for a webcam', async () => {
     await picker(vi.fn(), {
       name: 'Logitech webcam',
       typeKey: null,
@@ -126,7 +201,7 @@ describe('ShapePicker', () => {
     const names = within(suggested as HTMLElement)
       .getAllByRole('option')
       .map((o) => o.textContent);
-    expect(names[0]).toBe('Small device');
+    expect(names[0]).toBe('Webcam');
   });
 
   it('reads in Arabic, right to left, with logical sides only', async () => {
@@ -156,7 +231,7 @@ describe('ShapeField', () => {
     const { user } = await renderUI(
       <ShapeField
         item={{ ...item, model: 'device', shapeFrom: 'guess' }}
-        input={{ name: 'Logitech webcam' }}
+        input={{ name: 'Smart thermostat' }}
         onShape={onShape}
       />,
     );

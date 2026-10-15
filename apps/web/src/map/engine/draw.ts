@@ -243,6 +243,15 @@ export function materials() {
     black: mat('black', { color: 0x222224, roughness: 0.45 }),
     blackGloss: mat('blackGloss', { color: 0x141416, roughness: 0.18, metalness: 0.2 }),
     screen: mat('screen', { color: 0x0e1622, roughness: 0.08, metalness: 0.6 }),
+    /** A screen that is on: a phone's or a tablet's, so a flat slab still reads as one. */
+    screenLit: mat('screenLit', {
+      color: 0x2c4c6e,
+      roughness: 0.1,
+      metalness: 0.2,
+      emissive: 0x13304d,
+    }),
+    keys: mat('keys', { color: 0x3a3c42, roughness: 0.6 }),
+    glow: mat('glow', { color: 0x63b8e8, roughness: 0.3, emissive: 0x1f5a80 }),
     glass: mat('glass', { color: 0xbfd6e2, roughness: 0.05, transparent: true, opacity: 0.35 }),
     white: mat('white', { color: 0xf6f5f1, roughness: 0.4 }),
     appliance: mat('appliance', { color: 0xe9e9e6, roughness: 0.3, metalness: 0.1 }),
@@ -617,6 +626,210 @@ export function drawnModels(F: Materials): Record<string, Build> {
       rb(g, w, 0.012, d, w / 2, 0.006, d / 2, F.steel, 0.006);
       const lid = rb(g, w, 0.008, d, w / 2, 0.11, 0.02, F.steel, 0.004);
       lid.rotation.x = -1.28;
+    },
+    // ---- Everyday electronics (#130): each at its catalogue size, front towards +z ----------
+    pc_tower(g, w, d) {
+      for (const [x, z] of [
+        [0.03, 0.04],
+        [w - 0.03, 0.04],
+        [0.03, d - 0.04],
+        [w - 0.03, d - 0.04],
+      ] as const)
+        rb(g, 0.03, 0.02, 0.03, x, 0.01, z, F.rubber, 0.006);
+      rb(g, w, 0.43, d, w / 2, 0.235, d / 2, F.black, 0.012);
+      rb(g, w - 0.02, 0.41, 0.006, w / 2, 0.235, d + 0.002, F.blackGloss, 0.003);
+      rb(g, 0.004, 0.33, d - 0.08, w + 0.0015, 0.25, d / 2, F.screen, 0.002);
+      rb(g, 0.004, 0.3, 0.004, w - 0.03, 0.24, d + 0.006, F.glow, 0.001);
+      cy(g, 0.009, 0.009, 0.006, w / 2, 0.41, d + 0.006, F.chrome, Math.PI / 2, 0, 16);
+    },
+    keyboard(g, w, d) {
+      rb(g, w, 0.02, d, w / 2, 0.01, d / 2, F.black, 0.006);
+      const n = Math.floor((w - 0.03) / 0.0235);
+      const x0 = (w - n * 0.0235) / 2 + 0.0235 / 2;
+      for (let r = 0; r < 5; r++) {
+        const z = 0.022 + r * ((d - 0.044) / 4.6);
+        if (r === 4) {
+          rb(g, 0.12, 0.008, 0.017, w / 2, 0.024, z, F.keys, 0.003);
+          continue;
+        }
+        for (let i = 0; i < n; i++)
+          rb(g, 0.019, 0.008, 0.017, x0 + i * 0.0235, 0.024, z, F.keys, 0.003);
+      }
+    },
+    mouse(g, w, d) {
+      const body = new THREE.Mesh(
+        new THREE.SphereGeometry(1, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2),
+        F.black,
+      );
+      body.scale.set(w / 2, 0.038, d / 2);
+      body.position.set(w / 2, 0, d / 2);
+      g.add(body);
+      rb(g, 0.0015, 0.006, d * 0.36, w / 2, 0.033, d * 0.76, F.steel, 0);
+      cy(g, 0.0065, 0.0065, 0.006, w / 2, 0.035, d * 0.68, F.steel, 0, Math.PI / 2, 16);
+    },
+    webcam(g, w, d) {
+      const z = d * 0.55;
+      rb(g, 0.05, 0.006, d, w / 2, 0.003, d / 2, F.black, 0.003);
+      rb(g, 0.035, 0.04, 0.012, w / 2, 0.024, z - 0.008, F.black, 0.004);
+      cy(g, 0.017, 0.017, w - 0.03, w / 2, 0.06, z, F.black, 0, Math.PI / 2, 20);
+      sp(g, 0.017, 0.015, 0.06, z, F.black);
+      sp(g, 0.017, w - 0.015, 0.06, z, F.black);
+      cy(g, 0.01, 0.01, 0.004, w / 2, 0.06, z + 0.016, F.screen, Math.PI / 2, 0, 20);
+      tor(g, 0.0105, 0.0016, w / 2, 0.06, z + 0.0175, F.chrome);
+      sp(g, 0.0022, w / 2 + 0.026, 0.064, z + 0.015, F.green);
+    },
+    camera(g, w, d) {
+      rb(g, w, 0.075, 0.045, w / 2, 0.0375, 0.035, F.black, 0.008);
+      rb(g, 0.028, 0.072, 0.058, 0.016, 0.036, 0.043, F.rubber, 0.01);
+      rb(g, 0.04, 0.025, 0.04, w / 2 + 0.008, 0.085, 0.035, F.black, 0.006);
+      cy(g, 0.006, 0.006, 0.006, 0.02, 0.078, 0.04, F.chrome, 0, 0, 12);
+      const x = w / 2 + 0.008;
+      cy(g, 0.028, 0.028, 0.045, x, 0.038, d - 0.0225, F.black, Math.PI / 2, 0, 24);
+      cy(g, 0.0295, 0.0295, 0.007, x, 0.038, d - 0.03, F.steel, Math.PI / 2, 0, 24);
+      cy(g, 0.02, 0.02, 0.002, x, 0.038, d + 0.0005, F.screen, Math.PI / 2, 0, 24);
+    },
+    speaker(g, w, d) {
+      rb(g, w, 0.27, d, w / 2, 0.135, d / 2, F.walnut, 0.01);
+      rb(g, w - 0.006, 0.264, 0.004, w / 2, 0.135, d + 0.0005, F.black, 0.003);
+      cy(g, 0.055, 0.055, 0.006, w / 2, 0.1, d + 0.003, F.mesh, Math.PI / 2, 0, 28);
+      tor(g, 0.056, 0.004, w / 2, 0.1, d + 0.004, F.steel);
+      sp(g, 0.018, w / 2, 0.1, d - 0.006, F.black, 1, 1, 0.6);
+      cy(g, 0.02, 0.02, 0.005, w / 2, 0.21, d + 0.003, F.mesh, Math.PI / 2, 0, 20);
+      sp(g, 0.011, w / 2, 0.21, d + 0.004, F.steel, 1, 1, 0.5);
+    },
+    floor_speaker(g, w, d) {
+      rb(g, w + 0.03, 0.02, d + 0.03, w / 2, 0.01, d / 2, F.black, 0.004);
+      rb(g, w, 0.97, d, w / 2, 0.505, d / 2, F.walnut, 0.01);
+      rb(g, w - 0.006, 0.96, 0.004, w / 2, 0.505, d + 0.0005, F.black, 0.003);
+      for (const y of [0.48, 0.68]) {
+        cy(g, 0.07, 0.07, 0.006, w / 2, y, d + 0.003, F.mesh, Math.PI / 2, 0, 28);
+        tor(g, 0.071, 0.005, w / 2, y, d + 0.004, F.steel);
+        sp(g, 0.022, w / 2, y, d - 0.006, F.black, 1, 1, 0.6);
+      }
+      cy(g, 0.022, 0.022, 0.005, w / 2, 0.86, d + 0.003, F.mesh, Math.PI / 2, 0, 20);
+      sp(g, 0.012, w / 2, 0.86, d + 0.004, F.steel, 1, 1, 0.5);
+      cy(g, 0.024, 0.024, 0.004, w / 2, 0.2, d + 0.002, F.void, Math.PI / 2, 0, 20);
+    },
+    smart_speaker(g, w, d) {
+      cy(g, w / 2, w / 2, 0.14, w / 2, 0.07, d / 2, F.fabricDark, 0, 0, 32);
+      cy(g, w / 2 - 0.003, w / 2 - 0.003, 0.01, w / 2, 0.145, d / 2, F.black, 0, 0, 32);
+      const ring = tor(g, w / 2 - 0.008, 0.0025, w / 2, 0.15, d / 2, F.glow);
+      ring.rotation.x = Math.PI / 2;
+    },
+    soundbar(g, w, d) {
+      for (const x of [0.12, w - 0.12])
+        rb(g, 0.08, 0.005, d - 0.02, x, 0.0025, d / 2, F.rubber, 0.002);
+      rb(g, w, 0.065, d, w / 2, 0.0375, d / 2, F.black, 0.025);
+      rb(g, w - 0.05, 0.05, 0.004, w / 2, 0.0375, d + 0.0005, F.mesh, 0.01);
+      sp(g, 0.003, w / 2, 0.012, d + 0.002, F.glow);
+    },
+    headphones(g, w, d) {
+      for (const [x, cx] of [
+        [0.016, 0.035],
+        [w - 0.016, w - 0.035],
+      ] as const) {
+        cy(g, 0.045, 0.045, 0.03, x, 0.055, d / 2, F.black, 0, Math.PI / 2, 24);
+        cy(g, 0.039, 0.039, 0.012, cx, 0.055, d / 2, F.fabricDark, 0, Math.PI / 2, 24);
+      }
+      const band = new THREE.Mesh(
+        new THREE.TorusGeometry(w / 2 - 0.016, 0.007, 8, 28, Math.PI),
+        F.black,
+      );
+      band.position.set(w / 2, 0.1, d / 2);
+      g.add(band);
+      const pad = new THREE.Mesh(
+        new THREE.TorusGeometry(w / 2 - 0.026, 0.009, 8, 20, Math.PI * 0.55),
+        F.fabricDark,
+      );
+      pad.position.set(w / 2, 0.1, d / 2);
+      pad.rotation.z = Math.PI * 0.225;
+      g.add(pad);
+      for (const x of [0.016, w - 0.016]) rb(g, 0.006, 0.03, 0.012, x, 0.1, d / 2, F.steel, 0.002);
+    },
+    router(g, w, d) {
+      for (const x of [0.03, w - 0.03])
+        rb(g, 0.03, 0.006, d - 0.03, x, 0.003, d / 2, F.rubber, 0.002);
+      rb(g, w, 0.034, d, w / 2, 0.023, d / 2, F.blackGloss, 0.012);
+      for (let i = 0; i < 5; i++) sp(g, 0.0028, w * 0.3 + i * 0.022, 0.026, d + 0.0005, F.green);
+      for (const [x, tilt] of [
+        [0.03, 0.1],
+        [0.095, 0.03],
+        [w - 0.095, -0.03],
+        [w - 0.03, -0.1],
+      ] as const) {
+        const a = rb(g, 0.012, 0.16, 0.007, x, 0.115, 0.012, F.black, 0.004);
+        a.rotation.z = tilt;
+      }
+    },
+    printer(g, w, d) {
+      const body = d - 0.04;
+      rb(g, w, 0.17, body, w / 2, 0.085, body / 2, F.appliance, 0.012);
+      rb(g, w, 0.004, body, w / 2, 0.172, body / 2, F.black, 0.002);
+      rb(g, w - 0.01, 0.024, body - 0.01, w / 2, 0.186, body / 2, F.appliance, 0.008);
+      rb(g, w * 0.62, 0.03, 0.004, w / 2, 0.075, body + 0.0005, F.void, 0.003);
+      rb(g, w * 0.56, 0.006, 0.06, w / 2, 0.05, body + 0.026, F.black, 0.003);
+      rb(g, w * 0.5, 0.003, 0.055, w / 2, 0.055, body + 0.022, F.white, 0.001);
+      const panel = rb(g, 0.1, 0.035, 0.008, w * 0.8, 0.14, body + 0.004, F.black, 0.004);
+      panel.rotation.x = -0.35;
+      rb(g, 0.06, 0.022, 0.002, w * 0.8, 0.142, body + 0.009, F.screenLit, 0.001).rotation.x =
+        -0.35;
+    },
+    console(g, w, d) {
+      for (const x of [0.04, w - 0.04])
+        rb(g, 0.04, 0.006, d - 0.04, x, 0.003, d / 2, F.rubber, 0.002);
+      rb(g, w, 0.05, d, w / 2, 0.031, d / 2, F.black, 0.01);
+      rb(g, w + 0.006, 0.014, d + 0.006, w / 2, 0.062, d / 2, F.white, 0.007);
+      rb(g, w * 0.45, 0.004, 0.002, w * 0.38, 0.03, d + 0.0005, F.void, 0);
+      sp(g, 0.003, w * 0.86, 0.03, d + 0.001, F.glow);
+    },
+    controller(g, w, d) {
+      for (const s of [-1, 1]) {
+        const grip = rb(g, 0.045, 0.028, 0.075, w / 2 + s * 0.052, 0.016, d * 0.56, F.black, 0.013);
+        grip.rotation.y = s * 0.35;
+      }
+      rb(g, w * 0.66, 0.03, d * 0.62, w / 2, 0.018, d * 0.42, F.black, 0.012);
+      for (const x of [w * 0.38, w * 0.62]) {
+        cy(g, 0.006, 0.006, 0.01, x, 0.036, d * 0.6, F.black, 0, 0, 12);
+        cy(g, 0.01, 0.01, 0.004, x, 0.042, d * 0.6, F.rubber, 0, 0, 16);
+      }
+      const bx = w * 0.7;
+      const bz = d * 0.36;
+      for (const [dx, dz, m] of [
+        [0, -0.01, F.green],
+        [0.01, 0, F.red],
+        [0, 0.01, F.glow],
+        [-0.01, 0, F.chrome],
+      ] as const)
+        sp(g, 0.0042, bx + dx, 0.034, bz + dz, m);
+      rb(g, 0.022, 0.004, 0.007, w * 0.3, 0.034, bz, F.keys, 0.001);
+      rb(g, 0.007, 0.004, 0.022, w * 0.3, 0.034, bz, F.keys, 0.001);
+    },
+    phone(g, w, d) {
+      rb(g, w, 0.008, d, w / 2, 0.004, d / 2, F.steel, 0.008);
+      rb(g, w - 0.005, 0.001, d - 0.006, w / 2, 0.0085, d / 2, F.screenLit, 0);
+      rb(g, 0.02, 0.0012, 0.006, w / 2, 0.0092, 0.01, F.black, 0);
+    },
+    tablet(g, w, d) {
+      rb(g, w, 0.007, d, w / 2, 0.0035, d / 2, F.steel, 0.008);
+      rb(g, w - 0.016, 0.001, d - 0.016, w / 2, 0.0075, d / 2, F.screenLit, 0);
+    },
+    power_strip(g, w, d) {
+      rb(g, w, 0.034, d, w / 2, 0.017, d / 2, F.white, 0.01);
+      const n = 4;
+      const step = (w - 0.07) / n;
+      for (let i = 0; i < n; i++) {
+        const x = 0.02 + step * (i + 0.5);
+        cy(g, 0.017, 0.017, 0.003, x, 0.0345, d / 2, F.appliance, 0, 0, 20);
+        for (const dx of [-0.0065, 0.0065])
+          cy(g, 0.0022, 0.0022, 0.002, x + dx, 0.0365, d / 2, F.black, 0, 0, 8);
+      }
+      rb(g, 0.022, 0.006, 0.03, w - 0.025, 0.036, d / 2, F.redLight, 0.003);
+    },
+    external_drive(g, w, d) {
+      rb(g, w, 0.017, d, w / 2, 0.0085, d / 2, F.black, 0.006);
+      rb(g, w - 0.012, 0.002, d - 0.012, w / 2, 0.0175, d / 2, F.blackGloss, 0.001);
+      sp(g, 0.0016, w / 2, 0.009, d + 0.0002, F.glow);
+      rb(g, 0.012, 0.004, 0.002, w / 2, 0.008, -0.0005, F.void, 0);
     },
     /** A small gadget (D249): a dark rounded body, a lens and a status light on its front. */
     device(g, w, d) {

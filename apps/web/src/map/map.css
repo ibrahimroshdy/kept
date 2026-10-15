@@ -575,16 +575,31 @@ fieldset.kmap-floors {
   /* A plate the pictures read on in either theme: dark gadgets on a dark page would vanish. */
   background-color: light-dark(var(--sunken), #77726a);
 }
+/* The picker (#130): the search, then the shapes in the rows that are left; only the shapes
+   scroll, so on a phone they stay between the search and the keyboard. */
+.kshape {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  min-height: 0;
+}
 .kshape-list {
   display: grid;
+  align-content: start;
   gap: 14px;
+  min-height: 0;
   outline: none;
-  max-height: min(60dvh, 34rem);
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 2px;
 }
-.kshape-section {
+@media (min-width: 48rem) {
+  .kshape-list {
+    max-height: min(60dvh, 34rem);
+  }
+}
+.kshape-section,
+.kshape-found {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
   gap: 6px;
