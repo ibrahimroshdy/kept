@@ -23412,3 +23412,13 @@ msgstr "Replay it from here any time. Close it early and it picks up where you s
 #: src/routes/_app/settings.index.tsx
 msgid "What reaches you and how, for all your locations or one at a time."
 msgstr "What reaches you and how, for all your locations or one at a time."
+
+#: src/map/card.tsx
+msgctxt "map: go into the room"
+msgid "Open"
+msgstr "Open"
+
+#: src/map/card.tsx
+msgctxt "map: go up a floor"
+msgid "Up to {0}"
+msgstr "Up to {0}"

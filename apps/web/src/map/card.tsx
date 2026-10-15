@@ -355,7 +355,7 @@ export function MapCard(p: CardProps) {
         <div className="kmap-row">
           {p.focused === r.id ? null : (
             <button type="button" className="kmap-btn primary" onClick={() => p.onOpenRoom(r.id)}>
-              <Trans>Open</Trans>
+              <Trans context="map: go into the room">Open</Trans>
             </button>
           )}
           {full ? null : (
@@ -507,7 +507,11 @@ export function MapCard(p: CardProps) {
           className="kmap-btn primary"
           onClick={() => p.onGoLevel(l.key)}
         >
-          {levels.indexOf(l) > li ? <Trans>Up to {l.name}</Trans> : <Trans>Down to {l.name}</Trans>}
+          {levels.indexOf(l) > li ? (
+            <Trans context="map: go up a floor">Up to {l.name}</Trans>
+          ) : (
+            <Trans>Down to {l.name}</Trans>
+          )}
         </button>
       ))}
       {n !== null && !p.detail ? (

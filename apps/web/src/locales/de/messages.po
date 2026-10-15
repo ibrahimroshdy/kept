@@ -23412,3 +23412,13 @@ msgstr "Starte ihn hier jederzeit neu. Schließt du ihn früher, macht er dort w
 #: src/routes/_app/settings.index.tsx
 msgid "What reaches you and how, for all your locations or one at a time."
 msgstr "Was dich erreicht und wie, für alle deine Orte oder einzeln."
+
+#: src/map/card.tsx
+msgctxt "map: go into the room"
+msgid "Open"
+msgstr "Öffnen"
+
+#: src/map/card.tsx
+msgctxt "map: go up a floor"
+msgid "Up to {0}"
+msgstr "Hinauf zu {0}"

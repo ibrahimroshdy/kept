@@ -23412,3 +23412,13 @@ msgstr "Relancez-le d’ici quand vous voulez. Fermé en cours de route, il repr
 #: src/routes/_app/settings.index.tsx
 msgid "What reaches you and how, for all your locations or one at a time."
 msgstr "Ce qui vous parvient et comment, pour tous vos lieux ou un par un."
+
+#: src/map/card.tsx
+msgctxt "map: go into the room"
+msgid "Open"
+msgstr "Ouvrir"
+
+#: src/map/card.tsx
+msgctxt "map: go up a floor"
+msgid "Up to {0}"
+msgstr "Monter à {0}"
