@@ -13,6 +13,7 @@ import {
   UpdateHintBody,
   updateHint,
 } from './service.js';
+import { SummaryResponse, summaryOf } from './summary.js';
 
 // Home: the checklist, the attention panel and hints (T22; D138, D185, D191, D193). The web's
 // contract is apps/web/src/api/inventory/{types,paths}.ts (HomeResponse, Hint); service.ts says
@@ -28,6 +29,10 @@ import {
 // GET /api/v1/home/overview → {locations: [{id, places, flags, value?, moneyHidden?}],
 //                              top: {<tile>: {name, locationId, …}}, insights | null}
 //                                                            (1.6, D240; overview.ts, Home only)
+// GET /api/v1/summary → {asOf, totals: {<count>}, locations: [{id, name, kind, timeZone,
+//                         counts: {things, unplaced, overdue, due, expiring, lentOut, borrowedIn,
+//                                  uncertain, longUnseen, lowStock}}]}
+//                                     (1.x, D244; summary.ts; open to personal tokens, read)
 // GET /api/v1/me/hints → {hints: [{key, seenAt, dismissedAt}]}
 // PUT /api/v1/me/hints/:key {seen?, dismissed?} → 204
 
@@ -47,6 +52,10 @@ export async function homeRoutes(app: KeptApp, deps: InventoryDeps): Promise<voi
 
   app.get('/api/v1/home/overview', { schema: { response: { 200: HomeOverview } } }, (req) =>
     scopedRead(pools, req, (tx, client, scope) => homeOverviewOf(tx, client, scope)),
+  );
+
+  app.get('/api/v1/summary', { schema: { response: { 200: SummaryResponse } } }, (req) =>
+    scopedRead(pools, req, (_tx, client) => summaryOf(client)),
   );
 
   app.get(

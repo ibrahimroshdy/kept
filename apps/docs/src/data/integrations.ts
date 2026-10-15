@@ -423,6 +423,37 @@ export const integrationGroups: IntegrationGroup[] = [
         },
       },
       {
+        id: 'home-assistant',
+        icon: 'places',
+        href: '/users/home-assistant/',
+        // The integration itself is its own repository (kept-homeassistant); this is Kept's side.
+        code: ['apps/server/src/home/summary.ts', 'apps/server/src/tokens/access.ts'],
+        en: {
+          name: 'Home Assistant',
+          body: "Overdue, due and expiring per location, each vehicle's next service. Odometer readings sent back.",
+        },
+        ar: {
+          name: 'Home Assistant',
+          body: 'المتأخر والمستحق وما ينتهي قريبًا لكل موقع، وموعد الصيانة التالية لكل مركبة. وقراءات العدّاد تُرسَل إلى Kept.',
+        },
+      },
+      {
+        id: 'dashboards',
+        icon: 'insights',
+        href: '/users/dashboards/',
+        code: ['apps/server/src/home/summary.ts'],
+        en: {
+          name: 'Dashboards',
+          title: 'Dashboards: Homepage, Glance, Homarr',
+          body: 'What needs you, as a widget. One call, a read-only token.',
+        },
+        ar: {
+          name: 'لوحات المعلومات',
+          title: 'لوحات المعلومات: Homepage وGlance وHomarr',
+          body: 'ما يحتاج إليك، في أداة على اللوحة. طلب واحد، برمز للقراءة فقط.',
+        },
+      },
+      {
         id: 'webhooks',
         icon: 'webhook',
         href: '/users/everyday-use/#reminders-and-notifications',
