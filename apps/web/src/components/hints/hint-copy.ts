@@ -40,82 +40,58 @@ export function useHintCopy(): Record<FirstUseHint, HintCopy> & { gotIt: string 
 }
 
 /**
- * The full guided tour's instruction copy (one entry per GUIDED_SECTIONS id in
- * components/hints/tour.ts): what to do there, not a feature blurb. Same rule as above: Kept's
- * own translated constants only, never anything a person typed.
+ * The guided tour's copy (D242): one entry per GUIDED_SECTIONS stop in components/hints/tour.ts,
+ * saying what the highlighted control does, in the words on the screen. Same rule as above:
+ * Kept's own translated constants only, never anything a person typed.
  */
 export function useGuidedTourCopy(): Record<string, HintCopy> {
   const { t } = useLingui();
   return {
     home: {
       title: t`Home`,
-      description: t`What needs you is at the top, your locations below it. Next takes you into one.`,
+      description: t`What needs you, counted. Tap a tile for its list. Your locations are below.`,
     },
     capture: {
       title: t`Capture`,
-      description: t`Take a photo of one thing, or pick one from your gallery, then tap Next. It waits in your Inbox.`,
+      description: t`Take a photo, or pick one with Gallery. It waits in your Inbox. At the end you keep it or discard it.`,
     },
     inbox: {
       title: t`Inbox`,
-      description: t`Your photo waits here. Check what Kept suggests and accept it: accepting files it into its place.`,
+      description: t`Photos wait here until you confirm what Kept read from them. Switch between yours and everyone's.`,
     },
-    'location-detail': {
+    location: {
       title: t`Location`,
-      description: t`A location's places, and how much each holds. Open any of them after the tour.`,
+      description: t`List, Grid or Map. Map shows the location floor by floor, with what's in each room.`,
     },
-    // An empty household has no location to open: this step stands in for the location detail
-    // and its copy is the micro-action. The title reuses the existing "New location" entry.
+    // An empty household has no location to open: this step stands in for the location and
+    // its copy is the micro-action. The title reuses the existing "New location" entry.
     'new-location': {
       title: t`New location`,
       description: t`Name it and create it. At the end you keep it, or discard it.`,
     },
     search: {
       title: t`Search`,
-      description: t`Type part of a thing's name above. Each result shows where it is.`,
+      description: t`Type part of a name, a brand, a serial or a short ID. Each result says where it is.`,
     },
     labels: {
       title: t`Labels`,
-      description: t`What has no label yet is listed here. Print a sheet whenever you want to stick some on.`,
+      description: t`Print labels for what has none yet. Scan one later and Kept opens what it's on.`,
     },
-    vehicles: {
-      title: t`Vehicles`,
-      description: t`Each vehicle shows its odometer, what's due next and its documents.`,
+    more: {
+      title: t`More`,
+      description: t`Every section that isn't on the tab bar: the modules you use, Activity, Trash, Settings and Help.`,
     },
-    schedules: {
-      title: t`Schedules`,
-      description: t`What's due, soonest first. New schedules start here too.`,
-    },
-    lending: {
-      title: t`Lending`,
-      description: t`What's lent out, who has it, and what's overdue.`,
-    },
-    paperwork: {
-      title: t`Paperwork`,
-      description: t`Every document, with the ones running out first.`,
-    },
-    consumables: {
-      title: t`Consumables`,
-      description: t`What runs low, with how much is left.`,
-    },
-    activity: {
-      title: t`Activity`,
-      description: t`Every addition, move and edit, newest first. Search it when you want history.`,
-    },
-    trash: {
-      title: t`Trash`,
-      description: t`Trashed things wait here for 30 days, each with Restore.`,
-    },
-    notifications: {
-      title: t`Notifications`,
-      description: t`Reminders land here, newest first. What you're told about is in Settings.`,
+    'more-wide': {
+      title: t`Everything else`,
+      description: t`Every section, one click away. A module shows here once it's on in one of your locations.`,
     },
     settings: {
-      title: t`Settings`,
-      description: t`Locations, members, AI and backups live here. Nothing changes unless you change it.`,
+      title: t`Notifications`,
+      description: t`Choose what reaches you, and how: in Kept, by email, push or a channel. Once for every location, or per location.`,
     },
     finish: {
-      title: t`Done`,
-      description: t`That's every section. If the tour added anything, you choose to keep it or discard it.`,
+      title: t`That's the tour`,
+      description: t`Replay it from here any time. Close it early and it picks up where you stopped.`,
     },
   };
 }

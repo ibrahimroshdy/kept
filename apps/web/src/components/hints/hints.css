@@ -131,3 +131,41 @@
   color: var(--ink);
   background-color: var(--sunken);
 }
+
+/*
+ * D242: taps outside the highlighted element reach the page. driver-kit.ts takes driver.css's
+ * `driver-active` class off <body> (which turned every element's pointer events off); the
+ * spotlight overlay stays as a picture only. Scoped to the tour: hints draw no overlay.
+ */
+body.kept-tour-open .driver-overlay,
+body.kept-tour-open .driver-overlay path {
+  /* biome-ignore lint/complexity/noImportantStyles: driver.js sets the path's pointer events inline */
+  pointer-events: none !important;
+}
+
+/*
+ * D242: on a phone the tour's popover is a sheet the width of the screen, docked above the tab
+ * bar (56 px, its 1 px line, and the Capture button standing 24 px above it) and the iOS home
+ * indicator, or at the top under the status bar on a full-screen page (Capture). driver.js
+ * writes left/top/right/bottom inline; these win over them. driver-kit.ts scrolls the target
+ * clear of the sheet.
+ */
+@media (max-width: 767.98px) {
+  .driver-popover.kept-tour {
+    /* biome-ignore lint/complexity/noImportantStyles: driver.js writes the popover's position inline */
+    inset-inline: 8px !important;
+    /* biome-ignore lint/complexity/noImportantStyles: as above */
+    inset-block-start: auto !important;
+    /* biome-ignore lint/complexity/noImportantStyles: as above */
+    inset-block-end: calc(env(safe-area-inset-bottom) + 89px) !important;
+    min-inline-size: 0;
+    max-inline-size: none;
+  }
+
+  .driver-popover.kept-tour.kept-tour-dock-top {
+    /* biome-ignore lint/complexity/noImportantStyles: as above */
+    inset-block-start: calc(env(safe-area-inset-top) + 8px) !important;
+    /* biome-ignore lint/complexity/noImportantStyles: as above */
+    inset-block-end: auto !important;
+  }
+}

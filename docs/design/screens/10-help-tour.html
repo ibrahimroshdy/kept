@@ -30,7 +30,7 @@
 <header>
   <span class="eyebrow">Screens · More, Help &amp; the tour</span>
   <h2>More, Help, and a tour that walks every section</h2>
-  <p>The phone's More page, where everything off the tab bar lives. Help as built: the tour, the checklist brought back, installing, sharing in, an odometer Shortcut and Diagnostics. "Show me around" steps through each section the person has (Home, Capture, the Inbox, a location, Search, then every module that is on), highlighting one part of each. It describes; it never asks for a tap that leaves its path, because any page it didn't open ends it. At the end, anything it added can be kept or discarded.</p>
+  <p>The phone's More page, where everything off the tab bar lives. Help as built: the tour, the checklist brought back, installing, sharing in, an odometer Shortcut and Diagnostics. "Show me around" (D242) makes nine stops on today's screens (Home's Needs you, Capture, the Inbox, a location's List/Grid/Map switch, Search, Labels, More or the sidebar, Settings → Notifications, Help), pointing at one control on each. Taps outside the highlight reach the page; going somewhere the tour didn't open ends it, and Help then offers Resume (at the stop it ended on, remembered on the server) or Start over. At the end, anything it added can be kept or discarded.</p>
 </header>
   <h3 class="grp">More and Help</h3>
   <div class="frames">
@@ -105,7 +105,7 @@
   <h3 class="grp">Show me around</h3>
   <div class="frames">
     <figure id="f-tour-step">
-      <div class="phone t-light" role="img" aria-label="Phone: the guided tour's first step on Home, its popover pointing at the locations, light theme" style="position:relative">
+      <div class="phone t-light" role="img" aria-label="Phone: the guided tour's first step on Home, its sheet docked above the tab bar, pointing at Needs you, light theme" style="position:relative">
         <div class="status"><span>9:41</span><span>●●● ▮</span></div>
         <div class="appbar"><h1>Home</h1><button class="icon-btn" aria-label="Scan"><svg class="k-ic"><use href="#k-scan"/></svg></button><button class="icon-btn" aria-label="Notifications"><svg class="k-ic"><use href="#k-bell"/></svg></button></div>
         <div class="content" style="overflow:visible">
@@ -117,8 +117,8 @@
           </div>
           <div class="pop" role="dialog" aria-label="Home" style="position:relative;inset:auto;margin-block:6px 4px">
             <div class="ph"><h4>Home</h4><span class="x" aria-label="Close"><svg class="k-ic"><use href="#k-x"/></svg></span></div>
-            <p>What needs you is at the top, your locations below it. Next takes you into one.</p>
-            <div class="pf"><span class="prog">1 of 16</span><button class="btn secondary small" type="button">Skip</button><button class="btn primary small" type="button">Next</button></div>
+            <p>What needs you, counted. Tap a tile for its list. Your locations are below.</p>
+            <div class="pf"><span class="prog">1 of 9</span><button class="btn primary small" type="button">Next</button></div>
           </div>
           <div class="hsec"><span class="eyebrow" style="position:relative;z-index:2;color:#fff">Locations</span>
             <div class="hlist hl">
@@ -128,7 +128,7 @@
           </div>
         </div>
       </div>
-      <figcaption class="frame-cap">The tour · phone · light · step 1. Each step opens its section itself, waits up to 3 s for the part it points at, and skips the section when that part never shows (a module that's off, a viewer with no Inbox); a skipped section drops out of the count. Back appears once an earlier section has shown; Skip moves past this section; Next opens the next one. Opening anything else, or Close, ends the tour. Steps: Home, Capture, Inbox, a location (or New location in an empty household), Search, Labels, Vehicles, Schedules, Lending, Paperwork, Consumables, Activity, Trash, Notifications, Settings, then the finish. Capture's step asks for one photo; that photo and anything else the tour adds are listed for the end.</figcaption>
+      <figcaption class="frame-cap">The tour · phone · light · step 1 (D242). Each stop opens its screen itself, waits up to 3 s for the control it points at, and passes over the stop when that control never shows (a viewer has no Capture or Inbox, Labels needs its module); a passed-over stop drops out of the count. On a phone the popover is a sheet docked above the tab bar and the home indicator (at the top on Capture), and the page scrolls the control clear of it; on a desktop it sits beside the control. Next moves on (that is skipping: nothing on a stop must be done), Back appears from the second stop, Close or Escape stops. The dim is a picture only: a tap outside the highlight reaches the page, and going somewhere the tour didn't open ends it there. Every stop moved past is remembered on the server (help.tour.&lt;stop&gt;), so Help reads "Stopped at Inbox." with Resume and Start over, on any device. Stops: Home (Needs you, or the locations on day one), Capture (the shutter bar), Inbox (Mine / Everyone's), a location's List / Grid / Map switch (the first shared location, or New location in an empty household), Search (the field), Labels (Label everything unprinted), More's list on a phone or the sidebar on a desktop, Settings → Notifications, then Help. A photo taken at Capture, and anything else the tour adds, is listed for the end.</figcaption>
     </figure>
 
     <figure id="f-tour-keep">

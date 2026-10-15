@@ -67,10 +67,7 @@ function MePage() {
     <Page title={t`Settings`}>
       <SettingsTabs />
       {user ? (
-        <div
-          data-tour="settings-main"
-          className="flex items-center gap-3 rounded-[10px] border border-line bg-surface p-3.5"
-        >
+        <div className="flex items-center gap-3 rounded-[10px] border border-line bg-surface p-3.5">
           <Avatar name={user.displayName} />
           <div className="grid min-w-0 flex-1 gap-0.5">
             <div className="font-semibold text-[16px]">{user.displayName}</div>
@@ -91,7 +88,7 @@ function MePage() {
 
       <Section title={<Trans>Notifications</Trans>}>
         <List>
-          <li>
+          <li data-tour="settings-notifications">
             <Row
               leading={
                 <IconTile>
@@ -99,7 +96,9 @@ function MePage() {
                 </IconTile>
               }
               title={<Trans>Reminders and alerts</Trans>}
-              subtitle={<Trans>What each location tells you, by email or on this device.</Trans>}
+              subtitle={
+                <Trans>What reaches you and how, for all your locations or one at a time.</Trans>
+              }
               trailing={
                 <LinkButton to="/settings/me/notifications" size="small">
                   <Trans>Open</Trans>

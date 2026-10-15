@@ -267,7 +267,7 @@ function LocationBody({ location }: { location: LocationDetail }) {
             canEdit={canEdit}
           />
 
-          <div data-tour="location-places">{panel ? null : <PlaceTree places={places} />}</div>
+          <div>{panel ? null : <PlaceTree places={places} />}</div>
         </>
       )}
 

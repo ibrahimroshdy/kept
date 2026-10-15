@@ -23348,3 +23348,67 @@ msgstr "Rien de vérifié pour l’instant."
 #: src/components/home/shortcuts.tsx
 msgid "Shortcuts"
 msgstr "Raccourcis"
+
+#: src/routes/_app/help.tsx
+msgid "Stopped at {stoppedAt}."
+msgstr "Arrêté à : {stoppedAt}."
+
+#: src/routes/_app/help.tsx
+msgid "Seen it all. Replay it any time."
+msgstr "Vous avez tout vu. Relancez-le quand vous voulez."
+
+#: src/routes/_app/help.tsx
+msgid "A short walk from Home to Help. Close it any time; it picks up where you stopped."
+msgstr "Un petit tour, de l’Accueil à l’Aide. Fermez-le quand vous voulez : il reprend là où vous vous êtes arrêté."
+
+#: src/routes/_app/help.tsx
+msgid "Start over"
+msgstr "Recommencer"
+
+#: src/components/hints/hint-copy.ts
+msgid "What needs you, counted. Tap a tile for its list. Your locations are below."
+msgstr "Ce qui est à traiter, compté. Touchez une tuile pour voir sa liste. Vos lieux sont en dessous."
+
+#: src/components/hints/hint-copy.ts
+msgid "Take a photo, or pick one with Gallery. It waits in your Inbox. At the end you keep it or discard it."
+msgstr "Prenez une photo, ou choisissez-en une avec Galerie. Elle attend dans votre Réception. À la fin, vous la conservez ou la rejetez."
+
+#: src/components/hints/hint-copy.ts
+msgid "Photos wait here until you confirm what Kept read from them. Switch between yours and everyone's."
+msgstr "Les photos attendent ici que vous confirmiez ce que Kept y a lu. Passez des vôtres à celles de tout le monde."
+
+#: src/components/hints/hint-copy.ts
+msgid "List, Grid or Map. Map shows the location floor by floor, with what's in each room."
+msgstr "Liste, Grille ou Carte. La carte montre le lieu étage par étage, avec ce qu’il y a dans chaque pièce."
+
+#: src/components/hints/hint-copy.ts
+msgid "Type part of a name, a brand, a serial or a short ID. Each result says where it is."
+msgstr "Tapez une partie d’un nom, d’une marque, d’un numéro de série ou d’un identifiant court. Chaque résultat dit où il se trouve."
+
+#: src/components/hints/hint-copy.ts
+msgid "Print labels for what has none yet. Scan one later and Kept opens what it's on."
+msgstr "Imprimez des étiquettes pour ce qui n’en a pas encore. Scannez-en une plus tard et Kept ouvre ce sur quoi elle est collée."
+
+#: src/components/hints/hint-copy.ts
+msgid "Every section that isn't on the tab bar: the modules you use, Activity, Trash, Settings and Help."
+msgstr "Chaque rubrique absente de la barre d’onglets : les modules que vous utilisez, Activité, Corbeille, Paramètres et Aide."
+
+#: src/components/hints/hint-copy.ts
+msgid "Every section, one click away. A module shows here once it's on in one of your locations."
+msgstr "Chaque rubrique, à un clic. Un module apparaît ici dès qu’il est activé dans l’un de vos lieux."
+
+#: src/components/hints/hint-copy.ts
+msgid "Choose what reaches you, and how: in Kept, by email, push or a channel. Once for every location, or per location."
+msgstr "Choisissez ce qui vous parvient, et comment : dans Kept, par e-mail, en push ou par un canal. Une fois pour tous les lieux, ou lieu par lieu."
+
+#: src/components/hints/hint-copy.ts
+msgid "That's the tour"
+msgstr "C’est tout pour le tour"
+
+#: src/components/hints/hint-copy.ts
+msgid "Replay it from here any time. Close it early and it picks up where you stopped."
+msgstr "Relancez-le d’ici quand vous voulez. Fermé en cours de route, il reprend là où vous vous êtes arrêté."
+
+#: src/routes/_app/settings.index.tsx
+msgid "What reaches you and how, for all your locations or one at a time."
+msgstr "Ce qui vous parvient et comment, pour tous vos lieux ou un par un."

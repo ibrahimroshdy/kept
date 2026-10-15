@@ -23348,3 +23348,67 @@ msgstr "Nothing checked yet."
 #: src/components/home/shortcuts.tsx
 msgid "Shortcuts"
 msgstr "Shortcuts"
+
+#: src/routes/_app/help.tsx
+msgid "Stopped at {stoppedAt}."
+msgstr "Stopped at {stoppedAt}."
+
+#: src/routes/_app/help.tsx
+msgid "Seen it all. Replay it any time."
+msgstr "Seen it all. Replay it any time."
+
+#: src/routes/_app/help.tsx
+msgid "A short walk from Home to Help. Close it any time; it picks up where you stopped."
+msgstr "A short walk from Home to Help. Close it any time; it picks up where you stopped."
+
+#: src/routes/_app/help.tsx
+msgid "Start over"
+msgstr "Start over"
+
+#: src/components/hints/hint-copy.ts
+msgid "What needs you, counted. Tap a tile for its list. Your locations are below."
+msgstr "What needs you, counted. Tap a tile for its list. Your locations are below."
+
+#: src/components/hints/hint-copy.ts
+msgid "Take a photo, or pick one with Gallery. It waits in your Inbox. At the end you keep it or discard it."
+msgstr "Take a photo, or pick one with Gallery. It waits in your Inbox. At the end you keep it or discard it."
+
+#: src/components/hints/hint-copy.ts
+msgid "Photos wait here until you confirm what Kept read from them. Switch between yours and everyone's."
+msgstr "Photos wait here until you confirm what Kept read from them. Switch between yours and everyone's."
+
+#: src/components/hints/hint-copy.ts
+msgid "List, Grid or Map. Map shows the location floor by floor, with what's in each room."
+msgstr "List, Grid or Map. Map shows the location floor by floor, with what's in each room."
+
+#: src/components/hints/hint-copy.ts
+msgid "Type part of a name, a brand, a serial or a short ID. Each result says where it is."
+msgstr "Type part of a name, a brand, a serial or a short ID. Each result says where it is."
+
+#: src/components/hints/hint-copy.ts
+msgid "Print labels for what has none yet. Scan one later and Kept opens what it's on."
+msgstr "Print labels for what has none yet. Scan one later and Kept opens what it's on."
+
+#: src/components/hints/hint-copy.ts
+msgid "Every section that isn't on the tab bar: the modules you use, Activity, Trash, Settings and Help."
+msgstr "Every section that isn't on the tab bar: the modules you use, Activity, Trash, Settings and Help."
+
+#: src/components/hints/hint-copy.ts
+msgid "Every section, one click away. A module shows here once it's on in one of your locations."
+msgstr "Every section, one click away. A module shows here once it's on in one of your locations."
+
+#: src/components/hints/hint-copy.ts
+msgid "Choose what reaches you, and how: in Kept, by email, push or a channel. Once for every location, or per location."
+msgstr "Choose what reaches you, and how: in Kept, by email, push or a channel. Once for every location, or per location."
+
+#: src/components/hints/hint-copy.ts
+msgid "That's the tour"
+msgstr "That's the tour"
+
+#: src/components/hints/hint-copy.ts
+msgid "Replay it from here any time. Close it early and it picks up where you stopped."
+msgstr "Replay it from here any time. Close it early and it picks up where you stopped."
+
+#: src/routes/_app/settings.index.tsx
+msgid "What reaches you and how, for all your locations or one at a time."
+msgstr "What reaches you and how, for all your locations or one at a time."

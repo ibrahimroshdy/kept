@@ -128,10 +128,21 @@ holds at most 20 of them.
 
 ## 7. Take the tour
 
-**Help → Show me around** walks through each section you have: Home, Capture, the Inbox, a
-location, Search, then every module that is on. It never starts by itself, and you can replay it
-any time. If it added anything along the way, you choose at the end to keep it or discard it. A few one-time hints also appear the first time you use
-Capture, Scan, the Inbox's suggested values or Labels.
+**Help → Show me around** makes nine short stops: Home, Capture, the Inbox, a location's
+**List / Grid / Map** switch, Search, Labels, everything else (**More** on a phone, the sidebar on
+a computer), **Settings → Notifications**, and back to Help. Stops you don't have are left out: a
+viewer has no Capture or Inbox, and Labels shows only while its module is on.
+
+- **Next** moves on, **Back** goes back, the arrow keys do both, and **Esc** or **×** closes it.
+- The page still works while it runs: tap anything outside the highlight. Going somewhere the
+  tour didn't open closes it.
+- Closed part-way, Help says where it stopped and offers **Resume** or **Start over**. Where you
+  stopped is saved to your account, so another device picks up there too.
+- It never starts by itself. If it added anything (a photo taken at Capture, say), you choose at
+  the end to keep it or discard it.
+
+A few one-time hints also appear the first time you use Capture, Scan, the Inbox's suggested
+values or Labels.
 
 :::tip[Keep the keys]
 Before the first AI key, secret value or backup, Kept waits until the instance admin has saved the

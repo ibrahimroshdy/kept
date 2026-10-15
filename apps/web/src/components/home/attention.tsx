@@ -372,7 +372,7 @@ export function NeedsYou({
   ];
   return (
     <HomeSection title={<Trans>Needs you</Trans>} className={className}>
-      <div className={cn('grid grid-cols-3 gap-2', COLS[tiles.length])}>
+      <div className={cn('grid grid-cols-3 gap-2', COLS[tiles.length])} data-tour="home-needs">
         {tiles.map((tile) => {
           const n = counts[tile] ?? 0;
           const top = overview?.top[tile];

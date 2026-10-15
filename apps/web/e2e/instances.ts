@@ -25,6 +25,9 @@ export const INSTANCES = {
   // Step 4's household journeys (e2e/step4.spec.ts): lending, schedules, documents, incidents
   // and the notification centre, on a seeded instance of their own.
   household: { name: 'household', port: 8188, seed: true },
+  // The guided tour (e2e/tour.spec.ts, D242): where it stopped is per person on the server, so a
+  // seeded instance of its own, one person per project.
+  tour: { name: 'tour', port: 8190, seed: true },
 } as const satisfies Record<string, Instance>;
 
 /**

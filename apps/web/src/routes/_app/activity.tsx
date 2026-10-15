@@ -69,7 +69,7 @@ function ActivityPage() {
 
   return (
     <Page title={t`Activity`} wide>
-      <div data-tour="activity">
+      <div>
         <ListSurface<HistoryEvent>
           label={t`Activity`}
           search={{ label: t`Search activity`, placeholder: t`Search activity` }}

@@ -37,7 +37,7 @@ function NotificationsPage() {
         </LinkButton>
       }
     >
-      <div data-tour="notifications">
+      <div>
         <NotificationCentre />
       </div>
     </Page>

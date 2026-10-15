@@ -792,7 +792,9 @@ describe('hints: every step-3 hint key round-trips (D138)', () => {
     }
     await putHint(ann, 'labels.first_print', { dismissed: true });
     const got = await hints(ann);
-    expect(got.map((h) => h.key)).toEqual([...HINT_KEYS].sort());
+    // Postgres orders by the database's collation (it put 'help.tour_seen' before
+    // 'help.tour.settings'), JavaScript by code point: compare the sets.
+    expect(got.map((h) => h.key).sort()).toEqual([...HINT_KEYS].sort());
     expect(got.every((h) => h.seenAt !== null)).toBe(true);
     expect(got.find((h) => h.key === 'labels.first_print')?.dismissedAt).not.toBeNull();
     expect(got.find((h) => h.key === 'scan.first_open')?.dismissedAt).toBeNull();

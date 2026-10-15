@@ -72,7 +72,7 @@ function TrashPage() {
           trashed by mistake.
         </Trans>
       </Notice>
-      <div data-tour="trash">
+      <div>
         <ListSurface<TrashItem>
           label={t`Trash`}
           search={{ label: t`Search the trash`, placeholder: t`Search by name` }}
