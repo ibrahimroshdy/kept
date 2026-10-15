@@ -8,6 +8,8 @@
  * button on Home and Search (components/scan-button.tsx); Schedules, Lending, Paperwork and
  * Notifications from step 4, and the header's bell (components/notification-bell.tsx). The
  * assistant (step 6) docks beside the page from 768 px and is a sheet below (assistant/host.tsx).
+ * The locations list marks the location the page is in, on its own page and on every page inside
+ * it (lib/page-location.ts).
  */
 import { MODULE_IDS, MODULES, type ModuleNav } from '@kept/shared';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -63,6 +65,7 @@ import { locationAddress } from '@/lib/address';
 import { sep } from '@/lib/format';
 import { useLocationName } from '@/lib/labels';
 import { DOCKED, useMediaQuery, WIDE } from '@/lib/media';
+import { usePageLocation } from '@/lib/page-location';
 import { toggleSidebar, usePrefs, watchSidebarWidth } from '@/lib/prefs';
 import { cn } from '@/lib/utils';
 import { OfflineProvider } from '@/offline/provider';
@@ -313,6 +316,8 @@ function Sidebar({ locations, counts }: { locations: LocationSummary[]; counts: 
   const entries = useNavEntries();
   const nameOf = useLocationName();
   const { sidebarCollapsed } = usePrefs();
+  // The location the page is in: its own page, or a place, thing, container or settings page of it.
+  const here = usePageLocation(locations);
   // While the assistant's panel is open from 1280 px (D216), the panel decides the sidebar's
   // form: docked beside the page, the sidebar is its icon rail, so the page keeps the width its
   // layouts expect (UI review steps 6–8, H1); floating over the page's end (as below 1280 px),
@@ -466,21 +471,33 @@ function Sidebar({ locations, counts }: { locations: LocationSummary[]; counts: 
               <Trans>Locations</Trans>
             </div>
           )}
-          {locations.map((l) => (
-            <Fragment key={l.id}>
-              <RailTip on={tips} content={nameOf(l)}>
-                <Link
-                  to="/loc/$id"
-                  params={{ id: locationAddress(l) }}
-                  data-nav={`loc:${l.id}`}
-                  className={cn(item, sideLink, 'data-[status=active]:font-normal')}
-                >
-                  <KindIcon kind={l.kind} />
-                  <NavLabel rail={rail}>{nameOf(l)}</NavLabel>
-                </Link>
-              </RailTip>
-            </Fragment>
-          ))}
+          {locations.map((l) => {
+            const inside = here?.id === l.id;
+            return (
+              <Fragment key={l.id}>
+                <RailTip on={tips} content={nameOf(l)}>
+                  {/* Marked while you're anywhere in the location. On its own page the router makes
+                    it the current page; elsewhere in it, `aria-current="location"` says "current
+                    location" without claiming this link is the page you're on. */}
+                  <Link
+                    to="/loc/$id"
+                    params={{ id: locationAddress(l) }}
+                    data-nav={`loc:${l.id}`}
+                    data-inside={inside ? '' : undefined}
+                    aria-current={inside && !here.own ? 'location' : undefined}
+                    className={cn(
+                      item,
+                      sideLink,
+                      'data-[status=active]:font-normal data-inside:bg-sunken data-inside:text-ink',
+                    )}
+                  >
+                    <KindIcon kind={l.kind} />
+                    <NavLabel rail={rail}>{nameOf(l)}</NavLabel>
+                  </Link>
+                </RailTip>
+              </Fragment>
+            );
+          })}
           <RailTip on={tips} content={t`New location`}>
             <Link
               to="/locations/new"
