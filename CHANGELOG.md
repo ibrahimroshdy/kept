@@ -3,6 +3,21 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.6.1 (2026-10-15)
+
+### Features
+
+- **notify:** choose notifications once for all locations, override per location (D239) (#86) (26d1bd6)
+
+### Fixes
+
+- **web:** the sidebar keeps the location you are in chosen (D224) (#87) (7da48cf)
+
+### Documentation
+
+- **site:** a landing page with the 3D map, what feeds into Kept, and SEO (D89, D199) (#88) (5e2ed6e)
+- **release:** the 1.6.0 record (#85) (a99fb1b)
+
 ## 1.6.0 (2026-10-15)
 
 ### Features
