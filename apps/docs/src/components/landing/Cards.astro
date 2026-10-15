@@ -2,7 +2,8 @@
 import { withBase } from './base';
 /**
  * A grid of the kit's cards (surface, hairline, 10px corners), each with an icon tile. A card
- * with `href` is a link to that page.
+ * with `href` is a link to that page. With `heading`, each card's title is that heading (h3 or
+ * h4), so a section of features reads as headings to a screen reader and a search engine.
  */
 import Icon from './Icon.astro';
 import type { IconName } from './icons';
@@ -16,8 +17,10 @@ interface Item {
 interface Props {
   items: Item[];
   columns?: 2 | 3;
+  heading?: 'h3' | 'h4';
 }
-const { items, columns = 3 } = Astro.props;
+const { items, columns = 3, heading } = Astro.props;
+const Title = heading ?? 'span';
 ---
 
 <ul class:list={['kd-cards', `kd-cards-${columns}`]}>
@@ -30,7 +33,7 @@ const { items, columns = 3 } = Astro.props;
             <span class="kd-card-icon">
               <Icon name={icon} />
             </span>
-            <span class="kd-card-title">{title}</span>
+            <Title class="kd-card-title">{title}</Title>
             <span class="kd-card-body">{body}</span>
           </Tag>
         </li>
@@ -98,6 +101,8 @@ const { items, columns = 3 } = Astro.props;
     color: var(--ink-2);
   }
   .kd-card-title {
+    display: block;
+    margin: 0;
     font-weight: 600;
     font-size: 1rem;
     line-height: 1.35;

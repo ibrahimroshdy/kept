@@ -1,53 +1,54 @@
 ---
-title: كل ما تملكه، وأين هو.
-description: جرد مفتوح المصدر تستضيفه بنفسك لكل ما تملكه وأين هو. مساعد بالذكاء الاصطناعي وخادم MCP مدمجان.
+title: جرد منزلي تستضيفه بنفسك
+description: 'جرد منزلي مفتوح المصدر تستضيفه بنفسك: أين الأشياء، وما هي، وما الذي يحين موعده. ملصقات ورموز QR، وضمانات، وسيارات، وتطبيق للهاتف يعمل بلا اتصال.'
 template: splash
 hero:
-  title: كل ما تملكه، وأين هو.
-  tagline: Kept جرد مفتوح المصدر تستضيفه بنفسك لبيوتك ومرائبك ومخازنك، بأوراق كل شيء وتاريخه. يعمل على جهازك أنت، ولا يخرج منه شيء ما لم تفعّله بنفسك.
+  title: جرد منزلي تستضيفه بنفسك
+  tagline: أين الأشياء، وما هي، وما الذي يحين موعده. مفتوح المصدر، على خادمك أنت، مع تطبيق لهاتفك.
   actions:
-    - text: التثبيت باستخدام Docker Compose
+    - text: التثبيت
       link: /ar/install/compose/
       variant: primary
-    - text: النسخ الاحتياطي
-      link: /ar/admin/backups/
+    - text: جرّب الخريطة
+      link: /ar/try/map/
       variant: secondary
+    - text: GitHub
+      link: https://github.com/ibrahimroshdy/kept
+      variant: minimal
+      icon: github
 ---
 
 import Section from '../../../components/landing/Section.astro';
 import Cards from '../../../components/landing/Cards.astro';
-import Shot from '../../../components/landing/Shot.astro';
+import Integrations from '../../../components/landing/Integrations.astro';
 import Gallery from '../../../components/landing/Gallery.astro';
 
-<Section eyebrow="ما هو Kept" title="جردٌ يعرف أين الأشياء، وما جاء معها.">
-  <Fragment slot="lede">يتتبّع Kept بيوتك ومرائبك ومخازنك، والغرف والرفوف والصناديق داخلها، والأشياء داخل كل ذلك. لكل شيء فواتيره وأدلّته وضماناته وتاريخه.</Fragment>
+<Section eyebrow="التكاملات" title="ما الذي يصبّ في Kept" id="integrations">
+  <Fragment slot="lede">الاستيراد، وصناديق البريد، وقنوات التنبيه، وتسجيل الدخول، والذكاء الاصطناعي. كلٌّ منها يقودك إلى طريقة إعداده.</Fragment>
+  <Integrations />
+</Section>
+
+<Section eyebrow="الميزات" title="ميزات الجرد المنزلي" id="features">
   <Cards
+    heading="h3"
     items={[
-      { icon: 'places', title: 'أماكن داخل أماكن', body: 'شجرة من المواقع والغرف والرفوف والصناديق. انقل صندوقًا فينتقل معه كل ما فيه.' },
-      { icon: 'label', title: 'ملصقات تمسحها', body: 'لكل شيء ولكل مكان معرّف قصير على ملصق قابل للطباعة برمز QR. امسحه لترى ما في الداخل.' },
-      { icon: 'paperwork', title: 'الأوراق مرفقة', body: 'الفواتير والأدلّة والضمانات والأرقام التسلسلية على الشيء الذي تخصّه، مع تواريخ انتهاء تذكّرك بها.' },
-      { icon: 'vehicle', title: 'السيارات والآلات', body: 'قراءات العدّادات والصيانات والوقود والمواعيد، للسيارة ولكل ما يحتاج إلى عناية.' },
-      { icon: 'people', title: 'مشترك مع أهل البيت', body: 'يتشارك الموقعَ مَن يسكنونه، لكلٍّ منهم دور، من المدير إلى المشاهد.' },
-      { icon: 'ai', title: 'مساعد ذكاء اصطناعي وMCP', body: 'مزوّدك أو نموذج محلي يملأ البيانات من الصور والفواتير. ويتصل Claude ووكلاء الذكاء الاصطناعي الآخرون عبر MCP. كله اختياري.' },
+      { icon: 'map', title: 'خريطة ثلاثية الأبعاد', body: 'الطوابق والغرف، والصناديق والأثاث فيها، وعلامات لما نقص مخزونه وما أُعير وما يحين موعده. رتّبها بنفسك.', href: '/ar/users/location-map/' },
+      { icon: 'places', title: 'المواقع والأماكن', body: 'البيوت والمرائب والمخازن، وفيها الغرف والرفوف والصناديق. انقل صندوقًا فينتقل معه ما فيه.', href: '/ar/users/everyday-use/#locations-rooms-and-boxes' },
+      { icon: 'qrcode', title: 'الملصقات ورموز QR', body: 'معرّف قصير على كل شيء وكل مكان. امسح صندوقًا لترى ما فيه.', href: '/ar/users/everyday-use/#short-ids-and-labels' },
+      { icon: 'schedule', title: 'المواعيد والضمانات', body: 'صيانات بالتاريخ أو بقراءة العدّاد. والضمانات والتأمين والوثائق بترتيب انتهائها.', href: '/ar/users/everyday-use/#reminders-and-notifications' },
+      { icon: 'lending', title: 'الإعارة', body: 'لمن أُعير، ومتى يعود، وبأي حال. وما استعرته أيضًا.', href: '/ar/users/everyday-use/#reminders-and-notifications' },
+      { icon: 'stock', title: 'المستهلكات والمخزون', body: 'حدّ أدنى لكل شيء، وتذكير حين ينقص. والصيانة تأخذ قطعها من المخزون.', href: '/ar/users/everyday-use/#vehicles-and-machines' },
+      { icon: 'vehicle', title: 'السيارات والآلات', body: 'القراءات والصيانات والوقود والتكاليف، للسيارة أو المولّد أو السخّان.', href: '/ar/users/everyday-use/#vehicles-and-machines' },
+      { icon: 'insurance', title: 'تقارير التأمين', body: 'كل شيء بصورته ورقمه التسلسلي وسعره وإيصالاته، في PDF وCSV. وحزمة مطالبة بعد الخسارة.', href: '/ar/users/everyday-use/#reports-the-inventory-insurance-and-claims' },
+      { icon: 'condition', title: 'تقارير الحالة', body: 'عند السكن وعند المغادرة، غرفةً غرفة، بالصور. يُقفل حين يكتمل، ويُقارن جنبًا إلى جنب.', href: '/ar/users/everyday-use/#condition-reports-renting' },
+      { icon: 'insights', title: 'الإحصاءات', body: 'الإنفاق بالسنة، والقيمة بالمكان، وتكاليف السيارات. ما لا سعر له يُذكر باسمه ولا يُقدَّر.', href: '/ar/users/everyday-use/#insights' },
+      { icon: 'phone', title: 'تطبيق الهاتف بلا اتصال', body: 'يُثبَّت على الشاشة الرئيسية. التقط وامسح وابحث بلا شبكة، والمزامنة لاحقًا.', href: '/ar/users/phone-app/' },
+      { icon: 'language', title: 'خمس لغات', body: 'English والعربية وFrançais وDeutsch وItaliano. والعربية من اليمين إلى اليسار في كل مكان.', href: '/ar/users/first-run/#6-language-and-theme' },
     ]}
   />
 </Section>
 
-<Section eyebrow="على الهاتف" title="مصمَّم للحظة التي تقف فيها في المرأب.">
-  <Fragment slot="lede">يُثبَّت Kept على الشاشة الرئيسية للهاتف. التقط بالكاميرا، وامسح ملصقًا، واعثر على ما تبحث عنه، وواصل العمل بلا اتصال: ما تغيّره دون اتصال يُزامَن حين يعود الهاتف إلى الشبكة.</Fragment>
-  <div class="kd-screens">
-    <figure class="kd-screen-desktop">
-      <Shot name="thing" alt="صفحة «كابل HDMI» في Kept: ملصق معرّفه القصير، ومكانه في بيت العائلة، وتفاصيله" sizes="(min-width: 50rem) 40rem, calc(100vw - 2rem)" />
-      <figcaption>صفحة شيء: ملصقه، والطريق إلى مكانه، وتفاصيله.</figcaption>
-    </figure>
-    <figure class="kd-screen-phone">
-      <Shot name="phone" alt="موقع «بيت العائلة» في Kept على هاتف: غرفه والأشياء فيه" sizes="12rem" />
-      <figcaption>موقع على الهاتف: غرفه، وما ينتظر مكانًا، والأشياء فيه.</figcaption>
-    </figure>
-  </div>
-</Section>
-
-<Section eyebrow="جولة" title="الشاشات، واحدة تلو الأخرى." id="screens">
+<Section eyebrow="جولة" title="الشاشات" id="screens">
   <Fragment slot="lede">من النسخة التجريبية من Kept وأسرتها النموذجية، بمظهر هذه الصفحة. مرِّر أفقيًا، أو استخدم الأسهم.</Fragment>
   <Gallery
     label="شاشات Kept"
@@ -67,26 +68,28 @@ import Gallery from '../../../components/landing/Gallery.astro';
   />
 </Section>
 
-<Section eyebrow="بياناتك تبقى بعد الخادم" title="نسخة احتياطية تقرؤها من دون Kept.">
-  <Fragment slot="lede">تضم كل نسخة احتياطية ليلية نسخةً مقروءة من كل موقع: صفحات ويب وجداول وصورًا مصغّرة وفواتير تُفتح في أي متصفح، بلا Kept وبلا شبكة. فإن احترق البيت والخادم فيه، يكفيك restic وكلمة مرور النسخة الاحتياطية وحاسوب محمول لترى ما كنت تملكه.</Fragment>
+<Section eyebrow="ملكك أنت" title="مفتوح المصدر، تستضيفه بنفسك، وبياناتك لك" id="trust">
   <Cards
+    heading="h3"
     items={[
-      { icon: 'backup', title: 'انسخه احتياطيًا', body: 'لقطات restic ليلية مشفّرة إلى قرص آخر أو حاوية S3 أو خادم SFTP، وحزمة استرداد تحفظها في مكان آخر.', href: '/ar/admin/backups/' },
-      { icon: 'book', title: 'اقرأه باستخدام restic وحده', body: 'افتح النسخة المقروءة من المستودع مباشرة، إن ضاع الخادم يومًا.', href: '/ar/admin/read-with-restic/' },
-      { icon: 'tool', title: 'حزمة الاسترداد', body: 'المفاتيح ليست في النسخة الاحتياطية: احفظها مع كلمة المرور في مكان آخر.', href: '/ar/admin/recovery-kit/' },
+      { icon: 'license', title: 'مفتوح المصدر', body: 'برخصة AGPL-3.0. الشيفرة والبلاغات والإصدارات على GitHub.', href: 'https://github.com/ibrahimroshdy/kept' },
+      { icon: 'server', title: 'تستضيفه بنفسك', body: 'حاوية واحدة وPostgres، بذاكرة ٢ غيغابايت ونواتَي معالجة. Docker Compose أو Kubernetes، على amd64 أو arm64.', href: '/ar/install/hardware/' },
+      { icon: 'private', title: 'بياناتك لا تغادر', body: 'بلا قياس عن بُعد. فحص التحديثات معطّل حتى يفعّله المدير. ومزوّد الذكاء الاصطناعي من اختيارك، أو لا أحد.', href: '/ar/admin/security-model/#what-leaves-the-server' },
+      { icon: 'signature', title: 'إصدارات موقّعة', body: 'كل صورة موقّعة بـ cosign ومعها SBOM. تحقّق منها قبل تشغيلها.', href: '/ar/admin/verify-release/' },
+      { icon: 'backup', title: 'نسخ احتياطي ليلي', body: 'لقطات restic مشفّرة إلى قرص آخر أو حاوية S3 أو خادم SFTP.', href: '/ar/admin/backups/' },
+      { icon: 'book', title: 'تُقرأ من دون Kept', body: 'في كل نسخة احتياطية صفحات ويب وجداول تُفتح باستخدام restic وحده، إن ضاع الخادم.', href: '/ar/admin/read-with-restic/' },
     ]}
   />
 </Section>
 
-<Section eyebrow="من أين تبدأ" title="ابدأ من هنا.">
+<Section eyebrow="من أين تبدأ" title="ابدأ من هنا">
   <Cards
     columns={2}
     items={[
       { icon: 'server', title: 'ما يحتاجه', body: 'أي جهاز بذاكرة ٢ غيغابايت ونواتَي معالجة.', href: '/ar/install/hardware/' },
       { icon: 'private', title: 'تشغيل Kept عبر HTTPS', body: 'الكاميرا والتثبيت على الهاتف والإشعارات تحتاج كلها إلى HTTPS.', href: '/ar/install/https/' },
-      { icon: 'tool', title: 'أداة سطر الأوامر للمشغّل', body: 'أوامر kept admin وما يفعله كل أمر (بالإنجليزية).', href: '/ar/admin/cli/' },
+      { icon: 'tool', title: 'حزمة الاسترداد', body: 'المفاتيح ليست في النسخة الاحتياطية: احفظها مع كلمة المرور في مكان آخر.', href: '/ar/admin/recovery-kit/' },
       { icon: 'code', title: 'الإعدادات', body: 'كل متغيرات البيئة، مولَّدة من الشيفرة (بالإنجليزية).', href: '/ar/reference/configuration/' },
     ]}
   />
 </Section>
-

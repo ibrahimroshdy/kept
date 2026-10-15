@@ -507,54 +507,6 @@ starlight-lang-select select {
   text-wrap: pretty;
 }
 
-/* Screenshots are shown at about the size they were taken, never stretched across a wide
-   column: a desktop capture at most 40rem wide (the content column), a phone at most 12rem. */
-.kd-screens {
-  display: grid;
-  gap: 1.5rem;
-  align-items: end;
-}
-@media (min-width: 50rem) {
-  .kd-screens {
-    grid-template-columns: minmax(0, 40rem) 12rem;
-    justify-content: start;
-    gap: 2.5rem;
-  }
-}
-.kd-screens figure {
-  margin: 0;
-  display: grid;
-  gap: 0.625rem;
-}
-.kd-screens figcaption {
-  font-size: 0.8125rem;
-  color: var(--ink-3);
-}
-.kd-screens .kd-shot img {
-  display: block;
-  inline-size: 100%;
-  block-size: auto;
-  border: 1px solid var(--line);
-  border-radius: var(--kd-radius);
-  background: var(--surface);
-}
-.kd-screen-desktop {
-  max-inline-size: 40rem;
-}
-.kd-screen-phone {
-  justify-self: center;
-  inline-size: 100%;
-  max-inline-size: 10rem;
-}
-@media (min-width: 50rem) {
-  .kd-screen-phone {
-    max-inline-size: 12rem;
-  }
-}
-.kd-screen-phone .kd-shot img {
-  border: 5px solid var(--charcoal);
-  border-radius: 22px;
-}
 /* A capture of the app shows only in its own theme (src/components/landing/Shot.astro). */
 :root[data-theme="light"] .kd-only-dark,
 :root:not([data-theme="light"]) .kd-only-light {

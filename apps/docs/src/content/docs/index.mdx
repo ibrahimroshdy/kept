@@ -1,54 +1,55 @@
 ---
-title: Everything you own, and where it is.
-description: Kept is a self-hosted, open-source inventory of everything you own and where it is. Built-in AI assistant and MCP server.
+title: Self-hosted home inventory
+description: "Open-source, self-hosted home inventory: where things are, what they are and what's due. Labels and QR codes, warranties, vehicles, an offline phone app."
 template: splash
 hero:
-  title: Everything you own, and where it is.
-  tagline: Kept is a self-hosted, open-source inventory of your homes, garages and storage, with every thing's paperwork and its history. It runs on your own machine, and nothing leaves it unless you turn it on.
+  title: A self-hosted home inventory
+  tagline: Where things are, what they are, and what's due. Open source, on your own server, with an app for your phone.
   actions:
-    - text: Install with Docker Compose
+    - text: Install
       link: /install/compose/
       variant: primary
-    - text: Read the developer guide
-      link: /developers/architecture/
+    - text: Try the map
+      link: /try/map/
       variant: secondary
+    - text: GitHub
+      link: https://github.com/ibrahimroshdy/kept
+      variant: minimal
+      icon: github
 ---
 
 import Section from '../../components/landing/Section.astro';
 import Cards from '../../components/landing/Cards.astro';
-import Shot from '../../components/landing/Shot.astro';
+import Integrations from '../../components/landing/Integrations.astro';
 import Gallery from '../../components/landing/Gallery.astro';
 
-<Section eyebrow="What Kept is" title="An inventory that knows where things are, and what came with them.">
-  <Fragment slot="lede">Homes, garages and storage units; the rooms, shelves, boxes and safes inside them; and the things inside those, from furniture to a single cable. Each thing keeps its receipts, manuals and warranties, and its life: lent, in repair, sold.</Fragment>
+<Section eyebrow="Integrations" title="What feeds into Kept" id="integrations">
+  <Fragment slot="lede">Imports, inboxes, notification channels, sign-in and AI. Each links to how to set it up.</Fragment>
+  <Integrations />
+</Section>
+
+<Section eyebrow="Features" title="Home inventory features" id="features">
   <Cards
+    heading="h3"
     items={[
-      { icon: 'places', title: 'Places inside places', body: 'A tree of locations, rooms, shelves and boxes. Move a box and everything in it moves too.' },
-      { icon: 'label', title: 'Labels you can scan', body: 'Every thing and place gets a short ID on a printable label with a QR code. Scan it to see what is inside.' },
-      { icon: 'paperwork', title: 'The paperwork, attached', body: 'Receipts, invoices, manuals, warranties and serials live on the thing they belong to, with expiries that remind you.' },
-      { icon: 'vehicle', title: 'Vehicles and machines', body: 'Meter readings, services, fuel and schedules, for the car and for anything else that needs looking after.' },
-      { icon: 'people', title: 'Shared with the household', body: 'A location is shared with the people who live there, each with a role, from admin to viewer.' },
-      { icon: 'ai', title: 'AI assistant and MCP', body: 'Your provider or a local model fills things in from photos and receipts. Claude and other AI agents connect over MCP. All optional.' },
+      { icon: 'map', title: '3D map', body: 'Floors and rooms, the boxes and furniture in them, and pins for low stock, loans and what is due. Arrange it yourself.', href: '/users/location-map/' },
+      { icon: 'places', title: 'Locations and places', body: 'Homes, garages and storage units; rooms, shelves and boxes inside. Move a box and its contents move too.', href: '/users/everyday-use/#locations-rooms-and-boxes' },
+      { icon: 'qrcode', title: 'Labels and QR codes', body: 'A short ID on every thing and place. Scan a box to see what is inside.', href: '/users/everyday-use/#short-ids-and-labels' },
+      { icon: 'schedule', title: 'Schedules and warranties', body: 'Services by date or by meter reading. Warranties, insurance and documents, in the order they run out.', href: '/users/everyday-use/#reminders-and-notifications' },
+      { icon: 'lending', title: 'Lending', body: 'Lent to whom, due when, in what condition. Borrowed things too.', href: '/users/everyday-use/#reminders-and-notifications' },
+      { icon: 'stock', title: 'Consumables and stock', body: 'A minimum per thing, and a reminder when it runs low. A service can take parts from stock.', href: '/users/everyday-use/#vehicles-and-machines' },
+      { icon: 'vehicle', title: 'Vehicles and machines', body: 'Readings, services, fuel and costs, for the car, the generator or the boiler.', href: '/users/everyday-use/#vehicles-and-machines' },
+      { icon: 'insurance', title: 'Insurance reports', body: 'Every thing with its photo, serial, price and receipts, as a PDF and a CSV. A claim pack after a loss.', href: '/users/everyday-use/#reports-the-inventory-insurance-and-claims' },
+      { icon: 'condition', title: 'Condition reports', body: 'Move-in and move-out, room by room, with photos. Locked once finished; compared side by side.', href: '/users/everyday-use/#condition-reports-renting' },
+      { icon: 'insights', title: 'Insights', body: 'Spending by year, value by place, vehicle costs. Unpriced things are named, never estimated.', href: '/users/everyday-use/#insights' },
+      { icon: 'phone', title: 'Phone app, offline', body: 'Installs to the home screen. Capture, scan and search with no signal; it syncs later.', href: '/users/phone-app/' },
+      { icon: 'language', title: 'Five languages', body: 'English, العربية, Français, Deutsch, Italiano. Arabic right to left throughout.', href: '/users/first-run/#6-language-and-theme' },
     ]}
   />
 </Section>
 
-<Section eyebrow="On a phone" title="Built for the moment you are standing in the garage.">
-  <Fragment slot="lede">Kept installs to a phone's home screen. Capture with the camera, scan a label, find the spare HDMI cable, and keep working without a connection: changes made offline sync when the phone is back online.</Fragment>
-  <div class="kd-screens">
-    <figure class="kd-screen-desktop">
-      <Shot name="thing" alt="A thing's page in Kept: its short ID label, where it is, and its details" sizes="(min-width: 50rem) 40rem, calc(100vw - 2rem)" />
-      <figcaption>A thing's page: its label, the path to where it is, and its details.</figcaption>
-    </figure>
-    <figure class="kd-screen-phone">
-      <Shot name="phone" alt="Kept's home screen on a phone" sizes="12rem" />
-      <figcaption>The home screen on a phone.</figcaption>
-    </figure>
-  </div>
-</Section>
-
-<Section eyebrow="A look around" title="The screens, one at a time." id="screens">
-  <Fragment slot="lede">Taken from Kept's demo build and its sample household, in this page's theme. Scroll sideways, or use the arrows.</Fragment>
+<Section eyebrow="A look around" title="The screens" id="screens">
+  <Fragment slot="lede">From Kept's demo build and its sample household, in this page's theme. Scroll sideways, or use the arrows.</Fragment>
   <Gallery
     label="Screens of Kept"
     items={[
@@ -68,30 +69,21 @@ import Gallery from '../../components/landing/Gallery.astro';
   />
 </Section>
 
-<Section eyebrow="Who it is for" title="People who would rather know than guess.">
+<Section eyebrow="Yours to run" title="Open source, self-hosted, your data" id="trust">
   <Cards
-    columns={2}
+    heading="h3"
     items={[
-      { icon: 'places', title: 'Households', body: 'Everyone who lives in a place sees what is there and where it went, and the paperwork is at hand on claim day.' },
-      { icon: 'server', title: 'Self-hosters', body: 'One container and Postgres, on any machine with 2 GB of RAM and 2 cores. Docker Compose or Kubernetes, amd64 or arm64.' },
-      { icon: 'private', title: 'The privacy-minded', body: 'No telemetry of any kind. The update check is off until an admin turns it on, and the AI provider is yours to choose.' },
-      { icon: 'code', title: 'Developers', body: 'A documented HTTP API, an MCP server for AI clients with scoped tokens, and a codebase you can read end to end.' },
+      { icon: 'license', title: 'Open source', body: 'AGPL-3.0. The code, issues and releases on GitHub.', href: 'https://github.com/ibrahimroshdy/kept' },
+      { icon: 'server', title: 'Self-hosted', body: 'One container and Postgres, 2 GB of RAM and 2 cores. Docker Compose or Kubernetes, amd64 or arm64.', href: '/install/hardware/' },
+      { icon: 'private', title: 'Your data stays put', body: 'No telemetry. The update check is off until an admin turns it on. The AI provider is yours to choose, or none.', href: '/admin/security-model/#what-leaves-the-server' },
+      { icon: 'signature', title: 'Signed releases', body: 'Every image signed with cosign, with an SBOM. Verify it before you run it.', href: '/admin/verify-release/' },
+      { icon: 'backup', title: 'Nightly backups', body: 'Encrypted restic snapshots to another disk, an S3 bucket or an SFTP server.', href: '/admin/backups/' },
+      { icon: 'book', title: 'Readable without Kept', body: 'Each backup holds web pages and spreadsheets that open with restic alone, if the server is gone.', href: '/admin/read-with-restic/' },
     ]}
   />
 </Section>
 
-<Section eyebrow="Your data outlives the server" title="A backup you can read without Kept.">
-  <Fragment slot="lede">Each nightly backup holds a readable copy of every location: web pages, spreadsheets, thumbnails and receipts that open in any browser, with no Kept and no network. If the house burns down with the server in it, restic, the backup's password and a laptop are enough to see what you owned.</Fragment>
-  <Cards
-    items={[
-      { icon: 'backup', title: 'Back it up', body: 'Nightly encrypted restic snapshots to another disk, an S3 bucket or an SFTP server, and a recovery kit to keep somewhere else.', href: '/admin/backups/' },
-      { icon: 'book', title: 'Read it with restic alone', body: 'Open the readable copy straight from the repository, if the server is ever gone.', href: '/admin/read-with-restic/' },
-      { icon: 'tool', title: 'Restore it', body: 'Bring a whole instance back, on the same machine or a new one.', href: '/admin/restore/' },
-    ]}
-  />
-</Section>
-
-<Section eyebrow="Find your way" title="Where to start.">
+<Section eyebrow="Find your way" title="Where to start">
   <Cards
     columns={2}
     items={[
@@ -102,4 +94,3 @@ import Gallery from '../../components/landing/Gallery.astro';
     ]}
   />
 </Section>
-
