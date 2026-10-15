@@ -3,6 +3,16 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.7.0 (2026-10-15)
+
+### Features
+
+- **home:** see what needs you and where everything is at a glance (D240) (#91) (4a820f4)
+
+### Documentation
+
+- **release:** the 1.6.1 record (#90) (68b1ee4)
+
 ## 1.6.1 (2026-10-15)
 
 ### Features
