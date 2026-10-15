@@ -1,10 +1,10 @@
 ---
 title: Self-hosted home inventory
-description: "Open-source, self-hosted home inventory: where things are, what they are and what's due. Labels and QR codes, warranties, vehicles, an offline phone app."
+description: "Open-source, self-hosted home inventory: where things are, what they are, what's due. A 3D map, QR labels, warranties, vehicles, an offline phone app."
 template: splash
 hero:
   title: A self-hosted home inventory
-  tagline: Where things are, what they are, and what's due. Open source, on your own server, with an app for your phone.
+  tagline: Where things are. What they are. What's due.
   actions:
     - text: Install
       link: /install/compose/
@@ -20,77 +20,100 @@ hero:
 
 import Section from '../../components/landing/Section.astro';
 import Cards from '../../components/landing/Cards.astro';
+import Opened from '../../components/landing/Opened.astro';
 import Integrations from '../../components/landing/Integrations.astro';
 import Gallery from '../../components/landing/Gallery.astro';
 
-<Section eyebrow="Integrations" title="What feeds into Kept" id="integrations">
-  <Fragment slot="lede">Imports, inboxes, notification channels, sign-in and AI. Each links to how to set it up.</Fragment>
-  <Integrations />
+<Section eyebrow="Kept, opened" title="One inventory, on your desktop and your phone" id="opened" split>
+  <Fragment slot="points">
+    <li><span><strong>Home:</strong> what needs you, at a glance.</span></li>
+    <li><span><strong>Locations:</strong> rooms, shelves, boxes. A map of each.</span></li>
+    <li><span><strong>Phone:</strong> capture, scan, search. Offline too.</span></li>
+  </Fragment>
+  <Opened
+    desktopAlt="Kept's Home on a desktop: Get started, the Needs you tiles from overdue to long unseen, the locations with their map previews, shortcuts and Insights"
+    phoneAlt="Kept's Home on a phone: Get started, the Needs you tiles and the shortcuts, above the tab bar with its Capture button"
+  />
 </Section>
 
 <Section eyebrow="Features" title="Home inventory features" id="features">
   <Cards
+    compact
     heading="h3"
     items={[
-      { icon: 'map', title: '3D map', body: 'Floors and rooms, the boxes and furniture in them, and pins for low stock, loans and what is due. Arrange it yourself.', href: '/users/location-map/' },
-      { icon: 'places', title: 'Locations and places', body: 'Homes, garages and storage units; rooms, shelves and boxes inside. Move a box and its contents move too.', href: '/users/everyday-use/#locations-rooms-and-boxes' },
-      { icon: 'qrcode', title: 'Labels and QR codes', body: 'A short ID on every thing and place. Scan a box to see what is inside.', href: '/users/everyday-use/#short-ids-and-labels' },
-      { icon: 'schedule', title: 'Schedules and warranties', body: 'Services by date or by meter reading. Warranties, insurance and documents, in the order they run out.', href: '/users/everyday-use/#reminders-and-notifications' },
-      { icon: 'lending', title: 'Lending', body: 'Lent to whom, due when, in what condition. Borrowed things too.', href: '/users/everyday-use/#reminders-and-notifications' },
-      { icon: 'stock', title: 'Consumables and stock', body: 'A minimum per thing, and a reminder when it runs low. A service can take parts from stock.', href: '/users/everyday-use/#vehicles-and-machines' },
-      { icon: 'vehicle', title: 'Vehicles and machines', body: 'Readings, services, fuel and costs, for the car, the generator or the boiler.', href: '/users/everyday-use/#vehicles-and-machines' },
-      { icon: 'insurance', title: 'Insurance reports', body: 'Every thing with its photo, serial, price and receipts, as a PDF and a CSV. A claim pack after a loss.', href: '/users/everyday-use/#reports-the-inventory-insurance-and-claims' },
-      { icon: 'condition', title: 'Condition reports', body: 'Move-in and move-out, room by room, with photos. Locked once finished; compared side by side.', href: '/users/everyday-use/#condition-reports-renting' },
-      { icon: 'insights', title: 'Insights', body: 'Spending by year, value by place, vehicle costs. Unpriced things are named, never estimated.', href: '/users/everyday-use/#insights' },
-      { icon: 'phone', title: 'Phone app, offline', body: 'Installs to the home screen. Capture, scan and search with no signal; it syncs later.', href: '/users/phone-app/' },
-      { icon: 'language', title: 'Five languages', body: 'English, العربية, Français, Deutsch, Italiano. Arabic right to left throughout.', href: '/users/first-run/#6-language-and-theme' },
+      { icon: 'map', title: '3D map', body: 'Floors, rooms, furniture. Pins for what needs you.', href: '/users/location-map/' },
+      { icon: 'places', title: 'Rooms and boxes', body: "Places inside places. Move a box; what's in it moves too.", href: '/users/everyday-use/#locations-rooms-and-boxes' },
+      { icon: 'qrcode', title: 'QR labels', body: 'A short ID on everything. Scan a box, see inside.', href: '/users/everyday-use/#short-ids-and-labels' },
+      { icon: 'schedule', title: 'Warranties and services', body: 'By date or meter reading. In the order they run out.', href: '/users/everyday-use/#reminders-and-notifications' },
+      { icon: 'phone', title: 'Phone app, offline', body: 'Capture, scan, search with no signal. Syncs later.', href: '/users/phone-app/' },
+      { icon: 'insurance', title: 'Insurance reports', body: 'Photos, serials, receipts. A PDF and a claim pack.', href: '/users/everyday-use/#reports-the-inventory-insurance-and-claims' },
     ]}
   />
+  <details class="kd-more">
+    <summary>Six more</summary>
+    <Cards
+      compact
+      heading="h3"
+      items={[
+        { icon: 'vehicle', title: 'Vehicles and machines', body: 'Readings, services, fuel, costs.', href: '/users/everyday-use/#vehicles-and-machines' },
+        { icon: 'lending', title: 'Lending', body: 'Lent to whom, due when. Borrowed things too.', href: '/users/everyday-use/#reminders-and-notifications' },
+        { icon: 'stock', title: 'Consumables and stock', body: 'A minimum per thing. Told when it runs low.', href: '/users/everyday-use/#vehicles-and-machines' },
+        { icon: 'condition', title: 'Condition reports', body: 'Move-in, move-out, room by room. With photos.', href: '/users/everyday-use/#condition-reports-renting' },
+        { icon: 'insights', title: 'Insights', body: 'Spending by year, value by place. Never estimated.', href: '/users/everyday-use/#insights' },
+        { icon: 'language', title: 'Five languages', body: 'English, العربية, Français, Deutsch, Italiano.', href: '/users/first-run/#6-language-and-theme' },
+      ]}
+    />
+  </details>
+</Section>
+
+<Section eyebrow="Integrations" title="What feeds into Kept" id="integrations">
+  <Integrations />
 </Section>
 
 <Section eyebrow="A look around" title="The screens" id="screens">
-  <Fragment slot="lede">From Kept's demo build and its sample household, in this page's theme. Scroll sideways, or use the arrows.</Fragment>
   <Gallery
-    label="Screens of Kept"
+    label="Screens of Kept, from its demo household"
     items={[
-      { name: 'claude-mcp', title: 'Claude, over MCP', caption: 'Ask Claude to add a thing; it lands in the right room with its brand, model and serial.', alt: 'Claude Code: "Add my TV to the Living room: Samsung QE55Q80C, serial number 0B7H3CJT500123", and its reply that the TV is in Kept under Home › Living room' },
-      { name: 'place', title: 'A room', caption: 'What is in the kitchen, what has ended, and its paperwork.', alt: 'The Kitchen in Kept: AA batteries, a fire extinguisher and an old kettle marked ended' },
-      { name: 'search-phone', title: 'Search', caption: 'Type part of a name and see where each match is, down to the box.', alt: 'Searching for cable on a phone: the cable box and the HDMI cable, each with its path and label' },
-      { name: 'capture-phone', title: 'Capture', caption: 'One photo per thing, straight into the place you picked. Naming can wait for the Inbox.', alt: 'The capture screen on a phone, its camera on a labelled box on the garage shelves' },
-      { name: 'inbox', title: 'Inbox', caption: 'What needs a decision: drafts to name, a receipt without a currency, a meter reading that does not fit.', alt: "Kept's Inbox: a car's meter reading lower than the last one, with ways to resolve it" },
-      { name: 'labels', title: 'Labels', caption: 'The things with no printed label, on the label stock you choose, previewed before you print.', alt: 'Printing labels: six things on an A4 sheet of 24, with the sheet preview' },
-      { name: 'expiring', title: 'Expiring', caption: 'Warranties, insurance, a lease and a fire extinguisher, in the order they run out.', alt: 'The Expiring list: home insurance runs out soon, then warranties, an extinguisher and a lease' },
-      { name: 'vehicles', title: 'Vehicles', caption: 'The last meter reading, the next service, the licence date and fuel use.', alt: 'Vehicles: a car, a generator and a second car, with meter readings and what is due' },
-      { name: 'lending', title: 'Lending', caption: 'What you lent and to whom, what you borrowed, and what is overdue.', alt: 'Lending: a drill lent out and two days overdue, and a borrowed ladder' },
-      { name: 'assistant', title: 'Assistant', caption: 'Ask where something is and the answer cites what it found. A change it suggests waits for you to confirm it.', alt: 'The assistant answering where the HDMI cable is, citing the cable and its box, with a move to confirm' },
-      { name: 'connections', title: 'Connections', caption: 'Tokens for AI apps and your own scripts, each limited to the locations you choose, and webhooks.', alt: 'Connections settings: two personal tokens, one connected app and the webhooks' },
-      { name: 'track', title: 'What to track', caption: 'Each location turns on what it needs: essentials, household or complete, then each module on its own.', alt: "A location's What to track settings: the household preset chosen, with its modules switched on" },
+      { name: 'claude-mcp', title: 'Claude, over MCP', caption: 'Ask Claude to add a thing. It lands in the right room, with brand, model and serial.', alt: 'Claude Code: "Add my TV to the Living room: Samsung QE55Q80C, serial number 0B7H3CJT500123", and its reply that the TV is in Kept under Home › Living room' },
+      { name: 'place', title: 'A room', caption: "The kitchen: what's in it, what has ended, its paperwork.", alt: 'The Kitchen in Kept: AA batteries, a fire extinguisher and an old kettle marked ended' },
+      { name: 'search-phone', title: 'Search', caption: 'Part of a name. Where each match is, down to the box.', alt: 'Searching for cable on a phone: the cable box and the HDMI cable, each with its path and label' },
+      { name: 'capture-phone', title: 'Capture', caption: 'One photo per thing, into the place you picked. Name it later.', alt: 'The capture screen on a phone, its camera on a labelled box on the garage shelves' },
+      { name: 'inbox', title: 'Inbox', caption: 'What needs a decision: drafts, a receipt with no currency, an odd meter reading.', alt: "Kept's Inbox: a car's meter reading lower than the last one, with ways to resolve it" },
+      { name: 'labels', title: 'Labels', caption: 'Things with no printed label. Your label stock, previewed before printing.', alt: 'Printing labels: six things on an A4 sheet of 24, with the sheet preview' },
+      { name: 'expiring', title: 'Expiring', caption: 'Warranties, insurance, a lease, an extinguisher. In the order they run out.', alt: 'The Expiring list: home insurance runs out soon, then warranties, an extinguisher and a lease' },
+      { name: 'vehicles', title: 'Vehicles', caption: 'Last reading, next service, licence date, fuel use.', alt: 'Vehicles: a car, a generator and a second car, with meter readings and what is due' },
+      { name: 'lending', title: 'Lending', caption: "What you lent, to whom. What you borrowed. What's overdue.", alt: 'Lending: a drill lent out and two days overdue, and a borrowed ladder' },
+      { name: 'assistant', title: 'Assistant', caption: 'Ask where something is. The answer cites what it found; changes wait for you.', alt: 'The assistant answering where the HDMI cable is, citing the cable and its box, with a move to confirm' },
+      { name: 'connections', title: 'Connections', caption: 'Tokens for AI apps and scripts, each limited to the locations you choose. Webhooks.', alt: 'Connections settings: two personal tokens, one connected app and the webhooks' },
+      { name: 'track', title: 'What to track', caption: 'Per location: essentials, household or complete. Then each module on its own.', alt: "A location's What to track settings: the household preset chosen, with its modules switched on" },
     ]}
   />
 </Section>
 
 <Section eyebrow="Yours to run" title="Open source, self-hosted, your data" id="trust">
   <Cards
+    compact
     heading="h3"
     items={[
-      { icon: 'license', title: 'Open source', body: 'AGPL-3.0. The code, issues and releases on GitHub.', href: 'https://github.com/ibrahimroshdy/kept' },
-      { icon: 'server', title: 'Self-hosted', body: 'One container and Postgres, 2 GB of RAM and 2 cores. Docker Compose or Kubernetes, amd64 or arm64.', href: '/install/hardware/' },
-      { icon: 'private', title: 'Your data stays put', body: 'No telemetry. The update check is off until an admin turns it on. The AI provider is yours to choose, or none.', href: '/admin/security-model/#what-leaves-the-server' },
-      { icon: 'signature', title: 'Signed releases', body: 'Every image signed with cosign, with an SBOM. Verify it before you run it.', href: '/admin/verify-release/' },
-      { icon: 'backup', title: 'Nightly backups', body: 'Encrypted restic snapshots to another disk, an S3 bucket or an SFTP server.', href: '/admin/backups/' },
-      { icon: 'book', title: 'Readable without Kept', body: 'Each backup holds web pages and spreadsheets that open with restic alone, if the server is gone.', href: '/admin/read-with-restic/' },
+      { icon: 'license', title: 'Open source', body: 'AGPL-3.0. Code and releases on GitHub.', href: 'https://github.com/ibrahimroshdy/kept' },
+      { icon: 'server', title: 'Self-hosted', body: 'One container, Postgres. 2 GB RAM, 2 cores.', href: '/install/hardware/' },
+      { icon: 'private', title: 'No telemetry', body: 'AI optional. Your provider, or none.', href: '/admin/security-model/#what-leaves-the-server' },
+      { icon: 'signature', title: 'Signed releases', body: 'cosign signatures and an SBOM.', href: '/admin/verify-release/' },
+      { icon: 'backup', title: 'Nightly backups', body: 'Encrypted restic. Disk, S3 or SFTP.', href: '/admin/backups/' },
+      { icon: 'book', title: 'Readable without Kept', body: 'Web pages and spreadsheets in each backup.', href: '/admin/read-with-restic/' },
     ]}
   />
 </Section>
 
 <Section eyebrow="Find your way" title="Where to start">
   <Cards
-    columns={2}
+    compact
+    columns={4}
     items={[
-      { icon: 'people', title: 'Use Kept', body: 'Install it, sign in for the first time, and learn the everyday: places, things, labels, the phone and AI.', href: '/users/first-run/' },
-      { icon: 'server', title: 'Run Kept', body: 'Configuration, upgrades, monitoring, the recovery kit, the security model and troubleshooting.', href: '/reference/configuration/' },
-      { icon: 'code', title: 'Build on Kept', body: 'Architecture, local setup, the data model and row-level security, the API, sync, AI and MCP.', href: '/developers/architecture/' },
-      { icon: 'tool', title: 'Maintain Kept', body: 'Releases and signing, the changelog, triage, security reports, the DCO and the decision log.', href: '/maintainers/releasing/' },
+      { icon: 'people', title: 'Use Kept', body: 'Install, first sign-in, the everyday.', href: '/users/first-run/' },
+      { icon: 'server', title: 'Run Kept', body: 'Configuration, upgrades, the recovery kit.', href: '/reference/configuration/' },
+      { icon: 'code', title: 'Build on Kept', body: 'Architecture, the API, MCP, sync.', href: '/developers/architecture/' },
+      { icon: 'tool', title: 'Maintain Kept', body: 'Releases, signing, triage, decisions.', href: '/maintainers/releasing/' },
     ]}
   />
 </Section>

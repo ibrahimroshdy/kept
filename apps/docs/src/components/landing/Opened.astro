@@ -1,0 +1,83 @@
+---
+/**
+ * Kept, opened: the app on a desktop, in a browser frame, with the same app on a phone in front of
+ * it, overlapping its inline-end corner. The page's theme picks the light or dark captures and an
+ * Arabic page the Arabic ones (Shot.astro). The captures are `home` and `phone` from
+ * scripts/capture-screens.mjs: Home on a desktop and on a phone in English; on an Arabic page the
+ * household بيت العائلة, which is what those captures hold in Arabic.
+ *
+ * The phone is placed in percentages of the frame, so the picture keeps its shape at any width;
+ * the reserved space under and beside the desktop is the phone's overhang. Both images are lazy:
+ * this sits below the hero.
+ */
+import Shot from './Shot.astro';
+
+interface Props {
+  desktopAlt: string;
+  phoneAlt: string;
+}
+const { desktopAlt, phoneAlt } = Astro.props;
+---
+
+<div class="kd-opened">
+  <div class="kd-opened-desktop">
+    <div class="kd-opened-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+    <Shot name="home" alt={desktopAlt} sizes="(min-width: 67.5rem) 40rem, (min-width: 50rem) 58vw, 80vw" />
+  </div>
+  <div class="kd-opened-phone">
+    <Shot name="phone" alt={phoneAlt} sizes="(min-width: 67.5rem) 12rem, (min-width: 50rem) 17vw, 26vw" />
+  </div>
+</div>
+
+<style>
+  .kd-opened {
+    position: relative;
+    /* The phone overhangs the desktop by this much below and beside it. */
+    padding-block-end: 9%;
+    padding-inline-end: 9%;
+  }
+  .kd-opened-desktop {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    overflow: hidden;
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.06),
+      0 18px 40px -18px rgb(0 0 0 / 0.28);
+  }
+  .kd-opened-bar {
+    display: flex;
+    gap: 6px;
+    padding: 8px 11px;
+    border-block-end: 1px solid var(--line);
+    background: var(--sunken);
+  }
+  .kd-opened-bar i {
+    inline-size: 8px;
+    block-size: 8px;
+    border-radius: 50%;
+    background: var(--line);
+  }
+  .kd-opened :global(.kd-shot img) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+  .kd-opened-phone {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-end: 0;
+    inline-size: 27%;
+    border: 5px solid var(--charcoal);
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow: 0 20px 36px -16px rgb(0 0 0 / 0.45);
+  }
+  @media (max-width: 30rem) {
+    .kd-opened-phone {
+      border-width: 4px;
+      border-radius: 16px;
+    }
+  }
+</style>

@@ -13,7 +13,7 @@
  * Pause button stops and restarts it (WCAG 2.2.2). The counter isn't announced while it turns.
  *
  * The captures are Shot's (light or dark with the page's theme, Arabic on an Arabic page), made by
- * scripts/capture-screens.mjs. A desktop capture is shown at most 40rem wide; a phone capture
+ * scripts/capture-screens.mjs. A desktop capture is shown at most 32rem wide; a phone capture
  * (`*-phone`) stands about as tall as a desktop one beside it.
  */
 import Shot from './Shot.astro';
@@ -61,7 +61,7 @@ const chevron = 'M9 6l6 6l-6 6';
       items.map(({ name, title, caption, alt }, i) => (
         <li class:list={['kd-gallery-slide', isPhone(name) ? 'kd-gallery-phone' : 'kd-gallery-desktop']}>
           <figure>
-            <Shot {name} {alt} sizes={isPhone(name) ? '12rem' : '(min-width: 50rem) 40rem, 88vw'} />
+            <Shot {name} {alt} sizes={isPhone(name) ? '(min-width: 50rem) 10rem, 7rem' : '(min-width: 50rem) 32rem, 88vw'} />
             <figcaption>
               <span class="kd-gallery-title">{title}</span>
               {caption}
@@ -255,7 +255,7 @@ const chevron = 'M9 6l6 6l-6 6';
     display: grid;
     gap: 1rem;
     /* A desktop capture's width; its height is that over 1.6 (1280×800). */
-    --kd-gallery-w: min(40rem, 88cqi);
+    --kd-gallery-w: min(32rem, 88cqi);
   }
   .kd-gallery-track {
     list-style: none;
@@ -288,9 +288,9 @@ const chevron = 'M9 6l6 6l-6 6';
   .kd-gallery-desktop {
     inline-size: var(--kd-gallery-w);
   }
-  /* As tall as a desktop capture (420×909 with its bezel), and never narrower than 9rem. */
+  /* As tall as a desktop capture (420×909 with its bezel), and never narrower than 7rem. */
   .kd-gallery-phone {
-    inline-size: max(9rem, calc(var(--kd-gallery-w) / 1.6 * 0.462 + 10px));
+    inline-size: max(7rem, calc(var(--kd-gallery-w) / 1.6 * 0.462 + 10px));
   }
   .kd-gallery figure {
     margin: 0;

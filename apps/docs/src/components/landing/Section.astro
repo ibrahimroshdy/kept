@@ -1,18 +1,33 @@
 ---
-/** A landing-page section: an eyebrow in the label face, a heading and a lede, then the slot. */
+/**
+ * A landing-page section: an eyebrow in the label face, a heading and a lede, then the slot.
+ *
+ * `points` (a slot of <li>) is a short list under the heading: one idea per line. `split` puts the
+ * header beside the slot on a wide screen (header at the inline start), and above it on a phone.
+ */
 interface Props {
   eyebrow?: string;
   title: string;
   id?: string;
+  split?: boolean;
 }
-const { eyebrow, title, id } = Astro.props;
+const { eyebrow, title, id, split = false } = Astro.props;
 ---
 
-<section class="kd-section not-content" id={id}>
+<section class:list={['kd-section', 'not-content', { 'kd-section-split': split }]} id={id}>
   <header>
     {eyebrow && <span class="kd-eyebrow">{eyebrow}</span>}
     <h2>{title}</h2>
     {Astro.slots.has('lede') && <p><slot name="lede" /></p>}
+    {
+      Astro.slots.has('points') && (
+        <ul class="kd-points">
+          <slot name="points" />
+        </ul>
+      )
+    }
   </header>
-  <slot />
+  <div class="kd-section-body">
+    <slot />
+  </div>
 </section>

@@ -77,6 +77,7 @@ const sidebar = [
     page('admin/ollama'),
     page('users/mcp-clients'),
     page('users/import-export'),
+    page('integrations'),
     group('Backups and restore', 'النسخ الاحتياطي والاستعادة', [
       page('admin/backups'),
       page('admin/restore'),

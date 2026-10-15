@@ -202,6 +202,61 @@ export function firstOfNextMonth(from = new Date()): string {
   return new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth() + 1, 1)).toISOString();
 }
 
+/**
+ * The demo as the docs site's screenshots show it (`?demo=…&showcase=1`, src/demo.ts): Home's
+ * monthly AI cap is 37% used, not reached, so no screen shows "AI paused". The fixtures above keep
+ * the pause on purpose (plan T3: the paused banner, `ai_paused` and the Resume flow are tested
+ * against it); only the demo installer calls this, never a test.
+ *
+ * It does what the fixtures would hold had the cap not been reached: each paused cap is active at
+ * 37% ($1.85 of $5.00, its tokens in proportion), each location it paused is running with that
+ * percentage, the draft it held is queued for naming, and the call it refused is not in the
+ * ledger.
+ */
+export function withinAiCap(s: CaptureState): void {
+  const PERCENT = 37;
+  const paused = new Set<string>();
+  for (const cap of s.caps) {
+    if (cap.state !== 'paused') continue;
+    paused.add(cap.target.label);
+    const share = PERCENT / 100;
+    cap.used = {
+      tokens: Math.round((cap.used.tokens * share) / 1000) * 1000,
+      cost: cap.used.cost.map((c) => ({
+        currency: c.currency,
+        amount: (Number(cap.monthlyCap?.amount ?? c.amount) * share).toFixed(2),
+      })),
+      unknownCostCalls: cap.used.unknownCostCalls,
+    };
+    cap.percent = PERCENT;
+    cap.state = 'active';
+    delete cap.pausedUntil;
+    delete cap.reason;
+  }
+  for (const status of Object.values(s.aiStatus)) {
+    if (!status.pausedUntil) continue;
+    if (status.pausedBy && paused.has(status.pausedBy.label)) status.capPercent = PERCENT;
+    status.pausedUntil = null;
+    status.reason = null;
+    status.pausedBy = null;
+    status.canResume = false;
+  }
+  for (const list of Object.values(s.extractions)) {
+    for (const x of list) {
+      if (x.status !== 'paused_budget') continue;
+      x.status = 'queued';
+      x.statusReason = null;
+      x.pausedUntil = null;
+    }
+  }
+  for (const item of s.inbox) {
+    const x = item.extraction;
+    if (x?.status !== 'paused_budget') continue;
+    item.extraction = { id: x.id, status: 'queued', call: x.call ?? null };
+  }
+  s.calls = s.calls.filter((c) => c.outcome !== 'over_budget');
+}
+
 export const actor = (displayName: string): ActorRef => ({ displayName });
 
 const emptyCounts = (): Record<InboxKind, number> =>
