@@ -191,6 +191,7 @@ The camera, installing the app, push and location need HTTPS:
 | Install | [Docker Compose](https://keptinventory.info/install/compose/), [HTTPS](https://keptinventory.info/install/https/), [Kubernetes](https://keptinventory.info/install/kubernetes/) (Helm chart in [`charts/kept`](charts/kept/)), [configuration](https://keptinventory.info/reference/configuration/) |
 | API | [HTTP API reference](https://keptinventory.info/api/), generated from the OpenAPI document |
 | MCP | [Connect an AI client](https://keptinventory.info/users/mcp-clients/) |
+| Roadmap | [What's planned, in progress and shipped](https://github.com/orgs/keptinventory/projects/1) |
 | Questions and ideas | [Discussions](https://github.com/keptinventory/kept/discussions) |
 | Contributing | [CONTRIBUTING.md](CONTRIBUTING.md): a discussion or an issue first for anything larger than a fix; [the CLA once, a sign-off on every commit](CONTRIBUTING.md#sign-the-cla-once-and-sign-off-every-commit) |
 | Security | [SECURITY.md](SECURITY.md): report privately, never in a public issue |
