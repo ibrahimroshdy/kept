@@ -107,9 +107,11 @@ export const pushSubscriptions = pgTable(
 );
 
 /**
- * A choice a person made (D29; Q35): a row only where they chose; no row is @kept/shared
- * `defaultPreference()`, so a change to the defaults reaches everyone who never chose. The AI
- * monthly summary is account-level: its row has no location.
+ * A choice a person made (D29; Q35; D239): a row only where they chose; no row is @kept/shared
+ * `defaultPreference()`, so a change to the defaults reaches everyone who never chose. A row with
+ * no location is the person's choice for all their locations (1.5.x, D239), a row with one their
+ * choice for that location; `resolvePreference()` reads location, then all locations, then the
+ * default. The AI monthly summary is account-level only: its row never has a location.
  */
 export const notificationPreferences = pgTable(
   'notification_preferences',
@@ -129,10 +131,7 @@ export const notificationPreferences = pgTable(
     unique('notification_preferences_uq')
       .on(t.userId, t.locationId, t.kind, t.channel)
       .nullsNotDistinct(),
-    check(
-      'notification_preferences_account_chk',
-      sql`(kind = 'ai_summary') = (location_id IS NULL)`,
-    ),
+    check('notification_preferences_account_chk', sql`kind <> 'ai_summary' OR location_id IS NULL`),
     index('notification_preferences_location_idx').on(t.locationId),
   ],
 );

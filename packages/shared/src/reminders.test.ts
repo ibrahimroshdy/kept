@@ -8,10 +8,12 @@ import {
   DEFAULT_DIGEST_TIME,
   defaultPreference,
   duePeriod,
+  kindChannels,
   NOTIFY_KIND_SLOTS,
   NOTIFY_KINDS,
   OCCURRENCE_KINDS,
   PREFERENCE_CHANNELS,
+  resolvePreference,
   SOURCE_KINDS,
   SOURCE_MODULE,
   SOURCE_TYPES,
@@ -178,6 +180,23 @@ describe('defaultPreference() (D29; Q8)', () => {
 
   it('the AI monthly summary is opt-out for everyone', () => {
     for (const role of ROLES) expect(defaultPreference({ role, kind: 'ai_summary' })).toBe(true);
+  });
+});
+
+describe('resolvePreference() and kindChannels() (D239)', () => {
+  it('a location choice beats the all-locations choice, which beats the default', () => {
+    expect(resolvePreference({ location: false, account: true, fallback: true })).toBe(false);
+    expect(resolvePreference({ location: true, account: false, fallback: false })).toBe(true);
+    expect(resolvePreference({ account: false, fallback: true })).toBe(false);
+    expect(resolvePreference({ location: undefined, account: undefined, fallback: true })).toBe(
+      true,
+    );
+  });
+
+  it('reminders reach every channel; notices only Kept and email', () => {
+    for (const kind of ACTIVE_SOURCE_TYPES) expect(kindChannels(kind)).toEqual(PREFERENCE_CHANNELS);
+    for (const kind of ['membership', 'ai_cap', 'ai_summary'] as const)
+      expect(kindChannels(kind)).toEqual(['inapp', 'email']);
   });
 });
 

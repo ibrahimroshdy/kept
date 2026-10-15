@@ -911,9 +911,10 @@ differs from a table row in §1, **this section wins**.
   - `reminder_deliveries.channel` references `notification_channels.id`. A person's email channel
     is a row like the others, made lazily the first time it is needed (an email due to them, or
     their Notifications settings); a managed account never gets one (step-4 Q13).
-  - `notification_preferences.location_id` is nullable, null only for the account-level kind
-    `ai_summary` (a CHECK), and the key is `UNIQUE NULLS NOT DISTINCT (user_id, location_id, kind,
-    channel)` (step-4 Q35).
+  - `notification_preferences.location_id` is nullable: null is the person's choice for all their
+    locations, for any kind, and `ai_summary` is only ever null (a CHECK; 1.5.x D239, was "null
+    only for `ai_summary`"). A location reads its own row, else the null one, else the default.
+    The key is `UNIQUE NULLS NOT DISTINCT (user_id, location_id, kind, channel)` (step-4 Q35).
   - A trigger enforcing D10 (quantity 1 when serialized, metered or under warranty, resolved
     through inheritance).
   - `warranties`: `lifetime` excludes an end date or term, and a generated `effective_ends_on`

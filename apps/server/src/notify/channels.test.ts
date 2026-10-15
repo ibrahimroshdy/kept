@@ -47,6 +47,7 @@ type KindPref = {
   telegram: boolean;
   apprise: boolean;
   isDefault: boolean;
+  set: string[];
 };
 type Channel = {
   id: string;
@@ -72,7 +73,7 @@ type Settings = {
     role: string;
     kinds: Record<string, KindPref>;
   }>;
-  account: { aiSummary: { email: boolean } };
+  account: { aiSummary: { email: boolean }; kinds: Record<string, KindPref> };
 };
 
 beforeAll(async () => {
@@ -200,7 +201,13 @@ describe('GET /api/v1/me/notification-settings', () => {
       telegram: true,
       apprise: true,
       isDefault: true,
+      set: [],
     });
+    // D239: the all-locations table holds every kind, the AI summary too.
+    expect(Object.keys(mine.account.kinds).sort()).toEqual(
+      [...LOCATION_KINDS, 'ai_summary'].sort(),
+    );
+    expect(mine.account.kinds.ai_summary).toMatchObject({ inapp: true, email: true, set: [] });
 
     const viewer = (await settings(talia)).locations.find((l) => l.locationId === home.id);
     expect(viewer?.role).toBe('viewer');
@@ -288,7 +295,7 @@ describe('PUT /api/v1/me/notification-preferences', () => {
     expect(again?.kinds.warranty?.isDefault).toBe(true);
   });
 
-  it('refuses an account-level kind with a location, and someone else’s location', async () => {
+  it('refuses the AI summary with a location, and someone else’s location', async () => {
     const bruce = await person(t, db, 'bruce');
     const alfred = await person(t, db, 'alfred');
     const his = await createLocation(t, db, alfred, 'essentials', 'بيت العائلة');
@@ -299,9 +306,6 @@ describe('PUT /api/v1/me/notification-preferences', () => {
     expect(
       (await put({ locationId: mine.id, kind: 'ai_summary', channel: 'email', enabled: false }))
         .statusCode,
-    ).toBe(400);
-    expect(
-      (await put({ locationId: null, kind: 'loan', channel: 'email', enabled: false })).statusCode,
     ).toBe(400);
     expect(
       (await put({ locationId: his.id, kind: 'loan', channel: 'email', enabled: false }))
@@ -323,6 +327,137 @@ describe('PUT /api/v1/me/notification-preferences', () => {
         })
       ).statusCode,
     ).toBe(400);
+  });
+});
+
+describe('all locations, and overrides per location (D239)', () => {
+  const url = '/api/v1/me/notification-preferences';
+  const put = (as: Person, items: object[]) => call(t, url, { as, method: 'PUT', body: { items } });
+  const rowsOf = (userId: string) =>
+    own<{ location_id: string | null; kind: string; channel: string; enabled: boolean }>(
+      db,
+      `SELECT location_id, kind, channel, enabled FROM public.notification_preferences
+        WHERE user_id = $1 ORDER BY location_id NULLS FIRST, kind, channel`,
+      [userId],
+    );
+  const at = (s: Settings, locationId: string) =>
+    s.locations.find((l) => l.locationId === locationId)?.kinds;
+
+  it('a location reads its own choice, else all locations, else the default; each layer stores only what differs', async () => {
+    const bruce = await person(t, db, 'bruce');
+    const home = await createLocation(t, db, bruce, 'complete');
+    // All locations: warranties by email off. Stored once, with no location.
+    const res = await put(bruce, [
+      { locationId: null, kind: 'warranty', channel: 'email', enabled: false },
+      // Equal to the all-locations baseline (an owner's default): nothing stored.
+      { locationId: null, kind: 'loan', channel: 'inapp', enabled: true },
+    ]);
+    expect(res.statusCode, res.body).toBe(200);
+    const s1 = res.json() as Settings;
+    expect(s1.account.kinds.warranty).toMatchObject({ email: false, inapp: true, set: ['email'] });
+    expect(at(s1, home.id)?.warranty).toMatchObject({
+      email: false,
+      inapp: true,
+      set: [],
+      isDefault: false,
+    });
+    expect(await rowsOf(bruce.userId)).toEqual([
+      { location_id: null, kind: 'warranty', channel: 'email', enabled: false },
+    ]);
+
+    // Here only: back on. A location row, marked as set here.
+    const s2 = (await put(bruce, [
+      { locationId: home.id, kind: 'warranty', channel: 'email', enabled: true },
+    ]).then((r) => r.json())) as Settings;
+    expect(at(s2, home.id)?.warranty).toMatchObject({ email: true, set: ['email'] });
+    // Choosing here what all locations already say stores nothing.
+    await put(bruce, [{ locationId: home.id, kind: 'loan', channel: 'email', enabled: true }]);
+    expect((await rowsOf(bruce.userId)).map((r) => [r.location_id, r.kind])).toEqual([
+      [null, 'warranty'],
+      [home.id, 'warranty'],
+    ]);
+
+    // All locations back on: the location's row now says the same, so it goes too.
+    const s3 = (await put(bruce, [
+      { locationId: null, kind: 'warranty', channel: 'email', enabled: true },
+    ]).then((r) => r.json())) as Settings;
+    expect(await rowsOf(bruce.userId)).toEqual([]);
+    expect(at(s3, home.id)?.warranty).toMatchObject({ email: true, set: [], isDefault: true });
+  });
+
+  it('applies to a location made later, and still refuses the AI summary with a location', async () => {
+    const bruce = await person(t, db, 'bruce');
+    await put(bruce, [{ locationId: null, kind: 'schedule', channel: 'inapp', enabled: false }]);
+    const later = await createLocation(t, db, bruce, 'complete', 'Shed');
+    const s = await settings(bruce);
+    expect(at(s, later.id)?.schedule).toMatchObject({ inapp: false, set: [] });
+    const r = await put(bruce, [
+      { locationId: later.id, kind: 'ai_summary', channel: 'inapp', enabled: false },
+    ]);
+    expect(r.statusCode).toBe(400);
+  });
+
+  it("a member's location starts from Kept's default for members, not from all locations' on", async () => {
+    const bruce = await person(t, db, 'bruce');
+    const louis = await person(t, db, 'louis');
+    const home = await createLocation(t, db, bruce, 'complete');
+    await join(db, home.id, louis.userId, 'member');
+    const s = await settings(louis);
+    expect(s.account.kinds.warranty?.inapp).toBe(true);
+    expect(at(s, home.id)?.warranty).toMatchObject({ inapp: false, set: [] });
+    // Turning it on there is a choice for that location.
+    const on = (await put(louis, [
+      { locationId: home.id, kind: 'warranty', channel: 'inapp', enabled: true },
+    ]).then((r) => r.json())) as Settings;
+    expect(at(on, home.id)?.warranty).toMatchObject({ inapp: true, set: ['inapp'] });
+  });
+
+  // catalogue: DELETE /api/v1/me/notification-preferences/:locationId
+  it('resets a location to all locations, audited; never another person’s', async () => {
+    const bruce = await person(t, db, 'bruce');
+    const alfred = await person(t, db, 'alfred');
+    const home = await createLocation(t, db, bruce, 'complete');
+    const his = await createLocation(t, db, alfred, 'essentials');
+    const reset = (as: Person, id: string) =>
+      call(t, `/api/v1/me/notification-preferences/${id}`, { as, method: 'DELETE' });
+    await put(bruce, [
+      { locationId: null, kind: 'loan', channel: 'email', enabled: false },
+      { locationId: home.id, kind: 'loan', channel: 'email', enabled: true },
+      { locationId: home.id, kind: 'stock', channel: 'inapp', enabled: false },
+    ]);
+    const before = (await accountAudit(bruce.userId)).length;
+    const res = await reset(bruce, home.id);
+    expect(res.statusCode, res.body).toBe(200);
+    const kinds = at(res.json() as Settings, home.id);
+    expect(kinds?.loan).toMatchObject({ email: false, set: [] });
+    expect(kinds?.stock).toMatchObject({ inapp: true, set: [] });
+    // The all-locations choice stays.
+    expect(await rowsOf(bruce.userId)).toEqual([
+      { location_id: null, kind: 'loan', channel: 'email', enabled: false },
+    ]);
+    const events = await accountAudit(bruce.userId);
+    expect(events).toHaveLength(before + 1);
+    expect(events.at(-1)?.action).toBe('me.notification_preferences');
+    // Nothing left to reset: no second event.
+    expect((await reset(bruce, home.id)).statusCode).toBe(200);
+    expect(await accountAudit(bruce.userId)).toHaveLength(before + 1);
+
+    // Alfred can't reset Bruce's location, and his all-locations choices are his own.
+    expect((await reset(alfred, home.id)).statusCode).toBe(404);
+    expect(
+      (await put(alfred, [{ locationId: home.id, kind: 'loan', channel: 'email', enabled: false }]))
+        .statusCode,
+    ).toBe(404);
+    await put(alfred, [{ locationId: null, kind: 'warranty', channel: 'inapp', enabled: false }]);
+    expect(await rowsOf(bruce.userId)).toEqual([
+      { location_id: null, kind: 'loan', channel: 'email', enabled: false },
+    ]);
+    expect((await rowsOf(alfred.userId)).map((r) => [r.location_id, r.kind])).toEqual([
+      [null, 'warranty'],
+    ]);
+    const mine = await settings(bruce);
+    expect(mine.account.kinds.warranty?.inapp).toBe(true);
+    expect(mine.locations.map((l) => l.locationId)).not.toContain(his.id);
   });
 });
 

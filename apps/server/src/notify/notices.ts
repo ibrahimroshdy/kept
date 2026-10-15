@@ -4,6 +4,7 @@ import {
   type NotifyKind,
   type PreferenceChannel,
   type Role,
+  resolvePreference,
 } from '@kept/shared';
 import type pg from 'pg';
 
@@ -32,9 +33,10 @@ export async function insertNotice(client: pg.ClientBase, n: Notice): Promise<vo
 }
 
 /**
- * Whether `userId` wants `kind` on `channel`: their choice (notification_preferences), else the
- * default for their role there (@kept/shared defaultPreference(); Q8, Q10). Read as kept_system.
- * An account-level kind (`ai_summary`) has no location (Q35).
+ * Whether `userId` wants `kind` on `channel`: their choice for the location, else for all their
+ * locations (a row with no location, D239), else the default for their role there (@kept/shared
+ * defaultPreference(); Q8, Q10). Read as kept_system. An account-level kind (`ai_summary`), or a
+ * notice with no location (an account's AI cap), reads only the all-locations choice (Q35).
  */
 export async function wants(
   client: pg.ClientBase,
@@ -46,15 +48,17 @@ export async function wants(
     role: Role;
   },
 ): Promise<boolean> {
-  const { rows } = await client.query<{ enabled: boolean }>(
-    `SELECT enabled FROM public.notification_preferences
-      WHERE user_id = $1 AND location_id IS NOT DISTINCT FROM $2 AND kind = $3 AND channel = $4`,
+  const { rows } = await client.query<{ location_id: string | null; enabled: boolean }>(
+    `SELECT location_id, enabled FROM public.notification_preferences
+      WHERE user_id = $1 AND (location_id = $2 OR location_id IS NULL) AND kind = $3
+        AND channel = $4`,
     [p.userId, p.locationId, p.kind, p.channel],
   );
-  const chosen = rows[0]?.enabled;
-  if (chosen !== undefined) return chosen;
-  if (p.channel === 'webhook') return false;
-  return defaultPreference({ role: p.role, kind: p.kind });
+  return resolvePreference({
+    location: rows.find((r) => r.location_id !== null)?.enabled,
+    account: rows.find((r) => r.location_id === null)?.enabled,
+    fallback: p.channel === 'webhook' ? false : defaultPreference({ role: p.role, kind: p.kind }),
+  });
 }
 
 /**

@@ -68,6 +68,9 @@ export const householdPaths = {
   // ----- channels and preferences (T15) -----
   notificationSettings: `${V1}/me/notification-settings`,
   notificationPreferences: `${V1}/me/notification-preferences`,
+  /** 1.5.x (D239): DELETE a location's own choices. */
+  locationPreferences: (locationId: string) =>
+    `${V1}/me/notification-preferences/${seg(locationId)}`,
   channels: `${V1}/me/channels`,
   channel: (id: string) => `${V1}/me/channels/${seg(id)}`,
   channelTest: (id: string) => `${V1}/me/channels/${seg(id)}/test`,
@@ -138,6 +141,7 @@ export const HOUSEHOLD_METHODS: Record<keyof typeof householdPaths, readonly Met
   agenda: ['GET'],
   notificationSettings: ['GET', 'PUT'],
   notificationPreferences: ['PUT'],
+  locationPreferences: ['DELETE'],
   channels: ['POST'],
   channel: ['DELETE'],
   channelTest: ['POST'],

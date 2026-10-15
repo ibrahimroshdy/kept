@@ -185,7 +185,8 @@ export async function fillHousehold(c: pg.ClientBase, t: Tenant, label: string):
   );
   await c.query(
     `INSERT INTO public.notification_preferences (user_id, location_id, kind, channel, enabled)
-     VALUES ($1, $2, 'loan', 'email', true), ($1, NULL, 'ai_summary', 'email', false)`,
+     VALUES ($1, $2, 'loan', 'email', true), ($1, NULL, 'ai_summary', 'email', false),
+            ($1, NULL, 'warranty', 'email', false)`,
     [t.userId, t.locationId],
   );
   await c.query(

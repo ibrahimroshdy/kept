@@ -258,6 +258,32 @@ export function defaultPreference(p: {
 }
 
 /**
+ * Which value decides a kind on a channel (1.5.x, D239): the person's choice for that location,
+ * else their choice for all locations (a row with no location), else Kept's default for their
+ * role there. `ai_summary` has only the account layer (Q35).
+ */
+export function resolvePreference(p: {
+  location?: boolean | undefined;
+  account?: boolean | undefined;
+  fallback: boolean;
+}): boolean {
+  return p.location ?? p.account ?? p.fallback;
+}
+
+const NOTICE_CHANNELS: readonly PreferenceChannel[] = ['inapp', 'email'];
+
+/**
+ * The channels a kind can reach (D239): reminders go to every channel the person has; the
+ * notices (membership changes, AI caps, the AI monthly summary) land in Kept and go by email
+ * only, so the settings table shows no switch for the others.
+ */
+export function kindChannels(kind: NotifyKind): readonly PreferenceChannel[] {
+  return (ACTIVE_SOURCE_TYPES as readonly string[]).includes(kind)
+    ? PREFERENCE_CHANNELS
+    : NOTICE_CHANNELS;
+}
+
+/**
  * Lead times when a record sets none (§3.4; Q9): days before a date due point, and for a unit
  * schedule a share of its interval. Loans have no lead: they remind when overdue (D57).
  */

@@ -161,7 +161,7 @@ describe("a person's channels, devices, choices and centre (D29, D30, D39)", () 
     await add('https://push.example.test/abc');
   });
 
-  it('takes a choice for a location the person sees, and the AI summary for none (Q35)', async () => {
+  it('takes a choice for a location the person sees or for all of them, the AI summary for none (Q35, D239)', async () => {
     const choose = (userId: string, location: string | null, kind: string) =>
       as(userId, (c) =>
         c.query(
@@ -172,9 +172,28 @@ describe("a person's channels, devices, choices and centre (D29, D30, D39)", () 
       );
     await choose(bruce, ibrahim.locationId, 'loan');
     expect((await pgError(choose(bruce, talia.locationId, 'loan'))).code).toBe('42501');
+    // D239: a row with no location is the choice for all their locations, for any kind.
+    await choose(bruce, null, 'loan');
     expect((await pgError(choose(bruce, null, 'loan'))).constraint).toBe(
+      'notification_preferences_uq',
+    );
+    expect((await pgError(choose(bruce, ibrahim.locationId, 'ai_summary'))).constraint).toBe(
       'notification_preferences_account_chk',
     );
+    // Never someone else's, at either layer.
+    expect(
+      (
+        await pgError(
+          as(bruce, (c) =>
+            c.query(
+              `INSERT INTO public.notification_preferences (user_id, location_id, kind, channel, enabled)
+         VALUES ($1, NULL, 'warranty', 'email', false)`,
+              [talia.userId],
+            ),
+          ),
+        )
+      ).code,
+    ).toBe('42501');
     await choose(bruce, null, 'ai_summary');
     expect((await pgError(choose(bruce, null, 'ai_summary'))).constraint).toBe(
       'notification_preferences_uq',

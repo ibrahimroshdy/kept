@@ -23128,3 +23128,91 @@ msgstr "À surveiller"
 #: src/components/places/contents-list.tsx
 msgid "map"
 msgstr "carte"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "all locations"
+msgstr "tous les lieux"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "{how} ({n})"
+msgstr "{how} ({n})"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "For your whole account: set it under All locations."
+msgstr "Pour tout votre compte : réglez-le dans Tous les lieux."
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "Viewers hear only about members."
+msgstr "Les lecteurs ne sont prévenus que des membres."
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "Not sent here."
+msgstr "Pas envoyé ici."
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "Paused: {name} is off here."
+msgstr "En pause : {name} est désactivé ici."
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "{where} follows all locations again"
+msgstr "{where} suit de nouveau tous les lieux"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "{what} by {how} in {where}, set for this location only"
+msgstr "{what} par {how} dans {where}, réglé pour ce lieu seulement"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "{what} by {how} in {where}"
+msgstr "{what} par {how} dans {where}"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "In Kept is off, so nothing is sent."
+msgstr "Dans Kept est désactivé : rien n’est envoyé."
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "Due dates"
+msgstr "Échéances"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "Stock"
+msgstr "Stock"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "All locations"
+msgstr "Tous les lieux"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "Set for this location only"
+msgstr "Réglé pour ce lieu seulement"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "Reset this location to all locations"
+msgstr "Remettre ce lieu comme tous les lieux"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "Add more channels"
+msgstr "Ajouter d’autres canaux"
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "Applies to every location, ones you add later too. Pick a location to change it there only."
+msgstr "S’applique à chaque lieu, y compris ceux ajoutés plus tard. Choisissez un lieu pour le changer là seulement."
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "You're a member here: Kept starts with only the loans you record."
+msgstr "Vous êtes membre ici : Kept commence par les seuls prêts que vous enregistrez."
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "You're a viewer here: only members joining and leaving."
+msgstr "Vous êtes lecteur ici : seulement les arrivées et départs de membres."
+
+#: src/components/notifications/settings/kinds.tsx
+msgid "Not sent this way"
+msgstr "Pas envoyé par ce moyen"
+
+#: src/components/notifications/settings/notification-settings.tsx
+msgid "What reaches you"
+msgstr "Ce qui vous parvient"
+
+#: src/components/capture/capture-screen.tsx
+msgid "Start the camera"
+msgstr "Démarrer la caméra"

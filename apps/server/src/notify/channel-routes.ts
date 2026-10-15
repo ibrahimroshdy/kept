@@ -27,12 +27,14 @@ import {
   upsertSubscription,
 } from './channels.js';
 import {
+  accountKinds,
   aiSummaryEmail,
   kindsFor,
   myLocations,
   myPreferences,
   myTiming,
   putPreferences,
+  resetLocationPreferences,
   storedMap,
   updateTiming,
 } from './prefs.js';
@@ -44,6 +46,8 @@ import {
 // GET    /api/v1/me/notification-settings        → NotificationSettings
 // PUT    /api/v1/me/notification-settings        {digestTime?, quietFrom?, quietTo?} → the same
 // PUT    /api/v1/me/notification-preferences     {items: [...] (≤ 200)} → the same settings
+// DELETE /api/v1/me/notification-preferences/:locationId → the same settings (D239: the
+//                                                 location follows all locations again)
 // POST   /api/v1/me/channels                     {kind: 'webhook', url, label?} → 201 {channel, secret}
 //                                                 {kind: 'ntfy', server, topic, token?, label?}
 //                                                 {kind: 'telegram', botToken, chatId, label?}
@@ -93,6 +97,8 @@ const KindPreferenceSchema = z.object({
   telegram: z.boolean(),
   apprise: z.boolean(),
   isDefault: z.boolean(),
+  /** 1.5.x (D239): the channels chosen at this layer; for a location, those that differ. */
+  set: z.array(z.enum(PREFERENCE_CHANNELS)),
 });
 
 const SettingsSchema = z.object({
@@ -117,7 +123,11 @@ const SettingsSchema = z.object({
       kinds: z.partialRecord(z.enum(NOTIFY_KINDS), KindPreferenceSchema),
     }),
   ),
-  account: z.object({ aiSummary: z.object({ email: z.boolean() }) }),
+  account: z.object({
+    aiSummary: z.object({ email: z.boolean() }),
+    /** 1.5.x (D239): the person's choices for all their locations, every kind. */
+    kinds: z.partialRecord(z.enum(NOTIFY_KINDS), KindPreferenceSchema),
+  }),
 });
 type Settings = z.infer<typeof SettingsSchema>;
 
@@ -236,7 +246,7 @@ export async function channelRoutes(app: KeptApp, deps: InventoryDeps): Promise<
       apprise: { available: !!notify.appriseUrl },
       channels,
       locations: locations.map((l) => ({ ...l, kinds: kindsFor(l.role, l.locationId, prefs) })),
-      account: { aiSummary: { email: aiSummaryEmail(prefs) } },
+      account: { aiSummary: { email: aiSummaryEmail(prefs) }, kinds: accountKinds(prefs) },
     };
   }
 
@@ -273,6 +283,21 @@ export async function channelRoutes(app: KeptApp, deps: InventoryDeps): Promise<
     (req, reply) =>
       scopedWrite(pools, req, reply, async (tx, client, scope) => {
         await putPreferences(tx, client, scope.userId, req.body.items, req.id);
+        return { status: 200, body: await settingsOf(client, scope.userId) };
+      }),
+  );
+
+  app.delete(
+    '/api/v1/me/notification-preferences/:locationId',
+    {
+      schema: {
+        params: z.object({ locationId: z.uuid() }),
+        response: { 200: SettingsSchema },
+      },
+    },
+    (req, reply) =>
+      scopedWrite(pools, req, reply, async (tx, client, scope) => {
+        await resetLocationPreferences(tx, client, scope.userId, req.params.locationId, req.id);
         return { status: 200, body: await settingsOf(client, scope.userId) };
       }),
   );

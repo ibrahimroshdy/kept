@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { testDb } from '../../test/db.js';
 import {
   addMember,
+  insertLocation,
   ownerTx,
   seedTenant,
   seedUser,
@@ -458,6 +459,81 @@ describe('recipients (D29, D57; Q8, Q16)', () => {
     await runScan(deps());
     expect(await notifiedUsers(lent)).toEqual([ibrahim.userId]);
     expect(await notifiedUsers(lease)).toEqual([ibrahim.userId, bruce].sort());
+  });
+});
+
+describe('choices for all locations (D239)', () => {
+  const choose = (rows: Array<[string, string | null, string, string, boolean]>) =>
+    ownerTx(db, async (c) => {
+      for (const [user, location, kind, channel, enabled] of rows) {
+        await c.query(
+          `INSERT INTO public.notification_preferences (user_id, location_id, kind, channel, enabled)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [user, location, kind, channel, enabled],
+        );
+      }
+    });
+
+  it('a location choice beats the one for all locations, which beats the default', async () => {
+    await choose([
+      // Bruce: loans off everywhere, back on here.
+      [bruce, null, 'loan', 'inapp', false],
+      [bruce, ibrahim.locationId, 'loan', 'inapp', true],
+      // Ibrahim: loans by email off everywhere; still in Kept by default.
+      [ibrahim.userId, null, 'loan', 'email', false],
+      // Louis: leases on everywhere (a member's default is off).
+      [louis, null, 'document', 'inapp', true],
+    ]);
+    const lent = await loan(drill, ibrahim.userId, murdock, plus(-2));
+    const lease = newId();
+    await own(
+      `INSERT INTO public.expiring_documents (id, location_id, kind, expires_on, created_by)
+       VALUES ($1, $2, 'lease', $3, $4)`,
+      [lease, ibrahim.locationId, plus(5), ibrahim.userId],
+    );
+    await runScan(deps());
+    expect(await notifiedUsers(lent)).toEqual([ibrahim.userId, bruce].sort());
+    expect((await deliveries(lent)).map((d) => d.user_id)).toEqual([bruce]);
+    expect(await notifiedUsers(lease)).toEqual([ibrahim.userId, bruce, louis].sort());
+  });
+
+  it('reaches a location made after the choice', async () => {
+    await choose([[ibrahim.userId, null, 'warranty', 'inapp', false]]);
+    const later = await ownerTx(db, (c) =>
+      insertLocation(c, { userId: ibrahim.userId, accountId: ibrahim.accountId }, { name: 'Shed' }),
+    );
+    await addMember(db, later.locationId, bruce, 'admin');
+    const mower = newId();
+    await own(
+      `INSERT INTO public.things (id, location_id, place_id, name) VALUES ($1, $2, $3, 'Mower')`,
+      [mower, later.locationId, later.unplacedId],
+    );
+    const cover = newId();
+    await own(
+      `INSERT INTO public.warranties (id, location_id, thing_id, kind, provider, starts_on, ends_on,
+                                      created_by)
+       VALUES ($1, $2, $3, 'manufacturer', 'Honda', $4, $5, $6)`,
+      [cover, later.locationId, mower, plus(-300), plus(10), ibrahim.userId],
+    );
+    await runScan(deps());
+    expect(await occurrences(cover)).toHaveLength(1);
+    expect(await notifiedUsers(cover)).toEqual([bruce]);
+  });
+
+  it('a kind whose module is off stays paused, whatever was chosen (D113)', async () => {
+    await choose([
+      [louis, null, 'warranty', 'inapp', true],
+      [louis, ibrahim.locationId, 'warranty', 'email', true],
+    ]);
+    await own(
+      `INSERT INTO public.location_modules (location_id, module, enabled) VALUES ($1, 'warranties', false)`,
+      [ibrahim.locationId],
+    );
+    const maker = await warranty(drill, plus(12), 'Bosch');
+    const done = await runScan(deps());
+    expect(done.occurrences).toBe(0);
+    expect(await occurrences(maker)).toEqual([]);
+    expect(await own('SELECT 1 FROM public.notifications')).toEqual([]);
   });
 });
 
