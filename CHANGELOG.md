@@ -3,6 +3,13 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.9.1 (2026-10-15)
+
+### Documentation
+
+- **site:** the map clip on the landing page, playing as the page loads (#119) (efbfbfc)
+- **release:** the 1.9.0 record (#118) (dd1fbe3)
+
 ## 1.9.0 (2026-10-15)
 
 ### Features
