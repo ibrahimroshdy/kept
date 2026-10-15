@@ -16,7 +16,9 @@ import { type EntityDef, entityDef, type FieldKind, fieldsOf } from './registry.
 // (after checking `format` and `version` itself, for its own refusal), and
 // `data/history.ndjson` with HistoryEventSchema.
 //
-// Every field may be null. Unknown fields are stripped (a newer minor writer may add some).
+// Every field may be null. Unknown fields are stripped (a newer minor writer may add some), and a
+// field an older export doesn't have may be absent: the importer leaves that column to its default
+// (a version-1 attachment has no `conditionRoomId`, a 1.4 service line no `consumableThingId`).
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const uuid = z.string().regex(UUID);
@@ -42,10 +44,8 @@ const cache = new Map<ExportEntity, z.ZodObject>();
 function schemaOf(def: EntityDef): z.ZodObject {
   const shape: Record<string, z.ZodType> = {};
   for (const f of fieldsOf(def)) {
-    // A money field the exporter couldn't see is absent; anything else is present, maybe null.
-    shape[f.name] = def.money?.includes(f.column)
-      ? KIND_SCHEMA[f.kind].nullable().optional()
-      : KIND_SCHEMA[f.kind].nullable();
+    // Absent: a money field the exporter couldn't see, or a field its version didn't have.
+    shape[f.name] = KIND_SCHEMA[f.kind].nullable().optional();
   }
   if (def.money?.length) shape.moneyHidden = z.literal(true).optional();
   if (def.entity === 'location') shape.modules = z.array(z.string());
@@ -111,7 +111,16 @@ export const ManifestSchema = z.object({
     locale: z.string(),
     digits: z.enum(['western', 'eastern']),
   }),
-  counts: z.record(z.enum(EXPORT_ENTITIES), z.number().int().min(0)),
+  // A version-1 export has no count for the entities version 2 added: they count 0.
+  counts: z
+    .partialRecord(z.enum(EXPORT_ENTITIES), z.number().int().min(0))
+    .transform(
+      (c) =>
+        Object.fromEntries(EXPORT_ENTITIES.map((e) => [e, c[e] ?? 0])) as Record<
+          ExportEntity,
+          number
+        >,
+    ),
   moneyHidden: z.boolean(),
   includesSecrets: z.boolean(),
   secretsCount: z.number().int().min(0),

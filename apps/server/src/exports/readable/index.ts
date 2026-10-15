@@ -82,6 +82,9 @@ export const ENTITY_CSVS: readonly ExportEntity[] = [
   'service-records',
   'service-lines',
   'fuel-entries',
+  // D238: a renter's condition reports and their rooms (the photos are in attachments.csv).
+  'condition-reports',
+  'condition-report-rooms',
 ];
 
 export type ReadableTarget = {

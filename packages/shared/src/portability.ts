@@ -46,9 +46,16 @@ export const ARCHIVE_ISSUE_CODES = [
 ] as const;
 export type ArchiveIssueCode = (typeof ARCHIVE_ISSUE_CODES)[number];
 
-/** The Kept export's format (plan Q5): API-shaped, versioned, one location per archive. */
+/**
+ * The Kept export's format (plan Q5): API-shaped, versioned, one location per archive.
+ *
+ * Version 2 (1.5, D238) adds the condition reports (`condition-reports`,
+ * `condition-report-rooms`, and their photos as attachments). A reader refuses a newer version
+ * ("This export is from a newer Kept") and reads every older one: an entity or a field an older
+ * export doesn't have is simply absent.
+ */
 export const EXPORT_FORMAT = 'kept-export';
-export const EXPORT_VERSION = 1;
+export const EXPORT_VERSION = 2;
 
 /**
  * The data files of a Kept export (`data/<entity>.ndjson`), in the order they are written and
@@ -100,6 +107,9 @@ export const EXPORT_ENTITIES = [
   'service-lines',
   'service-completions',
   'fuel-entries',
+  // Version 2 (D238): renters' condition reports and their rooms (the photos are attachments).
+  'condition-reports',
+  'condition-report-rooms',
   'history',
 ] as const;
 export type ExportEntity = (typeof EXPORT_ENTITIES)[number];
@@ -109,8 +119,9 @@ export const EXPORT_FILE_PATH =
   /^files\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.[a-z0-9]{1,5}$/;
 
 /**
- * The entries of a Kept export (`kept-export` v1, plan T12, Q5). Read only by these exact names
- * (plus the originals, `files/<fileId>.<ext>`); anything else in an archive is ignored.
+ * The entries of a Kept export (`kept-export` versions 1 and 2, plan T12, Q5). Read only by
+ * these exact names (plus the originals, `files/<fileId>.<ext>`); anything else in an archive is
+ * ignored.
  *
  * - `manifest.json`: ExportManifest.
  * - `data/<entity>.ndjson`: one object per line, camelCase, ids as on the exporting server. Each
@@ -187,7 +198,8 @@ export type ExportManifest = {
     modules: string[];
   };
   options: ExportOptions;
-  /** Rows per data file written (every entity in EXPORT_ENTITIES, 0 when empty or left out). */
+  /** Rows per data file written (every entity in EXPORT_ENTITIES, 0 when empty or left out). A
+   * version-1 export has no count for the entities version 2 added; read, they count 0. */
   counts: Record<ExportEntity, number>;
   /** Whether money was hidden from the exporter (the Money module off there): money fields are
    * then absent, and the rows that had them say `moneyHidden: true`. */

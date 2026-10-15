@@ -62,7 +62,8 @@ export const OMIT_REASONS: Readonly<Record<string, string>> = Object.freeze({
   deleted_at: 'a location export is of a live location',
   purge_after: 'a location export is of a live location',
   low_since: "derived: this server's day the thing ran low, re-made from its quantity",
-  condition_room_id: "a condition report's photo; condition reports aren't in a Kept export yet",
+  finished_by:
+    'a user of this server; the importer finishes the report as the importing person (D238)',
 });
 
 export type EntityDef = Readonly<{
@@ -226,10 +227,10 @@ export const REGISTRY: readonly EntityDef[] = Object.freeze([
     fields:
       'id:uuid sha256:text bytes:int mime:text class:text has_gps:bool width:int height:int created_at:ts',
     omit: 'location_id storage_key derivative_state created_by attached_at',
-    // Only the originals the exported rows reference (D117): an attachment's, or a thing's cover.
+    // Only the originals the exported rows reference (D117): an attachment's (a condition
+    // report's photos included, D238), or a thing's cover.
     where: `(x.id IN (SELECT a.file_id FROM public.attachments a
-                       WHERE a.location_id = $1 AND a.file_id IS NOT NULL AND {thingOk:a.thing_id}
-                         AND a.condition_room_id IS NULL)
+                       WHERE a.location_id = $1 AND a.file_id IS NOT NULL AND {thingOk:a.thing_id})
              OR x.id IN (SELECT t.cover_file_id FROM public.things t
                           WHERE t.location_id = $1 AND {thingOk:t.id}))`,
   },
@@ -239,11 +240,9 @@ export const REGISTRY: readonly EntityDef[] = Object.freeze([
     scope: 'location',
     key: ['id'],
     fields:
-      'id:uuid file_id:uuid url:text thing_id:uuid place_id:uuid purchase_id:uuid meter_reading_id:uuid role:text sort:int created_at:ts updated_at:ts warranty_id:uuid claim_id:uuid loan_id:uuid incident_id:uuid valuation_id:uuid service_record_id:uuid expiring_document_id:uuid fuel_entry_id:uuid',
-    omit: 'location_id created_by row_version change_seq condition_room_id',
+      'id:uuid file_id:uuid url:text thing_id:uuid place_id:uuid purchase_id:uuid meter_reading_id:uuid role:text sort:int created_at:ts updated_at:ts warranty_id:uuid claim_id:uuid loan_id:uuid incident_id:uuid valuation_id:uuid service_record_id:uuid expiring_document_id:uuid fuel_entry_id:uuid condition_room_id:uuid',
+    omit: 'location_id created_by row_version change_seq',
     thingRefs: ['x.thing_id'],
-    // A condition report's photos stay out with their reports (NOT_EXPORTED below).
-    where: 'x.condition_room_id IS NULL',
   },
   {
     entity: 'meters',
@@ -518,6 +517,27 @@ export const REGISTRY: readonly EntityDef[] = Object.freeze([
     money: ['cost'],
     thingRefs: ['x.thing_id'],
   },
+  {
+    // Format version 2 (D238): renters' condition reports (D235). A finished one is imported
+    // open, its rooms and photos added, then finished again (imports/kept/job.ts), under the
+    // same policies a request meets.
+    entity: 'condition-reports',
+    table: 'condition_reports',
+    scope: 'location',
+    key: ['id'],
+    fields: 'id:uuid kind:text held_on:date notes:text finished_at:ts created_at:ts updated_at:ts',
+    omit: 'location_id created_by finished_by row_version change_seq',
+  },
+  {
+    // Each room's photos are attachments (`conditionRoomId`), their originals in `files`.
+    entity: 'condition-report-rooms',
+    table: 'condition_report_rooms',
+    scope: 'location',
+    key: ['id'],
+    fields:
+      'id:uuid report_id:uuid place_id:uuid name:text condition:text note:text sort:int created_at:ts updated_at:ts',
+    omit: 'location_id created_by row_version change_seq',
+  },
 ] satisfies EntityDef[]);
 
 /** `history` isn't a table: it is the location's audit events, rendered (exports/history.ts). */
@@ -566,10 +586,6 @@ export const NOT_EXPORTED: Readonly<Record<string, string>> = Object.freeze({
   webhook_deliveries: "this server's integrations",
   mailboxes: "this server's integrations and their passwords",
   mailbox_messages: "this server's bookkeeping",
-  // 1.x (D235): a finished report is locked, and the importer can't write a locked report's rooms
-  // and photos back yet; its PDF is the copy that travels.
-  condition_reports: "not in a Kept export yet; a report's PDF is its portable copy",
-  condition_report_rooms: "not in a Kept export yet; a report's PDF is its portable copy",
   share_links: "links to this server's pages, whose tokens are never shown again",
 });
 

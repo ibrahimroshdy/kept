@@ -28,7 +28,8 @@ visit under the old name to the same page at the new address.
 
 An owner exports a location, with its files and, if they choose, its secret values under a
 passphrase; on the new server they import it into a new location. This moves one household without
-the rest of the instance, and works between two instances that run different versions.
+the rest of the instance, and works between two instances that run different versions, as long as
+the new one is not older than the old one (an older Kept may refuse an export from a newer one).
 
 1. On the old server, in **Settings → Export**, export the location. Choose whether to include
    secret values; if you do, set a passphrase. Exports are made over HTTPS only, and stay ready to
@@ -36,7 +37,8 @@ the rest of the instance, and works between two instances that run different ver
 2. On the new server, sign in, open **Settings → Import**, and choose the Kept export (the ZIP).
    Kept checks it first and shows what it will add before anything is written; give the passphrase
    to bring the secret values back.
-3. The import makes a **new location** with the things, places, files and their history. Printed
+3. The import makes a **new location** with the things, places, files, condition reports and
+   their history. Printed
    labels keep working: a label's short code is kept when it is free on the new server, and
    re-issued when it isn't, in which case scanning the old label still opens the thing.
 4. Invite the people who shared the location; the import lists them, but doesn't invite anyone by

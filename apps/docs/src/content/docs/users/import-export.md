@@ -92,10 +92,18 @@ Kept, scanning with the phone's own camera works too.
 
 ### A Kept export
 
-A Kept export always comes in as **a new location**, with its things, places, files and history.
-If it holds secret values, **Open the secrets** with the passphrase chosen when it was exported;
+A Kept export always comes in as **a new location**, with its things, places, files, condition
+reports and history. If it holds secret values, **Open the secrets** with the passphrase chosen when it was exported;
 without it, everything else is imported. **People to invite** lists who shared the location;
 nobody is invited by the import, so invite each person yourself.
+
+**Condition reports** come back with their days, notes, rooms and photos, and each photo keeps the
+time Kept first received it. A finished report comes back finished at the same time, and stays
+locked. On the new server, the photos and the finish are under the name of the person who imported
+them; the history still shows who did each thing before the import.
+
+An export made by a newer Kept than the server you import into may be refused: update that server
+first.
 
 ### A vehicle's LubeLogger history
 
@@ -117,17 +125,14 @@ location's languages, the way captured things get them ([AI providers](/users/ai
 
 **Settings → Export** has two kinds:
 
-- **Export a location**, one you own or administer: every thing, place, photo and document is
-  always in it.
+- **Export a location**, one you own or administer: every thing, place, photo, document and
+  condition report is always in it.
 - **Export my data**: your Personal location with its files, your profile and preferences, and
   your own AI calls.
 
 **What goes in** besides: ended things (sold, given away, thrown out), the Trash, the history, the
 AI calls, and **A copy you can read without Kept**: web pages, spreadsheets, thumbnails and
 receipts that open in any browser, optionally with the inventory PDF, in a language of its own.
-
-**What stays out**: condition reports and their photos, for now. Make each report's PDF before you
-move.
 
 **Include secrets** is for the location's owner. Secret values are encrypted with a passphrase of
 at least 12 characters, typed twice. Anyone with the file and the passphrase can read every secret
