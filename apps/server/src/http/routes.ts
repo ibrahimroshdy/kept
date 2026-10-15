@@ -26,6 +26,7 @@ import { lubeloggerRoutes } from '../imports/lubelogger.js';
 import { importRoutes } from '../imports/routes.js';
 import { inboxRoutes } from '../inbox/routes.js';
 import { incidentRoutes } from '../incidents/routes.js';
+import { insightsRoutes } from '../insights/routes.js';
 import type { JobQueue } from '../jobs/queue.js';
 import { labelRoutes } from '../labels/routes.js';
 import { lendingRoutes } from '../lending/routes.js';
@@ -183,6 +184,8 @@ export const INVENTORY_ROUTE_MODULES = [
   conditionRoutes,
   // 1.5 (D233): read-only share links, and their public page.
   shareLinkRoutes,
+  // 1.x (D234): Insights, part of Money.
+  insightsRoutes,
 ] as const satisfies readonly ((app: KeptApp, deps: InventoryDeps) => Promise<void>)[];
 
 export async function registerInventoryRoutes(app: KeptApp, deps: InventoryDeps): Promise<void> {

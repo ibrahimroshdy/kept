@@ -219,15 +219,13 @@ describe('the rail', () => {
     expect(vehicles).not.toHaveAttribute('aria-disabled');
     await waitFor(() => expect(screen.getByRole('tooltip')).toHaveTextContent(/^Vehicles$/));
 
-    // Entries from later steps take focus in the rail so their tooltip can be read: Insights,
-    // after Schedules, Lending, Paperwork and Consumables.
+    // Insights is a page since 1.x (D234), after Schedules, Lending, Paperwork and Consumables: a
+    // plain link with its name in the tooltip.
     for (let i = 0; i < 5; i++) await user.tab();
     const insights = within(mainNav()).getByRole('link', { name: 'Insights' });
     expect(insights).toHaveFocus();
-    expect(insights).toHaveAttribute('aria-disabled', 'true');
-    await waitFor(() =>
-      expect(screen.getByRole('tooltip')).toHaveTextContent('InsightsComing soon'),
-    );
+    expect(insights).not.toHaveAttribute('aria-disabled');
+    await waitFor(() => expect(screen.getByRole('tooltip')).toHaveTextContent(/^Insights$/));
   });
 
   it('the source code link stays, as an icon with the version in its tooltip (D147)', async () => {

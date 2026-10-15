@@ -68,6 +68,8 @@ const HOUSEHOLD_ROUTES = [
   // /location) stay precached: a label opens offline.
   '/src/routes/_app/settings.export.tsx?tsr-split=component',
   '/src/routes/_app/consumables.tsx?tsr-split=component',
+  // 1.x (D234): Insights reads the server only.
+  '/src/routes/_app/insights.tsx?tsr-split=component',
   // Step 6 (T3): the assistant, Connections and a location's webhooks read the server; none is
   // any use offline. OAuth consent stays precached, like the sign-in pages it follows (T22).
   '/src/routes/_app/assistant.index.tsx?tsr-split=component',
@@ -153,6 +155,7 @@ const COMPONENT_ONLY_ROUTES = new Set<string>([
   '/_app/activity',
   '/_app/trash',
   '/_app/vehicles',
+  '/_app/insights',
 ]);
 /**
  * On-demand chunks named by their entry module: driver.js behind the hints and the tour
@@ -220,6 +223,9 @@ const HOUSEHOLD_SHARED = [
   '/packages/shared/src/services.ts',
   // visx and the d3 it brings, shared by the vehicle and fuel charts (step 5).
   '/src/components/charts/kit.tsx',
+  // The charts' loader and "Show as table", shared by a vehicle's tabs and Insights (1.x, D234).
+  '/src/components/charts/lazy.tsx',
+  '/src/components/charts/chart-table.tsx',
   '/node_modules/@visx/',
   '/node_modules/d3-',
   '/node_modules/internmap/',

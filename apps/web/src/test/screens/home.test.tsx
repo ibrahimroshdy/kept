@@ -621,7 +621,7 @@ describe('Home: recent activity (screens §8)', () => {
 });
 
 describe('the frame', () => {
-  it('has the phone tabs and the sidebar entries, later ones inert', async () => {
+  it('has the phone tabs and the sidebar entries', async () => {
     await renderApp('/');
     await findHeading('Home');
     const navs = screen.getAllByRole('navigation', { name: 'Main' });
@@ -631,13 +631,15 @@ describe('the frame', () => {
         .getAllByRole('link')
         .map((l) => l.textContent),
     ).toEqual(['Home', 'Search', 'Capture', 'Inbox', 'More']);
-    const sidebar = navs.find((n) => within(n).queryByText('Insights')) as HTMLElement;
-    // Vehicles is a page since step 5 (shown once the locations say the module is on somewhere);
-    // Insights is still to come.
+    const sidebar = navs.find((n) => within(n).queryByText('Settings')) as HTMLElement;
+    // Vehicles is a page since step 5 and Insights since 1.x (D234), each shown once the locations
+    // say its module is on somewhere.
     expect(await within(sidebar).findByRole('link', { name: 'Vehicles' })).not.toHaveAttribute(
       'aria-disabled',
     );
-    expect(within(sidebar).getByText('Insights').closest('[aria-disabled]')).toBeTruthy();
+    expect(await within(sidebar).findByRole('link', { name: 'Insights' })).not.toHaveAttribute(
+      'aria-disabled',
+    );
     expect(within(sidebar).getByRole('link', { name: 'Settings' })).toBeInTheDocument();
   });
 

@@ -22363,3 +22363,175 @@ msgstr "Put {name} back from a service of {service}"
 #: src/components/history/timeline.tsx
 msgid "Go to <0>{0}</0>"
 msgstr "Go to <0>{0}</0>"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Amounts leave out {names}: money is hidden from you there."
+msgstr "Amounts leave out {names}: money is hidden from you there."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Insights is off in your locations"
+msgstr "Insights is off in your locations"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Insights is part of Money. An owner or admin turns Money on in the location's settings, under What to track."
+msgstr "Insights is part of Money. An owner or admin turns Money on in the location's settings, under What to track."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Loading insights"
+msgstr "Loading insights"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Money is off here"
+msgstr "Money is off here"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Insights shows the locations where Money is on. Pick another location."
+msgstr "Insights shows the locations where Money is on. Pick another location."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spending on things"
+msgstr "Spending on things"
+
+#: src/components/insights/insights-screen.tsx
+msgid "No purchases yet"
+msgstr "No purchases yet"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Capture a receipt"
+msgstr "Capture a receipt"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Receipts you capture or add to things show up here, by the year you bought."
+msgstr "Receipts you capture or add to things show up here, by the year you bought."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spent"
+msgstr "Spent"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Purchases"
+msgstr "Purchases"
+
+#: src/components/insights/insights-screen.tsx
+msgid "{0, plural, one {# purchase} other {# purchases}}"
+msgstr "{0, plural, one {# purchase} other {# purchases}}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "purchases"
+msgstr "purchases"
+
+#: src/components/insights/insights-screen.tsx
+msgid "not compared with full years"
+msgstr "not compared with full years"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spent per year. Arrow keys move between years."
+msgstr "Spent per year. Arrow keys move between years."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Purchases per year. Arrow keys move between years."
+msgstr "Purchases per year. Arrow keys move between years."
+
+#: src/components/insights/insights-screen.tsx
+msgid "No full years yet."
+msgstr "No full years yet."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Spent per year, {currency}"
+msgstr "Spent per year, {currency}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Purchases per year"
+msgstr "Purchases per year"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Year"
+msgstr "Year"
+
+#: src/components/insights/insights-screen.tsx
+msgid "{unpriced, plural, one {# purchase has no amount and isn't in the totals.} other {# purchases have no amount and aren't in the totals.}}"
+msgstr "{unpriced, plural, one {# purchase has no amount and isn't in the totals.} other {# purchases have no amount and aren't in the totals.}}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Value by place"
+msgstr "Value by place"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Each thing in use at its latest valuation. Things without one count, but add nothing."
+msgstr "Each thing in use at its latest valuation. Things without one count, but add nothing."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Valued: {0} of {1} things"
+msgstr "Valued: {0} of {1} things"
+
+#: src/components/insights/insights-screen.tsx
+msgid "No things yet."
+msgstr "No things yet."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Other places ({0})"
+msgstr "Other places ({0})"
+
+#: src/components/insights/insights-screen.tsx
+msgid "{0} of {1} valued"
+msgstr "{0} of {1} valued"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Vehicle costs"
+msgstr "Vehicle costs"
+
+#: src/components/insights/insights-screen.tsx
+msgid "No vehicles yet."
+msgstr "No vehicles yet."
+
+#: src/components/insights/insights-screen.tsx
+msgid "Each vehicle per year, {currency}"
+msgstr "Each vehicle per year, {currency}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Each vehicle per year"
+msgstr "Each vehicle per year"
+
+#: src/components/insights/insights-screen.tsx
+msgid "(no longer in use)"
+msgstr "(no longer in use)"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Fills: {0}, services: {1}"
+msgstr "Fills: {0}, services: {1}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "See all vehicles ({0} more)"
+msgstr "See all vehicles ({0} more)"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Ending soon"
+msgstr "Ending soon"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Cover ended"
+msgstr "Cover ended"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Under warranty"
+msgstr "Under warranty"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Warranty coverage"
+msgstr "Warranty coverage"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Covered now: {0} of {1} things"
+msgstr "Covered now: {0} of {1} things"
+
+#: src/components/insights/insights-screen.tsx
+msgid "See all on Expiring"
+msgstr "See all on Expiring"
+
+#: src/components/insights/insights-screen.tsx
+msgid "cost {0}, covered {1}"
+msgstr "cost {0}, covered {1}"
+
+#: src/components/insights/insights-screen.tsx
+msgid "Repairs resolved, {year}: {0}"
+msgstr "Repairs resolved, {year}: {0}"

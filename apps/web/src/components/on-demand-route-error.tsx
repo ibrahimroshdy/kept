@@ -1,7 +1,7 @@
 /**
  * The error screens of the settings, admin and history routes that load on demand (vite.config.ts,
  * assets/household/): Instance admin, Account, AI, Personal AI key, Import, Locations and a
- * location's settings, two-factor, Activity and Trash. They all need the server (screens §4:
+ * location's settings, two-factor, Activity, Trash and Insights. They all need the server (screens §4:
  * "settings, admin", "imports"), so their chunks stay out of the precache and are cached by the
  * service worker once used. Offline before that first load the chunk can't arrive, and the §3
  * reason says so: "Needs a connection". Any other error is the usual error state.
@@ -82,4 +82,10 @@ export function TrashRouteError(props: ErrorComponentProps) {
 export function ConditionRouteError(props: ErrorComponentProps) {
   const { t } = useLingui();
   return <OnDemandError {...props} title={t`Condition reports`} />;
+}
+
+/** Insights (1.x, D234): it reads the server. */
+export function InsightsRouteError(props: ErrorComponentProps) {
+  const { t } = useLingui();
+  return <OnDemandError {...props} title={t`Insights`} />;
 }

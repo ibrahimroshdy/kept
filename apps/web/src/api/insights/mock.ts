@@ -1,0 +1,270 @@
+/**
+ * Mock handler for Insights (1.x, D234): Home's spending, values, the Corolla's costs and the
+ * warranties, as the server would add them up. Other locations with Money on come back empty. A
+ * location's amounts are left out where the reader's role hides money there (a viewer, unless the
+ * location lets viewers see it), as the server's gate does.
+ */
+
+import type { MockState } from '../mock/fixtures';
+import { IDS } from '../mock/fixtures';
+import { type MockRoute, route, sessionGate } from '../mock/kit';
+import type { LocationDetail } from '../types';
+import { insightsPaths as p } from './paths';
+import type { CostAmounts, Insights, LocationValue, VehicleCosts } from './types';
+
+/** The Corolla in the mock's Home (api/vehicles/mock). */
+export const MOCK_INSIGHT_IDS = {
+  corolla: '01926f00-0000-7000-8000-00000000e101',
+  dishwasher: '01926f00-0000-7000-8000-00000000e102',
+  tv: '01926f00-0000-7000-8000-00000000e103',
+  living: '01926f00-0000-7000-8000-00000000e201',
+  kitchen: '01926f00-0000-7000-8000-00000000e202',
+  bedroom: '01926f00-0000-7000-8000-00000000e203',
+  unplaced: '01926f00-0000-7000-8000-00000000e204',
+} as const;
+
+const showsMoney = (l: LocationDetail) =>
+  l.modules.includes('money') && (l.role !== 'viewer' || l.moneyVisibleToViewers === true);
+
+const addMonths = (month: string, n: number) => {
+  const [y, m] = month.split('-').map(Number) as [number, number];
+  const total = y * 12 + (m - 1) + n;
+  return `${Math.floor(total / 12)}-${String((total % 12) + 1).padStart(2, '0')}`;
+};
+
+const cost = (fuel: number, service: number, fees = 0): CostAmounts => ({
+  currency: 'EGP',
+  fuel: String(fuel),
+  service: String(service),
+  fees: String(fees),
+  total: String(fuel + service + fees),
+});
+
+function homeValue(money: boolean): LocationValue {
+  const m = <T extends object>(o: T) => (money ? o : {});
+  return {
+    locationId: IDS.home,
+    things: 136,
+    ...m({
+      valued: 36,
+      byCurrency: [
+        { currency: 'EGP', amount: '122800' },
+        { currency: 'USD', amount: '150' },
+      ],
+    }),
+    ...(money ? {} : { moneyHidden: true as const }),
+    places: [
+      {
+        id: MOCK_INSIGHT_IDS.kitchen,
+        shortCode: 'KT4C9H',
+        name: 'Kitchen',
+        unplaced: false,
+        things: 61,
+        ...m({
+          valued: 12,
+          byCurrency: [
+            { currency: 'EGP', amount: '24300' },
+            { currency: 'USD', amount: '150' },
+          ],
+        }),
+      },
+      {
+        id: MOCK_INSIGHT_IDS.living,
+        shortCode: 'LV8R2M',
+        name: 'Living room',
+        unplaced: false,
+        things: 42,
+        ...m({ valued: 18, byCurrency: [{ currency: 'EGP', amount: '86500' }] }),
+      },
+      {
+        id: MOCK_INSIGHT_IDS.bedroom,
+        shortCode: null,
+        name: 'Bedroom',
+        unplaced: false,
+        things: 30,
+        ...m({ valued: 6, byCurrency: [{ currency: 'EGP', amount: '12000' }] }),
+      },
+      {
+        id: MOCK_INSIGHT_IDS.unplaced,
+        shortCode: null,
+        name: 'Unplaced',
+        unplaced: true,
+        things: 3,
+        ...m({ valued: 0, byCurrency: [] }),
+      },
+    ],
+  };
+}
+
+export function insightsOf(state: MockState, filter: string[]): Insights {
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Africa/Cairo' });
+  const Y = Number(today.slice(0, 4));
+  const thisMonth = today.slice(0, 7);
+  const locs = state.locations.filter(
+    (l) => l.modules.includes('money') && (filter.length === 0 || filter.includes(l.id)),
+  );
+  const home = locs.find((l) => l.id === IDS.home);
+  const homeMoney = home ? showsMoney(home) : false;
+  const hiddenIn = locs.filter((l) => !showsMoney(l)).map((l) => l.id);
+  const withVehicles = locs.filter((l) => l.modules.includes('vehicles'));
+  const withWarranties = locs.filter((l) => l.modules.includes('warranties'));
+  const amounts = <T>(list: T[]): T[] => (homeMoney ? list : []);
+
+  const months = Array.from({ length: 12 }, (_, i) => addMonths(thisMonth, i - 12));
+  const fuelOf = [1650, 1820, 1700, 2100, 1540, 1980, 2210, 1890, 1760, 2050, 1930, 1800];
+  const serviceAt = new Map([
+    [3, 3800],
+    [9, 1400],
+  ]);
+  const corolla: VehicleCosts = {
+    id: MOCK_INSIGHT_IDS.corolla,
+    shortCode: 'C0R0LA',
+    name: 'Toyota Corolla',
+    locationId: IDS.home,
+    ended: false,
+    years: [Y - 2, Y - 1, Y].map((year) => ({
+      year,
+      soFar: year === Y,
+      fills: year === Y ? 18 : 24,
+      services: year === Y ? 1 : 3,
+      ...(homeMoney
+        ? {
+            byCurrency: [
+              year === Y
+                ? cost(16800, 1400)
+                : year === Y - 1
+                  ? cost(21900, 6200, 4700)
+                  : cost(19800, 4100, 4300),
+            ],
+          }
+        : {}),
+    })),
+    ...(homeMoney ? {} : { moneyHidden: true as const }),
+  };
+
+  return {
+    locations: locs.map((l) => ({
+      id: l.id,
+      money: showsMoney(l),
+      vehicles: l.modules.includes('vehicles'),
+      warranties: l.modules.includes('warranties'),
+    })),
+    thisYear: Y,
+    spending: {
+      years: home
+        ? [
+            {
+              year: Y - 3,
+              soFar: false,
+              purchases: 4,
+              unpriced: 0,
+              byCurrency: amounts([{ currency: 'EGP', amount: '12400' }]),
+            },
+            {
+              year: Y - 2,
+              soFar: false,
+              purchases: 7,
+              unpriced: 0,
+              byCurrency: amounts([
+                { currency: 'EGP', amount: '31250' },
+                { currency: 'USD', amount: '420' },
+              ]),
+            },
+            {
+              year: Y - 1,
+              soFar: false,
+              purchases: 9,
+              unpriced: homeMoney ? 1 : 0,
+              byCurrency: amounts([{ currency: 'EGP', amount: '48900' }]),
+            },
+            {
+              year: Y,
+              soFar: true,
+              purchases: 5,
+              unpriced: 0,
+              byCurrency: amounts([{ currency: 'EGP', amount: '9800' }]),
+            },
+          ]
+        : [],
+      hiddenIn,
+    },
+    value: {
+      locations: locs.map((l) =>
+        l.id === IDS.home
+          ? homeValue(homeMoney)
+          : {
+              locationId: l.id,
+              things: 0,
+              ...(showsMoney(l) ? { valued: 0, byCurrency: [] } : { moneyHidden: true as const }),
+              places: [],
+            },
+      ),
+      hiddenIn,
+    },
+    vehicles: withVehicles.length
+      ? {
+          thisMonth,
+          months: months.map((month, i) => ({
+            month,
+            byCurrency: home
+              ? amounts([cost(fuelOf[i] ?? 0, serviceAt.get(i) ?? 0, i === 6 ? 3500 : 0)])
+              : [],
+          })),
+          items: home && withVehicles.includes(home) ? [corolla] : [],
+          more: 0,
+          hiddenIn: withVehicles.filter((l) => !showsMoney(l)).map((l) => l.id),
+        }
+      : null,
+    warranties: withWarranties.length
+      ? {
+          things: home ? 214 : 0,
+          covered: home ? 38 : 0,
+          expiring: home ? 2 : 0,
+          ended: home ? 21 : 0,
+          none: home ? 153 : 0,
+          expiringSoon: home
+            ? [
+                {
+                  id: MOCK_INSIGHT_IDS.dishwasher,
+                  shortCode: 'D15HW4',
+                  name: 'Dishwasher',
+                  locationId: IDS.home,
+                  endsOn: `${addMonths(thisMonth, 1)}-03`,
+                },
+                {
+                  id: MOCK_INSIGHT_IDS.tv,
+                  shortCode: null,
+                  name: 'Living room TV',
+                  locationId: IDS.home,
+                  endsOn: `${addMonths(thisMonth, 1)}-20`,
+                },
+              ]
+            : [],
+          repairs: [Y - 1, Y].map((year) => ({
+            year,
+            soFar: year === Y,
+            resolved: home && year === Y - 1 ? 1 : 0,
+            ...(locs.some(showsMoney)
+              ? {
+                  byCurrency:
+                    home && homeMoney && year === Y - 1
+                      ? [{ currency: 'EGP', cost: '1800', covered: '1800' }]
+                      : [],
+                }
+              : {}),
+          })),
+          hiddenIn: withWarranties.filter((l) => !showsMoney(l)).map((l) => l.id),
+        }
+      : null,
+  };
+}
+
+export function insightsMockRoutes(state: MockState): MockRoute[] {
+  return [
+    route('GET', p.insights, ({ query }) => {
+      const gate = sessionGate(state);
+      if (gate) return gate;
+      return insightsOf(state, query.getAll('f.location'));
+    }),
+  ];
+}
