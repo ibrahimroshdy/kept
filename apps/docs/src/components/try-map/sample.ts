@@ -208,7 +208,17 @@ export function sampleHome(lang: Lang, today: Date = new Date()): Sample {
       quantity: 1,
       layout: { x: mToCm(x), z: mToCm(z), rot, model, hostId },
     });
-    if (!place) things.push({ id, name, shortCode, quantity: 1, parentId: roomId });
+    if (!place)
+      things.push({
+        id,
+        name,
+        shortCode,
+        quantity: 1,
+        parentId: roomId,
+        typeKey: null,
+        typeName: null,
+        isContainer: container,
+      });
     facts.set(id, {
       ...(extra.brand ? { brand: extra.brand } : {}),
       ...(extra.model ? { model: extra.model } : {}),
@@ -226,6 +236,9 @@ export function sampleHome(lang: Lang, today: Date = new Date()): Sample {
         shortCode: codeFor(`${shortCode}:${i}:${c.name[0]}`),
         quantity: qty,
         parentId: id,
+        typeKey: null,
+        typeName: null,
+        isContainer: false,
       });
       facts.set(cid, { quantity: qty, ...(c.brand ? { brand: c.brand } : {}) });
       if (c.min !== undefined && qty < c.min) {

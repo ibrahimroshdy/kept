@@ -184,6 +184,8 @@ export const MAP_MODELS = {
   desk: { w: 1.4, d: 0.7, kind: 'furniture', top: 0.74, holds: true },
   monitor: { w: 0.62, d: 0.22, kind: 'thing' },
   laptop: { w: 0.31, d: 0.22, kind: 'thing', small: true },
+  /** A small gadget with no model of its own (a webcam, a router, a speaker): D249. */
+  device: { w: 0.2, d: 0.14, h: 0.1, kind: 'thing', small: true },
   chair: { w: 0.66, d: 0.66, kind: 'furniture' },
   cabinet: { w: 0.47, d: 0.62, kind: 'storage', holds: true },
   box: { w: 0.6, d: 0.4, kind: 'storage', holds: true, small: true, top: 0.34 },

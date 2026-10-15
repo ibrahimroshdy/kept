@@ -24,6 +24,7 @@ export * from './inventory.js';
 export * from './label-stocks.js';
 export * from './list-views.js';
 export * from './map.js';
+export * from './map-shapes.js';
 export * from './modules.js';
 export * from './money.js';
 export * from './normalize.js';

@@ -4,7 +4,7 @@
  * few the app has no use for (the sample note, Reset) are the demo's own. The other docs
  * languages show the English demo, as they show the English pages.
  */
-import type { MapModelKey, MapRoomKind, MapSurface } from '@kept/shared';
+import type { MapModelKey, MapRoomKind, MapSurface, ShapeGroup } from '@kept/shared';
 
 export type Lang = 'en' | 'ar';
 /** English, then Arabic. */
@@ -49,6 +49,7 @@ export const MODEL_NAMES: Record<MapModelKey, Two> = {
   desk: ['Desk', 'مكتب'],
   monitor: ['Monitor', 'شاشة'],
   laptop: ['Laptop', 'حاسوب محمول'],
+  device: ['Small device', 'جهاز صغير'],
   chair: ['Desk chair', 'كرسي مكتب'],
   cabinet: ['Filing cabinet', 'خزانة ملفات'],
   box: ['Storage box', 'صندوق تخزين'],
@@ -63,6 +64,19 @@ export const MODEL_NAMES: Record<MapModelKey, Two> = {
   stairwell: ['Stairwell', 'بئر الدرج'],
   zone: ['Area', 'منطقة'],
   item: ['Small thing', 'شيء صغير'],
+};
+
+/** The shape picker's groups (D249). */
+export const GROUP_NAMES: Record<ShapeGroup, Two> = {
+  furniture: ['Furniture', 'أثاث'],
+  storage: ['Storage', 'تخزين'],
+  electronics: ['Electronics', 'إلكترونيات'],
+  kitchen: ['Kitchen and laundry', 'المطبخ والغسيل'],
+  tools: ['Tools', 'العدة'],
+  outdoor: ['Plants and outdoor', 'نباتات وخارج المنزل'],
+  vehicles: ['Vehicles', 'السيارات'],
+  building: ['Stairs and areas', 'سلالم ومناطق'],
+  other: ['Other', 'أخرى'],
 };
 
 export const ROOM_KIND_NAMES: Record<MapRoomKind, Two> = {
@@ -154,6 +168,17 @@ type Words = {
   kind: string;
   surface: string;
   shape: string;
+  /** D249: the card's shape line and the shape picker. */
+  shapeLine: (shape: string, from: 'type' | 'name' | 'guess' | undefined) => string;
+  change: string;
+  pickShape: string;
+  shapeFor: (name: string) => string;
+  findShape: string;
+  findShapeHint: string;
+  shapes: string;
+  suggested: string;
+  shapesThatMatch: string;
+  noShape: (query: string) => string;
   putOnMap: string;
   findThingIn: (name: string) => string;
   findThingLabel: string;
@@ -260,6 +285,24 @@ export const WORDS: Record<Lang, Words> = {
     kind: 'Kind',
     surface: 'Floor',
     shape: 'Shape',
+    shapeLine: (shape, from) =>
+      from === 'type'
+        ? `Shape: ${shape}, from its type`
+        : from === 'name'
+          ? `Shape: ${shape}, from its name`
+          : from === 'guess'
+            ? `Shape: ${shape}, a guess`
+            : `Shape: ${shape}`,
+    change: 'Change',
+    pickShape: 'Pick a shape',
+    shapeFor: (name) => `Shape for ${name}`,
+    findShape: 'Find a shape',
+    findShapeHint: 'Find a shape: TV, shelf, box…',
+    shapes: 'Shapes',
+    suggested: 'Suggested',
+    shapesThatMatch: 'Shapes that match',
+    noShape: (q) =>
+      `No shape matches “${q}”. Try Small thing or Small device, and give it a name that says what it is.`,
     putOnMap: 'Put on the map',
     findThingIn: (name) => `Find a thing in ${name}`,
     findThingLabel: 'Find a thing to put on the map',
@@ -366,6 +409,24 @@ export const WORDS: Record<Lang, Words> = {
     kind: 'النوع',
     surface: 'الأرضية',
     shape: 'الشكل',
+    shapeLine: (shape, from) =>
+      from === 'type'
+        ? `الشكل: ${shape}، من نوعه`
+        : from === 'name'
+          ? `الشكل: ${shape}، من اسمه`
+          : from === 'guess'
+            ? `الشكل: ${shape}، تخمين`
+            : `الشكل: ${shape}`,
+    change: 'تغيير',
+    pickShape: 'اختر شكلًا',
+    shapeFor: (name) => `شكل ${name}`,
+    findShape: 'ابحث عن شكل',
+    findShapeHint: 'ابحث عن شكل: تلفاز، رف، صندوق…',
+    shapes: 'الأشكال',
+    suggested: 'مقترح',
+    shapesThatMatch: 'الأشكال المطابقة',
+    noShape: (q) =>
+      `لا يوجد شكل يطابق «${q}». جرّب «شيء صغير» أو «جهاز صغير»، وأعطه اسمًا يقول ما هو.`,
     putOnMap: 'ضع على الخريطة',
     findThingIn: (name) => `ابحث عن شيء في ${name}`,
     findThingLabel: 'ابحث عن شيء لوضعه على الخريطة',

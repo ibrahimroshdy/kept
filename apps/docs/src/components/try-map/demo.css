@@ -161,3 +161,57 @@
     transition: none;
   }
 }
+/* D249: the shape picker, a native modal dialog: a sheet at the bottom on a phone. Its options,
+   pictures and groups are map.css's own (.kshape-*). */
+.kd-shapes {
+  margin: auto;
+  width: min(36rem, calc(100% - 2rem));
+  max-height: min(86dvh, 44rem);
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--sans);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.2);
+}
+:root:lang(ar) .kd-shapes {
+  --sans: var(--arabic);
+  font-family: var(--arabic);
+}
+.kd-shapes[open] {
+  display: grid;
+  gap: 12px;
+}
+.kd-shapes::backdrop {
+  background: rgb(0 0 0 / 0.35);
+}
+.kd-shapes-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.kd-shapes h2 {
+  margin: 0;
+  font: 600 17px / 1.3 var(--sans);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.kd-shapes input {
+  font-family: inherit;
+}
+.kd-shapes-empty {
+  margin: 0;
+  padding: 12px;
+  color: var(--ink-2);
+}
+@media (max-width: 600px) {
+  .kd-shapes {
+    width: 100%;
+    max-width: none;
+    margin: auto 0 0;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+}

@@ -11,11 +11,12 @@
  */
 import {
   canHost,
-  guessModel,
+  isMapModel,
   type MapModelKey,
   type MapRoomKind,
   type MapSurface,
   ROOM_KIND_SURFACE,
+  shapeOnAdd,
 } from '@kept/shared';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQueryClient } from '@tanstack/react-query';
@@ -325,11 +326,20 @@ function MapBody({ data, locationId, name }: { data: MapData; locationId: string
     }
   }
 
+  /** Shapes someone picked in this session, kept if the thing goes off the map and back on. */
+  const chosen = useRef(new Map<string, MapModelKey>());
+
   function addThing(roomId: string, x: MapThingView) {
     mutate((p) => {
       const room = p.rooms.find((r) => r.id === roomId);
       if (!room) return;
-      const model = guessModel({ name: x.name, subject: 'thing' });
+      // D249: a shape someone chose stays; otherwise the first suggestion from its type and
+      // name, said on the card ("from its type") when Kept is sure, a guess to check when not.
+      const stored = data.nodes.find((n) => n.id === x.id)?.layout?.model;
+      const { model, from } = shapeOnAdd(
+        { name: x.name, typeKey: x.typeKey, typeName: x.typeName, isContainer: x.isContainer },
+        chosen.current.get(x.id) ?? (isMapModel(stored) ? stored : null),
+      );
       const it: Item = {
         id: x.id,
         subject: 'thing',
@@ -342,9 +352,10 @@ function MapBody({ data, locationId, name }: { data: MapData; locationId: string
         rot: 0,
         on: null,
         parentId: x.parentId,
-        isContainer: false,
+        isContainer: x.isContainer,
         quantity: x.quantity,
         auto: false,
+        ...(from === 'chosen' ? {} : { shapeFrom: from }),
       };
       clampIn(it, room);
       p.items.push(it);
@@ -358,6 +369,8 @@ function MapBody({ data, locationId, name }: { data: MapData; locationId: string
       const room = p.rooms.find((r) => r.id === it?.roomId);
       if (!it || !room) return;
       it.model = model;
+      delete it.shapeFrom;
+      chosen.current.set(id, model);
       if (!it.on) clampIn(it, room);
       if (!canHost(model)) for (const c of p.items) if (c.on === id) c.on = null;
     });

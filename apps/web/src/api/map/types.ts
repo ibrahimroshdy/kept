@@ -53,6 +53,11 @@ export type MapThingView = {
   shortCode: string | null;
   quantity: number;
   parentId: string;
+  /** Its built-in type (its own or its nearest built-in parent's), for its shape (D249). */
+  typeKey: string | null;
+  /** A custom type's own name ("Television"). */
+  typeName: string | null;
+  isContainer: boolean;
 };
 
 export type MapAttentionKind = 'low' | 'lent' | 'due';

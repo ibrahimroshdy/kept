@@ -536,7 +536,9 @@ export class MapEngine {
     } else {
       let d = this.drawn.get(it.model);
       if (!d) {
-        const key = m.glb ? m.simple : it.model;
+        // A Poly Haven model's stand-in, else the shape's own drawing, else its stand-in (the
+        // tall plant has no model of its own and is drawn as a plant).
+        const key = m.glb ? m.simple : this.BUILD[it.model] ? it.model : m.simple;
         const build = key ? this.BUILD[key] : undefined;
         if (build) build(parts, m.w, m.d);
         else block(parts, it.model, this.F);
