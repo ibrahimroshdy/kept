@@ -86,6 +86,24 @@ export function undoableEventIds(tx: Tx): string[] {
   return out;
 }
 
+/**
+ * A mark in `tx`'s undoable events, for a write that works in savepoints (the spreadsheet's bulk
+ * edit, things/sheet.ts): `undoableSince(tx, mark)` lists the ids written after it, every one in
+ * write order, and `forgetUndoableSince(tx, mark)` drops them when the savepoint rolls back, so
+ * neither the header nor the answer names an event that no longer exists.
+ */
+export function undoableMark(tx: Tx): number {
+  return UNDOABLE.get(tx)?.length ?? 0;
+}
+
+export function undoableSince(tx: Tx, mark: number): string[] {
+  return (UNDOABLE.get(tx) ?? []).slice(mark).map((e) => e.id);
+}
+
+export function forgetUndoableSince(tx: Tx, mark: number): void {
+  UNDOABLE.get(tx)?.splice(mark);
+}
+
 /** Columns every mutable row carries; they change on every write and say nothing. Cache
  * columns (§7.9) are recomputed by triggers and never audited either. */
 const BOOKKEEPING = new Set([

@@ -14,6 +14,12 @@ export const WIDE = '(min-width: 768px)';
  */
 export const DOCKED = '(min-width: 1280px)';
 
+/**
+ * Where the spreadsheet view is offered (1.x, D250): from 1024 px, a desktop or a laptop. Below
+ * it the location keeps List, Grid and Map, and a link to `view=table` shows the list.
+ */
+export const SHEET = '(min-width: 1024px)';
+
 function matches(query: string): boolean {
   try {
     return window.matchMedia(query).matches;

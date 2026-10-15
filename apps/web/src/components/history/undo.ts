@@ -90,7 +90,20 @@ export const UNDO_TOAST_MS = 10_000;
 
 export const undoApi = {
   undo: (eventId: string) => api.post<UndoResult>(p.undo(eventId)),
+  /**
+   * A write's events together, all or none (D250: the spreadsheet's save and bulk actions), at
+   * most UNDO_TOGETHER_MAX a request: a longer list goes newest first, a request at a time.
+   */
+  together: async (eventIds: readonly string[]) => {
+    for (let end = eventIds.length; end > 0; end -= UNDO_TOGETHER_MAX) {
+      const ids = eventIds.slice(Math.max(0, end - UNDO_TOGETHER_MAX), end);
+      await api.post<{ undone: UndoResult[] }>(p.undoTogether, { eventIds: ids });
+    }
+  },
 };
+
+/** The server's limit on one "undo together" (apps/server/src/audit/undo.ts). */
+export const UNDO_TOGETHER_MAX = 400;
 
 type Who = { meId: string | undefined; roleIn: (locationId: string | null) => string | null };
 
@@ -224,6 +237,12 @@ export async function undoEvents(eventIds: readonly string[]): Promise<void> {
 }
 
 export type OfferUndoOptions = {
+  /**
+   * Undo the events as one, all or none, in one request (POST /api/v1/audit/undo, D250): the
+   * spreadsheet's "Save N changes" and bulk actions. Otherwise each is undone on its own,
+   * newest first, and the first refusal is reported.
+   */
+  together?: boolean;
   /** The thing the write was about: a refusal because it changed offers "Open the thing". */
   thingId?: string;
   /** Undo for a write the server recorded nothing undoable for (restore from Trash, say). */
@@ -247,7 +266,12 @@ export function useOfferUndo() {
       auditEvents: readonly string[],
       opts: OfferUndoOptions = {},
     ) => {
-      const run = auditEvents.length > 0 ? () => undoEvents(auditEvents) : (opts.fallback ?? null);
+      const run =
+        auditEvents.length > 0
+          ? opts.together
+            ? () => undoApi.together(auditEvents)
+            : () => undoEvents(auditEvents)
+          : (opts.fallback ?? null);
       toast(
         {
           ...content,

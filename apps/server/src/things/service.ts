@@ -160,8 +160,9 @@ export async function requireThingVersion(
   client: pg.ClientBase,
   id: string,
   expected: number,
+  fields: readonly string[] = ['thingIds'],
 ): Promise<void> {
-  await requireVersion(client, await liveThing(client, id), expected, ['thingIds']);
+  await requireVersion(client, await liveThing(client, id), expected, fields);
 }
 
 /** Where a MoveTarget is, within `locationId`: a live place or a live thing there. 404 for one
@@ -568,6 +569,22 @@ export async function updateThing(
   action: 'thing.update' | 'thing.retype' = 'thing.update',
   extras: UpdateExtras = {},
 ): Promise<ThingView> {
+  await writeThingUpdate(ctx, id, expected, body, action, extras);
+  return viewOf(ctx.tx, ctx.client, ctx.scope, ctx.files, id);
+}
+
+/**
+ * updateThing() without reading the view back: the spreadsheet's bulk edit (sheet.ts) changes up
+ * to 200 things a request and answers with their sheet rows, read together afterwards.
+ */
+export async function writeThingUpdate(
+  ctx: Ctx,
+  id: string,
+  expected: number,
+  body: UpdateBody,
+  action: 'thing.update' | 'thing.retype' = 'thing.update',
+  extras: UpdateExtras = {},
+): Promise<void> {
   const { client, tx, scope } = ctx;
   const thing = await writableThing(client, id, 'things.edit');
   await requireVersion(client, thing, expected, Object.keys(body));
@@ -673,7 +690,6 @@ export async function updateThing(
     requestId: ctx.requestId,
     undoableUntil: extras.undoable === false ? null : undoableUntil(),
   });
-  return viewOf(tx, client, scope, ctx.files, id);
 }
 
 // ---------------------------------------------------------------------------------------------

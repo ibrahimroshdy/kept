@@ -866,6 +866,91 @@ export type MovePreview = {
 export type MoveBody = { thingIds: string[]; to: MoveTarget; quantity?: number };
 export type MoveResult = { moved: string[] };
 
+// ----- the spreadsheet view (1.x, D250) -----------------------------------------------------------
+
+/** GET /api/v1/things/sheet's sorts: the list's, and the sheet's own columns. */
+export type SheetSort =
+  | 'name'
+  | 'updated'
+  | 'lastSeen'
+  | 'brand'
+  | 'model'
+  | 'serial'
+  | 'quantity'
+  | 'expires';
+
+export type SheetParams = Omit<ThingListParams, 'sort'> & { sort?: SheetSort };
+
+/** A row of the sheet: a list row and the columns it edits or shows. */
+export type SheetRow = ThingRow & {
+  rowVersion: number;
+  updatedAt: string;
+  placeId: string | null;
+  containerId: string | null;
+  brand: { id: string; name: string } | null;
+  model: string | null;
+  serial: string | null;
+  barcode: string | null;
+  colour: string | null;
+  condition: Condition | null;
+  notes: string | null;
+  manualUrl: string | null;
+  expiresOn: string | null;
+  tags: { id: string; name: string; colour: string | null }[];
+  belongsTo: { id: string; displayName: string } | null;
+  reviewState: 'draft' | 'confirmed';
+  /** D10: serialized, metered or with a meter: its quantity stays 1. */
+  quantityFixed: boolean;
+  /** Read-only here: the price only where money shows (`moneyHidden` otherwise). */
+  purchase: {
+    purchasedOn: string | null;
+    price?: string;
+    currency?: string;
+    moneyHidden?: true;
+  } | null;
+  /** The warranty that covers it longest; absent where Warranties is off. */
+  warranty?: { endsOn: string | null; lifetime: boolean } | null;
+};
+
+/** What a sheet row's edit may set: the built-in fields, and a place or box here (`to`). */
+export type SheetSet = Pick<
+  UpdateThingBody,
+  | 'name'
+  | 'typeId'
+  | 'quantity'
+  | 'brandId'
+  | 'model'
+  | 'serial'
+  | 'barcode'
+  | 'colour'
+  | 'condition'
+  | 'notes'
+  | 'tagIds'
+  | 'belongsToPersonId'
+  | 'manualUrl'
+  | 'expiresOn'
+> & { to?: MoveTarget };
+
+export type BulkEditBody = { edits: { id: string; rowVersion: number; set: SheetSet }[] };
+export type BulkEditRowResult = {
+  id: string;
+  ok: boolean;
+  status?: number;
+  code?: string;
+  hint?: string;
+  conflicts?: string[];
+  rowVersion?: number;
+  changedBy?: { displayName: string };
+};
+export type BulkEditResult = {
+  results: BulkEditRowResult[];
+  rows: SheetRow[];
+  /** The undoable events the saved rows wrote, for POST /api/v1/audit/undo. */
+  events: string[];
+};
+export type BulkTrashBody = { thingIds: string[]; contents?: 'move' | 'trash' };
+export type BulkTrashResult = { trashed: string[]; moved: string[]; events: string[] };
+
 /** POST /api/v1/things/:id/empty-into ("Empty Box 3 into Box 5", D45). */
 export type EmptyIntoBody = { to: MoveTarget };
 

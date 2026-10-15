@@ -14,6 +14,7 @@ import { connectionsMockRoutes } from '../connections/mock';
 import { householdMockRoutes } from '../household/mock';
 import { insightsMockRoutes } from '../insights/mock';
 import { inventoryMockRoutes } from '../inventory/mock';
+import { sheetRoutes } from '../inventory/mock/sheet';
 import { mailinMockRoutes } from '../mailin/mock';
 import { mapMockRoutes } from '../map/mock';
 import { opsMockRoutes } from '../ops/mock';
@@ -620,6 +621,9 @@ export function createMockApi(state: MockState): MockApi {
   for (const r of insightsMockRoutes(state)) add(r.method, r.template, r.handler);
   // ----- 1.x: the location map and its arrange session (D237) -------------------------------------
   for (const r of mapMockRoutes(state)) add(r.method, r.template, r.handler);
+  // 1.x (D250): the spreadsheet view, last: a later route is tried first, so GET things/:id (the
+  // vehicles area overrides it) doesn't take `sheet` for an id.
+  for (const r of sheetRoutes(state)) add(r.method, r.template, r.handler);
 
   const mockFetch: typeof fetch = async (input, init) => {
     const url = new URL(

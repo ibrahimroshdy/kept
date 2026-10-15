@@ -77,6 +77,14 @@ export const inventoryPaths = {
   move: `${V1}/things/move`,
   thingEmptyInto: (id: string) => `${V1}/things/${seg(id)}/empty-into`,
 
+  // ----- the spreadsheet view (1.x, D250; apps/server/src/things/sheet.ts) -----
+  /** GET: the wide rows of GET /things's filters, sorted by any sheet column. */
+  thingsSheet: `${V1}/things/sheet`,
+  /** POST `{edits}`: "Save N changes", row by row (D128, D156). */
+  thingsBulkEdit: `${V1}/things/bulk-edit`,
+  /** POST `{thingIds, contents?}`: a selection to the Trash, all or none. */
+  thingsBulkTrash: `${V1}/things/bulk-trash`,
+
   // ----- meters and readings (task 16) -----
   thingMeters: (id: string) => `${V1}/things/${seg(id)}/meters`,
   meter: (id: string) => `${V1}/meters/${seg(id)}`,
@@ -119,6 +127,8 @@ export const inventoryPaths = {
   activity: `${V1}/activity`,
   locationActors: (id: string) => `${V1}/locations/${seg(id)}/actors`,
   undo: (eventId: string) => `${V1}/audit/${seg(eventId)}/undo`,
+  /** POST `{eventIds}`: a write's events undone together, all or none (D250). */
+  undoTogether: `${V1}/audit/undo`,
 
   // ----- home and hints (task 22) -----
   home: `${V1}/home`,
@@ -195,6 +205,9 @@ export const METHODS: Record<keyof typeof inventoryPaths, readonly Method[]> = {
   movePreview: ['POST'],
   move: ['POST'],
   thingEmptyInto: ['POST'],
+  thingsSheet: ['GET'],
+  thingsBulkEdit: ['POST'],
+  thingsBulkTrash: ['POST'],
   thingMeters: ['POST'],
   meter: ['PATCH'],
   meterReadings: ['GET', 'POST'],
@@ -223,6 +236,7 @@ export const METHODS: Record<keyof typeof inventoryPaths, readonly Method[]> = {
   activity: ['GET'],
   locationActors: ['GET'],
   undo: ['POST'],
+  undoTogether: ['POST'],
   home: ['GET'],
   homeOverview: ['GET'],
   hints: ['GET'],

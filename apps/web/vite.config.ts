@@ -197,6 +197,8 @@ const COMPONENT_ONLY_ROUTES = new Set<string>([
  */
 const ON_DEMAND_ENTRIES = [
   '/src/components/hints/driver-kit.ts',
+  // 1.x (D250): the spreadsheet view; it reads and writes the server only (sheet/lazy.tsx).
+  '/src/components/sheet/sheet-view.tsx',
   '/papaparse/papaparse.min.js',
   '/src/components/import/parse-config.ts',
 ];

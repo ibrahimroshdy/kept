@@ -100,30 +100,32 @@ export const CreateBody = z
   });
 export type CreateBody = z.infer<typeof CreateBody>;
 
-export const UpdateBody = z
-  .object({
-    name: Text(200),
-    typeId: z.uuid().nullable(),
-    quantity: Quantity,
-    brandId: z.uuid().nullable(),
-    model: NullableText(120),
-    serial: NullableText(100),
-    barcode: NullableText(64),
-    colour: NullableText(60),
-    condition: z.enum(CONDITIONS).nullable(),
-    notes: NullableText(5000),
-    aliases: Aliases,
-    tagIds: z.array(z.uuid()).max(50),
-    belongsToPersonId: z.uuid().nullable(),
-    manualUrl: Url.nullable(),
-    expiresOn: IsoDate.nullable(),
-    expiryLeadDays: z.number().int().min(0).max(3650).nullable(),
-    acquiredFrom: NullableText(200),
-    provenanceNotes: NullableText(5000),
-    custom: Custom,
-  })
-  .partial()
-  .refine((b) => Object.keys(b).length > 0, { message: 'Nothing to change.' });
+/** The fields a thing's edit may change, each optional in UpdateBody; the spreadsheet's bulk
+ * edit (sheet.ts) takes the built-in ones it edits in place. */
+export const UpdateFields = z.object({
+  name: Text(200),
+  typeId: z.uuid().nullable(),
+  quantity: Quantity,
+  brandId: z.uuid().nullable(),
+  model: NullableText(120),
+  serial: NullableText(100),
+  barcode: NullableText(64),
+  colour: NullableText(60),
+  condition: z.enum(CONDITIONS).nullable(),
+  notes: NullableText(5000),
+  aliases: Aliases,
+  tagIds: z.array(z.uuid()).max(50),
+  belongsToPersonId: z.uuid().nullable(),
+  manualUrl: Url.nullable(),
+  expiresOn: IsoDate.nullable(),
+  expiryLeadDays: z.number().int().min(0).max(3650).nullable(),
+  acquiredFrom: NullableText(200),
+  provenanceNotes: NullableText(5000),
+  custom: Custom,
+});
+export const UpdateBody = UpdateFields.partial().refine((b) => Object.keys(b).length > 0, {
+  message: 'Nothing to change.',
+});
 export type UpdateBody = z.infer<typeof UpdateBody>;
 
 export const LifecycleBody = z.object({
