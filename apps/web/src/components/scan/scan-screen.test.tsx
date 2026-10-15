@@ -17,6 +17,7 @@ import { BLANK_CODES, HOMEBOX_ASSET } from '@/api/capture/mock/state';
 import { INV_IDS } from '@/api/inventory/mock/fixtures';
 import { type MockState, ownerScenario } from '@/api/mock/fixtures';
 import { createMockApi, type MockApi } from '@/api/mock/server';
+import { seedMove } from '@/api/moving/mock';
 import type { Detected } from '@/camera/label-recogniser';
 import type { CameraEnv } from '@/camera/session';
 import { BoxCheckScreen } from '@/components/boxcheck/box-check-screen';
@@ -580,5 +581,64 @@ describe('in Arabic', () => {
     await user.keyboard('7KQ4MZ');
     expect(await screen.findByRole('img', { name: '7KQ4MZ' })).toHaveAttribute('dir', 'ltr');
     expectLogicalOnly();
+  });
+});
+
+describe('Scan to unpack (D251)', () => {
+  const MOVE = '01926f00-0000-7000-8000-0000000mv301';
+
+  function moving() {
+    const state = ownerScenario();
+    for (const l of state.locations) if (l.id === L.home) l.modules.push('moving');
+    seedMove(state, {
+      id: MOVE,
+      locationId: L.home,
+      toLocationId: null,
+      name: 'Clear-out',
+      status: 'active',
+      createdBy: { displayName: 'Ibrahim' },
+      createdAt: '2026-10-10T09:00:00Z',
+      finishedAt: null,
+      rowVersion: 1,
+      boxes: [
+        {
+          containerId: T.box3,
+          number: 1,
+          state: 'in_transit',
+          stateAt: '2026-10-10T09:05:00Z',
+          stateBy: null,
+          destinationPlaceId: P.kitchen,
+          rowVersion: 1,
+        },
+      ],
+    });
+    return { state, api: server(state) };
+  }
+
+  it('a box of the move opens its unpack panel; Unpack moves it into its room, and the next box can be scanned', async () => {
+    const { state, api } = moving();
+    const { user, onOpen } = await renderScan({ unpack: MOVE });
+    expect(screen.getByRole('heading', { name: 'Scan to unpack' })).toBeInTheDocument();
+    await scan('https://kept.example/l/B0X3AA');
+    const answer = await screen.findByRole('region', { name: 'Scan result' });
+    expect(await within(answer).findByText('Box 1')).toBeInTheDocument();
+    await user.click(await within(answer).findByRole('button', { name: 'Unpack into Kitchen' }));
+    await waitFor(() =>
+      expect(api.lastCall('POST', `/api/v1/moves/${MOVE}/boxes/${T.box3}/unpack`)).toBeTruthy(),
+    );
+    expect(state.inventory.things.find((t) => t.id === T.box3)?.placeId).toBe(P.kitchen);
+    // Back to the camera for the next box; nothing was opened.
+    await waitFor(() => expect(screen.queryByRole('region', { name: 'Scan result' })).toBeNull());
+    expect(onOpen).not.toHaveBeenCalled();
+  });
+
+  it('a thing that isn’t a box of this move says so, and can be opened', async () => {
+    moving();
+    const { user, onOpen } = await renderScan({ unpack: MOVE });
+    await scan('https://kept.example/l/7KQ4MZ');
+    const answer = await screen.findByRole('region', { name: 'Scan result' });
+    expect(await within(answer).findByText('Not a box of this move')).toBeInTheDocument();
+    await user.click(within(answer).getByRole('button', { name: 'Open it' }));
+    expect(onOpen).toHaveBeenCalled();
   });
 });

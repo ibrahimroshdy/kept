@@ -36,6 +36,7 @@ import { mapRoutes } from '../map/routes.js';
 import { mcpRoutes } from '../mcp/routes.js';
 import { meterRoutes } from '../meters/routes.js';
 import { moneyRoutes } from '../money/routes.js';
+import { movingRoutes } from '../moving/routes.js';
 import type { NotifyDeps } from '../notify/channels.js';
 import { notifyRoutes } from '../notify/routes.js';
 import { oauthRoutes } from '../oauth/routes.js';
@@ -192,6 +193,8 @@ export const INVENTORY_ROUTE_MODULES = [
   insightsRoutes,
   // 1.x (D237): the location map and its arrange session.
   mapRoutes,
+  // 1.x (D251): moving mode, its moves and their boxes.
+  movingRoutes,
 ] as const satisfies readonly ((app: KeptApp, deps: InventoryDeps) => Promise<void>)[];
 
 export async function registerInventoryRoutes(app: KeptApp, deps: InventoryDeps): Promise<void> {

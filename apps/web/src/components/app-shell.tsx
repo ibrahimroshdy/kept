@@ -53,6 +53,7 @@ import {
   SearchIcon,
   TagIcon,
   TrashIcon,
+  TruckIcon,
 } from '@/components/icons';
 import { KindIcon } from '@/components/kind-icon';
 import { shortcutLabel, TipWithKeys } from '@/components/page';
@@ -114,13 +115,15 @@ type NavEntry = {
     | '/paperwork'
     | '/consumables'
     | '/insights'
+    | '/moving'
     | '/notifications';
 };
 
 /**
  * Screens §1's entries, in order. Those without `to` arrive in later steps. An entry that belongs
  * to a module shows only when the module is on in at least one of your locations (§1): Vehicles,
- * Labels, Schedules, Lending, Paperwork, Consumables, and Insights with Money (1.x, D234).
+ * Labels, Schedules, Lending, Paperwork, Consumables, Insights with Money (1.x, D234), and Moving
+ * (1.x, D251).
  * Notifications is core: everyone has it. The Inbox is for members and above (screens §5): a
  * viewer everywhere has no entry for it.
  */
@@ -173,6 +176,12 @@ export function useNavEntries(): NavEntry[] {
       label: t`Insights`,
       icon: <ChartIcon />,
       to: '/insights',
+    }),
+    ...gated(navOn('moving'), {
+      key: 'moving',
+      label: t`Moving`,
+      icon: <TruckIcon />,
+      to: '/moving',
     }),
     ...gated(modulesOn.has('labels'), {
       key: 'labels',

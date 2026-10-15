@@ -27,6 +27,7 @@ export * from './map.js';
 export * from './map-shapes.js';
 export * from './modules.js';
 export * from './money.js';
+export * from './moving.js';
 export * from './normalize.js';
 export * from './ops.js';
 export * from './portability.js';

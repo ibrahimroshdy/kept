@@ -147,12 +147,11 @@ describe('What to track (D191)', () => {
     expect(body.modules).not.toContain('ai_capture');
   });
 
-  it('lists Moving house as coming soon, with no switch, and Complete leaves it out', async () => {
+  it('lists Moving house with its switch (D251), and Complete turns it on', async () => {
     const { user, mock } = await renderApp(url);
     await findHeading('What to track');
-    expect(screen.queryByRole('switch', { name: /Moving house/ })).toBeNull();
-    const row = screen.getByText('Moving house').closest('li') as HTMLElement;
-    expect(within(row).getByText('Coming soon')).toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: /Moving house/ })).toBeInTheDocument();
+    expect(screen.queryByText('Coming soon')).toBeNull();
     await user.click(screen.getByRole('radio', { name: /^Complete/ }));
     await user.click(screen.getByRole('button', { name: 'Save' }));
     await waitFor(() =>
@@ -161,7 +160,7 @@ describe('What to track (D191)', () => {
     const body = mock.lastCall('POST', paths.locationModules(IDS.garage))?.body as {
       modules: string[];
     };
-    expect(body.modules).not.toContain('moving');
+    expect(body.modules).toContain('moving');
   });
 
   it('Fuel needs Vehicles: off and disabled until Vehicles is on', async () => {

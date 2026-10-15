@@ -194,6 +194,10 @@ const CONFLICT_HINTS: Record<string, string> = {
     'Something still stops this account being deleted: a location you own, or being the only instance admin.',
   calendar_feeds_cap: 'You already have 3 calendar links; revoke one first.',
   share_links_cap: 'This location already has 100 live share links; revoke one first.',
+  // 1.x (D251): moving mode. The service refuses first; these answer a race that slips past.
+  move_boxes_pk: 'That box is already in this move.',
+  move_boxes_number_uq: 'Another box just took that number; add the box again.',
+  move_boxes_number_chk: 'A move holds at most 999 boxes.',
   // Step 5 (plan T2): the unique names Phase A declares (T5, T6). One reading has one owner, a
   // fill or a service (Q11); the API refuses first, these are the answer when one slips past.
   fuel_entries_reading_uq: 'That reading already belongs to another fuel entry.',

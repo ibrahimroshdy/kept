@@ -17,6 +17,7 @@ import { inventoryMockRoutes } from '../inventory/mock';
 import { sheetRoutes } from '../inventory/mock/sheet';
 import { mailinMockRoutes } from '../mailin/mock';
 import { mapMockRoutes } from '../map/mock';
+import { movingMockRoutes } from '../moving/mock';
 import { opsMockRoutes } from '../ops/mock';
 import { ops } from '../ops/mock/state';
 import { paperlessMockRoutes } from '../paperless/mock';
@@ -621,6 +622,8 @@ export function createMockApi(state: MockState): MockApi {
   for (const r of insightsMockRoutes(state)) add(r.method, r.template, r.handler);
   // ----- 1.x: the location map and its arrange session (D237) -------------------------------------
   for (const r of mapMockRoutes(state)) add(r.method, r.template, r.handler);
+  // ----- 1.x: moving mode, its moves and boxes (D251) --------------------------------------------
+  for (const r of movingMockRoutes(state)) add(r.method, r.template, r.handler);
   // 1.x (D250): the spreadsheet view, last: a later route is tried first, so GET things/:id (the
   // vehicles area overrides it) doesn't take `sheet` for an id.
   for (const r of sheetRoutes(state)) add(r.method, r.template, r.handler);

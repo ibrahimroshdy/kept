@@ -7,16 +7,19 @@ import { AppError } from '../http/errors.js';
 import type { InventoryDeps } from '../http/routes.js';
 import { scopedRead, scopedWrite } from '../http/write.js';
 import { gatherInsurance, insuranceCsv } from '../incidents/report.js';
+import { locationOfMove } from '../moving/routes.js';
 import {
   ConditionReportBody,
   createConditionRun,
   createInsuranceRun,
   createInventoryRun,
+  createMoveRun,
   createVehicleRun,
   InsuranceReportBody,
   InventoryReportBody,
   insuranceOptionsOf,
   insuranceScope,
+  MoveReportBody,
   ReportRunView,
   reportRunView,
   requireInsuranceReader,
@@ -60,6 +63,11 @@ import {
 //   {reportId, compareWith?, include?: {photos? = true}, locale?: 'en' | 'ar', digits?}
 //   → 202 {id, status: 'queued', expiresAt}; anyone who sees the report, viewers included; 404
 //   for a report they can't see, or a comparison with one of another location; the same limit.
+//
+// A move's contents sheets (1.x, D251), in the Moving mode module of the move's location:
+// POST /api/v1/reports/move {moveId, containerIds?, locale?: 'en' | 'ar', digits?}
+//   → 202 {id, status: 'queued', expiresAt}; anyone who sees the move, viewers included; 404 for a
+//   move they can't see; the same limit.
 
 const Created = z.object({
   id: z.uuid(),
@@ -247,6 +255,30 @@ export async function reportRoutes(app: KeptApp, deps: InventoryDeps): Promise<v
         return await scopedWrite(pools, req, reply, async (tx, client, scope) => ({
           status: 202,
           body: await createConditionRun(tx, client, scope, jobs, req.body, req.id),
+        }));
+      } catch (err) {
+        const retryAfter = err instanceof AppError ? err.extra?.retryAfter : undefined;
+        if (typeof retryAfter === 'number') reply.header('retry-after', String(retryAfter));
+        throw err;
+      }
+    },
+  );
+
+  app.post(
+    '/api/v1/reports/move',
+    {
+      config: {
+        module: 'moving',
+        moduleLocation: locationOfMove(pools, (req) => (req.body as { moveId?: unknown })?.moveId),
+      },
+      schema: { body: MoveReportBody, response: { 202: Created } },
+    },
+    async (req, reply) => {
+      const { jobs } = needs();
+      try {
+        return await scopedWrite(pools, req, reply, async (tx, client, scope) => ({
+          status: 202,
+          body: await createMoveRun(tx, client, scope, jobs, req.body, req.id),
         }));
       } catch (err) {
         const retryAfter = err instanceof AppError ? err.extra?.retryAfter : undefined;

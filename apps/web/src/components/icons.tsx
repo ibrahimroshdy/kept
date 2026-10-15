@@ -529,3 +529,14 @@ export const CloudOffIcon = (p: IconProps) => (
     <path d="M4 4l16 16" />
   </Svg>
 );
+
+/** Moving mode (D251): a van, its load behind the cab. Mirrored in RTL with the reading
+ * direction, like the chevrons. */
+export const TruckIcon = ({ className, ...p }: IconProps) => (
+  <Svg className={`rtl:-scale-x-100 ${className ?? ''}`.trim()} {...p}>
+    <path d="M2.5 6.5h11v9h-11Z" />
+    <path d="M13.5 9.5h4l3 3.5v2.5h-7Z" />
+    <circle cx="6.5" cy="17" r="1.8" />
+    <circle cx="17" cy="17" r="1.8" />
+  </Svg>
+);

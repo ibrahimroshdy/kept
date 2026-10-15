@@ -8,6 +8,8 @@
  * - "Type the code" is always there (and leads when the camera or the decoder can't be used).
  * - **Tray mode** (`?tray=1`, "Scan destination"): a scanned thing is picked up; a scanned place
  *   or box is where everything carried goes, in one move with Undo (D175).
+ * - **Unpack mode** (`?unpack=<move id>`, "Scan to unpack", D251): a scanned box of that move opens
+ *   the unpack panel (components/moving/unpack-answer.tsx): choose its room, Unpack, next box.
  * - A code read offline that the phone doesn't know is kept, and checked here once online.
  *
  * Service-worker updates wait while it is open (T23). The device (camera, decoder, connection) is
@@ -23,6 +25,7 @@ import type { CameraEnv } from '@/camera/session';
 import { useHint } from '@/components/hints/use-hint';
 import { QrIcon, XIcon } from '@/components/icons';
 import { IdChip } from '@/components/id-chip';
+import { UnpackAnswer } from '@/components/moving/unpack-answer';
 import { usePlaceName } from '@/components/places/labels';
 import { Sheet } from '@/components/things/sheet';
 import { moveCarried } from '@/components/tray/move';
@@ -55,6 +58,8 @@ export type ScanScreenProps = {
   store: ScanStore | null;
   /** Looking for where the tray's things go (`?tray=1`). */
   tray?: boolean;
+  /** Unpacking this move's boxes (`?unpack=<move id>`, D251). */
+  unpack?: string | undefined;
   onExit: () => void;
   /** Go to what a scan opened (the route navigates; marking seen is done here). Settles when the navigation does, so the caller can close up after it commits. */
   onOpen: (target: ScanTarget) => void | Promise<void>;
@@ -73,6 +78,8 @@ type Answer = {
   seen?: boolean;
   /** Tray mode: a place or thing to put things into, or to pick up. */
   forTray?: boolean;
+  /** Unpack mode: a box of the move to unpack. */
+  forUnpack?: boolean;
 };
 
 const darkBtn =
@@ -81,6 +88,7 @@ const darkBtn =
 export function ScanScreen({
   store,
   tray: trayAsked = false,
+  unpack,
   onExit,
   onOpen,
   onQueued,
@@ -142,6 +150,11 @@ export function ScanScreen({
           await rememberPendingScan(store, res.text);
           void readPending();
         }
+        if (res.outcome === 'open' && unpack) {
+          setAnswer({ res, forUnpack: true });
+          setManual(false);
+          return;
+        }
         if (res.outcome === 'open' && trayMode) {
           setAnswer({
             res,
@@ -178,7 +191,7 @@ export function ScanScreen({
         setBusy(false);
       }
     },
-    [deps, store, online, trayMode, openTarget, onQueued, readPending, t],
+    [deps, store, online, trayMode, unpack, openTarget, onQueued, readPending, t],
   );
 
   const again = useCallback(() => setAnswer(null), []);
@@ -191,11 +204,13 @@ export function ScanScreen({
     await handle({ text: first.code });
   };
 
-  const title = trayMode
-    ? carried.length > 0
-      ? t`Scan destination`
-      : t`Scan to pick up`
-    : t`Scan`;
+  const title = unpack
+    ? t`Scan to unpack`
+    : trayMode
+      ? carried.length > 0
+        ? t`Scan destination`
+        : t`Scan to pick up`
+      : t`Scan`;
   const paused = !!answer || busy || manual || trayOpen;
 
   return (
@@ -262,7 +277,17 @@ export function ScanScreen({
             <Trans>Looking it up…</Trans>
           </span>
         ) : null}
-        {answer?.forTray ? (
+        {answer?.forUnpack && unpack && answer.res.outcome === 'open' ? (
+          <UnpackAnswer
+            moveId={unpack}
+            target={answer.res.target}
+            store={store}
+            online={online}
+            onQueued={onQueued}
+            onAgain={again}
+            onOpen={(target) => openTarget(target)}
+          />
+        ) : answer?.forTray ? (
           <TrayAnswer
             answer={answer}
             carried={carried}
@@ -328,7 +353,9 @@ export function ScanScreen({
       <div className="grid gap-2 px-3 pt-2.5 pb-3">
         {cantScan ? null : (
           <p className="m-0 text-center text-[#BDB7AC] text-[13px]">
-            {trayMode ? (
+            {unpack ? (
+              <Trans>Point at a box's label, or the code on its contents sheet.</Trans>
+            ) : trayMode ? (
               <Trans>Point at the label of the place or box they go in.</Trans>
             ) : (
               <Trans>Point at a Kept label, or a product's barcode.</Trans>

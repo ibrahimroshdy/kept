@@ -185,6 +185,8 @@ last sync**. With an embeddings model, results "matched by meaning" join the key
   something else**, and anything left unticked becomes *not here*.
 - **Mark seen** and **Not here** keep "last seen" honest, so a thing nobody has seen for a while
   shows up on Home.
+- **Moving house**: pack into numbered boxes, track them in the van, and scan each one at the
+  other end to unpack it into its room ([moving house](/users/moving/)).
 
 ## Vehicles and machines
 

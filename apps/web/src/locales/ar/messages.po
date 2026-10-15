@@ -23991,3 +23991,394 @@ msgstr "تحقق من الخلايا المميزة."
 #: src/components/sheet/sheet-view.tsx
 msgid "Discard my change"
 msgstr "تجاهل تغييري"
+#: src/components/app-shell.tsx
+msgid "Moving"
+msgstr "الانتقال"
+
+#: src/components/moving/move-screen.tsx
+msgid "Scan to unpack"
+msgstr "امسح لتفريغ صندوق"
+
+#: src/components/scan/scan-screen.tsx
+msgid "Point at a box's label, or the code on its contents sheet."
+msgstr "وجّه الكاميرا إلى ملصق الصندوق أو إلى الرمز على قائمة محتوياته."
+
+#: src/components/moving/box-screen.tsx
+msgid "Not a box of this move"
+msgstr "ليس صندوقًا في هذا الانتقال"
+
+#: src/components/moving/box-screen.tsx
+msgid "{title} taken out of the move. The box stays where it is."
+msgstr "أُخرج {title} من الانتقال. يبقى الصندوق في مكانه."
+
+#: src/components/moving/box-screen.tsx
+msgid "Since {when}, by <0>{by}</0>"
+msgstr "منذ {when}، بواسطة <0>{by}</0>"
+
+#: src/components/moving/box-screen.tsx
+msgid "Since {when}"
+msgstr "منذ {when}"
+
+#: src/components/moving/box-screen.tsx
+msgid "Goes to"
+msgstr "يذهب إلى"
+
+#: src/components/moving/box-screen.tsx
+msgid "No room chosen yet"
+msgstr "لم تُحدَّد الغرفة بعد"
+
+#: src/components/moving/box-screen.tsx
+msgid "Choose"
+msgstr "اختر"
+
+#: src/components/moving/box-screen.tsx
+msgid "Now in <0>{0}</0>"
+msgstr "الآن في <0>{0}</0>"
+
+#: src/components/moving/box-screen.tsx
+msgid "It was unpacked into a location you can't see."
+msgstr "فُرِّغ في موقع لا يمكنك رؤيته."
+
+#: src/components/moving/box-screen.tsx
+msgid "Unpack"
+msgstr "فرّغ"
+
+#: src/components/moving/box-screen.tsx
+msgid "Mark in transit"
+msgstr "ضع علامة «في الطريق»"
+
+#: src/components/moving/box-screen.tsx
+msgid "Back to packed"
+msgstr "أعده إلى «معبّأ»"
+
+#: src/components/moving/box-screen.tsx
+msgid "{0, plural, one {Inside: # thing} other {Inside: # things}}"
+msgstr "{0, plural, zero {بداخله: لا شيء} one {بداخله: شيء واحد} two {بداخله: شيئان} few {بداخله: # أشياء} many {بداخله: # شيئًا} other {بداخله: # شيء}}"
+
+#: src/components/moving/box-screen.tsx
+msgid "Loading what's inside"
+msgstr "جارٍ تحميل ما بداخله"
+
+#: src/components/moving/box-screen.tsx
+msgid "Nothing in it yet"
+msgstr "لا شيء فيه بعد"
+
+#: src/components/moving/box-screen.tsx
+msgid "Open the box to add things here, or pack with the scanner."
+msgstr "افتح الصندوق لتضيف أشياء هنا، أو عبّئه بالماسح."
+
+#: src/components/moving/box-screen.tsx
+msgid "{0, plural, one {Holds # thing} other {Holds # things}}"
+msgstr "{0, plural, zero {لا يحوي شيئًا} one {يحوي شيئًا واحدًا} two {يحوي شيئين} few {يحوي # أشياء} many {يحوي # شيئًا} other {يحوي # شيء}}"
+
+#: src/components/moving/box-screen.tsx
+msgid "As this phone last saw it."
+msgstr "كما رآه هذا الهاتف آخر مرة."
+
+#: src/components/moving/box-screen.tsx
+msgid "Open the box"
+msgstr "افتح الصندوق"
+
+#: src/components/moving/box-screen.tsx
+msgid "Pack with the scanner"
+msgstr "عبّئ بالماسح"
+
+#: src/components/moving/box-screen.tsx
+msgid "Contents sheet"
+msgstr "قائمة المحتويات"
+
+#: src/components/moving/box-screen.tsx
+msgid "Take {title} out of the move?"
+msgstr "إخراج {title} من الانتقال؟"
+
+#: src/components/moving/box-screen.tsx
+msgid "The box and what's in it stay where they are."
+msgstr "يبقى الصندوق وما فيه في مكانهما."
+
+#: src/components/moving/box-screen.tsx
+msgid "Take it out"
+msgstr "أخرجه"
+
+#: src/components/moving/box-screen.tsx
+msgid "Take it out of the move"
+msgstr "أخرجه من الانتقال"
+
+#: src/components/moving/box-screen.tsx
+msgid "Unpack {title}"
+msgstr "فرّغ {title}"
+
+#: src/components/moving/box-screen.tsx
+msgid "Room it goes to"
+msgstr "الغرفة التي يذهب إليها"
+
+#: src/components/moving/box-write.tsx
+msgid "{name} unpacked into {where}"
+msgstr "فُرِّغ {name} في {where}"
+
+#: src/components/moving/box-write.tsx
+msgid "{name}: {0}"
+msgstr "{name}: {0}"
+
+#: src/components/moving/box-write.tsx
+msgid "Everything in the box goes with it."
+msgstr "كل ما في الصندوق ينتقل معه."
+
+#: src/components/moving/box-write.tsx
+msgid "Unpack into {where}"
+msgstr "فرّغه في {where}"
+
+#: src/components/moving/box-write.tsx
+msgid "Choose a room"
+msgstr "اختر غرفة"
+
+#: src/components/moving/labels.ts
+msgid "Packed"
+msgstr "معبّأ"
+
+#: src/components/moving/labels.ts
+msgid "In transit"
+msgstr "في الطريق"
+
+#: src/components/moving/labels.ts
+msgid "Unpacked"
+msgstr "تم تفريغه"
+
+#: src/components/moving/labels.ts
+msgid "In progress"
+msgstr "جارٍ"
+
+#: src/components/moving/labels.ts
+msgid "Box {number}"
+msgstr "صندوق {number}"
+
+#: src/components/moving/move-screen.tsx
+msgid "Loading the move"
+msgstr "جارٍ تحميل الانتقال"
+
+#: src/components/moving/move-screen.tsx
+msgid "Open this move once with a connection, and it is on this phone after that."
+msgstr "افتح هذا الانتقال مرة واحدة مع اتصال، وسيكون على هذا الهاتف بعدها."
+
+#: src/components/moving/move-screen.tsx
+msgid "Every box is unpacked"
+msgstr "فُرِّغت كل الصناديق"
+
+#: src/components/moving/move-screen.tsx
+msgid "Mark the move done when you're settled in."
+msgstr "ضع علامة «تم» على الانتقال حين تستقر."
+
+#: src/components/moving/move-screen.tsx
+msgid "{0, plural, one {# box still to unpack} other {# boxes still to unpack}}"
+msgstr "{0, plural, zero {لا صناديق باقية للتفريغ} one {صندوق واحد باقٍ للتفريغ} two {صندوقان باقيان للتفريغ} few {# صناديق باقية للتفريغ} many {# صندوقًا باقيًا للتفريغ} other {# صندوق باقٍ للتفريغ}}"
+
+#: src/components/moving/move-screen.tsx
+msgid "Goes to <0>{0}</0>"
+msgstr "يذهب إلى <0>{0}</0>"
+
+#: src/components/moving/move-screen.tsx
+msgid "In a location you can't see"
+msgstr "في موقع لا يمكنك رؤيته"
+
+#: src/components/moving/move-screen.tsx
+msgid "Move deleted. Its boxes stay where they are."
+msgstr "حُذف الانتقال. تبقى صناديقه في أماكنها."
+
+#: src/components/moving/move-screen.tsx
+msgid "As of {asOf}. Changes you make wait on this phone and sync when you're online."
+msgstr "حتى {asOf}. التغييرات التي تجريها تنتظر على هذا الهاتف وتُزامَن حين تتصل."
+
+#: src/components/moving/move-screen.tsx
+msgid "This move is marked done. Open it again to change its boxes."
+msgstr "هذا الانتقال معلَّم بأنه تم. أعد فتحه لتغيير صناديقه."
+
+#: src/components/moving/move-screen.tsx
+msgid "Add a box"
+msgstr "أضف صندوقًا"
+
+#: src/components/moving/move-screen.tsx
+msgid "Contents sheets"
+msgstr "قوائم المحتويات"
+
+#: src/components/moving/move-screen.tsx
+msgid "Mark every packed box in transit?"
+msgstr "وضع علامة «في الطريق» على كل الصناديق المعبّأة؟"
+
+#: src/components/moving/move-screen.tsx
+msgid "{0, plural, one {# box is going in the van.} other {# boxes are going in the van.}}"
+msgstr "{0, plural, zero {لا صناديق ستُحمَّل في الشاحنة.} one {صندوق واحد سيُحمَّل في الشاحنة.} two {صندوقان سيُحمَّلان في الشاحنة.} few {# صناديق ستُحمَّل في الشاحنة.} many {# صندوقًا سيُحمَّل في الشاحنة.} other {# صندوق سيُحمَّل في الشاحنة.}}"
+
+#: src/components/moving/move-screen.tsx
+msgid "Mark all in transit"
+msgstr "ضع علامة «في الطريق» على الكل"
+
+#: src/components/moving/move-screen.tsx
+msgid "Search boxes"
+msgstr "ابحث في الصناديق"
+
+#: src/components/moving/move-screen.tsx
+msgid "Number, name or room"
+msgstr "الرقم أو الاسم أو الغرفة"
+
+#: src/components/moving/move-screen.tsx
+msgid "by room"
+msgstr "حسب الغرفة"
+
+#: src/components/moving/move-screen.tsx
+msgid "No boxes yet"
+msgstr "لا صناديق بعد"
+
+#: src/components/moving/move-screen.tsx
+msgid "Each box gets a number. Print its label, pack it, and scan it at the other end."
+msgstr "يأخذ كل صندوق رقمًا. اطبع ملصقه وعبّئه وامسحه في الطرف الآخر."
+
+#: src/components/moving/move-screen.tsx
+msgid "Mark the move done"
+msgstr "ضع علامة «تم» على الانتقال"
+
+#: src/components/moving/move-screen.tsx
+msgid "Open it again"
+msgstr "أعد فتحه"
+
+#: src/components/moving/move-screen.tsx
+msgid "Delete this move?"
+msgstr "حذف هذا الانتقال؟"
+
+#: src/components/moving/move-screen.tsx
+msgid "The boxes and everything in them stay where they are; only their numbers and states go."
+msgstr "تبقى الصناديق وكل ما فيها في أماكنها؛ تُحذف أرقامها وحالاتها فقط."
+
+#: src/components/moving/move-screen.tsx
+msgid "Delete the move"
+msgstr "احذف الانتقال"
+
+#: src/components/moving/move-screen.tsx
+msgid "{name} added"
+msgstr "أُضيف {name}"
+
+#: src/components/moving/moves-screen.tsx
+msgid "{0, plural, one {# box} other {# boxes}}"
+msgstr "{0, plural, zero {لا صناديق} one {صندوق واحد} two {صندوقان} few {# صناديق} many {# صندوقًا} other {# صندوق}}"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Start a move"
+msgstr "ابدأ انتقالًا"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Offline: these are the moves this phone has opened."
+msgstr "غير متصل: هذه الانتقالات التي فتحها هذا الهاتف."
+
+#: src/components/moving/moves-screen.tsx
+msgid "Moves"
+msgstr "الانتقالات"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Search moves"
+msgstr "ابحث في الانتقالات"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Name or location"
+msgstr "الاسم أو الموقع"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Started"
+msgstr "بدأ"
+
+#: src/components/moving/moves-screen.tsx
+msgid "by status"
+msgstr "حسب الحالة"
+
+#: src/components/moving/moves-screen.tsx
+msgid "No moves yet"
+msgstr "لا انتقالات بعد"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Moving house? Pack into numbered boxes, print a label and a contents sheet for each, and scan a box at the other end to unpack it into its room."
+msgstr "تنتقل إلى بيت جديد؟ عبّئ في صناديق مرقّمة، واطبع لكل منها ملصقًا وقائمة محتويات، وامسح الصندوق في الطرف الآخر لتفرغه في غرفته."
+
+#: src/components/moving/moves-screen.tsx
+msgid "Give the move a name."
+msgstr "أعطِ الانتقال اسمًا."
+
+#: src/components/moving/moves-screen.tsx
+msgid "To the new house"
+msgstr "إلى البيت الجديد"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Packing up"
+msgstr "ما يُعبَّأ"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Going to"
+msgstr "إلى"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Rooms of {fromName}"
+msgstr "غرف {fromName}"
+
+#: src/components/moving/moves-screen.tsx
+msgid "Moving to a new home? Add it as a location first, so each box can be unpacked into its rooms."
+msgstr "تنتقل إلى بيت جديد؟ أضفه كموقع أولًا، لتفرغ كل صندوق في غرفه."
+
+#: src/components/moving/room-picker.tsx
+msgid "This location has no rooms yet."
+msgstr "لا غرف في هذا الموقع بعد."
+
+#: src/components/moving/sheets.tsx
+msgid "It gets the next number. Put things in it from its page, or with the scanner."
+msgstr "يأخذ الرقم التالي. ضع فيه أشياء من صفحته أو بالماسح."
+
+#: src/components/moving/sheets.tsx
+msgid "Room it goes to (optional)"
+msgstr "الغرفة التي يذهب إليها (اختياري)"
+
+#: src/components/moving/sheets.tsx
+msgid "Add the box"
+msgstr "أضف الصندوق"
+
+#: src/components/moving/sheets.tsx
+msgid "A page per box: its number, the room it goes to, what's inside and its code. Tape it to the box; scanning the code opens the box in Kept."
+msgstr "صفحة لكل صندوق: رقمه والغرفة التي يذهب إليها وما بداخله ورمزه. ألصقها على الصندوق؛ مسح الرمز يفتح الصندوق في Kept."
+
+#: src/components/moving/sheets.tsx
+msgid "Add a box first."
+msgstr "أضف صندوقًا أولًا."
+
+#: src/components/moving/unpack-answer.tsx
+msgid "Already unpacked into <0>{0}</0>."
+msgstr "فُرِّغ بالفعل في <0>{0}</0>."
+
+#: src/components/moving/unpack-answer.tsx
+msgid "Already unpacked."
+msgstr "فُرِّغ بالفعل."
+
+#: src/components/moving/unpack-answer.tsx
+msgid "Scan another box"
+msgstr "امسح صندوقًا آخر"
+
+#: src/components/history/labels.ts
+msgid "Move started"
+msgstr "بدأ الانتقال"
+
+#: src/components/history/labels.ts
+msgid "Move changed"
+msgstr "تغيّر الانتقال"
+
+#: src/components/history/labels.ts
+msgid "Move deleted"
+msgstr "حُذف الانتقال"
+
+#: src/components/history/labels.ts
+msgid "Added to a move as a box"
+msgstr "أُضيف إلى انتقال كصندوق"
+
+#: src/components/history/labels.ts
+msgid "Moving box changed"
+msgstr "تغيّر صندوق الانتقال"
+
+#: src/components/history/labels.ts
+msgid "Box unpacked"
+msgstr "فُرِّغ الصندوق"
+
+#: src/components/history/labels.ts
+msgid "Taken out of a move"
+msgstr "أُخرج من انتقال"

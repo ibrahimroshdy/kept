@@ -76,6 +76,7 @@ const sidebar = [
     page('users/first-run'),
     page('users/everyday-use'),
     page('users/location-map'),
+    page('users/moving'),
     page('users/phone-app'),
     page('users/ai-providers'),
     page('admin/ollama'),

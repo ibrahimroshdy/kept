@@ -582,12 +582,20 @@ function byLocation(rows: SnapRemoved[]): Map<string, Set<string>> {
   return out;
 }
 
-/** The thing ids a queued op shows on (a capture's new id, a move's things). */
+/** The thing ids a queued op shows on (a capture's new id, a move's things, a box unpacked into
+ * a room, D251). */
 function touchedIds(e: QueueEntry): string[] {
-  const p = (e.payload ?? {}) as { id?: unknown; thingIds?: unknown };
+  const p = (e.payload ?? {}) as {
+    id?: unknown;
+    thingIds?: unknown;
+    containerId?: unknown;
+    placeId?: unknown;
+  };
   if (e.op === 'create_thing' && typeof p.id === 'string') return [p.id];
   if (e.op === 'move' && Array.isArray(p.thingIds))
     return p.thingIds.filter((x): x is string => typeof x === 'string');
+  if (e.op === 'move_box' && typeof p.containerId === 'string' && typeof p.placeId === 'string')
+    return [p.containerId];
   return [];
 }
 

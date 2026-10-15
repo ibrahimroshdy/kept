@@ -18,6 +18,7 @@ export * from './mailboxes.js';
 export * from './map.js';
 export * from './meters.js';
 export * from './money.js';
+export * from './moving.js';
 export * from './notify.js';
 export * from './operations.js';
 export * from './paperless.js';

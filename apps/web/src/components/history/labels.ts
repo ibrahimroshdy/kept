@@ -401,6 +401,14 @@ export function useSummary() {
       // 1.5 (D233): read-only share links.
       'share_link.create': t`Share link made`,
       'share_link.revoke': t`Share link revoked`,
+      // 1.x (D251): moving mode, a move and its boxes.
+      'move.create': t`Move started`,
+      'move.update': t`Move changed`,
+      'move.delete': t`Move deleted`,
+      'move_box.create': t`Added to a move as a box`,
+      'move_box.update': t`Moving box changed`,
+      'move_box.unpack': t`Box unpacked`,
+      'move_box.delete': t`Taken out of a move`,
       // 1.x (D248): Paperless-ngx, the connection and the links to its documents.
       'paperless.connect': t`Paperless connected`,
       'paperless.update': t`Paperless connection changed`,

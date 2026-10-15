@@ -222,6 +222,19 @@ export async function fillHousehold(c: pg.ClientBase, t: Tenant, label: string):
     [t.locationId, report, `${label} living room`, t.userId],
   );
 
+  // Moving mode (1.x, D251): a move with the valued thing as its box 1, going to its own place.
+  const move = await one(
+    `INSERT INTO public.moves (location_id, name, created_by) VALUES ($1, $2, $3) RETURNING id`,
+    [t.locationId, `${label} move`, t.userId],
+  );
+  const boxRoom = await one('SELECT place_id AS id FROM public.things WHERE id = $1', [thing]);
+  await c.query(
+    `INSERT INTO public.move_boxes (location_id, move_id, container_id, number,
+                                    destination_place_id, created_by)
+     VALUES ($1, $2, $3, 1, $4, $5)`,
+    [t.locationId, move, thing, boxRoom, t.userId],
+  );
+
   for (const [column, subject] of [
     ['condition_room_id', conditionRoom],
     ['warranty_id', warranty],
