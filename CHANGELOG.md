@@ -3,6 +3,20 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.5.0 (2026-10-15)
+
+### Features
+
+- **insights:** see spending, value, vehicle costs and warranty cover across locations (D234) (#76) (e2757b7)
+- **services:** a service line can use stock from a consumable (D236) (#75) (a846e63)
+- **share:** read-only share links for a box, a place or a search (D233) (#74) (fe9a5d3)
+- **condition:** record a rented home's condition at move-in and move-out (D235) (#73) (50b03ea)
+- **notify:** Apprise channels, through the operator's Apprise API server (D232) (#72) (a7ca8e8)
+
+### Documentation
+
+- **release:** the 1.4.1 record (#71) (b44e015)
+
 ## 1.4.1 (2026-10-14)
 
 ### Fixes
