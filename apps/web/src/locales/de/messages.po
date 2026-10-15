@@ -23431,3 +23431,47 @@ msgstr "Erledigt"
 #: src/components/schedules/labels.tsx
 msgid "Done {day}"
 msgstr "Erledigt am {day}"
+
+#: src/try/banner.tsx
+msgid "A sample household in your browser. Nothing is saved."
+msgstr "Ein Beispielhaushalt in deinem Browser. Nichts wird gespeichert."
+
+#: src/try/banner.tsx
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+#: src/try/off.ts
+msgid "Off in this demo: this would open another site."
+msgstr "In dieser Demo aus: Das würde eine andere Website öffnen."
+
+#: src/components/scan/scanner-view.tsx
+msgid "The camera is off in this demo."
+msgstr "Die Kamera ist in dieser Demo aus."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Push is off in this demo."
+msgstr "Push ist in dieser Demo aus."
+
+#: src/components/capture/file-fallback.tsx
+msgid "The camera is off in this demo"
+msgstr "Die Kamera ist in dieser Demo aus"
+
+#: src/components/capture/file-fallback.tsx
+msgid "In your own Kept, Capture opens the camera here. Photos you pick stay in this tab."
+msgstr "In deinem eigenen Kept öffnet Erfassen hier die Kamera. Fotos, die du auswählst, bleiben in diesem Tab."
+
+#: src/components/device/app-lock-settings.tsx
+msgid "The app lock is off in this demo."
+msgstr "Die App-Sperre ist in dieser Demo aus."
+
+#: src/try/files.ts
+msgid "Downloads are off in this demo."
+msgstr "Downloads sind in dieser Demo aus."
+
+#: src/components/reports/progress.tsx
+msgid "Your own Kept makes the PDF here. This demo has no files."
+msgstr "Dein eigenes Kept erstellt hier das PDF. Diese Demo hat keine Dateien."
+
+#: src/assistant/conversation.tsx
+msgid "Sample answers in this demo: no AI is asked."
+msgstr "Beispielantworten in dieser Demo: Es wird keine KI gefragt."

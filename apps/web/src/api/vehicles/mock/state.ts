@@ -34,6 +34,7 @@ import type {
   StoredServiceRecord,
 } from '../../household/mock/state';
 import { accessOf, liveThing, type StoredThing } from '../../inventory/mock/db';
+import { PIXEL } from '../../inventory/mock/files';
 import { INV_IDS } from '../../inventory/mock/fixtures';
 import type { ActorRef, Reading, ReadingSource, TypeDetail } from '../../inventory/types';
 import { fixtureMoney } from '../../mock/dollars';
@@ -260,7 +261,7 @@ function seedThings(state: MockState): void {
   make(V.thing.elantra, {
     locationId: IDS.family,
     name: 'هيونداي إلنترا',
-    shortCode: 'EL4N7R',
+    shortCode: 'E1N7RA',
     type: typeRef(I.type.car),
     placeId: I.place.familyUnplaced,
     containerId: null,
@@ -390,8 +391,11 @@ export function readingList(state: MockState, meterId: string): Reading[] {
   return list;
 }
 
-/** The mock serves every file's thumbnail at one blank data URL; the id keeps them apart. */
-export const thumb = (fileId: string) => `/f/${fileId}/thumb`;
+/**
+ * The mock serves every file's thumbnail at one blank data URL; the id keeps them apart. A data
+ * URL, not `/f/…`: no server answers that in the demo (D246, Try Kept on a static host).
+ */
+export const thumb = (fileId: string) => `${PIXEL}#${fileId}`;
 
 function seedProofs(state: MockState, v: VehiclesState): void {
   const odo = state.inventory.readings[COROLLA.meter] ?? [];

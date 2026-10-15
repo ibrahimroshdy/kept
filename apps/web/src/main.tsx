@@ -1,5 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { createHashHistory, createRouter, RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createQueryClient } from '@/api/queries';
@@ -7,6 +7,7 @@ import { activateLocale, i18n } from '@/i18n/i18n';
 import { initialLocale, setLocale, storedDigits, watchSystemTheme } from '@/lib/prefs';
 import { captureInstallPrompt } from '@/pwa/install';
 import { registerServiceWorker } from '@/pwa/register';
+import { TRY } from '@/try/flag';
 import { routeTree } from './routeTree.gen';
 import './styles/index.css';
 
@@ -22,7 +23,13 @@ try {
 } catch {}
 
 const queryClient = createQueryClient();
-const router = createRouter({ routeTree, context: { queryClient } });
+// Try Kept (D246, try/flag.ts) is served from a static host's sub-path with one index.html: hash
+// history keeps every route, and a reload of one, inside that page.
+const router = createRouter({
+  routeTree,
+  context: { queryClient },
+  ...(TRY ? { history: createHashHistory() } : {}),
+});
 
 declare module '@tanstack/react-router' {
   interface Register {
@@ -40,10 +47,12 @@ async function start() {
   }
   // The service worker exists only in a build (vite.config.ts); it registers only in a secure
   // context (pwa/register.ts). The install prompt is caught before the browser offers its own.
-  captureInstallPrompt();
+  // Try Kept (D246) installs nothing: no worker, no install prompt.
+  if (!TRY) captureInstallPrompt();
   // A share link's page (`/s/<token>`, D233) is for someone without an account: no offline app
   // is installed for them.
-  if (import.meta.env.PROD && !window.location.pathname.startsWith('/s/')) registerServiceWorker();
+  if (import.meta.env.PROD && !TRY && !window.location.pathname.startsWith('/s/'))
+    registerServiceWorker();
   const locale = initialLocale();
   // Offline, a catalogue that was never loaded online isn't cached (sw.ts): fall back to English,
   // then to no catalogue, so the shell still renders.

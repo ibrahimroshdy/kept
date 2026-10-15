@@ -16,6 +16,7 @@ import { Notice, useErrorText } from '@/components/page';
 import { sep } from '@/lib/format';
 import { useKeyHints } from '@/lib/key-hints';
 import { useOnline } from '@/lib/online';
+import { TRY } from '@/try/flag';
 import { assistantOff } from './button';
 import { Composer } from './composer';
 import { contextBody, type PageContext } from './context';
@@ -129,7 +130,10 @@ export function Conversation({
     );
   };
 
-  const privateNote = keys ? (
+  // Try Kept (D246): no AI is called; the demo answers from a few written samples.
+  const privateNote = TRY ? (
+    <Trans>Sample answers in this demo: no AI is asked.</Trans>
+  ) : keys ? (
     <Trans>Enter to send · this thread is private to you</Trans>
   ) : (
     <Trans>This thread is private to you</Trans>

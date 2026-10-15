@@ -23431,3 +23431,47 @@ msgstr "مُنجز"
 #: src/components/schedules/labels.tsx
 msgid "Done {day}"
 msgstr "أُنجز في {day}"
+
+#: src/try/banner.tsx
+msgid "A sample household in your browser. Nothing is saved."
+msgstr "منزل تجريبي في متصفحك. لا يُحفظ شيء."
+
+#: src/try/banner.tsx
+msgid "Reset"
+msgstr "إعادة تعيين"
+
+#: src/try/off.ts
+msgid "Off in this demo: this would open another site."
+msgstr "متوقف في هذا العرض التجريبي: كان سيفتح موقعًا آخر."
+
+#: src/components/scan/scanner-view.tsx
+msgid "The camera is off in this demo."
+msgstr "الكاميرا متوقفة في هذا العرض التجريبي."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Push is off in this demo."
+msgstr "الإشعارات الفورية متوقفة في هذا العرض التجريبي."
+
+#: src/components/capture/file-fallback.tsx
+msgid "The camera is off in this demo"
+msgstr "الكاميرا متوقفة في هذا العرض التجريبي"
+
+#: src/components/capture/file-fallback.tsx
+msgid "In your own Kept, Capture opens the camera here. Photos you pick stay in this tab."
+msgstr "في Kept الخاص بك، يفتح «التقاط» الكاميرا هنا. الصور التي تختارها تبقى في هذا التبويب."
+
+#: src/components/device/app-lock-settings.tsx
+msgid "The app lock is off in this demo."
+msgstr "قفل التطبيق متوقف في هذا العرض التجريبي."
+
+#: src/try/files.ts
+msgid "Downloads are off in this demo."
+msgstr "التنزيلات متوقفة في هذا العرض التجريبي."
+
+#: src/components/reports/progress.tsx
+msgid "Your own Kept makes the PDF here. This demo has no files."
+msgstr "‏Kept الخاص بك يصنع ملف PDF هنا. لا ملفات في هذا العرض التجريبي."
+
+#: src/assistant/conversation.tsx
+msgid "Sample answers in this demo: no AI is asked."
+msgstr "إجابات تجريبية في هذا العرض: لا يُسأل أي ذكاء اصطناعي."

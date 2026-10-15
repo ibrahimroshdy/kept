@@ -49,6 +49,7 @@ All in [`scripts/`](https://github.com/keptinventory/kept/tree/main/scripts):
 | `render-icons.mjs` | Every logo file from one geometry (the pierced mark and the KEPT lockup): the web app's and docs site's favicons, the docs logo, the app icons and the README lockups. Run it after changing `apps/web/src/components/brand.tsx`, and commit the outputs ([the brand](/developers/ui-kit/#the-brand-and-the-tape)). |
 | `render-social-preview.mjs` | Draws `docs/assets/social-preview.png` (1280×640) from the lockup in headless Chromium; the maintainer uploads it in the repository's settings (Settings → General → Social preview). |
 | `capture-screens.mjs` | Builds the web app's demo bundle, serves it locally and captures every app screenshot on the docs site (English and Arabic, light and dark, desktop and phone) and the README hero in headless Chromium; `--skip-build` reuses `apps/web/dist-demo`. Run it after a visible change to the app's shell, and commit the outputs. |
+| `check-try-kept.mjs` | Serves the built docs site (`pnpm docs:build`) as GitHub Pages does and walks [Try Kept](/try/kept/) in headless Chromium: the docs pages load none of the app, then Home → a location → a thing → Search → Labels → Reset at 1280 and 375 px, light and dark, and in Arabic, with every device API stubbed. Fails on a console error, a failed or off-site request, a device asked for, a service worker or anything left in IndexedDB; `--shots <dir>` keeps the screenshots. Run it after a change to the app's shell or the demo. |
 
 ## ci-local, step by step
 

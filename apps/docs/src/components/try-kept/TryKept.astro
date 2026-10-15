@@ -1,0 +1,106 @@
+---
+import { tryAppHref } from '../../try-kept';
+/**
+ * "Try Kept" (D246): the note and the button that open the whole app with a sample household
+ * (the web app's demo build at /try/kept/app/, src/try-kept.ts), and the app on a desktop and a
+ * phone as a picture of what opens. The app is a page of its own, so no script or style of it
+ * reaches this page or any other: this page's own script is the few lines below, which add the
+ * docs theme to the link when it is followed, so the app opens in the theme the page is in.
+ */
+import Opened from '../landing/Opened.astro';
+
+interface Props {
+  lang: 'en' | 'ar';
+}
+
+const { lang } = Astro.props;
+const href = tryAppHref(import.meta.env.BASE_URL, lang);
+const t = {
+  en: {
+    note: 'The whole app with a sample household, in your browser. Nothing is saved or sent.',
+    open: 'Open Kept',
+    desktop:
+      "Kept's Home on a desktop: Get started, the Needs you tiles, the locations with their map previews, shortcuts and Insights",
+    phone: "Kept's Home on a phone: the Needs you tiles and the shortcuts, above the tab bar",
+  },
+  ar: {
+    note: 'التطبيق كاملًا مع منزل تجريبي، في متصفحك. لا يُحفظ شيء ولا يُرسل.',
+    open: 'افتح Kept',
+    desktop:
+      'الصفحة الرئيسية في Kept على حاسوب: بطاقات «يحتاجك» والمواقع بمعاينات خرائطها والاختصارات',
+    phone: 'الصفحة الرئيسية في Kept على هاتف: بطاقات «يحتاجك» والاختصارات فوق شريط التبويب',
+  },
+}[lang];
+---
+
+<div class="kd-try not-content">
+  <div class="kd-note">
+    <p>{t.note}</p>
+    <a class="kd-btn primary" href={href} data-try-kept>{t.open}</a>
+  </div>
+  <a class="kd-try-shot" href={href} data-try-kept tabindex="-1" aria-hidden="true">
+    <Opened desktopAlt={t.desktop} phoneAlt={t.phone} />
+  </a>
+</div>
+
+<script>
+  // The docs theme along with the link (Starlight sets data-theme on <html>).
+  for (const a of document.querySelectorAll<HTMLAnchorElement>('a[data-try-kept]')) {
+    a.addEventListener('click', () => {
+      const theme = document.documentElement.dataset.theme;
+      if (theme !== 'light' && theme !== 'dark') return;
+      const url = new URL(a.href);
+      url.searchParams.set('theme', theme);
+      a.href = url.href;
+    });
+  }
+</script>
+
+<style>
+  .kd-try {
+    display: grid;
+    gap: 1.5rem;
+    margin-block-start: 0.5rem;
+  }
+  .kd-note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+  .kd-note p {
+    margin: 0;
+  }
+  .kd-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid var(--amber);
+    background: var(--amber);
+    color: var(--amber-ink);
+    font: 600 14px / 1 var(--sans);
+    text-decoration: none;
+  }
+  :root:lang(ar) .kd-btn {
+    font-family: var(--arabic);
+  }
+  .kd-btn:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
+  .kd-try-shot {
+    display: block;
+    max-inline-size: 48rem;
+    color: inherit;
+    text-decoration: none;
+  }
+</style>

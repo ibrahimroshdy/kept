@@ -35,6 +35,7 @@ import { signOut } from '@/api/auth';
 import type { KeptDb } from '@/offline/db';
 import type { LockRecord } from '@/offline/lock';
 import { lockOffline } from '@/offline/open';
+import { TRY } from '@/try/flag';
 
 const LockScreen = lazy(() => import('./lock-screen'));
 
@@ -71,7 +72,8 @@ export function useAppLock(): AppLock | null {
   return useContext(AppLockContext);
 }
 
-const supportedHere = () => typeof indexedDB !== 'undefined' && !!globalThis.crypto?.subtle;
+// Try Kept (D246): no lock, no passkey, nothing kept on the device.
+const supportedHere = () => !TRY && typeof indexedDB !== 'undefined' && !!globalThis.crypto?.subtle;
 const ACTIVITY = ['pointerdown', 'keydown', 'touchstart', 'wheel'] as const;
 
 export function AppLockGate({ userId, children }: { userId: string; children: ReactNode }) {

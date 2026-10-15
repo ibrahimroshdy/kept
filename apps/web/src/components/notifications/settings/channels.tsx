@@ -309,6 +309,8 @@ function ThisDevice({ settings }: { settings: NotificationSettings }) {
       <Trans>Push isn't set up on this server. Email and the notification centre still work.</Trans>
     ) : blocker === 'unsupported' ? (
       <Trans>This browser can't receive notifications from Kept. Email still reaches you.</Trans>
+    ) : blocker === 'demo' ? (
+      <Trans>Push is off in this demo.</Trans>
     ) : blocker === 'denied' ? (
       <Trans>
         Notifications are blocked for Kept in this browser's settings. Allow them there, then come

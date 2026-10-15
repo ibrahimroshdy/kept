@@ -1,2 +1,4 @@
 # Generated at build time by scripts/openapi.ts (the API reference reads it).
 openapi/
+# Try Kept (D246): the web app's demo build, written by scripts/try-app.ts.
+public/try/kept/app/

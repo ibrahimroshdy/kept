@@ -18,6 +18,8 @@ import { signedInGate } from '@/lib/signed-in-gate';
 import { cn } from '@/lib/utils';
 import { InsecureBanner } from '@/pwa/insecure-banner';
 import { PwaStoreBridge } from '@/pwa/store-bridge';
+import { TryBanner } from '@/try/banner';
+import { TRY } from '@/try/flag';
 
 export const Route = createFileRoute('/_app')({
   beforeLoad: signedInGate,
@@ -94,6 +96,8 @@ function SignedInFrame() {
   return (
     <AppLockGate userId={me.data.user.id}>
       <MainShell locations={locations.data ?? []} counts={counts}>
+        {/* Try Kept (D246): a constant, so other builds drop the banner altogether. */}
+        {TRY ? <TryBanner /> : null}
         <InsecureBanner />
         <PwaStoreBridge />
         <Outlet />

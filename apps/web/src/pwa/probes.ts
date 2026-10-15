@@ -10,6 +10,7 @@
  * happens only when the person taps a mic.
  */
 import { dictationLang, dictationSupport, lastDictationError } from '@/assistant/dictation';
+import { TRY } from '@/try/flag';
 import heicUrl from './probe.heic?url';
 
 export type ProbeStatus = 'ok' | 'fail' | 'info';
@@ -139,6 +140,8 @@ const probes: Record<ProbeKey, Probe> = {
   },
 
   async camera() {
+    // Try Kept (D246) never asks for the camera.
+    if (TRY) return { status: 'info', facts: ['off-in-demo'] };
     if (!navigator.mediaDevices?.getUserMedia) return { status: 'fail', facts: ['unsupported'] };
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: false,

@@ -13,6 +13,7 @@
  *   "this device" from the others. The same endpoint posted again updates it (T15).
  */
 import { householdApi } from '@/api/household/queries';
+import { TRY } from '@/try/flag';
 import { isAppleMobile } from './install';
 
 /** Where this device's subscription id is kept. Per device, never synced. */
@@ -28,7 +29,9 @@ export type PushBlocker =
   /** This browser has no Push API or notifications. */
   | 'unsupported'
   /** The person, or the browser, blocked notifications for Kept. */
-  | 'denied';
+  | 'denied'
+  /** Try Kept on the docs site (D246): no worker, so no push. */
+  | 'demo';
 
 /** Whether Kept runs as the installed app (a Home Screen web app or an installed PWA). */
 export function isStandalone(): boolean {
@@ -53,6 +56,7 @@ function browserHasPush(): boolean {
 
 /** What stops push on this device, or null when Enable can be offered. */
 export function pushBlocker(server: { available: boolean; reason?: string }): PushBlocker | null {
+  if (TRY) return 'demo';
   if (typeof window !== 'undefined' && window.isSecureContext === false) return 'no_https';
   if (!server.available) return server.reason === 'no_https' ? 'no_https' : 'server';
   if (isAppleMobile() && !isStandalone()) return 'ios_not_installed';

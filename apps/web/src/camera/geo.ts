@@ -9,6 +9,7 @@
  * device keeps a copy so capture knows it offline, and adopts the server's when /me loads.
  */
 import type { SnapLocation } from '@kept/shared';
+import { TRY } from '@/try/flag';
 
 export type Position = { latitude: number; longitude: number };
 
@@ -42,6 +43,8 @@ export function nearestLocation(
 export type Geo = Pick<Geolocation, 'getCurrentPosition'>;
 
 export function deviceGeo(): Geo | null {
+  // Try Kept (D246) never asks for the position.
+  if (TRY) return null;
   return typeof navigator !== 'undefined' && navigator.geolocation ? navigator.geolocation : null;
 }
 

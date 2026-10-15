@@ -19,6 +19,30 @@ export function FileFallback({
   onFiles: (files: File[], fromCamera: boolean) => void;
 }) {
   const { t } = useLingui();
+  // Try Kept (D246): the camera is never asked for; photos you have still work, in memory.
+  if (problem === 'demo')
+    return (
+      <div className="grid content-center gap-3 p-4 text-[#F2EFE9]">
+        <h2 className="m-0 font-semibold text-[18px]">
+          <Trans>The camera is off in this demo</Trans>
+        </h2>
+        <p className="m-0 text-[#BDB7AC] text-[14px]">
+          <Trans>
+            In your own Kept, Capture opens the camera here. Photos you pick stay in this tab.
+          </Trans>
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <FilePick
+            multiple
+            onFiles={(f) => onFiles(f, false)}
+            className={`${btn} bg-amber text-amber-ink`}
+          >
+            <GalleryIcon />
+            {t`Choose photos`}
+          </FilePick>
+        </div>
+      </div>
+    );
   const reason =
     problem === 'insecure'
       ? t`The camera needs a secure (HTTPS) address, and this page doesn't have one. Your admin can put Kept on HTTPS.`

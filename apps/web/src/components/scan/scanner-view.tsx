@@ -112,15 +112,17 @@ export function ScannerView({
     const reason =
       p === 'no_scanner'
         ? t`This browser can't read codes with the camera.`
-        : p === 'insecure'
-          ? t`The camera needs a secure (HTTPS) address, and this page doesn't have one. Your admin can put Kept on HTTPS.`
-          : p === 'denied'
-            ? t`Camera access is off for Kept.`
-            : p === 'no_camera'
-              ? t`This device has no camera Kept can use.`
-              : p === 'busy'
-                ? t`Another app is using the camera. Close it, then come back.`
-                : t`This browser can't open the camera here.`;
+        : p === 'demo'
+          ? t`The camera is off in this demo.`
+          : p === 'insecure'
+            ? t`The camera needs a secure (HTTPS) address, and this page doesn't have one. Your admin can put Kept on HTTPS.`
+            : p === 'denied'
+              ? t`Camera access is off for Kept.`
+              : p === 'no_camera'
+                ? t`This device has no camera Kept can use.`
+                : p === 'busy'
+                  ? t`Another app is using the camera. Close it, then come back.`
+                  : t`This browser can't open the camera here.`;
     return (
       <div className="grid h-full content-center gap-2 p-4 text-[#F2EFE9]" role="status">
         <p className="m-0 font-semibold text-[17px]">

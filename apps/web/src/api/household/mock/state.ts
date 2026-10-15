@@ -260,7 +260,7 @@ export function householdFixtures(meId: string): HouseholdState {
         template: I.thing.drill,
         locationId: garage,
         name: 'Aluminium ladder, 3 m',
-        shortCode: 'L4DD3R',
+        shortCode: 'D4DD3R',
         placeId: I.place.toolWall,
         containerId: null,
         brand: null,

@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { toast } from '@/components/ui/toast';
 import { sep } from '@/lib/format';
+import { TRY } from '@/try/flag';
 import { type PinResult, useAppLock } from './app-lock';
 import { PinSheet, type PinStep } from './pin-sheet';
 
@@ -35,6 +36,8 @@ export function AppLockSettings({ keptCount }: { keptCount: number }) {
     };
   }, []);
 
+  // Try Kept (D246): nothing is kept on the device, so there is nothing to lock.
+  if (TRY) return <Notice tone="info" title={<Trans>The app lock is off in this demo.</Trans>} />;
   if (!lock?.supported) {
     return (
       <Notice tone="info" title={<Trans>Not available in this browser</Trans>}>

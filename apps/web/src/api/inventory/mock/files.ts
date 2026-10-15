@@ -9,7 +9,7 @@ import type { AttachmentView, CreateAttachmentBody, FileClass, FileView } from '
 import { accessOf, newId, paginate } from './db';
 
 /** A 1×1 amber PNG, for thumbs and display URLs in tests and the demo. */
-const PIXEL =
+export const PIXEL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
 
 /** Which location each uploaded file belongs to, for the per-location dedupe (D177). */

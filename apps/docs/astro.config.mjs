@@ -24,6 +24,10 @@
 // .glb models are bundled from apps/web/src/map into that page's own chunk and assets, never
 // loaded by any other page.
 //
+// /try/kept/ (D246) opens the whole app with a sample household: the web app's demo build, built by
+// scripts/try-app.ts (run by `build`) into public/try/kept/app/ under this site's base, a page of
+// its own that no other page loads anything from.
+//
 // Nothing here loads a remote font, script or stylesheet. Astro's telemetry is turned off by the
 // package scripts (ASTRO_TELEMETRY_DISABLED=1), so a build makes no network call at all.
 //
@@ -176,7 +180,9 @@ export default defineConfig({
         // base (`pnpm docs:build` locally), not by this one.
         starlightLinksValidator({
           errorOnFallbackPages: false,
+          // Try Kept's app (D246) is a static page in public/, not a content page.
           exclude: ({ link }) =>
+            link.startsWith(`${prefix}/try/kept/app/`) ||
             link === `${prefix}/api/` ||
             link.startsWith(`${prefix}/api/`) ||
             (prefix !== '' && link.startsWith('/') && !link.startsWith(`${prefix}/`)),

@@ -342,9 +342,12 @@ function serviceRoute(e: HistoryEvent): {
 
 function entityRoute(
   e: HistoryEvent,
-): { to: '/t/$id' | '/p/$id' | '/loc/$id'; params: { id: string } } | null {
+): { to: '/t/$id' | '/p/$id' | '/loc/$id'; params: { id: string } } | { to: '/trash' } | null {
   const id = e.entity.id;
   if (!id) return null;
+  // Moved to Trash: its own page can't open it any more; Trash lists it, with Restore (D246's
+  // route walk found Home's row opening "This isn't here any more").
+  if (e.summaryKey === 'thing.trash' || e.summaryKey === 'place.trash') return { to: '/trash' };
   // The short address when the row names one (D208), so the page needn't replace it on arrival.
   const address = addressOf({ id, shortCode: e.entity.shortCode ?? null });
   if (e.entity.type === 'thing') return { to: '/t/$id', params: { id: address } };

@@ -8,6 +8,7 @@ import { useLingui } from '@lingui/react/macro';
 import { type ReactNode, useRef } from 'react';
 import { Button } from 'react-aria-components';
 import { cn } from '@/lib/utils';
+import { TRY } from '@/try/flag';
 
 export function FilePick({
   children,
@@ -49,7 +50,7 @@ export function FilePick({
         aria-hidden="true"
         accept={accept}
         multiple={multiple}
-        {...(camera ? { capture: 'environment' as const } : {})}
+        {...(camera && !TRY ? { capture: 'environment' as const } : {})}
         onChange={(e) => {
           const files = [...(e.currentTarget.files ?? [])];
           e.currentTarget.value = '';

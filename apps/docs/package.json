@@ -6,9 +6,10 @@
   "description": "Kept's documentation site (Starlight, D102, D199): built to static files in dist/, published to GitHub Pages at https://keptinventory.info/.",
   "scripts": {
     "dev": "pnpm run gen:openapi && ASTRO_TELEMETRY_DISABLED=1 astro dev",
-    "build": "pnpm run gen:openapi && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "build": "pnpm run gen:openapi && pnpm run gen:try && ASTRO_TELEMETRY_DISABLED=1 astro build",
     "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "gen:openapi": "tsx scripts/openapi.ts openapi/kept.json",
+    "gen:try": "tsx scripts/try-app.ts",
     "gen:config": "tsx scripts/env-reference.ts src/content/docs/reference/configuration.md",
     "check:config": "tsx scripts/env-reference.ts --check src/content/docs/reference/configuration.md",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.try-map.json"
