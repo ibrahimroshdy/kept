@@ -1,0 +1,233 @@
+---
+/**
+ * The landing page's short recording: a muted loop that plays by itself as the page loads, with
+ * no click (`autoplay muted loop playsinline`), and a small button to pause it. There are two
+ * recordings, Try Kept in light and in dark; the clip follows the site's theme (Starlight's
+ * `data-theme` on <html>, dark unless it says light, as kept.css reads it), switches with it while
+ * the page is open, and never loads both up front.
+ *
+ * Loading: the page ships the video with no source, no poster and `preload="none"`, so nothing
+ * of it is fetched while the page parses. The script below sets the theme's poster and adds its
+ * sources as soon as the hero image (the largest paint) has loaded, or on the window's load event
+ * if that comes first: the clip loads early but never competes with the hero. It plays only while
+ * on screen.
+ *
+ * Under `prefers-reduced-motion: reduce` (or the browser's data saver) it never starts: the
+ * theme's poster stays, and the button plays it on request. Without JavaScript the site is dark
+ * (no data-theme), and the dark poster shows as an image.
+ *
+ * `label` says in words what the recording shows, for anyone who can't watch it.
+ */
+interface Clip {
+  webm: string;
+  mp4: string;
+  poster: string;
+}
+interface Props {
+  light: Clip;
+  dark: Clip;
+  width: number;
+  height: number;
+  label: string;
+  /** The button's names, while playing and while paused. */
+  pause: string;
+  play: string;
+}
+const { light, dark, width, height, label, pause, play } = Astro.props;
+---
+
+<figure
+  class="kd-loop"
+  data-loop-clip
+  data-light={JSON.stringify(light)}
+  data-dark={JSON.stringify(dark)}
+>
+  <video
+    autoplay
+    muted
+    loop
+    playsinline
+    disablepictureinpicture
+    preload="none"
+    width={width}
+    height={height}
+    aria-label={label}
+  >
+  </video>
+  <noscript><img src={dark.poster} alt="" width={width} height={height} loading="lazy" /></noscript>
+  <button type="button" class="kd-loop-toggle" hidden data-pause={pause} data-play={play} aria-label={play}>
+    <svg class="kd-loop-pause" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3h3v10H4zM9 3h3v10H9z"></path></svg>
+    <svg class="kd-loop-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 2.5v11l9-5.5z"></path></svg>
+  </button>
+</figure>
+
+<script>
+  type Clip = { webm: string; mp4: string; poster: string };
+  const still =
+    matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+  const root = document.documentElement;
+  const theme = () => (root.dataset.theme === 'light' ? 'light' : 'dark');
+
+  for (const fig of document.querySelectorAll<HTMLElement>('[data-loop-clip]')) {
+    const video = fig.querySelector('video');
+    const button = fig.querySelector<HTMLButtonElement>('.kd-loop-toggle');
+    if (!video || !button) continue;
+    const clips: Record<'light' | 'dark', Clip> = {
+      light: JSON.parse(fig.dataset.light ?? '{}'),
+      dark: JSON.parse(fig.dataset.dark ?? '{}'),
+    };
+    let shown: 'light' | 'dark' | null = null; // the theme whose poster is set
+    let loaded: 'light' | 'dark' | null = null; // the theme whose sources are in
+    let ready = false; // the hero image is in (or the window has loaded)
+    let wanted = !still; // false once the reader pauses it, and under reduced motion
+    let visible = false;
+
+    const poster = () => {
+      shown = theme();
+      video.poster = clips[shown].poster;
+    };
+    const load = () => {
+      const t = theme();
+      if (loaded === t) return;
+      // On a switch it starts over in the other theme; only the caller decides whether it plays.
+      if (loaded) video.autoplay = false;
+      loaded = t;
+      video.replaceChildren(
+        ...(['webm', 'mp4'] as const).map((kind) => {
+          const source = document.createElement('source');
+          source.type = `video/${kind}`;
+          source.src = clips[t][kind];
+          return source;
+        }),
+      );
+      video.load();
+    };
+    const sync = () => {
+      const playing = !video.paused;
+      fig.dataset.state = playing ? 'playing' : 'paused';
+      button.setAttribute('aria-label', (playing ? button.dataset.pause : button.dataset.play) ?? '');
+    };
+    const run = () => {
+      if (!wanted || !ready) return;
+      load(); // loads as soon as the hero is in, on screen or not
+      if (visible) video.play().catch(() => sync());
+      else if (!video.paused) video.pause();
+    };
+
+    video.addEventListener('play', () => {
+      // The autoplay attribute can start it while it is still off screen: wait until it shows.
+      if (!visible) video.pause();
+      sync();
+    });
+    video.addEventListener('pause', sync);
+    button.addEventListener('click', () => {
+      wanted = video.paused;
+      if (wanted) {
+        load();
+        video.play().catch(() => sync());
+      } else {
+        video.autoplay = false;
+        video.pause();
+      }
+    });
+    button.hidden = false;
+
+    if (still) video.removeAttribute('autoplay');
+    // The poster and the video wait for the hero image, so neither delays the largest paint.
+    const hero = document.querySelector<HTMLImageElement>('.kd-hero-art img');
+    const start = () => {
+      if (ready) return;
+      ready = true;
+      poster();
+      run();
+    };
+    if (!hero || hero.complete) start();
+    else {
+      hero.addEventListener('load', start, { once: true });
+      hero.addEventListener('error', start, { once: true });
+      addEventListener('load', start, { once: true });
+    }
+
+    // The theme switcher (or the system, under Auto) changes data-theme: follow it.
+    new MutationObserver(() => {
+      if (!ready || shown === theme()) return;
+      poster();
+      // Swapping the sources of a paused clip fetches nothing (preload="none") and shows the
+      // new poster; a playing one carries on in the other theme.
+      if (loaded) {
+        const playing = !video.paused;
+        load();
+        if (playing) video.play().catch(() => sync());
+      }
+    }).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+
+    // Plays only while on screen.
+    new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        visible = e.isIntersecting;
+        if (visible) run();
+        else if (!video.paused) video.pause();
+      }
+    }).observe(video);
+    sync();
+  }
+</script>
+
+<style>
+  .kd-loop {
+    position: relative;
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    overflow: hidden;
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.06),
+      0 18px 40px -18px rgb(0 0 0 / 0.28);
+  }
+  .kd-loop video,
+  .kd-loop noscript img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+  .kd-loop noscript img {
+    position: absolute;
+    inset: 0;
+  }
+  .kd-loop-toggle {
+    position: absolute;
+    inset-block-end: 0.5rem;
+    inset-inline-end: 0.5rem;
+    display: grid;
+    place-items: center;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 0.25);
+    border-radius: 50%;
+    background: rgb(20 18 14 / 0.72);
+    color: #fff;
+    cursor: pointer;
+  }
+  .kd-loop-toggle:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
+  .kd-loop-toggle svg {
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+    fill: currentColor;
+  }
+  .kd-loop-pause,
+  [data-state='paused'] .kd-loop-pause {
+    display: none;
+  }
+  [data-state='playing'] .kd-loop-pause {
+    display: block;
+  }
+  [data-state='playing'] .kd-loop-play {
+    display: none;
+  }
+</style>

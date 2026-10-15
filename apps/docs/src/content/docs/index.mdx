@@ -26,6 +26,26 @@ import Cards from '../../components/landing/Cards.astro';
 import Opened from '../../components/landing/Opened.astro';
 import Integrations from '../../components/landing/Integrations.astro';
 import Gallery from '../../components/landing/Gallery.astro';
+import LoopClip from '../../components/landing/LoopClip.astro';
+import clipDarkMp4 from '../../assets/clips/map-add-tv-short-dark.mp4?url';
+import clipDarkPoster from '../../assets/clips/map-add-tv-short-dark-poster.webp?url';
+import clipDarkWebm from '../../assets/clips/map-add-tv-short-dark.webm?url';
+import clipMp4 from '../../assets/clips/map-add-tv-short.mp4?url';
+import clipPoster from '../../assets/clips/map-add-tv-short-poster.webp?url';
+import clipWebm from '../../assets/clips/map-add-tv-short.webm?url';
+
+<Section title="Put a TV on the map" id="map-clip" split>
+  <Fragment slot="lede">Pick the TV. Its shape comes from its type.</Fragment>
+  <LoopClip
+    light={{ webm: clipWebm, mp4: clipMp4, poster: clipPoster }}
+    dark={{ webm: clipDarkWebm, mp4: clipDarkMp4, poster: clipDarkPoster }}
+    width={960}
+    height={514}
+    label="Putting a TV on the map in Try Kept's sample household: the living room, Arrange, the Samsung TV from the list, its card saying Shape: TV, from its type, then Done."
+    pause="Pause the clip"
+    play="Play the clip"
+  />
+</Section>
 
 <Section eyebrow="Kept, opened" title="One inventory, on your desktop and your phone" id="opened" split>
   <Fragment slot="points">

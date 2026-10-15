@@ -26,6 +26,26 @@ import Cards from '../../../components/landing/Cards.astro';
 import Opened from '../../../components/landing/Opened.astro';
 import Integrations from '../../../components/landing/Integrations.astro';
 import Gallery from '../../../components/landing/Gallery.astro';
+import LoopClip from '../../../components/landing/LoopClip.astro';
+import clipDarkMp4 from '../../../assets/clips/map-add-tv-short-dark.mp4?url';
+import clipDarkPoster from '../../../assets/clips/map-add-tv-short-dark-poster.webp?url';
+import clipDarkWebm from '../../../assets/clips/map-add-tv-short-dark.webm?url';
+import clipMp4 from '../../../assets/clips/map-add-tv-short.mp4?url';
+import clipPoster from '../../../assets/clips/map-add-tv-short-poster.webp?url';
+import clipWebm from '../../../assets/clips/map-add-tv-short.webm?url';
+
+<Section title="ضع تلفازًا على الخريطة" id="map-clip" split>
+  <Fragment slot="lede">اختر التلفاز. شكله يأتي من نوعه.</Fragment>
+  <LoopClip
+    light={{ webm: clipWebm, mp4: clipMp4, poster: clipPoster }}
+    dark={{ webm: clipDarkWebm, mp4: clipDarkMp4, poster: clipDarkPoster }}
+    width={960}
+    height={514}
+    label="وضع تلفاز على الخريطة في المنزل التجريبي في «جرّب Kept»: غرفة المعيشة، ثم «رتّب»، ثم تلفاز Samsung من القائمة، وبطاقته تقول «الشكل: تلفاز، من نوعه»، ثم «تم». التطبيق في التسجيل بالإنجليزية."
+    pause="أوقف المقطع مؤقتًا"
+    play="شغّل المقطع"
+  />
+</Section>
 
 <Section eyebrow="Kept مفتوحًا" title="جرد واحد، على حاسوبك وهاتفك" id="opened" split>
   <Fragment slot="points">
