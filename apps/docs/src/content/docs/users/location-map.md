@@ -9,6 +9,8 @@ what it is, where it is and what's inside. List stays the default; Kept remember
 each location on each device. In Map, the map leads and fills the screen; the location's
 buttons (Print inventory, Print labels and the rest), **Add here** and **Unplaced** follow it.
 
+To see it before installing anything, [try the map](/try/map/) with a sample home in your browser.
+
 ![A home on its map: rooms with their floors and walls, a TV unit selected with its card showing Inside · 5 and Details, the List · Grid · Map switch at the top](../../../assets/screens/map-desktop-light.webp)
 
 ![The same home on the map in the dark theme](../../../assets/screens/map-desktop-dark.webp)

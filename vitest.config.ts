@@ -9,7 +9,7 @@ const workers = Number(process.env.KEPT_TEST_WORKERS);
 
 export default defineConfig({
   test: {
-    projects: ['packages/*', 'apps/server', 'apps/web', 'scripts'],
+    projects: ['packages/*', 'apps/server', 'apps/web', 'apps/docs', 'scripts'],
     ...(Number.isInteger(workers) && workers > 0 ? { maxWorkers: workers } : {}),
   },
 });
