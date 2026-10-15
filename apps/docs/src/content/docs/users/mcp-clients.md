@@ -145,7 +145,7 @@ higher. The part of Kept a tool needs is the name under **What to track**.
 | `add_warranty` | change | Receipts and warranties | Record a warranty: its kind, and when it ends or how many months. |
 | `open_claim` | change | Receipts and warranties | Open a warranty claim for a thing. |
 | `update_claim` | change | Receipts and warranties | Change a claim's status or reference. |
-| `log_service` | change | | Record a service: date, who did it, total, lines, and the schedules it completes. |
+| `log_service` | change | | Record a service: date, who did it, total, lines (each may use stock from a consumable), and the schedules it completes. |
 | `log_fuel` | change | Fuel | Record a fill-up: amount, unit, cost, whether full, and the odometer. |
 | `adjust_stock` | change | Things you run out of | Add to or take from a consumable's stock. |
 

@@ -129,6 +129,23 @@ describe('TOOL_DEFS', () => {
     expect(input.safeParse({ items: Array(21).fill({ name: 'x' }) }).success).toBe(false);
   });
 
+  it('log_service lines may use stock (D236): a consumable, and how much only with one', () => {
+    const input = TOOL_DEFS.log_service.input;
+    const base = { thing_id: 'K7D2QX', serviced_on: '2026-10-01' };
+    const line = (l: object) => ({ ...base, lines: [{ description: 'Oil change', ...l }] });
+    expect(
+      input.safeParse(line({ consumable_thing_id: 'H4M9TR', consumed_quantity: 4.5 })).success,
+    ).toBe(true);
+    expect(input.safeParse(line({ consumable_thing_id: 'H4M9TR' })).success).toBe(true);
+    expect(input.safeParse(line({ consumed_quantity: 2 })).success).toBe(false);
+    expect(
+      input.safeParse(line({ consumable_thing_id: 'H4M9TR', consumed_quantity: 0 })).success,
+    ).toBe(false);
+    expect(
+      input.safeParse(line({ consumable_thing_id: 'H4M9TR', consumed_quantity: 1.2345 })).success,
+    ).toBe(false);
+  });
+
   it('refuses an empty update and a zero stock delta', () => {
     expect(TOOL_DEFS.update_thing.input.safeParse({ thing_id: 'K7D2QX', fields: {} }).success).toBe(
       false,

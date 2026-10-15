@@ -22336,6 +22336,7 @@ msgstr "لم يتبقَّ من {name} إلا {left}."
 msgid "Only {left} left."
 msgstr "لم يتبقَّ إلا {left}."
 
+#: src/assistant/confirm-card.tsx
 #: src/components/services/log-service-sheet.tsx
 msgid "From stock"
 msgstr "من المخزون"

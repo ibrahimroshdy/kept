@@ -11,7 +11,15 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import type { TestApp } from '../../test/app.js';
 import { type TestDb, testDb } from '../../test/db.js';
 import { call, join, type Person, peopleApp, person } from '../../test/people.js';
-import { createLocation, eventsOf, type Loc, ok, own } from '../../test/things.js';
+import {
+  builtinType,
+  createLocation,
+  createThing,
+  eventsOf,
+  type Loc,
+  ok,
+  own,
+} from '../../test/things.js';
 import { runTool, toolsFor } from './context.js';
 import { handledTools } from './registry.js';
 import type { ToolContext } from './types.js';
@@ -26,7 +34,8 @@ let ibrahim: Person;
 let louis: Person;
 let talia: Person;
 let home: Loc;
-let garage: Loc; // essentials: Schedules off
+let garage: Loc; // essentials: Schedules off, Consumables off
+let filters: string;
 
 beforeAll(async () => {
   db = await testDb();
@@ -40,6 +49,7 @@ beforeAll(async () => {
   await join(db, home.id, louis.userId, 'member');
   await join(db, home.id, talia.userId, 'viewer');
   await join(db, garage.id, louis.userId, 'member');
+  filters = await builtinType(db, 'filters');
 });
 
 let seq = 0;
@@ -214,5 +224,140 @@ describe('log_service (step 5)', () => {
       completes: ['0192f0c3-7c55-7000-8000-000000000009'],
     });
     expect(isToolError(env)).toBe(true);
+  });
+});
+
+describe('log_service from stock (D236)', () => {
+  const quantityOf = async (id: string) =>
+    (
+      await own<{ q: string }>(
+        db,
+        'SELECT trim_scale(quantity)::text AS q FROM public.things WHERE id = $1',
+        [id],
+      )
+    )[0]?.q;
+  const shelf = async (name: string, quantity: number, loc: Loc = home) =>
+    (await createThing(t, ibrahim, loc, { name, typeId: filters, quantity })).id as string;
+  const codeOf = async (id: string) =>
+    (
+      await own<{ code: string }>(
+        db,
+        'SELECT code FROM public.short_ids WHERE thing_id = $1 AND is_primary',
+        [id],
+      )
+    )[0]?.code as string;
+
+  it('a line takes stock from a consumable named by short ID; how much, else 1', async () => {
+    const thing = await car('Stock car');
+    const oil = await shelf('Engine oil 5W-30', 5);
+    const filter = await shelf('Oil filter', 3);
+    const out = await data(louis, 'log_service', {
+      location_id: home.id,
+      thing_id: thing,
+      serviced_on: await today(),
+      lines: [
+        {
+          description: 'Oil change',
+          amount: { amount: '900', currency: 'EGP' },
+          consumable_thing_id: (await codeOf(oil)).toLowerCase(),
+          consumed_quantity: 4.5,
+        },
+        { description: 'Oil filter', consumable_thing_id: filter },
+        { description: 'Check-up' },
+      ],
+    });
+    expect(await quantityOf(oil)).toBe('0.5');
+    expect(await quantityOf(filter)).toBe('2');
+    const lines = await own<Record<string, unknown>>(
+      db,
+      `SELECT description, consumable_thing_id AS stock,
+              trim_scale(consumed_quantity)::text AS consumed
+         FROM public.service_lines WHERE service_record_id = $1 ORDER BY sort`,
+      [out.service_id],
+    );
+    expect(lines).toEqual([
+      { description: 'Oil change', stock: oil, consumed: '4.5' },
+      { description: 'Oil filter', stock: filter, consumed: null },
+      { description: 'Check-up', stock: null, consumed: null },
+    ]);
+    // On the consumable's history, as Louis, linked to the service.
+    const events = (await eventsOf(db, home.id, oil)).filter((e) => e.action === 'thing.stock_use');
+    expect(events.map((e) => e.actor_id)).toEqual([louis.userId]);
+    expect(events[0]?.diff.quantity).toMatchObject({ after: '0.5' });
+    expect(events[0]?.diff.service_record_id).toMatchObject({ after: out.service_id });
+  });
+
+  it('refuses more than is left, saying what is left on which line, and writes nothing', async () => {
+    const thing = await car('Short car');
+    const oil = await shelf('Gear oil', 2);
+    const env = await tool(louis, 'log_service', {
+      location_id: home.id,
+      thing_id: thing,
+      serviced_on: await today(),
+      lines: [
+        { description: 'Wash' },
+        { description: 'Gearbox oil', consumable_thing_id: oil, consumed_quantity: 3 },
+      ],
+    });
+    expect(env).toMatchObject({ error: 'not_enough_stock' });
+    const hint = (env as { hint: string }).hint;
+    expect(hint).toContain('lines.1.consumed_quantity');
+    expect(hint).toContain('only 2 left');
+    // A name is user-written text: never in a hint (D179).
+    expect(hint).not.toContain('Gear oil');
+    expect(await quantityOf(oil)).toBe('2');
+    expect(
+      await own(db, 'SELECT 1 FROM public.service_records WHERE thing_id = $1', [thing]),
+    ).toEqual([]);
+  });
+
+  it('refuses a thing that is not a consumable, one elsewhere, a lone quantity, and Consumables off', async () => {
+    const thing = await car('Picky car');
+    const day = await today();
+    const drill = (await createThing(t, ibrahim, home, { name: 'Drill' })).id as string;
+    const notConsumable = await tool(louis, 'log_service', {
+      location_id: home.id,
+      thing_id: thing,
+      serviced_on: day,
+      lines: [{ description: 'Drilled', consumable_thing_id: drill }],
+    });
+    expect(notConsumable).toMatchObject({ error: 'not_consumable' });
+    expect((notConsumable as { hint: string }).hint).toContain('lines.0.consumable_thing_id');
+
+    const elsewhere = await shelf('Garage filter', 4, garage);
+    expect(
+      await tool(louis, 'log_service', {
+        location_id: home.id,
+        thing_id: thing,
+        serviced_on: day,
+        lines: [{ description: 'Filter', consumable_thing_id: elsewhere }],
+      }),
+    ).toMatchObject({ error: 'not_found', hint: expect.stringContaining('lines.0') });
+
+    expect(
+      await tool(louis, 'log_service', {
+        location_id: home.id,
+        thing_id: thing,
+        serviced_on: day,
+        lines: [{ description: 'Oil', consumed_quantity: 2 }],
+      }),
+    ).toMatchObject({ error: 'validation' });
+
+    // The garage is on Essentials: no Consumables, so the line can't take stock there (D113).
+    const garageCar = await car('Garage stock car', garage);
+    expect(
+      await tool(louis, 'log_service', {
+        location_id: garage.id,
+        thing_id: garageCar,
+        serviced_on: day,
+        lines: [{ description: 'Filter', consumable_thing_id: elsewhere }],
+      }),
+    ).toMatchObject({ error: 'tool_unavailable' });
+    expect(await quantityOf(elsewhere)).toBe('4');
+    expect(
+      await own(db, 'SELECT 1 FROM public.service_records WHERE thing_id = ANY($1::uuid[])', [
+        [thing, garageCar],
+      ]),
+    ).toEqual([]);
   });
 });

@@ -131,6 +131,9 @@ costs and, on Complete, fuel.
   refuses more than is left. Editing the line, removing it, deleting the service or undoing any of
   these puts the count right again; an invoice still being read takes nothing until you save it.
   The consumable's **History** shows "Used Oil filter in a service of Corolla", with a link.
+  The assistant and MCP clients can do the same when they log a service ("used 4.5 litres of
+  the engine oil"); the assistant's confirm card shows each **From stock** line before anything
+  moves.
 - **Add starter schedules** adds the usual ones: oil change, tyre rotation, brake fluid, air filter.
 - **Read the card** reads a registration card in Label mode: VIN, plate and licence expiry.
 - **History report** makes a PDF for a period: odometer history with proof photos, services with

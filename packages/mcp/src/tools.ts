@@ -79,6 +79,14 @@ const money = z.object({
   currency: z.string().regex(/^[A-Z]{3}$/),
 });
 const shortText = (max: number) => z.string().trim().min(1).max(max);
+/** A count taken off a consumable (D236): more than 0, up to 3 decimals, as the stock holds. */
+const stockQuantity = z
+  .number()
+  .positive()
+  .max(999_999_999)
+  .refine((n) => /^\d{1,9}(\.\d{1,3})?$/.test(String(n)), {
+    message: 'at most 3 decimals, e.g. 4.5',
+  });
 
 // ---------------------------------------------------------------------------------------------
 // Output building blocks. Kept's own words (ids, codes, enums, dates, numbers) sit beside
@@ -708,7 +716,7 @@ export const TOOL_DEFS = Object.freeze({
     name: 'log_service',
     title: 'Log a service',
     description:
-      'Record a service done on a thing or a place: the date, who did it, the total, the lines, and which schedules it completes.',
+      'Record a service done on a thing or a place: the date, who did it, the total, the lines (each may use stock from a consumable), and which schedules it completes.',
     scope: 'write',
     module: null,
     since: 5,
@@ -720,7 +728,31 @@ export const TOOL_DEFS = Object.freeze({
       vendor: z.string().max(120).optional(),
       total: money.optional(),
       lines: z
-        .array(z.object({ description: shortText(200), amount: money.optional() }))
+        .array(
+          z
+            .object({
+              description: shortText(200),
+              amount: money.optional(),
+              // D236: the line used stock from a consumable of the same location.
+              consumable_thing_id: idOrCode
+                .optional()
+                .describe(
+                  'A consumable this line used from stock, such as the oil filter on the shelf. Its count goes down',
+                ),
+              consumed_quantity: stockQuantity
+                .optional()
+                .describe(
+                  'How much it used, when not 1 (4.5 litres of oil). Needs consumable_thing_id',
+                ),
+            })
+            .refine(
+              (l) => l.consumed_quantity === undefined || l.consumable_thing_id !== undefined,
+              {
+                message: 'consumed_quantity needs consumable_thing_id',
+                path: ['consumed_quantity'],
+              },
+            ),
+        )
         .max(50)
         .optional(),
       completes: z.array(uuid).max(20).optional(),

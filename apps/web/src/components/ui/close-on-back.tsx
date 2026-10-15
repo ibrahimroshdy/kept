@@ -22,8 +22,10 @@ import { useContext, useEffect, useRef } from 'react';
 import { OverlayTriggerStateContext } from 'react-aria-components';
 
 const KEY = 'keptSheet';
-/** How many modals hold an entry now. */
-let depth = 0;
+/** Which modal an entry belongs to: unique in this document, and unlike any a past one left. */
+const ID_KEY = 'keptSheetId';
+const DOC = Math.random().toString(36).slice(2, 10);
+let serial = 0;
 
 /** How long after `beforeunload` the page counts as leaving. */
 const LEAVING_MS = 2000;
@@ -38,6 +40,7 @@ const depthOf = (state: unknown): number => {
   const d = (state as Record<string, unknown> | null)?.[KEY];
   return typeof d === 'number' ? d : 0;
 };
+const idOf = (state: unknown): unknown => (state as Record<string, unknown> | null)?.[ID_KEY];
 
 export function CloseOnBack() {
   const overlay = useContext(OverlayTriggerStateContext);
@@ -47,9 +50,13 @@ export function CloseOnBack() {
 
   useEffect(() => {
     if (!present) return;
-    const mine = ++depth;
+    // One above the entry it opens on: the next modal up when stacked. Read from the history, not
+    // counted: a modal still leaving (its exit animation) while the next one opens, or an entry a
+    // reload kept, would otherwise put two modals at one depth.
+    const mine = depthOf(window.history.state) + 1;
+    const id = `${DOC}:${++serial}`;
     const href = window.location.href;
-    window.history.pushState({ ...(window.history.state ?? {}), [KEY]: mine }, '');
+    window.history.pushState({ ...(window.history.state ?? {}), [KEY]: mine, [ID_KEY]: id }, '');
     let popped = false;
     const onPop = (e: PopStateEvent) => {
       if (depthOf(e.state) >= mine) return;
@@ -59,13 +66,14 @@ export function CloseOnBack() {
     window.addEventListener('popstate', onPop);
     return () => {
       window.removeEventListener('popstate', onPop);
-      depth = mine - 1;
       if (popped) return;
       // After the router has written any navigation the closing started (it writes on a
-      // microtask): only an entry still ours, at the same address, is taken back off.
+      // microtask): only this modal's own entry, at the same address, is taken back off. By id,
+      // not depth: the next modal may have pushed its entry at the same depth meanwhile, and
+      // popping that one would close it as it opens.
       setTimeout(() => {
         if (performance.now() - leavingAt < LEAVING_MS) return;
-        if (depthOf(window.history.state) === mine && window.location.href === href)
+        if (idOf(window.history.state) === id && window.location.href === href)
           window.history.back();
       }, 0);
     };

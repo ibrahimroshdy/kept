@@ -163,6 +163,8 @@ function useFieldLabels(): (key: FieldKey, verb: Verb) => string {
         return t`Change in stock`;
       case 'quantity':
         return t`How many`;
+      case 'stock':
+        return t`From stock`;
     }
   };
 }
@@ -200,6 +202,17 @@ function ValueView({ v }: { v: Val }) {
       );
     case 'yes':
       return <span>{v.v ? t`Yes` : t`No`}</span>;
+    case 'take':
+      return (
+        <span>
+          <Count n={v.n} />{' '}
+          {v.name ? (
+            <bdi>{v.name}</bdi>
+          ) : (
+            <span className="text-ink-2">{t`Something Kept can't name`}</span>
+          )}
+        </span>
+      );
     case 'list':
       return v.v.length ? (
         <bdi>{new Intl.ListFormat(i18n.locale, { type: 'conjunction' }).format(v.v)}</bdi>

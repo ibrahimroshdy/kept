@@ -11,6 +11,7 @@ import type { TestApp } from '../../test/app.js';
 import { type TestDb, testDb } from '../../test/db.js';
 import { call, join, type Person, peopleApp, person, type RecordedJob } from '../../test/people.js';
 import {
+  builtinType,
   createLocation,
   createThing,
   eventsOf,
@@ -684,6 +685,46 @@ describe('writes are proposals the person confirms (D22, D179)', () => {
       { name: 'Paint can', quantity: 2 },
     ]);
     expect(await own(db, `SELECT 1 FROM public.places WHERE name = 'Back wall'`)).toEqual([]);
+  });
+
+  it('a log_service card names the consumable each line takes stock from (D236)', async () => {
+    const corolla = await createThing(t, ibrahim, garage, { name: 'Corolla' });
+    const oil = await createThing(t, ibrahim, garage, {
+      name: 'Engine oil',
+      typeId: await builtinType(db, 'filters'),
+      quantity: 5,
+    });
+    const { turnId } = await ask(louis, 'I changed the oil, 4.5 litres from the shelf', {
+      kind: 'location',
+      id: garage.id,
+    });
+    script.push(
+      calls({
+        id: 'svc',
+        name: 'log_service',
+        input: {
+          location_id: garage.id,
+          thing_id: corolla.id,
+          serviced_on: '2026-10-01',
+          lines: [
+            { description: 'Oil change', consumable_thing_id: oil.id, consumed_quantity: 4.5 },
+          ],
+        },
+      }),
+    );
+    expect(await run(louis, turnId)).toEqual({ status: 'done' });
+    const [p] = await own<{ refs: Record<string, { kind: string; name: string }> }>(
+      db,
+      'SELECT refs FROM public.assistant_proposals WHERE turn_id = $1',
+      [turnId],
+    );
+    expect(p?.refs[oil.id as string]).toMatchObject({ kind: 'thing', name: 'Engine oil' });
+    // Nothing moves until the person confirms the card.
+    expect(
+      await own(db, 'SELECT trim_scale(quantity)::text AS q FROM public.things WHERE id = $1', [
+        oil.id,
+      ]),
+    ).toEqual([{ q: '5' }]);
   });
 
   it('Talia, a viewer of Home: told she can’t change it there, and a write the model tries gets the fixed sentence, no card', async () => {
