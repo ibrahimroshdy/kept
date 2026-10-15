@@ -38,9 +38,13 @@ release_build() {
   # own cache instead.
   [[ -n ${KEPT_RELEASE_CACHE_FROM:-} ]] && cache+=(--cache-from "$KEPT_RELEASE_CACHE_FROM")
   [[ -n ${KEPT_RELEASE_CACHE_TO:-} ]] && cache+=(--cache-to "$KEPT_RELEASE_CACHE_TO")
+  # In CI each attempt is capped (KEPT_RELEASE_BUILD_TIMEOUT, default 15m; the job allows 40): a push
+  # to GHCR once hung for 987 s and then failed (v1.7.0), and the re-run took 1.6 min.
+  local tmo=()
+  [[ -n ${CI:-} ]] && command -v timeout >/dev/null && tmo=(timeout --kill-after=30s "${KEPT_RELEASE_BUILD_TIMEOUT:-15m}")
   for attempt in 1 2; do
     rc=0
-    docker buildx build --builder "$builder" --platform "$platforms" \
+    ${tmo[@]+"${tmo[@]}"} docker buildx build --builder "$builder" --platform "$platforms" \
       --build-arg "VERSION=$version" --build-arg "REVISION=$commit" --build-arg "SOURCE=$source_url" \
       --sbom=true --provenance=mode=min --metadata-file "$meta" ${cache[@]+"${cache[@]}"} \
       --output "type=image,name=$registry,push-by-digest=true,name-canonical=true,push=true" \
@@ -50,6 +54,12 @@ release_build() {
     # Under emulation (the laptop's amd64 half) registry fetches time out under load (R2).
     if ((attempt == 1)) && grep -Eq 'ERR_PNPM_BROKEN_METADATA_JSON|ETIMEDOUT|ECONNRESET|i/o timeout|aborted due to timeout' "$log"; then
       warn "the build hit a network timeout; retrying once"
+      continue
+    fi
+    # The registry refused or dropped the upload, or the attempt ran out of time: the layer cache
+    # makes a second attempt cheap.
+    if ((attempt == 1)) && { ((rc == 124 || rc == 137)) || grep -Eq 'failed to push|unexpected status from (PUT|POST|PATCH|HEAD) request' "$log"; }; then
+      warn "the push failed or timed out (exit $rc); retrying once"
       continue
     fi
     die "the build failed (log: $log)"

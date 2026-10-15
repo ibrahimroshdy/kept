@@ -29,6 +29,11 @@ on:
   push:
     branches: [main]
   pull_request:
+  # Nightly, everything: main's own runs skip a tree its pull request already passed (the changes
+  # job), so a flaky test surfaces here instead.
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -40,8 +45,63 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  fast:
+  # What this run needs to test. Fail-open: every job below runs unless this job said, in so many
+  # words, that it needn't (`!cancelled()` and `!= 'false'`), so a decide step that fails, or a
+  # changes job that fails outright, runs everything.
+  #   reused  on a push to main: the commit's tree is the tree its pull request's ci run passed
+  #           (strict up-to-date + squash make them identical), so nothing runs twice
+  #   unit    fast's unit tests and evaluations (scripts/ci-changes.sh: false for prose only)
+  #   heavy   db, e2e, the images and helm (false for prose and the docs site only)
+  changes:
     if: github.event.repository.private == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read # the pull request's ci run
+      pull-requests: read # the pull request behind a push to main
+    outputs:
+      reused: ${{ steps.decide.outputs.reused }}
+      unit: ${{ steps.decide.outputs.unit }}
+      heavy: ${{ steps.decide.outputs.heavy }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - id: decide
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [[ $EVENT == schedule || $EVENT == workflow_dispatch ]]; then
+            printf 'reused=false\nunit=true\nheavy=true\n' >>"$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ $EVENT == push ]]; then
+            pr=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '.[0].number // empty')
+            if [[ -n $pr ]]; then
+              head=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$pr" --jq .head.sha)
+              git fetch -q origin "refs/pull/$pr/head"
+              passed=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$head&event=pull_request" \
+                --jq '[.workflow_runs[] | select(.conclusion == "success")] | length')
+              if [[ $(git rev-parse "$head^{tree}") == $(git rev-parse "HEAD^{tree}") && $passed -gt 0 ]]; then
+                echo "main's tree is #$pr's ${head:0:12}, whose ci run passed: nothing to run again"
+                printf 'reused=true\nunit=false\nheavy=false\n' >>"$GITHUB_OUTPUT"
+                exit 0
+              fi
+              echo "#$pr: tree differs or no passing ci run on ${head:0:12}; deciding by paths"
+            fi
+          fi
+          git diff --name-only "$BASE...$HEAD" | tee "$RUNNER_TEMP/changed.txt"
+          bash scripts/ci-changes.sh <"$RUNNER_TEMP/changed.txt" | tee -a "$GITHUB_OUTPUT"
+
+  fast:
+    needs: changes
+    if: ${{ !cancelled() && github.event.repository.private == false && needs.changes.outputs.reused != 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -56,11 +116,16 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       # lint, catalogues, typecheck, the unit tests (no database) and the mock evaluation.
-      - run: bash scripts/ci-local.sh --fast
+      - if: needs.changes.outputs.unit != 'false'
+        run: bash scripts/ci-local.sh --fast
+      # Prose only (scripts/ci-changes.sh): the checks that read every file, no unit tests.
+      - if: needs.changes.outputs.unit == 'false'
+        run: bash scripts/ci-local.sh --only lint,catalogues,typecheck
       - run: node scripts/check-licences.mjs
 
   db-test:
-    if: github.event.repository.private == false
+    needs: changes
+    if: ${{ !cancelled() && github.event.repository.private == false && needs.changes.outputs.heavy != 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -82,7 +147,8 @@ jobs:
       - run: bash scripts/ci-local.sh --only compose,test
 
   db-ops:
-    if: github.event.repository.private == false
+    needs: changes
+    if: ${{ !cancelled() && github.event.repository.private == false && needs.changes.outputs.heavy != 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -111,7 +177,8 @@ jobs:
           done
 
   e2e-shard:
-    if: github.event.repository.private == false
+    needs: changes
+    if: ${{ !cancelled() && github.event.repository.private == false && needs.changes.outputs.heavy != 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
@@ -140,7 +207,8 @@ jobs:
           retention-days: 7
 
   e2e-update:
-    if: github.event.repository.private == false
+    needs: changes
+    if: ${{ !cancelled() && github.event.repository.private == false && needs.changes.outputs.heavy != 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -176,7 +244,8 @@ jobs:
           done
 
   images-amd64:
-    if: github.event.repository.private == false
+    needs: changes
+    if: ${{ !cancelled() && github.event.repository.private == false && needs.changes.outputs.heavy != 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -189,7 +258,8 @@ jobs:
       - run: bash scripts/ci-local.sh --only images
 
   images-arm64:
-    if: github.event.repository.private == false
+    needs: changes
+    if: ${{ !cancelled() && github.event.repository.private == false && needs.changes.outputs.heavy != 'false' }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 45
     steps:
@@ -202,7 +272,8 @@ jobs:
       - run: bash scripts/ci-local.sh --only images
 
   helm:
-    if: github.event.repository.private == false
+    needs: changes
+    if: ${{ !cancelled() && github.event.repository.private == false && needs.changes.outputs.heavy != 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
