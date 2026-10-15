@@ -1,17 +1,23 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 /**
  * The landing page's hero (a Starlight component override; only pages with `hero` frontmatter
  * render it). The copy comes from the page's frontmatter as in Starlight's own Hero; the art is
  * the 3D location map (D237) in a browser frame, the page's headline.
  *
  * The captures are src/assets/landing/map-hero-{light,dark}.webp (1600 × 1000, 16:10), the light
- * one under the light theme and the dark one under dark, as Shot.astro does. The Arabic page uses
+ * one under the light theme and the dark one under dark. The Arabic page uses
  * map-hero-ar-{light,dark}.webp when both exist (the app in Arabic); until then it shows the
  * English map, the one place an Arabic page does. Astro serves them as WebP at the widths below.
- * The light one is eager and fetched first (the largest paint on the page); the dark one is lazy,
- * so a page in the light theme never fetches it (a hidden lazy image isn't loaded) and one in the
- * dark theme fetches it as soon as it is laid out. Keep the alt text true to the capture.
+ *
+ * It is the largest paint on the page, so it is one <img>, eager and fetchpriority high, in a
+ * <picture> whose dark <source> matches the theme Starlight resolves on first load: dark unless
+ * the system says light (`not all and (prefers-color-scheme: light)`). The browser's preload
+ * scanner picks the right one before any script runs, and fetches only that one. The inline
+ * script after it covers a theme the reader chose in the switcher (and a later switch): it points
+ * the <source> at the theme in data-theme, which kept.css reads the same way (dark unless
+ * "light"). Only a chosen theme that differs from the system's fetches the other image too.
+ * Keep the alt text true to the capture.
  *
  * Under the actions, the facts line: three short facts, one idea each.
  */
@@ -38,14 +44,13 @@ if (!light || !dark) throw new Error('missing src/assets/landing/map-hero-{light
 const mapAlt = ar
   ? 'خريطة Kept ثلاثية الأبعاد لمنزل: غرفه في منظر مائل، لكلٍّ منها اسمها، بأثاثها وصناديقها، بجانب شجرة أماكن الموقع'
   : "Kept's 3D map of a home: its rooms in an isometric view, each labelled, with furniture and boxes, beside the location's tree of places";
-const image = {
-  alt: mapAlt,
-  widths: [480, 720, 960, 1280, 1600],
-  sizes: '(min-width: 72rem) 36rem, (min-width: 50rem) 52vw, calc(100vw - 2rem)',
-  decoding: 'async',
-  format: 'webp',
-  quality: 80,
-} as const;
+const widths = [480, 720, 960, 1280, 1600];
+const sizes = '(min-width: 72rem) 36rem, (min-width: 50rem) 52vw, calc(100vw - 2rem)';
+const [lit, dim] = await Promise.all(
+  [light, dark].map((src) => getImage({ src, widths, format: 'webp', quality: 80 })),
+);
+/** Starlight's own first-load rule (ThemeProvider): dark unless the system prefers light. */
+const darkMedia = 'not all and (prefers-color-scheme: light)';
 ---
 
 <div class="kd-hero">
@@ -72,8 +77,40 @@ const image = {
   <div class="kd-hero-art">
     <div class="kd-frame">
       <div class="kd-frame-bar" aria-hidden="true"><i></i><i></i><i></i></div>
-      <Image src={light} {...image} loading="eager" fetchpriority="high" class="kd-only-light" />
-      <Image src={dark} {...image} loading="lazy" class="kd-only-dark" />
+      <picture>
+        <source
+          media={darkMedia}
+          srcset={dim.srcSet.attribute}
+          sizes={sizes}
+          type="image/webp"
+          width={dark.width}
+          height={dark.height}
+        />
+        <img
+          src={lit.src}
+          srcset={lit.srcSet.attribute}
+          sizes={sizes}
+          alt={mapAlt}
+          width={light.width}
+          height={light.height}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
+      <script is:inline data-media={darkMedia}>
+        (() => {
+          const me = document.currentScript;
+          const source = me?.previousElementSibling?.querySelector('source');
+          if (!source) return;
+          const root = document.documentElement;
+          const apply = () => {
+            source.media = root.dataset.theme === 'light' ? 'not all' : 'all';
+          };
+          if ((root.dataset.theme !== 'light') !== matchMedia(me.dataset.media).matches) apply();
+          new MutationObserver(apply).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+        })();
+      </script>
     </div>
   </div>
 </div>
@@ -183,6 +220,9 @@ const image = {
     box-shadow:
       0 1px 2px rgb(0 0 0 / 0.06),
       0 18px 40px -18px rgb(0 0 0 / 0.28);
+  }
+  .kd-frame picture {
+    display: block;
   }
   .kd-frame :global(img) {
     display: block;
