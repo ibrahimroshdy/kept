@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { writeFile } from 'node:fs/promises';
-import { EXPORT_PATHS } from '@kept/shared';
+import { EXPORT_PATHS, type ExportEntity } from '@kept/shared';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { TestApp } from '../../../test/app.js';
 import { type TestDb, testDb } from '../../../test/db.js';
@@ -539,6 +539,59 @@ describe('resuming and refusing', () => {
           target.id,
         ]),
       ).toBe(0);
+    } finally {
+      await forged.cleanup();
+    }
+  });
+
+  it('reads a version-1 export, without the entities and fields version 2 added (D238)', async () => {
+    const strip = (entries: Map<string, Buffer | null>, entity: ExportEntity, keys: string[]) => {
+      const name = EXPORT_PATHS.data(entity);
+      const lines = (entries.get(name)?.toString('utf8') ?? '').split('\n').filter(Boolean);
+      const out = lines.map((l) => {
+        const row = JSON.parse(l) as Record<string, unknown>;
+        for (const k of keys) delete row[k];
+        return `${JSON.stringify(row)}\n`;
+      });
+      entries.set(name, Buffer.from(out.join('')));
+    };
+    const forged = await forgeKeptExport(db, {
+      userId: ibrahim.userId,
+      locationId: home.id,
+      files,
+      mutate: (m, entries) => {
+        // As Kept 1.0 to 1.5.0 wrote it: no condition reports, no counts for them, and the
+        // attachments and service lines without the columns added since.
+        m.version = 1;
+        const counts = m.counts as Partial<Record<ExportEntity, number>>;
+        for (const e of ['condition-reports', 'condition-report-rooms'] as const) {
+          delete counts[e];
+          entries.delete(EXPORT_PATHS.data(e));
+        }
+        strip(entries, 'attachments', ['conditionRoomId']);
+        strip(entries, 'service-lines', ['consumableThingId', 'consumedQuantity']);
+      },
+    });
+    try {
+      const target = await newTarget('Home, from 1.4');
+      const runId = await stageKeptRun(db, files, forged, {
+        userId: alfred.userId,
+        locationId: target.id,
+      });
+      const archive = await openKeptArchive(files.blobs, runId, forged.bytes);
+      const manifest = await readManifest(archive);
+      archive.close();
+      expect(manifest.counts['condition-reports']).toBe(0);
+      await runKeptImport(deps(), scopeOf(alfred), runId);
+      expect(await runOf(runId)).toMatchObject({ status: 'done', error: null });
+      expect(
+        await count('SELECT count(*) AS n FROM public.things WHERE location_id = $1', [target.id]),
+      ).toBe(3);
+      expect(
+        await count('SELECT count(*) AS n FROM public.attachments WHERE location_id = $1', [
+          target.id,
+        ]),
+      ).toBe(1);
     } finally {
       await forged.cleanup();
     }

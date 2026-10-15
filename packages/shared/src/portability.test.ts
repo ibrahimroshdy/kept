@@ -26,7 +26,7 @@ describe('portability limits (D157, §3.1b, §3.3)', () => {
   });
 
   it('writes the location first and the history last, each entity once', () => {
-    expect(EXPORT_VERSION).toBe(1);
+    expect(EXPORT_VERSION).toBe(2);
     expect(EXPORT_ENTITIES[0]).toBe('location');
     expect(EXPORT_ENTITIES.at(-1)).toBe('history');
     expect(new Set(EXPORT_ENTITIES).size).toBe(EXPORT_ENTITIES.length);

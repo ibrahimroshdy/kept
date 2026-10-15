@@ -70,6 +70,10 @@ export const APPLY_ORDER: readonly ExportEntity[] = [
   'service-lines',
   'service-completions',
   'fuel-entries',
+  // Before the attachments, which name their rooms; a finished report is written open and
+  // finished after its photos (finishReport, D238).
+  'condition-reports',
+  'condition-report-rooms',
   'attachments',
   'secret-field-policies',
   // After the things and their codes: a numbering location numbers new things only (0046).
@@ -535,6 +539,40 @@ async function applyCode(c: ApplyCtx, row: Row): Promise<Applied> {
   return { status: 'inserted', newId: null, code: outcome };
 }
 
+// ---------------------------------------------------------------------------------------------
+// Condition reports (D238)
+// ---------------------------------------------------------------------------------------------
+//
+// A finished report is locked (0125: no policy lets kept_app add, change or remove its rooms, and
+// a trigger refuses its photos), so the importer writes it as a request would: open, as the
+// importing person (app_insert allows no other), then its rooms, then its photos with the other
+// attachments, and last finishReport() stamps the exported `finishedAt` (app_update: once, by the
+// person, who becomes its `finished_by` as Q11 makes them every row's `created_by`). No policy,
+// grant or trigger changes for this, so nothing can reopen or edit a finished report.
+
+/** A report row, written open: finishReport() finishes it after its rooms and photos. */
+async function applyConditionReport(c: ApplyCtx, def: EntityDef, row: Row): Promise<Applied> {
+  return writeGeneric(c, def, row, { finished_at: null });
+}
+
+/**
+ * Finishes imported report `oldId` at `finishedAt`, as the importing person; true when it did.
+ * Only an open report changes (the policy and the WHERE), so a resumed job finishes nothing twice.
+ */
+export async function finishReport(
+  c: Pick<ApplyCtx, 'client' | 'ids'>,
+  oldId: string,
+  finishedAt: string,
+): Promise<boolean> {
+  const { rowCount } = await c.client.query(
+    `UPDATE public.condition_reports
+        SET finished_at = $2, finished_by = kept.current_user_id()
+      WHERE id = $1 AND finished_at IS NULL`,
+    [c.ids.of(oldId), finishedAt],
+  );
+  return (rowCount ?? 0) > 0;
+}
+
 /**
  * Writes one row of `entity`. Throws when the database refuses it (the caller rolls the row's
  * savepoint back and reports it).
@@ -570,6 +608,8 @@ export async function applyRow(c: ApplyCtx, entity: ExportEntity, row: Row): Pro
       return applyThing(c, def, row);
     case 'codes':
       return applyCode(c, row);
+    case 'condition-reports':
+      return applyConditionReport(c, def, row);
     default:
       return writeGeneric(c, def, row);
   }

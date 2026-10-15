@@ -218,7 +218,8 @@ when you moved out, for a deposit dispute.
   or without photos. A report that isn't finished says so in the PDF.
 
 Everyone in the location can read the reports and make the PDF, viewers too; members and above
-record them. Condition reports aren't in a Kept export yet: keep the PDF.
+record them. A Kept export of the location holds its reports and their photos; imported, a
+finished report is still finished and locked ([import and export](/users/import-export/)).
 
 ## Insights
 

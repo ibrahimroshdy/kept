@@ -321,7 +321,7 @@ describe('a location export', () => {
 
     const zip = await zipOf(id);
     const manifest = ManifestSchema.parse(JSON.parse(text(zip, 'manifest.json'))) as ExportManifest;
-    expect(manifest).toMatchObject({ format: 'kept-export', version: 1, exportId: id });
+    expect(manifest).toMatchObject({ format: 'kept-export', version: 2, exportId: id });
     expect(manifest.members.map((m) => m.role)).toEqual(['owner', 'admin', 'member', 'viewer']);
     expect(JSON.stringify(manifest.members)).not.toContain('@');
     for (const entity of EXPORTED_ENTITIES) {
