@@ -10,7 +10,7 @@ import {
 } from '@kept/shared';
 import type pg from 'pg';
 import { mailLocale } from '../mail/messages.js';
-import { myPreferences, preferenceDefault, storedMap } from '../notify/prefs.js';
+import { effectivePreference, myPreferences, storedMap } from '../notify/prefs.js';
 import { REMINDER_WORDS, type ReminderFacts, shortTitle } from '../notify/words.js';
 import { type AllDayEvent, writeCalendar } from './ical.js';
 
@@ -102,20 +102,17 @@ export async function buildFeed(
   );
   const words = REMINDER_WORDS[mailLocale(profile[0]?.locale)];
   const prefs = storedMap(await myPreferences(client));
-  /** On some channel: chosen, else the default (Q23). */
+  /** On some channel: chosen there, else for all locations, else the default (Q23, D239). */
   const wanted = (r: Row) =>
-    PREFERENCE_CHANNELS.some((channel) => {
-      const kind = r.source_type as NotifyKind;
-      return (
-        prefs.get(`${r.location_id}|${kind}|${channel}`) ??
-        preferenceDefault({
-          role: r.role,
-          kind,
-          channel,
-          ...(r.source_type === 'loan' ? { recordedByMe: r.recorded_by_me === true } : {}),
-        })
-      );
-    });
+    PREFERENCE_CHANNELS.some((channel) =>
+      effectivePreference(prefs, {
+        locationId: r.location_id,
+        role: r.role,
+        kind: r.source_type as NotifyKind,
+        channel,
+        ...(r.source_type === 'loan' ? { recordedByMe: r.recorded_by_me === true } : {}),
+      }),
+    );
   const { rows } = await client.query<Row>(FEED_SQL, [
     CALENDAR_FEED_WINDOW.monthsBack,
     CALENDAR_FEED_WINDOW.monthsAhead,

@@ -149,9 +149,24 @@ leaving, and AI spending caps. Home's attention panel shows what's due or overdu
 the notification centre, where **Complete**, **Snooze**, **Renew** and **Mark returned** act in
 place.
 
-**Settings → Me → Notifications** chooses how each location reaches you (in Kept, email, push,
-webhook, ntfy, Telegram, Apprise), a **Daily digest**, **Quiet hours**, and a private **Calendar feed** link
-for your calendar app. Push on a phone is covered in [the phone app](/users/phone-app/#notifications).
+**Settings → Me → Notifications** chooses what reaches you and how, a **Daily digest**, **Quiet
+hours**, and a private **Calendar feed** link for your calendar app. Push on a phone is covered in
+[the phone app](/users/phone-app/#notifications).
+
+**What reaches you** is one table. Rows are the kinds, grouped: due dates (schedules, warranties,
+registration deadlines, documents, things that expire, meters), lending, stock, people
+(members joining and leaving) and AI (spending caps, the monthly summary). Columns are your
+channels: **In Kept**, **Email**, **Push**, and a column for webhooks, ntfy, Telegram or Apprise
+once you've added one (every channel of that kind follows it). Membership and AI notices only go
+to Kept and email. Turning **In Kept** off for a kind turns it off everywhere: nothing else is
+sent for it. On a phone, each kind shows its channels as switches underneath.
+
+- **All locations** sets what you get everywhere, including locations you add later.
+- **Pick a location** to change it there only. A dot marks what's set for that location alone;
+  **Reset this location to all locations** clears those. A kind whose module is off there shows
+  as paused (its reminders wait until the module is back), and where you're a viewer you only get
+  members joining and leaving. Where you're a member, Kept starts with only the loans you record:
+  turn on what you want there.
 
 **ntfy**: add your server (`https://ntfy.sh` or your own) and a topic that's hard to guess, plus
 an access token if the topic needs one. **Telegram**: make a bot with @BotFather, send it a

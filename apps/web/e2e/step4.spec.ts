@@ -933,15 +933,15 @@ test("Talia, a viewer: the TV's warranties and claims, and Catan's loan, with no
   await noActions(['More actions', 'Mark returned', 'More', 'Lend']);
   await axe(page, 'Catan as a viewer, loans');
 
-  // Me → Notifications: in Home, where she is a viewer, only Membership (Q8).
+  // Me → Notifications: in Home, where she is a viewer, only Membership (Q8); since D239 the
+  // other kinds stay listed with the reason instead of a switch.
   await page.goto('/settings/me/notifications');
-  const card = page.getByRole('region', { name: 'Home' });
-  await expect(card).toBeVisible();
-  await expect
-    .poll(async () =>
-      (await card.getByRole('rowheader').allTextContents()).map((r) => r.replace('Default', '')),
-    )
-    .toEqual(['Members joining and leaving']);
+  await chooseWhere(page, 'Home');
+  const members = page.getByRole('switch', { name: /^Members joining and leaving by .+ in Home/ });
+  await expect(members.first()).toBeVisible();
+  const inHome = page.getByRole('switch', { name: / in Home(, set for this location only)?$/ });
+  expect(await inHome.count()).toBe(await members.count());
+  await expect(page.getByText('Viewers hear only about members.').first()).toBeVisible();
   await axe(page, 'Notifications settings as a viewer');
   await context.close();
 });
@@ -988,6 +988,19 @@ test('calendar feed: a link fetched without a session is iCal with the schedules
   await context.close();
 });
 
+/** Settings › Me › Notifications (D239): one table, for all locations or the one chosen under Where. */
+async function chooseWhere(page: Page, name: string) {
+  const group = page.getByRole('radiogroup', { name: 'Where' });
+  const box = page.getByRole('combobox', { name: 'Where' });
+  await expect(group.or(box).first()).toBeVisible();
+  if (await group.count()) {
+    await group.getByText(name, { exact: true }).click();
+  } else {
+    await box.click();
+    await page.getByRole('option', { name, exact: true }).click();
+  }
+}
+
 type NotificationSettingsBody = {
   push: { available: boolean; reason?: string };
   locations: { locationId: string; kinds: Record<string, Record<string, boolean>> }[];
@@ -1008,10 +1021,10 @@ test('email and push: Louis turns on warranties by email, the digest reaches Mai
   await page.goto('/settings/me/notifications');
   await expect(page.getByRole('heading', { name: 'Notifications', level: 1 })).toBeVisible();
   await axe(page, 'Notifications settings (Louis)');
-  const card = page.getByRole('region', { name: 'Home' });
+  await chooseWhere(page, 'Home');
   for (const how of ['In Kept', 'Email']) {
     await setSwitch(
-      card.getByRole('switch', { name: `Warranties running out by ${how} in Home` }),
+      page.getByRole('switch', { name: new RegExp(`^Warranties running out by ${how} in Home`) }),
       true,
     );
   }

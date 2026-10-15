@@ -21,7 +21,7 @@ import type { Pools } from '../db/pools.js';
 import { withSystem } from '../db/scope.js';
 import type { JobQueue } from '../jobs/queue.js';
 import type { AiCapFacts, Mailer } from '../mail/mailer.js';
-import { noticeAiCap } from '../notify/notices.js';
+import { noticeAiCap, wants } from '../notify/notices.js';
 import { amount } from './api-kit.js';
 import type { Crossed } from './ports.js';
 
@@ -76,6 +76,7 @@ export function aiNoticeHooks(
 type CapFactsRow = {
   scope: AiCapFacts['scope'];
   owner_account_id: string | null;
+  location_id?: string | null;
   tokens_per_month: string | null;
   monthly_cap_amount: string | null;
   cap_currency: string | null;
@@ -154,7 +155,7 @@ export async function runAiNotice(deps: NoticeDeps, data: unknown): Promise<numb
 
   const found = await withSystem(deps.pools.system, async (_tx, client: pg.PoolClient) => {
     const cap = await client.query<CapFactsRow>(
-      `SELECT scope, owner_account_id, tokens_per_month::text AS tokens_per_month,
+      `SELECT scope, owner_account_id, location_id, tokens_per_month::text AS tokens_per_month,
               monthly_cap_amount::text AS monthly_cap_amount, cap_currency, paused_until,
               used_tokens::text AS used_tokens, used_amount::text AS used_amount, target_label
          FROM kept.ai_notice_cap($1)`,
@@ -166,17 +167,33 @@ export async function runAiNotice(deps: NoticeDeps, data: unknown): Promise<numb
     );
     // Step 4 (T16, D206): the same people find it in the notification centre, once per cap,
     // level and month, whatever the mail does (a retry of this job writes nothing twice).
+    // 1.5.x (D239): each person's AI caps choice decides, for the cap's location or, for any
+    // other cap, for all their locations: In Kept off silences it (Q10), Email off keeps the mail.
+    // On unless they turned it off, as before.
     const row = cap.rows[0];
+    const heard: typeof people.rows = [];
+    const mailed: typeof people.rows = [];
     if (row) {
+      for (const p of people.rows) {
+        const pref = {
+          userId: p.user_id,
+          locationId: row.scope === 'location' ? (row.location_id ?? null) : null,
+          kind: 'ai_cap' as const,
+          role: 'owner' as const,
+        };
+        if (!(await wants(client, { ...pref, channel: 'inapp' }))) continue;
+        heard.push(p);
+        if (await wants(client, { ...pref, channel: 'email' })) mailed.push(p);
+      }
       await noticeAiCap(client, {
         budgetId: notice.budgetId,
         level: notice.level,
         month: notice.month,
         scope: row.scope,
-        userIds: people.rows.map((p) => p.user_id),
+        userIds: heard.map((p) => p.user_id),
       });
     }
-    return { cap: row, people: people.rows };
+    return { cap: row, people: mailed };
   });
   if (!found.cap) return 0;
   const facts = capFacts(found.cap, notice.level);

@@ -621,7 +621,10 @@ export type Channel = {
   }>;
 };
 
-/** One kind in one location: per channel, and whether that's the default (Q8, Q10). */
+/**
+ * One kind in one location, or for all locations (D239): per channel as it is decided there, and
+ * whether every value is still Kept's default (Q8, Q10).
+ */
 export type KindPreference = {
   inapp: boolean;
   email: boolean;
@@ -632,6 +635,9 @@ export type KindPreference = {
   /** 1.5 (D232); absent from older servers. */
   apprise?: boolean;
   isDefault: boolean;
+  /** 1.5.x (D239): the channels chosen at this layer; for a location, those set there (they
+   * differ from all locations). Absent from older servers. */
+  set?: PreferenceChannel[];
 };
 
 /** GET /api/v1/me/notification-settings. Viewers' locations list only `membership` (Q8). */
@@ -652,7 +658,11 @@ export type NotificationSettings = {
     role: Role;
     kinds: Partial<Record<NotifyKind, KindPreference>>;
   }>;
-  account: { aiSummary: { email: boolean } };
+  account: {
+    aiSummary: { email: boolean };
+    /** 1.5.x (D239): the choices for all locations, every kind. Absent from older servers. */
+    kinds?: Partial<Record<NotifyKind, KindPreference>>;
+  };
 };
 /** PUT /api/v1/me/notification-settings: both quiet ends or neither. */
 export type PutNotificationSettingsBody = {
@@ -660,9 +670,12 @@ export type PutNotificationSettingsBody = {
   quietFrom?: string | null;
   quietTo?: string | null;
 };
-/** PUT /api/v1/me/notification-preferences. A value equal to the default deletes the row. */
+/**
+ * PUT /api/v1/me/notification-preferences. A value equal to what the cell would otherwise be (for
+ * a location: all locations, else the default) deletes the row. `locationId` null: all locations.
+ */
 export type PutPreferencesBody = {
-  /** At most 200. `locationId` null only for account-level kinds (`ai_summary`, Q35). */
+  /** At most 200. `locationId` null is all locations (D239); `ai_summary` takes only that (Q35). */
   items: Array<{
     locationId: string | null;
     kind: NotifyKind;

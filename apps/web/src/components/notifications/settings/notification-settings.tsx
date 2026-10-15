@@ -1,9 +1,10 @@
 /**
- * Me → Notifications (plan T25; D29, D30, D139, D142, D206; screens §5 Settings; frame "Settings ·
- * Me · phone · light", the notifications part): the channels (email, push on this device and the
- * others, webhooks), what each location tells you and how, the digest time and quiet hours (in
- * your time zone), the calendar feed, and the AI monthly summary. Loaded on demand into
- * assets/household/ (components/notifications/lazy.tsx): it reads the server.
+ * Me → Notifications (plan T25; D29, D30, D139, D142, D206, D239; screens §5 Settings; frame
+ * "Settings · Me · phone · light", the notifications part): the channels (email, push on this
+ * device and the others, webhooks, ntfy, Telegram, Apprise), what reaches you and how (one table,
+ * all locations or one, the AI monthly summary in it), the digest time and quiet hours (in your
+ * time zone), and the calendar feed. Loaded on demand into assets/household/
+ * (components/notifications/lazy.tsx): it reads the server.
  */
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQueryClient } from '@tanstack/react-query';
@@ -29,7 +30,7 @@ export function NotificationSettings() {
   const s = settings.data;
   return (
     <>
-      <Section title={<Trans>How Kept reaches you</Trans>}>
+      <Section id="channels" title={<Trans>How Kept reaches you</Trans>}>
         <p className="m-0 text-small text-ink-2 [text-wrap:pretty]">
           <Trans>
             Everything lands in the notification centre. These reach you outside Kept as well.
@@ -37,7 +38,7 @@ export function NotificationSettings() {
         </p>
         <Channels settings={s} />
       </Section>
-      <Section title={<Trans>What each location tells you</Trans>}>
+      <Section title={<Trans>What reaches you</Trans>}>
         <KindsByLocation settings={s} />
       </Section>
       <Section title={<Trans>Digest and quiet hours</Trans>}>
@@ -47,9 +48,6 @@ export function NotificationSettings() {
         <CalendarFeeds />
       </Section>
       <ScheduledReports />
-      <Section title={<Trans>Account</Trans>}>
-        <AiSummary settings={s} />
-      </Section>
     </>
   );
 }
@@ -137,38 +135,6 @@ function Timing({ settings }: { settings: Settings }) {
           <Trans>Save</Trans>
         </Button>
       </div>
-    </div>
-  );
-}
-
-/** The AI monthly summary by email: account-level, on unless you turn it off (Q35, D206). */
-function AiSummary({ settings }: { settings: Settings }) {
-  const { t } = useLingui();
-  const qc = useQueryClient();
-  const errorText = useErrorText();
-  const online = useOnline();
-  const set = async (enabled: boolean) => {
-    try {
-      const r = await householdApi.putPreferences({
-        items: [{ locationId: null, kind: 'ai_summary', channel: 'email', enabled }],
-      });
-      qc.setQueryData(householdKeys.notificationSettings, r);
-    } catch (e) {
-      toast({ title: t`Couldn't save that`, description: errorText(e), tone: 'danger' });
-    }
-  };
-  return (
-    <div className="grid gap-1 rounded-[10px] border border-line bg-surface p-3.5">
-      <Switch
-        isSelected={settings.account.aiSummary.email}
-        isDisabled={!online}
-        onChange={(on) => void set(on)}
-      >
-        <Trans>AI monthly summary by email</Trans>
-      </Switch>
-      <p className="m-0 text-small text-ink-2">
-        <Trans>Once a month: what AI did for you and what it used.</Trans>
-      </p>
     </div>
   );
 }

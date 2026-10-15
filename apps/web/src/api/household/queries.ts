@@ -322,6 +322,9 @@ export const householdApi = {
     api.put<NotificationSettings>(p.notificationSettings, body),
   putPreferences: (body: PutPreferencesBody) =>
     api.put<NotificationSettings>(p.notificationPreferences, body),
+  /** D239: the location follows all locations again. */
+  resetLocationPreferences: (locationId: string) =>
+    api.del<NotificationSettings>(p.locationPreferences(locationId)),
   createChannel: (body: CreateChannelBody) => api.post<CreatedChannel>(p.channels, body),
   deleteChannel: (id: string) => api.del(p.channel(id)),
   testChannel: (id: string) => api.post<ChannelTestResult>(p.channelTest(id)),

@@ -1,11 +1,13 @@
 /**
  * Me → Notifications (plan T25; D29, D30, D139, D142, D193; step-4 Q6, Q8, Q23, Q35): the
  * channels (email, this device's push asked for only on Enable, the iPhone rule, "Push needs
- * HTTPS", other devices, webhooks with their secret shown once), the kinds × channels table per
- * location with a viewer's Membership only, the digest and quiet hours, the calendar feed and the
- * AI monthly summary. Every browser push API is a stub: nothing asks a real browser.
+ * HTTPS", other devices, webhooks with their secret shown once), what reaches you (D239: one
+ * table, all locations or one, inherited cells and Reset, paused kinds, a viewer's Membership
+ * only, the AI monthly summary in it), the digest and quiet hours and the calendar feed. Every
+ * browser push API is a stub: nothing asks a real browser.
  */
 import { screen, waitFor, within } from '@testing-library/react';
+import type userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { HOUSEHOLD_IDS } from '@/api/household/mock/state';
 import { IDS, ownerScenario } from '@/api/mock/fixtures';
@@ -161,7 +163,7 @@ describe('channels', () => {
     expect(mock.state.household.channels.filter((c) => c.kind === 'webhook')).toHaveLength(1);
     // A webhook adds its column to the table.
     expect(
-      screen.getByRole('switch', { name: 'Schedules due by Webhook in Home' }),
+      screen.getByRole('switch', { name: 'Schedules due by Webhook in all locations' }),
     ).toBeInTheDocument();
   });
 
@@ -184,7 +186,7 @@ describe('channels', () => {
     expect(screen.getByText('ntfy.sh')).toBeInTheDocument();
     expect(screen.queryByText('kept-home-7f3k')).toBeNull();
     expect(
-      screen.getByRole('switch', { name: 'Schedules due by ntfy in Home' }),
+      screen.getByRole('switch', { name: 'Schedules due by ntfy in all locations' }),
     ).toBeInTheDocument();
   });
 
@@ -223,7 +225,7 @@ describe('channels', () => {
     expect(screen.getByText('discord, mailto')).toBeInTheDocument();
     expect(screen.queryByText(/discord:\/\/id/)).toBeNull();
     expect(
-      screen.getByRole('switch', { name: 'Schedules due by Apprise in Home' }),
+      screen.getByRole('switch', { name: 'Schedules due by Apprise in all locations' }),
     ).toBeInTheDocument();
   });
 
@@ -250,35 +252,158 @@ describe('channels', () => {
   });
 });
 
-describe('what each location tells you', () => {
-  it('a kind × channel switch saves only the change, and the row stops reading Default', async () => {
+/** jsdom has no matchMedia: the queries listed match (the desktop table). */
+function media(matching: string[]) {
+  vi.stubGlobal('matchMedia', (q: string) => ({
+    matches: matching.includes(q),
+    media: q,
+    onchange: null,
+    addEventListener() {},
+    removeEventListener() {},
+    addListener() {},
+    removeListener() {},
+    dispatchEvent: () => false,
+  }));
+}
+
+/** Picks a location (or All locations) in the table's Where combobox. */
+async function pick(user: ReturnType<typeof userEvent.setup>, name: string) {
+  const where = screen.getByRole('combobox', { name: 'Where' });
+  await user.clear(where);
+  await user.type(where, name);
+  await user.click(await screen.findByRole('option', { name }));
+}
+
+describe('what reaches you (D239)', () => {
+  it('All locations: a switch stores one choice with no location', async () => {
     const { user, mock } = await renderApp(PATH);
     await channels();
-    const home = within(await screen.findByRole('region', { name: 'Home' }));
-    const row = home.getByRole('rowheader', { name: /Schedules due/ });
-    expect(within(row).getByText('Default')).toBeInTheDocument();
-    const email = home.getByRole('switch', { name: 'Schedules due by Email in Home' });
+    const email = await screen.findByRole('switch', {
+      name: 'Schedules due by Email in all locations',
+    });
     expect(email).toBeChecked();
     await user.click(email);
     await waitFor(() => expect(email).not.toBeChecked());
     expect(mock.state.household.preferences).toEqual([
-      { locationId: IDS.home, kind: 'schedule', channel: 'email', enabled: false },
+      { locationId: null, kind: 'schedule', channel: 'email', enabled: false },
     ]);
-    expect(
-      within(home.getByRole('rowheader', { name: /Schedules due/ })).queryByText('Default'),
-    ).toBeNull();
   });
 
-  it("a viewer's location lists only Membership (Q8)", async () => {
+  it('one location inherits, marks what is set there, and resets to all locations', async () => {
+    const { user, mock } = await renderApp(PATH, {
+      setup: (m) => {
+        m.state.household.preferences = [
+          { locationId: null, kind: 'schedule', channel: 'email', enabled: false },
+        ];
+      },
+    });
+    await channels();
+    await screen.findByRole('switch', { name: 'Schedules due by Email in all locations' });
+    await pick(user, 'Home');
+    const email = await screen.findByRole('switch', { name: 'Schedules due by Email in Home' });
+    expect(email).not.toBeChecked();
+    const reset = screen.getByRole('button', { name: 'Reset this location to all locations' });
+    expect(reset).toBeDisabled();
+    await user.click(email);
+    const set = await screen.findByRole('switch', {
+      name: 'Schedules due by Email in Home, set for this location only',
+    });
+    expect(set).toBeChecked();
+    expect(mock.state.household.preferences).toContainEqual({
+      locationId: IDS.home,
+      kind: 'schedule',
+      channel: 'email',
+      enabled: true,
+    });
+    await user.click(reset);
+    await waitFor(() =>
+      expect(mock.state.household.preferences).toEqual([
+        { locationId: null, kind: 'schedule', channel: 'email', enabled: false },
+      ]),
+    );
+    expect(
+      await screen.findByRole('switch', { name: 'Schedules due by Email in Home' }),
+    ).not.toBeChecked();
+  });
+
+  it('a kind whose module is off there is paused, not hidden (D113)', async () => {
+    const { user } = await renderApp(PATH);
+    await channels();
+    await screen.findByRole('switch', { name: 'Warranties running out by Email in all locations' });
+    await pick(user, 'Garage');
+    expect(
+      await screen.findAllByText('Paused: Receipts and warranties is off here.'),
+    ).not.toHaveLength(0);
+    expect(
+      screen.queryByRole('switch', { name: /^Warranties running out by .* in Garage/ }),
+    ).toBeNull();
+    // Lending is on in the Garage.
+    expect(screen.getByRole('switch', { name: 'Overdue loans by Email in Garage' })).toBeChecked();
+  });
+
+  it("a viewer's location offers only Membership (Q8)", async () => {
     const state = ownerScenario();
     const garage = state.locations.find((l) => l.id === IDS.garage);
     if (garage) garage.role = 'viewer';
-    await renderApp(PATH, { state });
+    const { user } = await renderApp(PATH, { state });
     await channels();
-    const card = within(await screen.findByRole('region', { name: 'Garage' }));
+    await screen.findByRole('switch', { name: 'Overdue loans by Email in all locations' });
+    await pick(user, 'Garage');
     expect(
-      card.getAllByRole('rowheader').map((r) => r.textContent?.replace('Default', '')),
-    ).toEqual(['Members joining and leaving']);
+      await screen.findByRole('switch', { name: 'Members joining and leaving by Email in Garage' }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText('Viewers hear only about members.').length).toBeGreaterThan(0);
+    expect(screen.queryByRole('switch', { name: /^Overdue loans by .* in Garage/ })).toBeNull();
+  });
+
+  it('In Kept off silences the kind: its other switches wait (Q10)', async () => {
+    const { user } = await renderApp(PATH);
+    await channels();
+    const inapp = await screen.findByRole('switch', {
+      name: 'Low stock by In Kept in all locations',
+    });
+    await user.click(inapp);
+    await waitFor(() =>
+      expect(
+        screen.getByRole('switch', { name: 'Low stock by Email in all locations' }),
+      ).toBeDisabled(),
+    );
+    expect(screen.getByText('In Kept is off, so nothing is sent.')).toBeInTheDocument();
+  });
+
+  it('notices go only to Kept and email; a channel column appears once you have one', async () => {
+    await renderApp(PATH);
+    await channels();
+    await screen.findByRole('switch', { name: 'AI monthly summary by Email in all locations' });
+    expect(
+      screen.queryByRole('switch', { name: 'AI monthly summary by Push in all locations' }),
+    ).toBeNull();
+    expect(screen.queryByRole('switch', { name: /by Telegram in/ })).toBeNull();
+    expect(screen.getByRole('link', { name: 'Add more channels' })).toHaveAttribute(
+      'href',
+      '#channels',
+    );
+  });
+
+  it('on a desktop, one table grouped by kind; on a phone, labelled switches under each kind', async () => {
+    media(['(min-width: 768px)']);
+    const { unmount } = await renderApp(PATH);
+    await channels();
+    const table = await screen.findByRole('table');
+    expect(
+      within(table)
+        .getAllByRole('columnheader')
+        .map((h) => h.textContent),
+    ).toEqual(
+      expect.arrayContaining(['Due dates', 'Lending', 'Stock', 'People', 'AI', 'In Kept', 'Email']),
+    );
+    unmount();
+    vi.unstubAllGlobals();
+    await renderApp(PATH);
+    await channels();
+    await screen.findByRole('switch', { name: 'Low stock by Push in all locations' });
+    expect(screen.queryByRole('table')).toBeNull();
+    expect(screen.getByRole('region', { name: 'Due dates' })).toBeInTheDocument();
   });
 });
 
@@ -324,10 +449,12 @@ describe('digest, quiet hours, the calendar feed and the AI summary', () => {
     expect(await screen.findByText('Revoked')).toBeInTheDocument();
   });
 
-  it('the AI monthly summary is an account-level switch (Q35)', async () => {
+  it('the AI monthly summary is an account-level switch in the table (Q35)', async () => {
     const { user, mock } = await renderApp(PATH);
     await channels();
-    const summary = screen.getByRole('switch', { name: 'AI monthly summary by email' });
+    const summary = await screen.findByRole('switch', {
+      name: 'AI monthly summary by Email in all locations',
+    });
     expect(summary).toBeChecked();
     await user.click(summary);
     await waitFor(() => expect(summary).not.toBeChecked());

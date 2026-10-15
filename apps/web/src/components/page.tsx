@@ -257,14 +257,17 @@ export function Section({
   action,
   children,
   className,
+  id,
 }: {
   title: ReactNode;
   action?: ReactNode;
   children: ReactNode;
   className?: string;
+  /** An anchor another part of the page links to (`#id`). */
+  id?: string;
 }) {
   return (
-    <section className={cn('grid content-start gap-2', className)}>
+    <section id={id} className={cn('grid content-start gap-2 scroll-mt-4', className)}>
       <div className="flex min-h-5 items-center justify-between gap-2">
         <h2 className="eyebrow m-0">{title}</h2>
         {action}

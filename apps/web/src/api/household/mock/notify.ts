@@ -3,9 +3,10 @@
  *
  * Settings: the digest time and quiet hours (both ends or neither), SMTP and push availability,
  * the channels (email, this and other devices' push, webhooks whose secret is shown once and URL
- * never again), and per location a kind × channel table where only chosen values are stored and
- * everything else is `defaultPreference()` (Q8, Q10). Viewers' locations list only Membership.
- * The AI monthly summary is account-level (Q35).
+ * never again), and a kind × channel table for all locations and per location (D239): a location
+ * reads its own choice, else the one for all locations, else `defaultPreference()` (Q8, Q10); only
+ * what differs is stored at each layer. Viewers' locations list only Membership. The AI monthly
+ * summary is account-level (Q35).
  *
  * The centre: the caller's notifications, newest first; a reminder's state and actions are read
  * from its source now (db.ts `notificationView`), so a returned loan reads `done` with no
@@ -63,8 +64,40 @@ export function notifyRoutes(state: MockState): MockRoute[] {
       (x) => x.locationId === locationId && x.kind === kind && x.channel === channel,
     )?.enabled;
 
+  /** The all-locations baseline: an owner's default; the AI summary's from the fixture. */
+  const accountFallback = (kind: NotifyKind, channel: PreferenceChannel) =>
+    kind === 'ai_summary' && channel === 'email'
+      ? h().settings.aiSummaryEmail
+      : channelDefault('owner', kind, channel);
+  const inherited = (role: Role, kind: NotifyKind, channel: PreferenceChannel) =>
+    chosen(null, kind, channel) ?? channelDefault(role, kind, channel);
+  const store = (
+    item: { locationId: string | null; kind: NotifyKind; channel: PreferenceChannel },
+    enabled: boolean | undefined,
+  ) => {
+    const same = (x: StoredPreference) =>
+      x.locationId === item.locationId && x.kind === item.kind && x.channel === item.channel;
+    h().preferences = h().preferences.filter((x) => !same(x));
+    if (enabled !== undefined) h().preferences.push({ ...item, enabled });
+  };
+
   const settings = (): NotificationSettings => {
     const s = h().settings;
+    const accountKinds: Partial<Record<NotifyKind, KindPreference>> = {};
+    for (const kind of NOTIFY_KINDS) {
+      const pref = { isDefault: true, set: [] as PreferenceChannel[] } as KindPreference & {
+        set: PreferenceChannel[];
+      };
+      for (const channel of PREFERENCE_CHANNELS) {
+        const value = chosen(null, kind, channel);
+        if (value !== undefined) {
+          pref.isDefault = false;
+          pref.set.push(channel);
+        }
+        pref[channel] = value ?? accountFallback(kind, channel);
+      }
+      accountKinds[kind] = pref;
+    }
     return {
       timezone: state.me.profile.timezone,
       digestTime: s.digestTime,
@@ -79,18 +112,22 @@ export function notifyRoutes(state: MockState): MockRoute[] {
         const shown = l.role === 'viewer' ? (['membership'] as NotifyKind[]) : LOCATION_KINDS;
         for (const kind of shown) {
           const pref = {} as Record<PreferenceChannel, boolean>;
+          const set: PreferenceChannel[] = [];
           let isDefault = true;
           for (const channel of PREFERENCE_CHANNELS) {
-            const fallback = channelDefault(l.role, kind, channel);
             const value = chosen(l.id, kind, channel);
-            if (value !== undefined && value !== fallback) isDefault = false;
-            pref[channel] = value ?? fallback;
+            if (value !== undefined) set.push(channel);
+            if (value !== undefined || chosen(null, kind, channel) !== undefined) isDefault = false;
+            pref[channel] = value ?? inherited(l.role, kind, channel);
           }
-          kinds[kind] = { ...pref, isDefault };
+          kinds[kind] = { ...pref, isDefault, set };
         }
         return { locationId: l.id, name: l.name, role: l.role, kinds };
       }),
-      account: { aiSummary: { email: chosen(null, 'ai_summary', 'email') ?? s.aiSummaryEmail } },
+      account: {
+        aiSummary: { email: chosen(null, 'ai_summary', 'email') ?? s.aiSummaryEmail },
+        kinds: accountKinds,
+      },
     };
   };
 
@@ -137,21 +174,30 @@ export function notifyRoutes(state: MockState): MockRoute[] {
       if (!Array.isArray(b.items) || b.items.length > 200) return invalid('items: at most 200');
       for (const item of b.items) {
         const account = (ACCOUNT_LEVEL_KINDS as readonly string[]).includes(item.kind);
-        if (account !== (item.locationId === null))
-          return invalid('locationId: null only for account-level kinds');
-        const loc = item.locationId
-          ? state.locations.find((l) => l.id === item.locationId)
-          : undefined;
-        if (item.locationId && !loc) return notFound();
-        const fallback = loc
-          ? channelDefault(loc.role, item.kind, item.channel)
-          : h().settings.aiSummaryEmail;
-        const same = (x: StoredPreference) =>
-          x.locationId === item.locationId && x.kind === item.kind && x.channel === item.channel;
-        h().preferences = h().preferences.filter((x) => !same(x));
-        // A value equal to the default deletes the row.
-        if (item.enabled !== fallback) h().preferences.push({ ...item });
+        if (account && item.locationId !== null)
+          return invalid('locationId: the AI summary is chosen for all locations only');
+        const cell = { locationId: item.locationId, kind: item.kind, channel: item.channel };
+        if (item.locationId === null) {
+          const fallback = accountFallback(item.kind, item.channel);
+          store(cell, item.enabled === fallback ? undefined : item.enabled);
+          // A location's own row that now says the same goes (only what differs is stored).
+          for (const l of state.locations) {
+            const here = chosen(l.id, item.kind, item.channel);
+            if (here !== undefined && here === inherited(l.role, item.kind, item.channel))
+              store({ ...cell, locationId: l.id }, undefined);
+          }
+          continue;
+        }
+        const loc = state.locations.find((l) => l.id === item.locationId);
+        if (!loc) return notFound();
+        const fallback = inherited(loc.role, item.kind, item.channel);
+        store(cell, item.enabled === fallback ? undefined : item.enabled);
       }
+      return settings();
+    }),
+    route('DELETE', p.locationPreferences(':id'), ({ params }) => {
+      if (!state.locations.some((l) => l.id === params.id)) return notFound();
+      h().preferences = h().preferences.filter((x) => x.locationId !== params.id);
       return settings();
     }),
     route('POST', p.channels, ({ body }) => {

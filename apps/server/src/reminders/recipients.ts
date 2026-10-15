@@ -20,8 +20,9 @@ import type { OccurrenceRow } from './items.js';
 // - minus anyone who hid the source's module there (user_hidden_modules, §7.6);
 // - plus, for a loan to a person linked to a member of the location (people.member_user_id),
 //   that member: it's their own household (Q16);
-// - a kind is on when the person chose it (notification_preferences), else defaultPreference():
-//   owners and admins every kind, members only the loans they recorded (Q8). `inapp` off
+// - a kind is on when the person chose it for this location, else for all their locations (a
+//   row with no location, D239), else defaultPreference(): owners and admins every kind, members
+//   only the loans they recorded (Q8). `inapp` off
 //   silences the kind entirely (Q10); on, it lands in the centre and on each channel that's on:
 //   - email: a verified, deliverable address (never a managed account's), SMTP on this instance
 //     (an `email` sender), and the email preference on (the kind's default); the row is made
@@ -155,6 +156,8 @@ type UserChannels = {
  */
 export class RecipientBook {
   private readonly members = new Map<string, Member[]>();
+  /** Per location: its members' choices there (`user|kind|channel`) and for all locations
+   * (`*|user|kind|channel`). */
   private readonly prefs = new Map<string, Map<string, boolean>>();
   private readonly hidden = new Map<string, Set<string>>();
   private readonly users = new Map<string, UserInfo>();
@@ -189,12 +192,21 @@ export class RecipientBook {
         kind: string;
         channel: string;
         enabled: boolean;
+        location_id: string | null;
       }>(
-        `SELECT user_id, kind, channel, enabled FROM public.notification_preferences
-          WHERE location_id = $1`,
+        `SELECT p.user_id, p.location_id, p.kind, p.channel, p.enabled
+           FROM public.notification_preferences p
+          WHERE p.location_id = $1
+             OR (p.location_id IS NULL AND p.user_id IN (
+                  SELECT m.user_id FROM public.memberships m WHERE m.location_id = $1))`,
         [locationId],
       );
-      p = new Map(rows.map((r) => [`${r.user_id}|${r.kind}|${r.channel}`, r.enabled]));
+      p = new Map(
+        rows.map((r) => [
+          `${r.location_id === null ? '*|' : ''}${r.user_id}|${r.kind}|${r.channel}`,
+          r.enabled,
+        ]),
+      );
       this.prefs.set(locationId, p);
     }
     return p;
@@ -283,7 +295,10 @@ export class RecipientBook {
         linked?.userId === m.userId
           ? true
           : defaultPreference({ role: m.role, kind, recordedByMe: mine });
-      const pref = (channel: PreferenceChannel) => prefs.get(`${m.userId}|${kind}|${channel}`);
+      // D239: this location's choice, else the one for all locations; undefined is the default.
+      const pref = (channel: PreferenceChannel) =>
+        prefs.get(`${m.userId}|${kind}|${channel}`) ??
+        prefs.get(`*|${m.userId}|${kind}|${channel}`);
       if (!(pref('inapp') ?? fallback)) continue;
       const ch = this.userChannels.get(m.userId);
       const channels: ChannelTarget[] = [];

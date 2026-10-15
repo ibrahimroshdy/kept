@@ -55,6 +55,7 @@ import { usePlaceName } from '@/components/places/labels';
 import { enqueueReading } from '@/components/readings/enqueue-reading';
 import { readingValueOf } from '@/components/readings/reading-field';
 import { FromTemplate, prefillOf } from '@/components/templates/quick-add';
+import { Button as KeptButton } from '@/components/ui/button';
 import { useConfirm } from '@/components/ui/confirm';
 import { toast } from '@/components/ui/toast';
 import { useFormat } from '@/lib/format';
@@ -126,6 +127,8 @@ type Shot = Queued & {
 };
 
 type Cam =
+  /** Waiting for "Start the camera": the guided tour brought the page, not the person (D239). */
+  | { state: 'idle' }
   | { state: 'opening' }
   | { state: 'live'; stream: MediaStream; stop: () => void }
   | { state: 'problem'; problem: CameraProblem };
@@ -303,11 +306,14 @@ export function CaptureScreen({
 
   // ----- the camera ---------------------------------------------------------------------------
   const video = useRef<HTMLVideoElement>(null);
-  const [cam, setCam] = useState<Cam>({ state: 'opening' });
+  // The camera opens when the person came here (the Capture tab, a "Read the card"); when "Show me
+  // around" walks through, it waits for a tap (D239: no camera prompt nobody asked for).
+  const [asked, setAsked] = useState(() => hintSlot.get() !== 'tour');
+  const [cam, setCam] = useState<Cam>(() => (asked ? { state: 'opening' } : { state: 'idle' }));
   const [phase, setPhase] = useState<'camera' | 'summary'>('camera');
   useHoldUpdates(true);
   useEffect(() => {
-    if (phase !== 'camera') return;
+    if (phase !== 'camera' || !asked) return;
     let live = true;
     let stop: (() => void) | null = null;
     void openCamera(camera ?? cameraEnv()).then((r) => {
@@ -324,7 +330,7 @@ export function CaptureScreen({
       live = false;
       stop?.();
     };
-  }, [camera, phase]);
+  }, [camera, phase, asked]);
   // The shutter waits for the first frame: a press between the stream opening and its first
   // frame would grab nothing, and the capture would be lost without a word (found by the e2e's
   // keyboard walk under load, T32).
@@ -862,6 +868,20 @@ export function CaptureScreen({
               aria-label={t`Camera view`}
               className="absolute inset-0 size-full object-cover"
             />
+            {cam.state === 'idle' ? (
+              <div className="absolute inset-0 grid place-items-center">
+                <KeptButton
+                  variant="secondary"
+                  className="bg-surface"
+                  onPress={() => {
+                    setCam({ state: 'opening' });
+                    setAsked(true);
+                  }}
+                >
+                  <Trans>Start the camera</Trans>
+                </KeptButton>
+              </div>
+            ) : null}
             {mode === 'receipt' ? (
               <span className="absolute inset-x-2.5 bottom-2.5 w-fit rounded-full bg-[#0F0E0D]/80 px-2.5 py-[7px] font-medium text-[12.5px]">
                 {t`Hold steady · fill the frame · original kept`}
