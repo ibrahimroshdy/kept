@@ -12,13 +12,22 @@
  * - og:type `website` on the landing pages (Starlight writes `article` everywhere);
  * - on the landing pages, a schema.org `SoftwareApplication` as JSON-LD: free (price 0), AGPL-3.0,
  *   category `HomeApplication` (one of the values Google's software-app structured data accepts,
- *   read 2026-10-15). No rating or review: Kept has none to state, and Google shows a rich result
- *   only with one, so this describes the app without asking for one.
+ *   read 2026-10-15), and the share card as its screenshot when the build knows its site. No
+ *   rating or review: Kept has none to state, and Google shows a rich result only with one, so
+ *   this describes the app without asking for one.
+ * - on Arabic pages, a preload of IBM Plex Sans Arabic 400 (43 KB, the body text): without it
+ *   the font is found only once the stylesheet is parsed, and Lighthouse's mobile run measured the
+ *   Arabic landing page at 94 instead of 95–97 (2026-10-15), with a layout shift as it swaps in.
+ * - on the integrations page, the table of contents: the page's headings are drawn by a component
+ *   from src/data/integrations.ts, which Starlight can't see, so its groups are added here from the
+ *   same data.
  *
  * Starlight already writes the canonical link, an hreflang alternate per locale and x-default,
  * and the sitemap link, all from `site`.
  */
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
+import arabic400 from '@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-400-normal.woff2?url';
+import { integrationGroups } from './data/integrations';
 
 const CARD = { width: 1200, height: 630 };
 
@@ -57,6 +66,28 @@ export const onRequest = defineRouteMiddleware((context) => {
   };
 
   meta('property', 'og:locale', OG_LOCALES[route.lang] ?? route.lang);
+  if (route.lang === 'ar') {
+    head.push({
+      tag: 'link',
+      attrs: { rel: 'preload', href: arabic400, as: 'font', type: 'font/woff2', crossorigin: '' },
+      content: '',
+    });
+  }
+  const card = CARDS[route.lang] ?? CARDS.en;
+  const cardUrl = context.site && card ? new URL(`${base}/${card.file}`, context.site).href : null;
+
+  if (route.toc && (route.id === 'integrations' || route.id === 'ar/integrations')) {
+    const ar = route.lang === 'ar';
+    route.toc.items.push(
+      ...integrationGroups.map((group) => ({
+        depth: 2,
+        slug: group.id,
+        text: ar ? group.ar : group.en,
+        children: [],
+      })),
+    );
+  }
+
   if (route.entry.data.hero) {
     meta('property', 'og:type', 'website');
     const app = {
@@ -71,6 +102,7 @@ export const onRequest = defineRouteMiddleware((context) => {
       isAccessibleForFree: true,
       license: LICENSE,
       sameAs: [REPOSITORY],
+      ...(cardUrl ? { screenshot: cardUrl } : {}),
       inLanguage: route.entryMeta.lang,
       ...(context.site ? { url: new URL(`${base}/`, context.site).href } : {}),
     };
@@ -82,10 +114,8 @@ export const onRequest = defineRouteMiddleware((context) => {
     });
   }
 
-  if (!context.site) return;
-  const card = CARDS[route.lang] ?? CARDS.en;
-  if (!card) return;
-  const image = new URL(`${base}/${card.file}`, context.site).href;
+  if (!cardUrl || !card) return;
+  const image = cardUrl;
   meta('property', 'og:image', image);
   meta('property', 'og:image:type', 'image/png');
   meta('property', 'og:image:width', String(CARD.width));

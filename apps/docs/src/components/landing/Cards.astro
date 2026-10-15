@@ -4,6 +4,10 @@ import { withBase } from './base';
  * A grid of the kit's cards (surface, hairline, 10px corners), each with an icon tile. A card
  * with `href` is a link to that page. With `heading`, each card's title is that heading (h3 or
  * h4), so a section of features reads as headings to a screen reader and a search engine.
+ *
+ * `compact` is the landing page's tile: the icon beside the title, one fragment under both, and
+ * two to a row from the narrowest phone, so six tiles take three short rows instead of six tall
+ * ones. `columns` is how many to a row on a wide screen.
  */
 import Icon from './Icon.astro';
 import type { IconName } from './icons';
@@ -16,14 +20,15 @@ interface Item {
 }
 interface Props {
   items: Item[];
-  columns?: 2 | 3;
+  columns?: 2 | 3 | 4;
   heading?: 'h3' | 'h4';
+  compact?: boolean;
 }
-const { items, columns = 3, heading } = Astro.props;
+const { items, columns = 3, heading, compact = false } = Astro.props;
 const Title = heading ?? 'span';
 ---
 
-<ul class:list={['kd-cards', `kd-cards-${columns}`]}>
+<ul class:list={['kd-cards', `kd-cards-${columns}`, { 'kd-cards-compact': compact }]}>
   {
     items.map(({ icon, title, body, href }) => {
       const Tag = href ? 'a' : 'div';
@@ -31,7 +36,7 @@ const Title = heading ?? 'span';
         <li>
           <Tag class:list={['kd-card', { 'kd-card-link': href }]} href={href ? withBase(href) : undefined}>
             <span class="kd-card-icon">
-              <Icon name={icon} />
+              <Icon name={icon} size={compact ? 18 : 22} />
             </span>
             <Title class="kd-card-title">{title}</Title>
             <span class="kd-card-body">{body}</span>
@@ -59,6 +64,9 @@ const Title = heading ?? 'span';
   @media (min-width: 64rem) {
     .kd-cards-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .kd-cards-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
   .kd-cards li {
@@ -113,5 +121,45 @@ const Title = heading ?? 'span';
     line-height: 1.55;
     color: var(--ink-2);
     text-wrap: pretty;
+  }
+
+  /* Compact: two to a row on a phone, the icon beside the title, the fragment under both. */
+  .kd-cards-compact {
+    gap: 0.625rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .kd-cards-compact .kd-card {
+    grid-template-rows: auto 1fr;
+    column-gap: 0.5rem;
+    row-gap: 0.375rem;
+    align-items: center;
+    padding: 0.75rem 0.875rem 0.875rem;
+  }
+  .kd-cards-compact .kd-card-icon {
+    grid-row: auto;
+    inline-size: 1.875rem;
+    block-size: 1.875rem;
+    border-radius: 6px;
+  }
+  .kd-cards-compact .kd-card-title {
+    font-size: 0.9375rem;
+    line-height: 1.25;
+  }
+  .kd-cards-compact .kd-card-body {
+    grid-column: 1 / -1;
+    align-self: start;
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+  @media (min-width: 50rem) {
+    .kd-cards-compact.kd-cards-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .kd-cards-compact.kd-cards-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .kd-cards-compact .kd-card {
+      padding: 0.875rem 1rem 1rem;
+    }
   }
 </style>

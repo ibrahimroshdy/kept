@@ -1,52 +1,120 @@
 ---
 /**
- * What feeds into Kept (src/data/integrations.ts): one heading per group, then its entries as the
- * kit's cards, each a link to the page that sets it up. On an Arabic page the words are the
- * Arabic ones and the links go under /ar/ (English where a page isn't translated yet).
+ * What feeds into Kept, as one dense wall (src/data/integrations.ts): per group, a label and its
+ * entries as chips, an icon and a name each, wrapping. Every chip links to its entry on the
+ * integrations page (`/integrations/#<id>`), which says what it does and links to its setup. On a
+ * phone a group's label sits above its chips; from 50rem it sits beside them, one row per group.
+ * On an Arabic page the words are the Arabic ones and the links go under /ar/. Under the wall, a
+ * link to the whole page.
  */
-import { integrationGroups } from '../../data/integrations';
-import Cards from './Cards.astro';
+import { integrationGroups, integrations } from '../../data/integrations';
+import { withBase } from './base';
+import Icon from './Icon.astro';
 
 const ar = Astro.locals.starlightRoute.lang === 'ar';
-const localized = (href: string) => (ar ? `/ar${href}` : href);
+const page = ar ? '/ar/integrations/' : '/integrations/';
+const count = new Intl.NumberFormat(ar ? 'ar-EG-u-nu-arab' : 'en').format(integrations.length);
+const all = ar
+  ? `التكاملات كلها (${count})، وطريقة إعداد كلٍّ منها`
+  : `All ${count} integrations, and how to set each up`;
 ---
 
-<div class="kd-integrations">
+<div class="kd-wall">
   {
     integrationGroups.map((group) => (
-      <div class="kd-integration-group" id={group.id}>
-        <h3>{ar ? group.ar : group.en}</h3>
-        <Cards
-          items={group.items.map((item) => {
-            const words = ar ? item.ar : item.en;
-            return { icon: item.icon, title: words.name, body: words.body, href: localized(item.href) };
-          })}
-        />
+      <div class="kd-wall-group">
+        <h3 class="kd-wall-label">{ar ? group.ar : group.en}</h3>
+        <ul class="kd-wall-chips">
+          {group.items.map((item) => (
+            <li>
+              <a class="kd-chip" href={withBase(`${page}#${item.id}`)}>
+                <Icon name={item.icon} size={16} />
+                {(ar ? item.ar : item.en).name}
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
     ))
   }
 </div>
+<a class="kd-more-link" href={withBase(page)}>{all}</a>
 
 <style>
-  .kd-integrations {
-    display: grid;
-    gap: 2rem;
-  }
-  .kd-integration-group {
+  .kd-wall {
     display: grid;
     gap: 0.875rem;
   }
-  h3 {
+  .kd-wall-group {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .kd-wall-label {
     margin: 0;
-    font: 600 0.75rem / 1 var(--mono);
+    font: 600 0.6875rem / 1.2 var(--mono);
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink-3);
   }
-  :global(:root:lang(ar)) h3 {
+  :global(:root:lang(ar)) .kd-wall-label {
     font-family: var(--arabic);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     letter-spacing: 0;
     text-transform: none;
+  }
+  .kd-wall-chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+  .kd-wall-chips li {
+    margin: 0;
+  }
+  .kd-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-block-size: 1.875rem;
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem 0.625rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .kd-chip :global(svg) {
+    flex: none;
+    color: var(--ink-3);
+  }
+  .kd-chip:hover {
+    border-color: var(--ink-3);
+  }
+  .kd-chip:hover :global(svg) {
+    color: var(--amber-text);
+  }
+  @media (min-width: 50rem) {
+    .kd-wall {
+      gap: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--kd-radius);
+      background: color-mix(in srgb, var(--surface) 50%, transparent);
+    }
+    .kd-wall-group {
+      grid-template-columns: 11rem minmax(0, 1fr);
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem 1rem;
+    }
+    .kd-wall-group + .kd-wall-group {
+      border-block-start: 1px solid var(--line);
+    }
   }
 </style>

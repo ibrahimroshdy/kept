@@ -1,0 +1,118 @@
+---
+/**
+ * The integrations page's body (`/integrations/`, `/ar/integrations/`), from
+ * src/data/integrations.ts: per group an h2 (its id is the anchor the table of contents links to;
+ * src/route-data.ts builds that table from the same data), and per entry an h3 with the entry's id
+ * as its anchor (the landing page's wall links there), what it does, and a link to the page that
+ * sets it up. Plain HTML: everything a search engine reads is in the page.
+ */
+import { integrationGroups } from '../../data/integrations';
+import { withBase } from './base';
+import Icon from './Icon.astro';
+
+const ar = Astro.locals.starlightRoute.lang === 'ar';
+const localized = (href: string) => withBase(ar ? `/ar${href}` : href);
+const setUp = ar ? 'طريقة الإعداد' : 'Set it up';
+---
+
+<div class="kd-integration-list not-content">
+  {
+    integrationGroups.map((group) => (
+      <section>
+        <h2 id={group.id}>{ar ? group.ar : group.en}</h2>
+        <ul>
+          {group.items.map((item) => {
+            const words = ar ? item.ar : item.en;
+            return (
+              <li>
+                <span class="kd-integration-icon">
+                  <Icon name={item.icon} size={20} />
+                </span>
+                <div>
+                  <h3 id={item.id}>{words.title ?? words.name}</h3>
+                  <p>{words.body}</p>
+                  <a href={localized(item.href)}>
+                    {setUp}
+                    <span class="sr-only">: {words.title ?? words.name}</span>
+                  </a>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .kd-integration-list {
+    display: grid;
+    gap: 2.25rem;
+  }
+  section {
+    display: grid;
+    gap: 0.75rem;
+  }
+  h2 {
+    margin: 0;
+    font-size: var(--sl-text-h2);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    scroll-margin-block-start: calc(var(--sl-nav-height) + 1rem);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    border: 1px solid var(--line);
+    border-radius: var(--kd-radius);
+    background: var(--surface);
+  }
+  li {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.875rem;
+    padding: 0.875rem 1rem;
+  }
+  li + li {
+    border-block-start: 1px solid var(--line);
+  }
+  .kd-integration-icon {
+    display: grid;
+    place-items: center;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    border-radius: 8px;
+    background: var(--sunken);
+    color: var(--ink-2);
+  }
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--ink);
+    scroll-margin-block-start: calc(var(--sl-nav-height) + 1rem);
+  }
+  p {
+    margin: 0.125rem 0 0.25rem;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+  a {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--amber-text);
+    text-underline-offset: 0.2em;
+  }
+  :global(:root:lang(ar)) h2 {
+    letter-spacing: 0;
+  }
+</style>

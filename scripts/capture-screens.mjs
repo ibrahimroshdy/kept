@@ -231,7 +231,9 @@ async function shot(name, path, { theme, lang, phone = false, top = false }) {
     const errors = [];
     page.on('pageerror', (e) => errors.push(String(e)));
     const digits = lang === 'ar' ? '&digits=eastern' : '';
-    const query = `demo=owner&lang=${lang}&theme=${theme}${digits}`;
+    // showcase=1: Home's AI cap not reached (src/demo.ts), so no screen says "AI paused"; the
+    // fixtures keep the pause for the tests that check it.
+    const query = `demo=owner&showcase=1&lang=${lang}&theme=${theme}${digits}`;
     await page.goto(`${origin}${path}${path.includes('?') ? '&' : '?'}${query}`);
     await page.waitForLoadState('networkidle');
     await page.evaluate(() => document.fonts.ready);

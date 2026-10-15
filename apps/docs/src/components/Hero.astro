@@ -8,8 +8,12 @@ import { Image } from 'astro:assets';
  * The captures are src/assets/landing/map-hero-{light,dark}.webp (1600 × 1000, 16:10), the light
  * one under the light theme and the dark one under dark, as Shot.astro does. The Arabic page uses
  * map-hero-ar-{light,dark}.webp when both exist (the app in Arabic); until then it shows the
- * English map, the one place an Arabic page does. Astro serves them as WebP at the widths below,
- * eagerly and first (the largest paint on the page). Keep the alt text true to the capture.
+ * English map, the one place an Arabic page does. Astro serves them as WebP at the widths below.
+ * The light one is eager and fetched first (the largest paint on the page); the dark one is lazy,
+ * so a page in the light theme never fetches it (a hidden lazy image isn't loaded) and one in the
+ * dark theme fetches it as soon as it is laid out. Keep the alt text true to the capture.
+ *
+ * Under the actions, the facts line: three short facts, one idea each.
  */
 import { LinkButton } from '@astrojs/starlight/components';
 import type { ImageMetadata } from 'astro';
@@ -20,6 +24,9 @@ const { title = entry.data.title, tagline, actions = [] } = entry.data.hero || {
 const ar = lang === 'ar';
 
 const eyebrow = ar ? 'جديد · الخريطة ثلاثية الأبعاد' : 'New · The 3D map';
+const facts = ar
+  ? ['AGPL-3.0', 'Docker أو Kubernetes', 'تطبيق هاتف بلا اتصال']
+  : ['AGPL-3.0', 'Docker or Kubernetes', 'Offline phone app'];
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/landing/map-hero*.webp', {
   eager: true,
 });
@@ -35,8 +42,6 @@ const image = {
   alt: mapAlt,
   widths: [480, 720, 960, 1280, 1600],
   sizes: '(min-width: 72rem) 36rem, (min-width: 50rem) 52vw, calc(100vw - 2rem)',
-  loading: 'eager',
-  fetchpriority: 'high',
   decoding: 'async',
   format: 'webp',
   quality: 80,
@@ -60,12 +65,15 @@ const image = {
         </div>
       )
     }
+    <ul class="kd-hero-facts">
+      {facts.map((fact) => <li>{fact}</li>)}
+    </ul>
   </div>
   <div class="kd-hero-art">
     <div class="kd-frame">
       <div class="kd-frame-bar" aria-hidden="true"><i></i><i></i><i></i></div>
-      <Image src={light} {...image} class="kd-only-light" />
-      <Image src={dark} {...image} class="kd-only-dark" />
+      <Image src={light} {...image} loading="eager" fetchpriority="high" class="kd-only-light" />
+      <Image src={dark} {...image} loading="lazy" class="kd-only-dark" />
     </div>
   </div>
 </div>
@@ -73,8 +81,8 @@ const image = {
 <style>
   .kd-hero {
     display: grid;
-    gap: 2.5rem;
-    padding-block: 1.5rem 1rem;
+    gap: 2rem;
+    padding-block: 0.5rem 0;
     align-items: center;
   }
   .kd-hero-copy {
@@ -137,6 +145,31 @@ const image = {
   }
   .kd-hero-actions :global(.sl-link-button) {
     margin: 0;
+  }
+  .kd-hero-facts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    font: 500 0.8125rem / 1.4 var(--mono);
+    color: var(--ink-3);
+  }
+  :global(:root:lang(ar)) .kd-hero-facts {
+    font-family: var(--arabic);
+  }
+  .kd-hero-facts li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .kd-hero-facts li::before {
+    content: '';
+    inline-size: 5px;
+    block-size: 5px;
+    border-radius: 50%;
+    background: var(--amber);
   }
 
   .kd-hero-art {
