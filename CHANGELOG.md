@@ -3,6 +3,16 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.10.2 (2026-10-15)
+
+### Fixes
+
+- **map:** shapes for everyday electronics, word-start search, and a picker above the keyboard (#130) (#134) (7fb9ae2)
+
+### Documentation
+
+- **release:** the 1.10.1 record (#133) (2b8a701)
+
 ## 1.10.1 (2026-10-15)
 
 ### Documentation
