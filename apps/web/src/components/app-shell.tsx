@@ -206,8 +206,6 @@ export function useHasInbox(): boolean {
 export type NavCounts = Partial<Record<string, number>>;
 
 const SIDEBAR_ID = 'kept-sidebar';
-/** The sidebar entries "Show me around" stops at (components/hints/tour.ts). */
-const TOURED: ReadonlySet<string> = new Set(['home', 'inbox', 'labels', 'settings']);
 /**
  * The sidebar's width: the full sidebar, or the icon rail (D198). `rail:` follows the attribute
  * the pre-paint script sets, so the loading frame and the first paint already have the right width.
@@ -399,7 +397,8 @@ function Sidebar({ locations, counts }: { locations: LocationSummary[]; counts: 
         >
           {rail ? <AppMark size={32} label="Kept" /> : <BrandLockup />}
         </Link>
-        <nav aria-label={t`Main`} className="grid gap-0.5">
+        {/* The guided tour's "everything else" stop on a desktop (components/hints/tour.ts). */}
+        <nav aria-label={t`Main`} className="grid gap-0.5" data-tour="nav-entries">
           {entries.map((e) => {
             const n = counts[e.key] ?? 0;
             return e.to ? (
@@ -408,7 +407,6 @@ function Sidebar({ locations, counts }: { locations: LocationSummary[]; counts: 
                   <Link
                     to={e.to}
                     data-nav={e.key}
-                    data-tour={TOURED.has(e.key) ? e.key : undefined}
                     activeOptions={{ exact: e.to === '/' }}
                     className={cn(item, sideLink)}
                   >
@@ -579,27 +577,27 @@ function TabBar() {
       data-tab-bar=""
       className="fixed inset-x-0 bottom-0 z-30 flex items-end border-t border-line bg-surface px-1 pb-[env(safe-area-inset-bottom)] md:hidden"
     >
-      <Link to="/" data-tour="home" activeOptions={{ exact: true }} className={tab}>
+      <Link to="/" activeOptions={{ exact: true }} className={tab}>
         <HomeIcon />
         <Trans>Home</Trans>
       </Link>
-      <Link to="/search" data-tour="search" className={tab}>
+      <Link to="/search" className={tab}>
         <SearchIcon />
         <Trans>Search</Trans>
       </Link>
-      <Link to="/capture" data-tour="capture" className={cn(tab, 'justify-end pb-1.5')}>
+      <Link to="/capture" className={cn(tab, 'justify-end pb-1.5')}>
         <span className="-mt-6 mb-0.5 grid size-[52px] place-items-center rounded-2xl bg-amber text-amber-ink shadow-[0_4px_14px_rgba(0,0,0,.18)] [&_svg]:size-[26px]">
           <CameraIcon strokeWidth="2" />
         </span>
         <Trans>Capture</Trans>
       </Link>
       {inboxOn ? (
-        <Link to="/inbox" data-tour="inbox" className={tab}>
+        <Link to="/inbox" className={tab}>
           <InboxIcon />
           <Trans>Inbox</Trans>
         </Link>
       ) : null}
-      <Link to="/more" data-tour="more" className={tab}>
+      <Link to="/more" className={tab}>
         <MenuIcon />
         <Trans>More</Trans>
       </Link>

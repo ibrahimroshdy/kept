@@ -167,7 +167,6 @@ function DesktopTopbarTools() {
     <div className="hidden items-center gap-2 md:flex">
       <button
         type="button"
-        data-tour="search"
         aria-keyshortcuts="Meta+K Control+K"
         onClick={openPalette}
         className="hidden min-h-10 w-64 items-center gap-2 rounded-lg border border-line bg-surface px-3 text-start text-small text-ink-3 outline-none hover:border-ink-3 focus-visible:outline-2 focus-visible:outline-info lg:flex"
@@ -186,11 +185,7 @@ function DesktopTopbarTools() {
         ) : null}
       </button>
       <NotificationBell className="hidden lg:grid" />
-      <Link
-        to="/capture"
-        data-tour="capture"
-        className={cn(buttonClass('primary'), 'hidden lg:inline-flex')}
-      >
+      <Link to="/capture" className={cn(buttonClass('primary'), 'hidden lg:inline-flex')}>
         <CameraIcon className="size-[18px]" />
         <Trans>Capture</Trans>
       </Link>
@@ -201,7 +196,6 @@ function DesktopTopbarTools() {
               variant="secondary"
               size="icon"
               aria-label={t`Search`}
-              data-tour="search"
               aria-keyshortcuts="Meta+K Control+K"
               onPress={openPalette}
               className="size-10 rounded-lg bg-surface [&_svg]:size-5"
@@ -214,7 +208,6 @@ function DesktopTopbarTools() {
             <Focusable>
               <Link
                 to="/capture"
-                data-tour="capture"
                 aria-label={t`Capture`}
                 className={cn(buttonClass('primary', 'icon'), 'size-10 rounded-lg [&_svg]:size-5')}
               >

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { HINT_KEYS, isHintKey } from './hints.js';
+import { HINT_KEYS, isHintKey, TOUR_SECTION_IDS, tourProgressKey } from './hints.js';
 
 describe('HINT_KEYS (D138)', () => {
   it('fit the user_hints key CHECK', () => {
@@ -11,5 +11,10 @@ describe('HINT_KEYS (D138)', () => {
     expect(isHintKey('installed_standalone')).toBe(true);
     expect(isHintKey('capture.mode_strip')).toBe(true);
     expect(isHintKey('nope')).toBe(false);
+  });
+
+  it('hold one progress key per tour section (D242)', () => {
+    for (const id of TOUR_SECTION_IDS) expect(isHintKey(tourProgressKey(id))).toBe(true);
+    expect(isHintKey('help.tour.vehicles')).toBe(false);
   });
 });

@@ -189,7 +189,7 @@ function SchedulesPage() {
               </Trans>
             </p>
           ) : null}
-          <div data-tour="schedules">
+          <div>
             <ListSurface<Schedule>
               label={t`Schedules`}
               search={{ label: t`Search schedules`, placeholder: t`Search by name or thing` }}

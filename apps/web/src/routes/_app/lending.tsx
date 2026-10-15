@@ -173,7 +173,7 @@ function LendingPage() {
               </Trans>
             </p>
           ) : null}
-          <div data-tour="lending">
+          <div>
             <ListSurface<LoanRow>
               label={t`Loans`}
               search={{ label: t`Search loans`, placeholder: t`Search by thing or person` }}

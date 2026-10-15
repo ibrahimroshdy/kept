@@ -135,7 +135,7 @@ function PaperworkPage() {
         </LinkButton>
       }
     >
-      <div data-tour="paperwork">
+      <div>
         <ListSurface<PaperworkRow>
           label={t`Paperwork`}
           search={{

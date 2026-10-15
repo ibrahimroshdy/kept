@@ -12,6 +12,12 @@
  *   runs against Arabic reading. Its own keys are off; this module handles Escape and the arrows
  *   by reading direction. Tab stays inside the popover and the highlighted element (driver.js).
  * - **Reduced motion:** no pulse, no animated tour.
+ * - **Taps go through (D242):** driver.css turns pointer events off on every element under
+ *   `body.driver-active` and lays a click-catching overlay over the page. The tour keeps the
+ *   spotlight but drops both, so a tap outside the highlighted element reaches the page.
+ * - **The phone's sheet (D242):** under 768 px the popover docks above the tab bar (or at the top
+ *   on a full-screen page), clear of the iOS home indicator (hints.css), and the page scrolls the
+ *   target out from under it.
  */
 import { type AllowedButtons, type Driver, type DriveStep, driver } from 'driver.js';
 import { type Hints, hints } from 'driver.js/hints';
@@ -27,6 +33,9 @@ import {
   physicalAlign,
   physicalSide,
 } from './placement';
+
+/** The body class while a tour runs: hints.css lets taps through the overlay under it. */
+export const TOUR_BODY_CLASS = 'kept-tour-open';
 
 const FOCUSABLE =
   'button:not([disabled]), [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -134,6 +143,10 @@ export type TourSpec = {
   steps: TourStep[];
   rtl: boolean;
   reducedMotion: boolean;
+  /** Where the popover sits beside the target on a desktop (default: below). */
+  side?: LogicalSide;
+  /** Where the phone's sheet docks (default: the bottom, above the tab bar). */
+  dock?: 'top' | 'bottom';
   labels: {
     next: string;
     previous: string;
@@ -158,8 +171,9 @@ export function runTour(spec: TourSpec): Shown {
     popover: {
       title: escapeHtml(s.title),
       description: escapeHtml(s.description),
-      side: physicalSide('bottom', rtl),
-      align: physicalAlign('start', rtl),
+      side: physicalSide(spec.side ?? 'bottom', rtl),
+      // Beside the target (start or end) the alignment is vertical: the top in either direction.
+      align: spec.side === 'start' || spec.side === 'end' ? 'start' : physicalAlign('start', rtl),
       // Nothing comes before the first stop: no Previous there.
       ...(i === 0 ? { showButtons: ['next', 'close'] as AllowedButtons[] } : {}),
       onPopoverRender: (popover) => {
@@ -172,11 +186,14 @@ export function runTour(spec: TourSpec): Shown {
 
   let d: Driver | null = null;
   let ended = false;
+  let resized: ResizeObserver | null = null;
   // driver.js calls onDestroyed only when a step was fully highlighted; every way out ends here.
   const finish = () => {
     if (ended) return;
     ended = true;
     window.removeEventListener('keydown', onKey);
+    resized?.disconnect();
+    document.body.classList.remove(TOUR_BODY_CLASS);
     // driver.js restores focus only to what had it before; a mouse click may have left none.
     const lost = !document.activeElement || document.activeElement === document.body;
     if (lost && spec.returnFocus?.isConnected) spec.returnFocus.focus();
@@ -214,7 +231,9 @@ export function runTour(spec: TourSpec): Shown {
     nextBtnText: escapeHtml(labels.next),
     prevBtnText: escapeHtml(labels.previous),
     doneBtnText: escapeHtml(labels.done),
-    popoverClass: 'kept-tour',
+    popoverClass: spec.dock === 'top' ? 'kept-tour kept-tour-dock-top' : 'kept-tour',
+    // A lighter dim than driver.js's 0.7: the page stays readable, and usable (below).
+    overlayOpacity: 0.45,
     stagePadding: 6,
     stageRadius: 12,
     onDoneClick: () => {
@@ -222,12 +241,89 @@ export function runTour(spec: TourSpec): Shown {
       end();
     },
     onCloseClick: end,
+    // The spotlight has settled (driver.js only places the popover once, halfway through its
+    // animation, and skips refreshes until then): place it again for where the page is now, and
+    // scroll the target clear of it.
+    onHighlighted: () => {
+      d?.refresh();
+      clearOfPopover(spec.steps[0]?.element ?? null, (spec.side ?? 'bottom') === 'bottom', () =>
+        d?.refresh(),
+      );
+    },
     onDestroyed: () => {
       d = null;
       finish();
     },
   });
   window.addEventListener('keydown', onKey);
+  document.body.classList.add(TOUR_BODY_CLASS);
   d.drive(0);
+  // driver.css's `.driver-active *{pointer-events:none}` would swallow every tap outside the
+  // highlight; without the class the page takes taps again (the overlay lets them through in
+  // hints.css). driver.js reads its own state, not this class, so nothing else changes.
+  document.body.classList.remove('driver-active');
+  // A page still loading moves the target after it was highlighted (Home's tiles under Get
+  // started), and the popover can grow once drawn: driver.js only follows scroll and resize, so
+  // follow the layout and the popover too.
+  if (typeof ResizeObserver !== 'undefined') {
+    let frame = 0;
+    resized = new ResizeObserver(() => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (d?.isActive()) d.refresh();
+      });
+    });
+    resized.observe(document.body);
+    const target = spec.steps[0]?.element;
+    if (target) resized.observe(target);
+    const watchPopover = (tries: number) => {
+      if (ended) return;
+      const popover = document.querySelector('.driver-popover.kept-tour');
+      if (popover) resized?.observe(popover);
+      else if (tries > 0) requestAnimationFrame(() => watchPopover(tries - 1));
+    };
+    watchPopover(60);
+  }
   return { destroy: end };
+}
+
+/**
+ * Keep the target clear of the popover by scrolling the page, where it can scroll that far
+ * (driver.js follows the scroll with its spotlight):
+ * - on a phone the sheet is docked (hints.css), so driver.js's own placement can't keep it off
+ *   the target: scroll the target out from under it;
+ * - on a desktop, a popover meant to sit below a target near the bottom of the window would be
+ *   pushed beside it, over other things: scroll up to make room below.
+ */
+function clearOfPopover(target: Element | null, below: boolean, moved: () => void): void {
+  if (!target) return;
+  const scroll = (top: number) => {
+    window.scrollBy({ top, behavior: 'instant' });
+    requestAnimationFrame(moved);
+  };
+  const run = () => {
+    const sheet = document.querySelector('.driver-popover.kept-tour');
+    if (!sheet || !target.isConnected) return;
+    const t = target.getBoundingClientRect();
+    const p = sheet.getBoundingClientRect();
+    if (t.height === 0 || p.height === 0) return;
+    const gap = 12;
+    // Never past the target's own top: a tall target keeps its start in view, under the header.
+    const room = Math.max(0, t.top - 72);
+    if (window.matchMedia?.('(min-width: 768px)').matches) {
+      const need = t.bottom + gap + p.height + gap - window.innerHeight;
+      if (below && need > 0) scroll(Math.min(need, room));
+      return;
+    }
+    if (sheet.classList.contains('kept-tour-dock-top')) {
+      if (t.top >= p.bottom + gap) return;
+      scroll(t.top - (p.bottom + gap));
+    } else {
+      if (t.bottom <= p.top - gap) return;
+      scroll(Math.min(t.bottom - (p.top - gap), room));
+    }
+  };
+  // Now, and once more after the page has answered the first scroll.
+  run();
+  requestAnimationFrame(() => requestAnimationFrame(run));
 }

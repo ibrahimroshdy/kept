@@ -23348,3 +23348,67 @@ msgstr "لم يُفحص شيء بعد."
 #: src/components/home/shortcuts.tsx
 msgid "Shortcuts"
 msgstr "اختصارات"
+
+#: src/routes/_app/help.tsx
+msgid "Stopped at {stoppedAt}."
+msgstr "توقفت عند {stoppedAt}."
+
+#: src/routes/_app/help.tsx
+msgid "Seen it all. Replay it any time."
+msgstr "شاهدتها كلها. أعدها متى شئت."
+
+#: src/routes/_app/help.tsx
+msgid "A short walk from Home to Help. Close it any time; it picks up where you stopped."
+msgstr "جولة قصيرة من الرئيسية إلى المساعدة. أغلقها متى شئت، وتُكمل من حيث توقفت."
+
+#: src/routes/_app/help.tsx
+msgid "Start over"
+msgstr "ابدأ من جديد"
+
+#: src/components/hints/hint-copy.ts
+msgid "What needs you, counted. Tap a tile for its list. Your locations are below."
+msgstr "ما يحتاج إليك، بالأعداد. اضغط على مربع لترى قائمته. مواقعك في الأسفل."
+
+#: src/components/hints/hint-copy.ts
+msgid "Take a photo, or pick one with Gallery. It waits in your Inbox. At the end you keep it or discard it."
+msgstr "التقط صورة، أو اختر واحدة من المعرض. تنتظر في الوارد. في النهاية تُبقيها أو تتجاهلها."
+
+#: src/components/hints/hint-copy.ts
+msgid "Photos wait here until you confirm what Kept read from them. Switch between yours and everyone's."
+msgstr "تنتظر الصور هنا حتى تؤكد ما قرأه Kept منها. بدّل بين صورك وصور الجميع."
+
+#: src/components/hints/hint-copy.ts
+msgid "List, Grid or Map. Map shows the location floor by floor, with what's in each room."
+msgstr "قائمة أو شبكة أو خريطة. تعرض الخريطة الموقع طابقًا طابقًا، مع ما في كل غرفة."
+
+#: src/components/hints/hint-copy.ts
+msgid "Type part of a name, a brand, a serial or a short ID. Each result says where it is."
+msgstr "اكتب جزءًا من اسم أو علامة تجارية أو رقم تسلسلي أو معرّف قصير. كل نتيجة تقول أين هو."
+
+#: src/components/hints/hint-copy.ts
+msgid "Print labels for what has none yet. Scan one later and Kept opens what it's on."
+msgstr "اطبع ملصقات لما ليس له ملصق بعد. امسح واحدًا لاحقًا فيفتح Kept ما يلتصق عليه."
+
+#: src/components/hints/hint-copy.ts
+msgid "Every section that isn't on the tab bar: the modules you use, Activity, Trash, Settings and Help."
+msgstr "كل قسم ليس في شريط التبويب: الوحدات التي تستخدمها، والنشاط، والمهملات، والإعدادات، والمساعدة."
+
+#: src/components/hints/hint-copy.ts
+msgid "Every section, one click away. A module shows here once it's on in one of your locations."
+msgstr "كل قسم على بُعد نقرة. تظهر الوحدة هنا حين تكون مفعّلة في أحد مواقعك."
+
+#: src/components/hints/hint-copy.ts
+msgid "Choose what reaches you, and how: in Kept, by email, push or a channel. Once for every location, or per location."
+msgstr "اختر ما يصلك وكيف: في Kept، أو بالبريد الإلكتروني، أو بإشعار فوري، أو عبر قناة. مرة لكل المواقع، أو لكل موقع على حدة."
+
+#: src/components/hints/hint-copy.ts
+msgid "That's the tour"
+msgstr "هذه هي الجولة"
+
+#: src/components/hints/hint-copy.ts
+msgid "Replay it from here any time. Close it early and it picks up where you stopped."
+msgstr "أعدها من هنا متى شئت. إن أغلقتها مبكرًا تُكمل من حيث توقفت."
+
+#: src/routes/_app/settings.index.tsx
+msgid "What reaches you and how, for all your locations or one at a time."
+msgstr "ما يصلك وكيف، لكل مواقعك أو لموقع واحد في كل مرة."

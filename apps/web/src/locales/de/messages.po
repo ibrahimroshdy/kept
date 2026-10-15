@@ -23348,3 +23348,67 @@ msgstr "Noch nichts geprüft."
 #: src/components/home/shortcuts.tsx
 msgid "Shortcuts"
 msgstr "Schnellzugriff"
+
+#: src/routes/_app/help.tsx
+msgid "Stopped at {stoppedAt}."
+msgstr "Angehalten bei: {stoppedAt}."
+
+#: src/routes/_app/help.tsx
+msgid "Seen it all. Replay it any time."
+msgstr "Alles gesehen. Starte ihn jederzeit neu."
+
+#: src/routes/_app/help.tsx
+msgid "A short walk from Home to Help. Close it any time; it picks up where you stopped."
+msgstr "Ein kurzer Rundgang von Start bis Hilfe. Schließ ihn jederzeit; er macht dort weiter, wo du aufgehört hast."
+
+#: src/routes/_app/help.tsx
+msgid "Start over"
+msgstr "Neu beginnen"
+
+#: src/components/hints/hint-copy.ts
+msgid "What needs you, counted. Tap a tile for its list. Your locations are below."
+msgstr "Was dich braucht, gezählt. Tippe auf eine Kachel für ihre Liste. Deine Orte stehen darunter."
+
+#: src/components/hints/hint-copy.ts
+msgid "Take a photo, or pick one with Gallery. It waits in your Inbox. At the end you keep it or discard it."
+msgstr "Mach ein Foto oder wähle eins mit Galerie. Es wartet in deinem Eingang. Am Ende behältst du es oder verwirfst es."
+
+#: src/components/hints/hint-copy.ts
+msgid "Photos wait here until you confirm what Kept read from them. Switch between yours and everyone's."
+msgstr "Fotos warten hier, bis du bestätigst, was Kept darin gelesen hat. Wechsle zwischen deinen und denen aller."
+
+#: src/components/hints/hint-copy.ts
+msgid "List, Grid or Map. Map shows the location floor by floor, with what's in each room."
+msgstr "Liste, Raster oder Karte. Die Karte zeigt den Standort Etage für Etage, mit dem, was in jedem Raum ist."
+
+#: src/components/hints/hint-copy.ts
+msgid "Type part of a name, a brand, a serial or a short ID. Each result says where it is."
+msgstr "Tippe einen Teil eines Namens, einer Marke, einer Seriennummer oder einer Kurz-ID. Jedes Ergebnis sagt, wo es ist."
+
+#: src/components/hints/hint-copy.ts
+msgid "Print labels for what has none yet. Scan one later and Kept opens what it's on."
+msgstr "Drucke Etiketten für alles, was noch keins hat. Scanne später eins, und Kept öffnet, worauf es klebt."
+
+#: src/components/hints/hint-copy.ts
+msgid "Every section that isn't on the tab bar: the modules you use, Activity, Trash, Settings and Help."
+msgstr "Jeder Bereich, der nicht in der Tab-Leiste ist: die Module, die du nutzt, Aktivität, Papierkorb, Einstellungen und Hilfe."
+
+#: src/components/hints/hint-copy.ts
+msgid "Every section, one click away. A module shows here once it's on in one of your locations."
+msgstr "Jeder Bereich, einen Klick entfernt. Ein Modul erscheint hier, sobald es an einem deiner Orte an ist."
+
+#: src/components/hints/hint-copy.ts
+msgid "Choose what reaches you, and how: in Kept, by email, push or a channel. Once for every location, or per location."
+msgstr "Wähle, was dich erreicht und wie: in Kept, per E-Mail, Push oder über einen Kanal. Einmal für alle Orte oder pro Ort."
+
+#: src/components/hints/hint-copy.ts
+msgid "That's the tour"
+msgstr "Das war der Rundgang"
+
+#: src/components/hints/hint-copy.ts
+msgid "Replay it from here any time. Close it early and it picks up where you stopped."
+msgstr "Starte ihn hier jederzeit neu. Schließt du ihn früher, macht er dort weiter, wo du aufgehört hast."
+
+#: src/routes/_app/settings.index.tsx
+msgid "What reaches you and how, for all your locations or one at a time."
+msgstr "Was dich erreicht und wie, für alle deine Orte oder einzeln."

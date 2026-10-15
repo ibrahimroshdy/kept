@@ -94,6 +94,8 @@ export function LayoutSwitch() {
   return (
     <Segmented<LocationLayout>
       aria-label={t`Layout`}
+      // The guided tour points here (components/hints/tour.ts, D242).
+      data-tour="location-layout"
       className="w-full max-w-xs"
       value={value}
       onChange={(v) =>

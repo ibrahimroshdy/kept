@@ -4,7 +4,6 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useLocations } from '@/api/queries';
 import { useNavEntries, VersionFooter } from '@/components/app-shell';
 import { SoonBadge } from '@/components/coming-later';
-import { guidedAnchorForNavKey } from '@/components/hints/tour';
 import { ChevronEndIcon, PlusIcon } from '@/components/icons';
 import { KindIcon } from '@/components/kind-icon';
 import { IconTile, List, Page, Row, Section } from '@/components/page';
@@ -60,13 +59,12 @@ function MorePage() {
         </List>
       </Section>
       <Section title={<Trans>Everything else</Trans>}>
-        <List>
+        <List data-tour="more-entries">
           {entries.map((e) =>
             e.to ? (
               <li key={e.key}>
                 <Link
                   to={e.to}
-                  data-tour={guidedAnchorForNavKey(e.key)}
                   className="block outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info"
                 >
                   <Row

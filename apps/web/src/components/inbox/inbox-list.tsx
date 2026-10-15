@@ -273,7 +273,7 @@ export function InboxList({ local }: { local?: LocalQueue | null }) {
             </Trans>
           </Notice>
         )}
-        <div className="flex flex-wrap items-end gap-3">
+        <div className="flex flex-wrap items-end gap-3" data-tour="inbox-whose">
           <Segmented
             aria-label={t`Whose`}
             value={everyone ? 'everyone' : 'mine'}
