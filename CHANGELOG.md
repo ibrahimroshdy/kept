@@ -3,6 +3,20 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.5.1 (2026-10-15)
+
+### Features
+
+- **portability:** condition reports travel in a Kept export (D238) (#79) (1b10b43)
+
+### Fixes
+
+- the assistant logs a service from stock, the boards show Insights live, a swapped sheet stays open (D236, D234) (#80) (5d4fc7d)
+
+### Documentation
+
+- **release:** the 1.5.0 record (#78) (1464545)
+
 ## 1.5.0 (2026-10-15)
 
 ### Features
