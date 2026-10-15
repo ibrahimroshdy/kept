@@ -5,13 +5,28 @@
  * screens' tests expect; the server ticks it from printed codes.
  */
 import { isLow } from '@kept/shared';
+import {
+  agendaItems,
+  ensureSeeded,
+  hh,
+  moduleOn,
+  personRef,
+  showsMoney,
+} from '../../household/mock/db';
+import { insightsOf } from '../../insights/mock';
 import type { MockState } from '../../mock/fixtures';
 import { type MockRoute, notFound, reply, route, sessionGate } from '../../mock/kit';
 import { paths } from '../../paths';
 import { pt } from '../../portability/mock/state';
 import type { LocationDetail } from '../../types';
 import { inventoryPaths as p } from '../paths';
-import type { HomeResponse, SearchStateFilter, UpdateHintBody } from '../types';
+import type {
+  HomeOverview,
+  HomeResponse,
+  OverviewTop,
+  SearchStateFilter,
+  UpdateHintBody,
+} from '../types';
 import { accessOf, now, type StoredThing } from './db';
 
 const LONG_UNSEEN_MS = 365 * 86_400_000;
@@ -141,6 +156,9 @@ export function homeRoutes(state: MockState): MockRoute[] {
       return out;
     }),
 
+    // D240: Home's own read, from the same mock rows as the lists each tile opens.
+    route('GET', p.homeOverview, () => sessionGate(state) ?? overviewOf(state)),
+
     route('GET', p.hints, () => sessionGate(state) ?? { hints: inv().hints }),
     route('PUT', p.hint(':key'), ({ params, body }) => {
       const b = body as UpdateHintBody;
@@ -156,4 +174,156 @@ export function homeRoutes(state: MockState): MockRoute[] {
       return reply(204);
     }),
   ];
+}
+
+/**
+ * GET /home/overview (D240), as apps/server/src/home/overview.ts computes it: the cards' places,
+ * flags and value, the tiles' first items, and the teaser from the mock's Insights, so the two
+ * agree.
+ */
+export function overviewOf(state: MockState): HomeOverview {
+  // Step 4's people and things (Murdock and the loans' things), as every household route has.
+  ensureSeeded(state);
+  const inv = state.inventory;
+  const visible = accessOf(state).visibleIds();
+  const locations = state.locations.filter((l) => visible.has(l.id));
+  const things = inv.things.filter((t) => !t.deletedAt && visible.has(t.locationId));
+  const agenda = agendaItems(state).filter(
+    (a) => a.sourceType !== 'stock' && ['overdue', 'due', 'expiring'].includes(a.state),
+  );
+  const loans = hh(state).loans.filter(
+    (o) =>
+      !o.returnedAt &&
+      visible.has(o.locationId) &&
+      moduleOn(state, o.locationId, 'lending') &&
+      things.some((t) => t.id === o.thingId),
+  );
+  const nameOf = (id: string) => things.find((t) => t.id === id)?.name ?? null;
+  const low = pt(state).stockRules.flatMap((r) => {
+    const t = things.find((x) => x.id === r.thingId);
+    return t && moduleOn(state, t.locationId, 'consumables') && isLow(t.quantity, r.minQuantity)
+      ? [{ t, min: r.minQuantity }]
+      : [];
+  });
+  const insights = insightsOf(state, []);
+  const locationValue = (id: string) => insights.value.locations.find((v) => v.locationId === id);
+
+  const top: HomeOverview['top'] = {};
+  for (const state_ of ['overdue', 'due', 'expiring'] as const) {
+    const first = agenda
+      .filter((a) => a.state === state_)
+      .sort((a, b) => (a.dueOn ?? '9999').localeCompare(b.dueOn ?? '9999'))[0];
+    if (first) {
+      const loan = first.sourceType === 'loan' ? loans.find((o) => o.id === first.sourceId) : null;
+      top[state_] = {
+        name: first.title || first.subject.name || null,
+        locationId: first.locationId,
+        dueOn: first.dueOn,
+        person: loan ? personRef(state, loan.personId).name : null,
+      };
+    }
+  }
+  for (const direction of ['out', 'in'] as const) {
+    const first = loans
+      .filter((o) => o.direction === direction)
+      .sort((a, b) => (a.dueOn ?? '9999').localeCompare(b.dueOn ?? '9999'))[0];
+    if (first) {
+      top[direction === 'out' ? 'lentOut' : 'borrowedIn'] = {
+        name: nameOf(first.thingId),
+        locationId: first.locationId,
+        dueOn: first.dueOn,
+        person: personRef(state, first.personId).name,
+      };
+    }
+  }
+  const uncertain = things.find((t) => t.locationUncertain);
+  if (uncertain) top.uncertain = { name: uncertain.name, locationId: uncertain.locationId };
+  const unseen = things
+    .filter(attentionMatch(state, 'long_unseen') as (t: StoredThing) => boolean)
+    .sort((a, b) => (a.lastSeenAt ?? '').localeCompare(b.lastSeenAt ?? ''))[0];
+  if (unseen?.lastSeenAt)
+    top.longUnseen = {
+      name: unseen.name,
+      locationId: unseen.locationId,
+      lastSeenAt: unseen.lastSeenAt,
+    };
+  const lowest = low.sort((a, b) => a.t.quantity / a.min - b.t.quantity / b.min)[0];
+  if (lowest) {
+    const tile: OverviewTop = {
+      name: lowest.t.name,
+      locationId: lowest.t.locationId,
+      quantity: String(lowest.t.quantity),
+      minimum: String(lowest.min),
+    };
+    top.lowStock = tile;
+  }
+
+  const shown = locations.filter((l) => l.modules.includes('money') && showsMoney(state, l.id));
+  const years = insights.spending.years.slice(-4).map((y) => ({
+    year: y.year,
+    soFar: y.soFar,
+    byCurrency: y.byCurrency,
+  }));
+  const total = new Map<string, number>();
+  let valued = 0;
+  let counted = 0;
+  for (const l of shown) {
+    const v = locationValue(l.id);
+    valued += v?.valued ?? 0;
+    counted += v?.things ?? 0;
+    for (const a of v?.byCurrency ?? [])
+      total.set(a.currency, (total.get(a.currency) ?? 0) + Number(a.amount));
+  }
+  const anything = total.size > 0 || years.some((y) => y.byCurrency.length > 0);
+
+  return {
+    locations: locations.map((l) => {
+      const money = l.modules.includes('money');
+      const v = money && showsMoney(state, l.id) ? locationValue(l.id) : undefined;
+      const here = (a: { locationId: string }) => a.locationId === l.id;
+      return {
+        id: l.id,
+        places: inv.places.filter((pl) => pl.locationId === l.id && !pl.isUnplaced && !pl.deletedAt)
+          .length,
+        flags: {
+          overdue: agenda.filter((a) => here(a) && a.state === 'overdue').length,
+          due: agenda.filter((a) => here(a) && a.state === 'due').length,
+          expiring: agenda.filter((a) => here(a) && a.state === 'expiring').length,
+          lentOut: loans.filter((o) => here(o) && o.direction === 'out').length,
+          uncertain: things.filter((t) => here(t) && t.locationUncertain).length,
+          lowStock: low.filter((x) => here(x.t)).length,
+        },
+        ...(money && showsMoney(state, l.id)
+          ? {
+              value: {
+                things: v?.things ?? 0,
+                valued: v?.valued ?? 0,
+                byCurrency: v?.byCurrency ?? [],
+              },
+            }
+          : {}),
+        ...(money && !showsMoney(state, l.id) ? { moneyHidden: true as const } : {}),
+      };
+    }),
+    top,
+    insights:
+      shown.length > 0 && anything
+        ? {
+            thisYear: insights.thisYear,
+            years,
+            value: {
+              things: counted,
+              valued,
+              byCurrency: [...total]
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([currency, n]) => ({ currency, amount: String(n) })),
+            },
+            included: shown.map((l) => l.id),
+            hiddenIn: locations
+              .filter((l) => l.modules.includes('money') && !showsMoney(state, l.id))
+              .map((l) => l.id),
+            moneyOff: locations.filter((l) => !l.modules.includes('money')).map((l) => l.id),
+          }
+        : null,
+  };
 }

@@ -37,6 +37,8 @@ import { stats, timed } from './timing.js';
 //   and deliveries) are deleted before each. Then 3 steady passes, nothing new, as every later
 //   15-minute pass is. The senders and the job queue are recorders: the real `send` inserts a
 //   pg-boss job on the same transaction for each overdue delivery, which this leaves out.
+// - Home's overview (1.6, D240): GET /api/v1/home/overview as the owner, timed as Home is, under
+//   the same limit (the web asks for it beside /home).
 // - The notification count: GET /api/v1/notifications/count as the owner, with the scan's
 //   unread reminders plus 1,500 read notifications over the last 90 days (the prune window).
 //   10 warm-ups, then 100 timed.
@@ -117,6 +119,21 @@ describe('step-4 performance (plan T30, full mode only)', () => {
       expect(res.statusCode, res.body).toBe(200);
     });
     results.agendaFirstPage = agenda;
+    expect(s.p95).toBeLessThan(LIMITS.homeP95Ms);
+  }, 300_000);
+
+  // D240: Home's own read beside /home (the cards' flags and value, the tiles' first items, the
+  // Insights teaser), asked in parallel with it, so it must fit the same budget.
+  it(`reads Home's overview at ${THINGS} things with p95 under ${LIMITS.homeP95Ms} ms`, async () => {
+    const first = ok(await call(t, '/api/v1/home/overview', { as: ibrahim })) as unknown as {
+      locations: { id: string; flags: { overdue: number } }[];
+    };
+    expect(first.locations.find((l) => l.id === home.id)?.flags.overdue).toBeGreaterThan(0);
+    const s = await timed(HOME_WARMUP, HOME_RUNS, async () => {
+      const res = await call(t, '/api/v1/home/overview', { as: ibrahim });
+      expect(res.statusCode, res.body).toBe(200);
+    });
+    results.homeOverview = s;
     expect(s.p95).toBeLessThan(LIMITS.homeP95Ms);
   }, 300_000);
 

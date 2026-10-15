@@ -18,6 +18,7 @@
 
 import type {
   ActiveSourceType,
+  ActivityKind,
   LedgerTask,
   ListSurface,
   LoanDirection,
@@ -1235,6 +1236,8 @@ export type ActivityParams = {
   not?: ('locationId' | 'actorId' | 'entityType')[];
   from?: string;
   to?: string;
+  /** Home's chips (1.6, D240): what was added, moved or checked (@kept/shared ACTIVITY_KINDS). */
+  kind?: ActivityKind;
   limit?: number;
   cursor?: string;
 };
@@ -1299,6 +1302,63 @@ export type HomeResponse = {
   >;
   counts: { inbox: number; unprintedLabels: number };
   locations: { id: string; thingCount: number; unplacedCount: number }[];
+};
+
+/** One amount in one currency: never added across currencies or converted (D76). */
+export type OverviewAmount = { currency: string; amount: string };
+
+/** A location card's value: its live things in use at their newest valuation (D158). */
+export type OverviewValue = { things: number; valued: number; byCurrency: OverviewAmount[] };
+
+/** The item a Needs-you tile names on desktop: a thing's or place's name, or a reminder's title. */
+export type OverviewTop = {
+  name: string | null;
+  locationId: string;
+  dueOn?: string | null;
+  person?: string | null;
+  quantity?: string;
+  minimum?: string;
+  lastSeenAt?: string;
+};
+
+export type OverviewTile =
+  | 'overdue'
+  | 'due'
+  | 'expiring'
+  | 'lentOut'
+  | 'borrowedIn'
+  | 'uncertain'
+  | 'longUnseen'
+  | 'lowStock';
+
+/**
+ * GET /api/v1/home/overview (1.6, D240; apps/server/src/home/overview.ts): what the redesigned
+ * Home shows beyond `/home`, read by Home alone.
+ *
+ * - `locations`: per location its places (Unplaced left out), its flags, and `value` where Money
+ *   is on and shows to you; Money on but hidden from you is `moneyHidden: true` and no value.
+ * - `top`: the most urgent item of each tile, absent when there is none.
+ * - `insights`: the teaser's figures, as Insights sums them (D234), or null when no location shows
+ *   you money or nothing was bought or valued yet. `hiddenIn` and `moneyOff` are what it leaves
+ *   out.
+ */
+export type HomeOverview = {
+  locations: {
+    id: string;
+    places: number;
+    flags: Record<'overdue' | 'due' | 'expiring' | 'lentOut' | 'uncertain' | 'lowStock', number>;
+    value?: OverviewValue;
+    moneyHidden?: true;
+  }[];
+  top: Partial<Record<OverviewTile, OverviewTop>>;
+  insights: {
+    thisYear: number;
+    years: { year: number; soFar: boolean; byCurrency: OverviewAmount[] }[];
+    value: OverviewValue;
+    included: string[];
+    hiddenIn: string[];
+    moneyOff: string[];
+  } | null;
 };
 
 export type Hint = { key: string; seenAt: string | null; dismissedAt: string | null };

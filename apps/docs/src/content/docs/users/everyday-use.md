@@ -1,12 +1,40 @@
 ---
 title: Everyday use
-description: Places and boxes, things and their labels, paperwork, search, moving things, vehicles and machines, reminders, sharing and the insurance report.
+description: Home, places and boxes, things and their labels, paperwork, search, moving things, vehicles and machines, reminders, sharing and the insurance report.
 ---
 
 Kept answers three questions about everything you own: where it is, what paperwork it has, and
 what it needs next. This page walks through the screens that do that. Which of them you see
 depends on your role and on what each location tracks
 ([presets and roles](/users/first-run/#3-create-your-first-home)).
+
+## Home
+
+Home is what needs you, then where things are. On a phone it is one column in this order; on a
+computer, locations and recent activity sit on the left, shortcuts and Insights on the right.
+
+- **Get started**: one line with your progress and the next step. The arrow opens the steps;
+  **×** hides it for good (Undo in the message; **Help → Get-started checklist** brings it back).
+  It goes away by itself when every step is done.
+- **Needs you**: six counts, always in the same place: **Overdue**, **Due**, **Expiring**, **Lent
+  out**, **Uncertain** and **Low stock**. A zero is greyed out, not hidden. **Borrowed in** and
+  **Long unseen** appear when they have something. On a computer each one names its most urgent
+  item. Tap one to open that list, already filtered. Lent out shows where Lending is on, Low
+  stock where Consumables is on.
+- **Shortcuts**: **Capture**, **Scan a label**, **Log a reading** (when something has a meter)
+  and **Add a thing**.
+- **Locations**: a card per location with a small map drawing, its things, places and value
+  (where Money is on and you can see amounts), and what is flagged there, such as "2 things need
+  a place" or "1 overdue". Tap a card to open the location.
+- **Recent activity**: the latest 3 on a phone, 5 on a computer; **Added**, **Moved** and
+  **Checked** narrow them, and **All activity** opens the full list. **Photos to review** shows
+  what waits in the Inbox.
+- **Insights** (where Money is on): what you spent on things this year so far, with the years
+  before it, and the value of what you own. Each currency on its own line, never converted. It
+  says which locations it leaves out.
+
+On your first day Home shows the welcome, **Create your first home** with the steps after it,
+your Personal location, and the shortcuts that already work.
 
 ## Locations, rooms and boxes
 
@@ -147,7 +175,7 @@ costs and, on Complete, fuel.
 
 Kept reminds you of schedules due, warranties running out and registration deadlines, documents
 and things that expire, overdue loans, meters not read lately, low stock, members joining and
-leaving, and AI spending caps. Home's attention panel shows what's due or overdue; the bell opens
+leaving, and AI spending caps. Home's **Needs you** shows what's due or overdue; the bell opens
 the notification centre, where **Complete**, **Snooze**, **Renew** and **Mark returned** act in
 place.
 

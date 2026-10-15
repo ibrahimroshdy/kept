@@ -32,8 +32,8 @@ AI and barcode lookup aren't part of setup. Kept works without them, and you can
 
 ## 2. Read Home's Get-started checklist
 
-Home opens with a **Get-started** checklist, worked out from what you've really done, so steps
-tick themselves:
+Home opens with **Get started**, one line with your progress and the next step, worked out from
+what you've really done, so steps tick themselves. The arrow opens the steps:
 
 | Step | What it asks |
 |---|---|
@@ -45,8 +45,8 @@ tick themselves:
 | **Connect an AI provider** | Not shown to invited members, or in a location on the Essentials preset. |
 | **Install on your phone** | Ticks itself the first time you open Kept from its home-screen icon. |
 
-You can hide the checklist; **Help → Get-started checklist → Bring it back** shows it again. It
-goes away by itself when every step is done.
+**×** hides it for good; **Help → Get-started checklist → Bring it back** shows it again. It goes
+away by itself when every step is done. More on Home in [everyday use](/users/everyday-use/#home).
 
 ## 3. Create your first home
 

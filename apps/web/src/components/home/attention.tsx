@@ -1,46 +1,39 @@
 /**
- * The attention panel, "Needs you" (screens §5 Home, §8, D185): one row per kind with a count,
- * in a fixed order, zero rows hidden, each opening its filtered list in Search.
+ * "Needs you" (screens §5 Home and §8; D185, D240): one row of count tiles, each opening the list
+ * it counts, filtered in the URL (`f.<key>`).
  *
- * Rows come from an ordered registry. `ATTENTION_ORDER` is §8's whole order, later steps'
- * rows included; step 2 registers four of them (task 22's counts). A later step adds its row to
- * `useAttentionRows()` and its count to `/home`, and the order takes care of itself:
+ * D240 (the approved Home design) replaced the row-per-kind panel with tiles that never move:
  *
- *   to review · overdue · due · expiring · lent out · borrowed in · uncertain · long unseen ·
- *   Unplaced · low stock
+ * - **Six fixed tiles:** overdue · due · expiring · lent out · uncertain · low stock. A zero shows
+ *   muted and dashed, so a tile never jumps when its count changes. A tile whose module is off in
+ *   every location (Lending, Consumables) is not shown: there is nothing it could count (§3,
+ *   "not applicable means hidden").
+ * - **Borrowed in and long unseen** join after the six, only while they have a count, so the six
+ *   keep their places.
+ * - **To review** left for Recent activity's "Photos to review" strip, and **Unplaced** for each
+ *   location card ("2 things need a place"); the Inbox badge is unchanged.
+ * - **On a wide Home** each tile names its most urgent item (`/home/overview`'s `top`): the
+ *   earliest due, the most overdue loan, the lowest stock.
  *
- * Step 3 (T22): "To review" counts the inbox's open items too (`counts.inbox`, everyone's). While
- * any wait, the row reads "N items need a look" and opens the inbox on Everyone's; otherwise it
- * is the readings to review, in Search.
- *
- * Step 4 (plan T13, T27): overdue, due and expiring come from the one agenda (`GET /agenda`'s
- * counts), so a row's count is what the list it opens shows: overdue and due open Schedules when
- * every item is a schedule, otherwise Expiring with that state (and the sources among them);
- * expiring opens Expiring. Lent out and borrowed in are the open loans (`GET /loans`' counts) and
- * open Lending. A module that's off everywhere counts nothing, so its rows stay hidden.
- *
- * Step 7 (plan T17, T23): "Low stock", last, is `/home`'s `attention.lowStock`: things below
- * their "keep at least" where Consumables is on. It opens Consumables, low first.
+ * Counts and links are step 4's (T13, T27): overdue, due and expiring come from the one agenda
+ * (`/home`'s counts and `agendaBySource`), so a tile's count is what the list it opens shows:
+ * overdue and due open Schedules when every item is a schedule, otherwise Expiring with that
+ * state (and the sources among them); expiring opens Expiring. Lent out and borrowed in are the
+ * open loans and open Lending. Uncertain and long unseen open Search's state filter; low stock
+ * opens Consumables, low first.
  */
-import { Plural, Trans } from '@lingui/react/macro';
+import { plural } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Link } from '@tanstack/react-router';
-import type { ReactNode } from 'react';
+import { useId } from 'react';
 import { useAgenda, useLoans } from '@/api/household/queries';
-import type { HomeResponse } from '@/api/inventory/types';
-import {
-  AlertIcon,
-  BoxIcon,
-  ChevronEndIcon,
-  ClockIcon,
-  EyeOffIcon,
-  HandoffIcon,
-  InboxIcon,
-  QuestionIcon,
-  ScheduleIcon,
-} from '@/components/icons';
-import { IconTile, Section } from '@/components/page';
+import type { HomeOverview, HomeResponse, OverviewTile, OverviewTop } from '@/api/inventory/types';
+import { useLocations } from '@/api/queries';
+import { useModuleAnywhere } from '@/components/schedules/access';
 import { useFormat } from '@/lib/format';
+import { useLocationName } from '@/lib/labels';
 import { cn } from '@/lib/utils';
+import { HomeSection } from './section';
 
 /** Screens §8's order. Keys without a registered row are simply not shown yet. */
 export const ATTENTION_ORDER = [
@@ -65,125 +58,10 @@ export type AttentionLink = {
   search: Record<string, string | string[]>;
 };
 
-type AttentionRow = {
-  key: AttentionKey;
-  icon: ReactNode;
-  title: ReactNode;
-  /** One line under the title, from the count. */
-  detail: (n: number) => ReactNode;
-  link: AttentionLink;
-};
-
 const searchFor = (state: string): AttentionLink => ({
   to: '/search',
   search: { 'f.state': state },
 });
-
-/** The registered rows (any order: they're sorted by `ATTENTION_ORDER`). `inbox`: the open
- * inbox items "To review" includes; `links`: where step 4's overdue and due rows go. */
-function useAttentionRows(
-  inbox: number,
-  links: Pick<Record<AttentionKey, AttentionLink>, 'overdue' | 'due'>,
-): AttentionRow[] {
-  return [
-    {
-      key: 'overdue',
-      icon: <AlertIcon />,
-      title: <Trans>Overdue</Trans>,
-      detail: (n) => <Plural value={n} one="# is past its date" other="# are past their date" />,
-      link: links.overdue,
-    },
-    {
-      key: 'due',
-      icon: <ScheduleIcon />,
-      title: <Trans>Due</Trans>,
-      detail: (n) => <Plural value={n} one="# is due soon" other="# are due soon" />,
-      link: links.due,
-    },
-    {
-      key: 'expiring',
-      icon: <ClockIcon />,
-      title: <Trans>Expiring</Trans>,
-      detail: (n) => <Plural value={n} one="# runs out soon" other="# run out soon" />,
-      link: { to: '/expiring', search: { 'f.state': 'expiring' } },
-    },
-    {
-      key: 'lentOut',
-      icon: <HandoffIcon />,
-      title: <Trans>Lent out</Trans>,
-      detail: (n) => (
-        <Plural value={n} one="# thing is with someone" other="# things are with someone" />
-      ),
-      link: { to: '/lending', search: { 'f.direction': 'out', 'f.state': 'open' } },
-    },
-    {
-      key: 'borrowedIn',
-      icon: <HandoffIcon />,
-      title: <Trans>Borrowed in</Trans>,
-      detail: (n) => <Plural value={n} one="# thing to give back" other="# things to give back" />,
-      link: { to: '/lending', search: { 'f.direction': 'in', 'f.state': 'open' } },
-    },
-    inbox > 0
-      ? {
-          key: 'toReview',
-          icon: <InboxIcon />,
-          title: <Trans>To review</Trans>,
-          detail: (n) => <Plural value={n} one="# item needs a look" other="# items need a look" />,
-          link: { to: '/inbox', search: { 'f.mine': 'everyone' } },
-        }
-      : {
-          key: 'toReview',
-          icon: <InboxIcon />,
-          title: <Trans>To review</Trans>,
-          detail: (n) => (
-            <Plural value={n} one="# reading needs a look" other="# readings need a look" />
-          ),
-          link: searchFor('to_review'),
-        },
-    {
-      key: 'uncertain',
-      icon: <QuestionIcon />,
-      title: <Trans>Uncertain</Trans>,
-      detail: (n) => (
-        <Plural
-          value={n}
-          one="# thing isn't where it should be"
-          other="# things aren't where they should be"
-        />
-      ),
-      link: searchFor('uncertain'),
-    },
-    {
-      key: 'longUnseen',
-      icon: <EyeOffIcon />,
-      title: <Trans>Long unseen</Trans>,
-      detail: (n) => (
-        <Plural
-          value={n}
-          one="# thing not seen for a long time"
-          other="# things not seen for a long time"
-        />
-      ),
-      link: searchFor('long_unseen'),
-    },
-    {
-      key: 'unplaced',
-      icon: <BoxIcon />,
-      title: <Trans>Unplaced</Trans>,
-      detail: (n) => (
-        <Plural value={n} one="# thing waiting for a place" other="# things waiting for a place" />
-      ),
-      link: searchFor('unplaced'),
-    },
-    {
-      key: 'lowStock',
-      icon: <BoxIcon />,
-      title: <Trans>Low stock</Trans>,
-      detail: (n) => <Plural value={n} one="# running low" other="# running low" />,
-      link: { to: '/consumables', search: { 'f.state': 'low' } },
-    },
-  ];
-}
 
 type AgendaCounts = { overdue: number; due: number; expiring: number };
 const NONE: AgendaCounts = { overdue: 0, due: 0, expiring: 0 };
@@ -291,65 +169,225 @@ export function attentionCounts(a: HomeResponse['attention']): AttentionCounts {
   };
 }
 
-export function AttentionPanel({
-  counts,
-  inbox = 0,
-  home,
-  className,
+// ----- the tiles -------------------------------------------------------------------------------
+
+type Tile = OverviewTile;
+
+/** The six that always show (where their module is on somewhere), in §8's order. */
+export const FIXED_TILES: readonly Tile[] = [
+  'overdue',
+  'due',
+  'expiring',
+  'lentOut',
+  'uncertain',
+  'lowStock',
+];
+/** Join after the six, only with a count. */
+export const EXTRA_TILES: readonly Tile[] = ['borrowedIn', 'longUnseen'];
+
+const TONE: Record<Tile, string> = {
+  overdue: 'bg-danger',
+  due: 'bg-amber',
+  expiring: 'bg-warn',
+  lentOut: 'bg-info',
+  borrowedIn: 'bg-info',
+  uncertain: 'bg-violet',
+  longUnseen: 'bg-ink-3',
+  lowStock: 'bg-warn',
+};
+
+/** Whole days from `iso` (a day) to today, in this browser's calendar. */
+function daysFrom(iso: string): number {
+  const [y, m, d] = iso.split('-').map(Number) as [number, number, number];
+  const now = new Date();
+  return Math.round(
+    (Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - Date.UTC(y, m - 1, d)) /
+      86_400_000,
+  );
+}
+
+/** A tile's second line: its most urgent item, said for its kind. */
+function useTopLine(): (tile: Tile, top: OverviewTop) => string {
+  const { t } = useLingui();
+  const f = useFormat();
+  const locations = useLocations().data ?? [];
+  const nameOf = useLocationName();
+  return (tile, top) => {
+    const name = top.name ?? '';
+    const person = top.person;
+    const who = person ? t`${name}, with ${person}` : name;
+    switch (tile) {
+      case 'overdue': {
+        if (!top.dueOn) return who;
+        const late = Math.max(1, daysFrom(top.dueOn));
+        return `${who}${f.sep}${plural(late, { one: '# day late', other: '# days late' })}`;
+      }
+      case 'due':
+      case 'expiring':
+        return top.dueOn ? `${name}${f.sep}${f.relative(`${top.dueOn}T12:00:00`)}` : name;
+      case 'lentOut':
+      case 'borrowedIn':
+        return top.person ? `${name}${f.sep}${top.person}` : name;
+      case 'uncertain': {
+        const l = locations.find((x) => x.id === top.locationId);
+        return l ? `${name}${f.sep}${nameOf(l)}` : name;
+      }
+      case 'longUnseen': {
+        if (!top.lastSeenAt) return name;
+        const day = f.day(top.lastSeenAt);
+        return `${name}${f.sep}${t`last seen ${day}`}`;
+      }
+      case 'lowStock': {
+        const left = f.num(Number(top.quantity ?? 0));
+        const keep = f.num(Number(top.minimum ?? 0));
+        return `${name}${f.sep}${t`${left} left, keep ${keep}`}`;
+      }
+    }
+  };
+}
+
+function useTileLabels(): Record<Tile, string> {
+  const { t } = useLingui();
+  return {
+    overdue: t`Overdue`,
+    due: t`Due`,
+    expiring: t`Expiring`,
+    lentOut: t`Lent out`,
+    borrowedIn: t`Borrowed in`,
+    uncertain: t`Uncertain`,
+    longUnseen: t`Long unseen`,
+    lowStock: t`Low stock`,
+  };
+}
+
+const COLS: Record<number, string> = {
+  4: '@min-[860px]/home:grid-cols-4',
+  5: '@min-[860px]/home:grid-cols-5',
+  6: '@min-[860px]/home:grid-cols-6',
+  7: '@min-[860px]/home:grid-cols-7',
+  8: '@min-[860px]/home:grid-cols-8',
+};
+
+function TileLink({
+  tile,
+  n,
+  link,
+  label,
+  line,
 }: {
-  counts: AttentionCounts;
-  /** `counts.inbox` from `/home`: the open inbox items "To review" includes. */
-  inbox?: number;
-  /** `/home` itself, for step 4's counts. */
-  home?: HouseholdHome;
-  className?: string;
+  tile: Tile;
+  n: number;
+  link: AttentionLink;
+  label: string;
+  line: string | null;
 }) {
   const f = useFormat();
-  const household = useHouseholdAttention(home);
-  const all: AttentionCounts = { ...household.counts, ...counts };
-  const rows = useAttentionRows(inbox, household.links)
-    .filter((r) => (all[r.key] ?? 0) > 0)
-    .sort((a, b) => ATTENTION_ORDER.indexOf(a.key) - ATTENTION_ORDER.indexOf(b.key));
-  if (rows.length === 0) return null;
+  const id = useId();
+  const zero = n === 0;
   return (
-    // Tiles side by side from xl, and only while the section itself is wide enough for them
-    // (a container query): beside the assistant's panel the page is narrower than the window.
-    <Section title={<Trans>Needs you</Trans>} className={cn('@container', className)}>
-      <ul
+    <Link
+      to={link.to}
+      // Each list declares its own `f.<key>`s; the tile's are among them.
+      search={link.search as never}
+      aria-label={`${label} ${f.num(n)}`}
+      aria-describedby={line ? id : undefined}
+      data-tile={tile}
+      data-zero={zero || undefined}
+      className={cn(
+        'grid min-h-[78px] min-w-0 content-start gap-[3px] rounded-xl border px-3 pt-2.5 pb-[11px] text-start text-ink outline-none hover:border-ink-3 focus-visible:outline-2 focus-visible:outline-info',
+        '@max-[559px]/home:min-h-[68px] @max-[559px]/home:px-2.5 @max-[559px]/home:py-[9px]',
+        zero ? 'border-dashed border-line bg-transparent' : 'border-line bg-surface',
+      )}
+    >
+      <span
         className={cn(
-          'm-0 grid list-none overflow-hidden rounded-[10px] border border-line bg-surface p-0 [&>li+li]:border-t [&>li+li]:border-line',
-          'xl:@md:grid-cols-2 xl:@md:gap-2.5 xl:@md:overflow-visible xl:@md:rounded-none xl:@md:border-0 xl:@md:bg-transparent',
+          'font-semibold text-[26px] leading-[1.1] tabular-nums @max-[559px]/home:text-[24px]',
+          zero && 'text-ink-3',
         )}
       >
-        {rows.map((r) => {
-          const n = all[r.key] ?? 0;
+        {f.num(n)}
+      </span>
+      <span
+        data-title
+        className={cn(
+          'flex items-center gap-1.5 font-semibold text-[13px] leading-[1.3] [overflow-wrap:anywhere]',
+          zero && 'text-ink-3',
+        )}
+      >
+        <span
+          aria-hidden="true"
+          className={cn('size-2 shrink-0 rounded-full', zero ? 'bg-line' : TONE[tile])}
+        />
+        {label}
+      </span>
+      {line ? (
+        <span
+          id={id}
+          className="text-[12px] leading-[1.4] text-ink-2 [overflow-wrap:anywhere] @max-[559px]/home:hidden"
+        >
+          <bdi>{line}</bdi>
+        </span>
+      ) : null}
+    </Link>
+  );
+}
+
+export function NeedsYou({
+  home,
+  overview,
+  className,
+}: {
+  /** `/home`: the counts, and the agenda's split for the links. */
+  home: HomeResponse;
+  /** `/home/overview`: each tile's most urgent item (absent while it loads). */
+  overview?: HomeOverview;
+  className?: string;
+}) {
+  const { t } = useLingui();
+  const labels = useTileLabels();
+  const topLine = useTopLine();
+  const lending = useModuleAnywhere('lending');
+  const consumables = useModuleAnywhere('consumables');
+  const household = useHouseholdAttention(home);
+  const counts: AttentionCounts = { ...household.counts, ...attentionCounts(home.attention) };
+  const links: Record<Tile, AttentionLink> = {
+    overdue: household.links.overdue,
+    due: household.links.due,
+    expiring: { to: '/expiring', search: { 'f.state': 'expiring' } },
+    lentOut: { to: '/lending', search: { 'f.direction': 'out', 'f.state': 'open' } },
+    borrowedIn: { to: '/lending', search: { 'f.direction': 'in', 'f.state': 'open' } },
+    uncertain: searchFor('uncertain'),
+    longUnseen: searchFor('long_unseen'),
+    lowStock: { to: '/consumables', search: { 'f.state': 'low' } },
+  };
+  const applies = (tile: Tile) =>
+    tile === 'lentOut' || tile === 'borrowedIn'
+      ? lending.on
+      : tile === 'lowStock'
+        ? consumables.on
+        : true;
+  const tiles = [
+    ...FIXED_TILES.filter(applies),
+    ...EXTRA_TILES.filter((k) => applies(k) && (counts[k] ?? 0) > 0),
+  ];
+  return (
+    <HomeSection title={<Trans>Needs you</Trans>} className={className}>
+      <div className={cn('grid grid-cols-3 gap-2', COLS[tiles.length])}>
+        {tiles.map((tile) => {
+          const n = counts[tile] ?? 0;
+          const top = overview?.top[tile];
           return (
-            <li
-              key={r.key}
-              className="xl:@md:rounded-[10px] xl:@md:border xl:@md:border-line xl:@md:bg-surface"
-            >
-              <Link
-                to={r.link.to}
-                // Each list declares its own `f.<key>`s; the row's are among them.
-                search={r.link.search as never}
-                className="flex min-h-16 items-center gap-3 px-3.5 py-3 text-ink outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info xl:@md:rounded-[10px]"
-              >
-                <IconTile>{r.icon}</IconTile>
-                <span className="grid min-w-0 flex-1 gap-0.5">
-                  <span data-title className="font-semibold text-[15px] leading-snug">
-                    {r.title}
-                  </span>
-                  <span className="text-small text-ink-2">{r.detail(n)}</span>
-                </span>
-                <span className="font-semibold text-[20px] tabular-nums leading-none">
-                  {f.num(n)}
-                </span>
-                <ChevronEndIcon className="size-5 shrink-0 text-ink-3" />
-              </Link>
-            </li>
+            <TileLink
+              key={tile}
+              tile={tile}
+              n={n}
+              link={links[tile]}
+              label={labels[tile]}
+              line={n === 0 ? t`Nothing` : top ? topLine(tile, top) : null}
+            />
           );
         })}
-      </ul>
-    </Section>
+      </div>
+    </HomeSection>
   );
 }

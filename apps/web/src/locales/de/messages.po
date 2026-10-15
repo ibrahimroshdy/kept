@@ -23216,3 +23216,135 @@ msgstr "Was dich erreicht"
 #: src/components/capture/capture-screen.tsx
 msgid "Start the camera"
 msgstr "Kamera starten"
+
+#: src/routes/_app/index.tsx
+msgid "Get started hidden. Help brings it back."
+msgstr "„Erste Schritte“ ausgeblendet. Über die Hilfe holst du sie zurück."
+
+#: src/routes/_app/index.tsx
+msgid "add 3 things"
+msgstr "3 Gegenstände hinzufügen"
+
+#: src/routes/_app/index.tsx
+msgid "print a label"
+msgstr "ein Etikett drucken"
+
+#: src/routes/_app/index.tsx
+msgid "invite someone"
+msgstr "jemanden einladen"
+
+#: src/routes/_app/index.tsx
+msgid "connect AI"
+msgstr "KI verbinden"
+
+#: src/routes/_app/index.tsx
+msgid "install on your phone"
+msgstr "auf dem Handy installieren"
+
+#: src/routes/_app/index.tsx
+msgid "Then: {after}"
+msgstr "Danach: {after}"
+
+#: src/components/home/attention.tsx
+msgid "{name}, with {person}"
+msgstr "{name}, bei {person}"
+
+#: src/components/home/attention.tsx
+msgid "{late, plural, one {# day late} other {# days late}}"
+msgstr "{late, plural, one {# Tag überfällig} other {# Tage überfällig}}"
+
+#: src/components/home/attention.tsx
+msgid "last seen {day}"
+msgstr "zuletzt gesehen am {day}"
+
+#: src/components/home/attention.tsx
+msgid "{left} left, keep {keep}"
+msgstr "{left} übrig, mindestens {keep}"
+
+#: src/components/home/checklist.tsx
+msgid "{done} of {total} done"
+msgstr "{done} von {total} erledigt"
+
+#: src/components/home/checklist.tsx
+msgid "Next: <0>{title}</0>"
+msgstr "Als Nächstes: <0>{title}</0>"
+
+#: src/components/home/checklist.tsx
+msgid "Hide Get started for good"
+msgstr "„Erste Schritte“ dauerhaft ausblenden"
+
+#: src/components/home/insights-teaser.tsx
+msgid "Spent on things, {year} so far"
+msgstr "Für Gegenstände ausgegeben, {year} bisher"
+
+#: src/components/home/insights-teaser.tsx
+msgid "Value of what you own"
+msgstr "Wert deiner Sachen"
+
+#: src/components/home/insights-teaser.tsx
+msgid "{count} of {total} things have a value"
+msgstr "{count} von {total} Gegenständen haben einen Wert"
+
+#: src/components/home/insights-teaser.tsx
+msgid "Leaves out {off}: Money is off there."
+msgstr "Ohne {off}: Dort ist Geld ausgeschaltet."
+
+#: src/components/home/location-card.tsx
+msgid "{count} overdue"
+msgstr "{count} überfällig"
+
+#: src/components/home/location-card.tsx
+msgid "{count} due"
+msgstr "{count} fällig"
+
+#: src/components/home/location-card.tsx
+msgid "{count} expiring"
+msgstr "{count} läuft bald ab"
+
+#: src/components/home/location-card.tsx
+msgid "{count} lent out"
+msgstr "{count} verliehen"
+
+#: src/components/home/location-card.tsx
+msgid "{count} uncertain"
+msgstr "{count} unklar"
+
+#: src/components/home/location-card.tsx
+msgid "{count} low"
+msgstr "{count} knapp"
+
+#: src/components/home/location-card.tsx
+msgid "No rooms"
+msgstr "Keine Räume"
+
+#: src/components/home/location-card.tsx
+msgid "<0>{value}</0> value"
+msgstr "<0>{value}</0> Wert"
+
+#: src/components/home/recent-activity.tsx
+msgid "Photos to review"
+msgstr "Fotos zum Prüfen"
+
+#: src/components/home/recent-activity.tsx
+msgid "Added"
+msgstr "Hinzugefügt"
+
+#: src/components/home/recent-activity.tsx
+msgid "Nothing yet. What you add, move and check shows here."
+msgstr "Noch nichts. Was du hinzufügst, verschiebst und prüfst, erscheint hier."
+
+#: src/components/home/recent-activity.tsx
+msgid "Nothing added yet."
+msgstr "Noch nichts hinzugefügt."
+
+#: src/components/home/recent-activity.tsx
+msgid "Nothing moved yet."
+msgstr "Noch nichts verschoben."
+
+#: src/components/home/recent-activity.tsx
+msgid "Nothing checked yet."
+msgstr "Noch nichts geprüft."
+
+#: src/components/home/shortcuts.tsx
+msgid "Shortcuts"
+msgstr "Schnellzugriff"

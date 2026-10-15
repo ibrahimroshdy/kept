@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { KeptApp } from '../http/app.js';
 import type { InventoryDeps } from '../http/routes.js';
 import { scopedRead, scopedWrite } from '../http/write.js';
+import { HomeOverview, homeOverviewOf } from './overview.js';
 import {
   ALLOWED_HINTS,
   HINT_KEY,
@@ -24,6 +25,9 @@ import {
 //                     counts: {inbox, unprintedLabels},
 //                     locations: [{id, thingCount, unplacedCount}],
 //                     meteredThings}                                (step 5, T13)
+// GET /api/v1/home/overview → {locations: [{id, places, flags, value?, moneyHidden?}],
+//                              top: {<tile>: {name, locationId, …}}, insights | null}
+//                                                            (1.6, D240; overview.ts, Home only)
 // GET /api/v1/me/hints → {hints: [{key, seenAt, dismissedAt}]}
 // PUT /api/v1/me/hints/:key {seen?, dismissed?} → 204
 
@@ -39,6 +43,10 @@ export async function homeRoutes(app: KeptApp, deps: InventoryDeps): Promise<voi
 
   app.get('/api/v1/home', { schema: { response: { 200: HomeResponse } } }, (req) =>
     scopedRead(pools, req, (_tx, client) => homeOf(client)),
+  );
+
+  app.get('/api/v1/home/overview', { schema: { response: { 200: HomeOverview } } }, (req) =>
+    scopedRead(pools, req, (tx, client, scope) => homeOverviewOf(tx, client, scope)),
   );
 
   app.get(

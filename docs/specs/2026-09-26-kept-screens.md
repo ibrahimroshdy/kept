@@ -90,16 +90,21 @@ Each entry: **purpose · entry points · contents (in order) · primary action �
 ### Home
 - **Purpose:** what needs you, then where things are.
 - **Entry:** tab / sidebar; app launch.
-- **Contents:**
-  1. The Get-started checklist (D138), with items depending on role: invited members don't see "connect AI" or "invite".
+- **Contents** (D240, the approved Home design; the phone shows them in this order, one column):
+  1. **Get started** (D138) as one line: a progress bar, "4 of 6 done", the next step, a chevron that opens the steps (open ones with their actions, then one Done row), and × that hides it for good with Undo in the toast. Help brings it back; it disappears when every step is done. Items depend on role: invited members don't see "connect AI" or "invite".
      - Over plain HTTP, the admin's first item is **"Put Kept on HTTPS"**, saying what HTTP loses: camera, install, push notifications and location (D193).
      - On Essentials, no AI setup item appears (here or in the attention panel) until a provider is connected or the user opens AI settings (D191).
-  2. The **attention panel**, with one row per kind and a count: to review · overdue · due · expiring · lent out · borrowed in · uncertain · long unseen · Unplaced to sort · low stock. Zero-count rows are hidden (§8). Each row opens its filtered list.
-  3. Recent activity: 3 items on the phone, 5 on desktop (§8).
-  4. Locations as cards (name, kind icon, thing count, members; an optional cover photo, D195).
-  5. After a location is created, an **"Invite people"** card for it (admins; the wizard no longer has an invite step, D194). It opens Invite (§5).
-- **Primary action:** Capture (the tab).
-- **States:** first run: the Personal card plus **Create your first home** (§8, D114); loading skeletons; offline banner.
+  2. The AI-paused and pending-label banners, when they apply.
+  3. **Needs you**: six fixed count tiles, overdue · due · expiring · lent out · uncertain · low stock. A zero shows muted and dashed, so the tiles never move (D240 replaces §8's "zero-count rows are hidden"). A tile whose module is off in every location (Lending, Consumables) is not shown. **Borrowed in** and **long unseen** join after the six only while they have a count. On a wide Home each tile names its most urgent item (the earliest due, the most overdue loan, the lowest stock). Each opens its filtered list, as the rows did. "To review" moved to Recent activity, "Unplaced" to the location cards.
+  4. **Shortcuts:** Capture, Scan a label, Log a reading (only when something has a meter you can log on), Add a thing.
+  5. **Locations** as cards: a map preview (a static isometric drawing until the location map, D237, can give a snapshot), name, kind icon, members and your role, things, places, value (where Money is on and shows to you, per currency, D13), and pills for what is flagged there, "2 things need a place" first. Two per row on a wide Home; on a phone a compact card with the preview beside the text. An optional cover photo waits for the contract (D195).
+  6. After a location is created, an **"Invite people"** card for it (admins; the wizard no longer has an invite step, D194), under the locations. It opens Invite (§5).
+  7. **Recent activity:** 3 items on the phone, 5 on desktop, then All activity (§8), with **All · Added · Moved · Checked** chips. **Photos to review** sits on top while the inbox has items (the newest four, everyone's; the Inbox badge is unchanged), with a line for readings to review that aren't inbox items.
+  8. **Insights teaser** (D234), only where Money is on and something was bought or valued: this year's spending so far with the three years before it as small bars, and the value of what you own; one currency per line, never converted; it names the locations it leaves out.
+- **Layout:** on a wide Home (860 px of content and up) Get started and Needs you span the page; locations, invites and recent activity fill the main column; shortcuts and Insights the side column. Nothing is cut off with "…" on a phone.
+- **Primary action:** Capture (the tab, and the first shortcut).
+- **States:** first run: the welcome with **Create your first home**, the steps after it in a line under the button, the joining note, the Personal card and a dashed New location card, the shortcuts that already work, and an empty Recent that says what will show there; no checklist, Needs you or Insights until there is something to count (§8, D114, D240). Loading skeletons; offline banner.
+- **Reads:** `GET /api/v1/home` (shared with the shell), `GET /api/v1/home/overview` (Home's own: the cards' places, flags and value, the tiles' items, the teaser), the activity feed, and the inbox's first four items only while some wait.
 
 ### Location / Place / Container
 - **Purpose:** what's here.
@@ -670,8 +675,8 @@ Questions the five screen designers raised while drawing, and their answers.
 **Home and onboarding**
 - **Empty Home:** every user always has a Personal location (D114), so Home is never truly empty. The first-run state shows the Personal card plus **"Create your first home"**.
 - **Recent activity:** 3 items on the phone, 5 on desktop.
-- **Attention panel:** zero-count rows are hidden. Rows appear in a fixed order: to review · overdue · due · expiring · lent out · borrowed in · uncertain · long unseen · Unplaced · low stock.
-- **Get-started checklist:** it can be restored from Help. "Install on your phone" completes when Kept is opened in standalone display mode. In the first-run state the checklist is hidden, because its first item would duplicate the main button.
+- **Attention panel:** ~~zero-count rows are hidden~~ *(changed by D240: "Needs you" is six fixed tiles, a zero muted and dashed so tiles never move; borrowed in and long unseen join only with a count; to review moved to Recent activity's Photos to review and Unplaced to the location cards; §5 Home).* The order stays: overdue · due · expiring · lent out · uncertain · low stock, then borrowed in · long unseen.
+- **Get-started checklist:** one line since D240 (progress, next step, the steps behind a chevron); × hides it for good, and it can be restored from Help. "Install on your phone" completes when Kept is opened in standalone display mode. In the first-run state the checklist is hidden, because its first item would duplicate the main button.
 - **Capture with no location:** capture goes to the Personal location's Unplaced area.
 - **Setup code:** 6 Crockford base32 characters. It is logged as `KEPT SETUP CODE: XXXXXX` and re-issued with `kept admin setup-code`.
 - **Recovery kit at first run:** its acknowledgement no longer blocks Finish setup (D193, §6). It can't contain backup credentials yet, because backups aren't set up. When backups are configured, the status page asks the admin to download the kit again. `kept admin recovery-kit` produces it. Downloading in the web UI requires re-authentication even right after sign-up.
@@ -764,3 +769,4 @@ the log wins.
 | **D204** Languages, theme, digits | Settings → Me → Display: the language dropdown with flags (five languages), System/Light/Dark with System first, digits only in Arabic; the sign-in pages' language picker; Location settings → General: the languages multi-select. |
 | **D206** AI keys, usage and spend | AI settings (§5): "What uses AI in Kept" first, where the key lives, the recommended Groq card and pre-selected `qwen/qwen3.8-27b`, a suggested monthly limit, caps, what is sent to each provider. New: AI usage per scope with charts, the call list on the filter strip and CSV export (§2 routes). The paused banner and "Resume now"; waiting for the provider shown on progress lines only (§3). The AI line on AI-filled drafts (Inbox); AI calls in a thing's History; Location settings gain "AI here"; Me gains "My AI usage"; Admin → AI gains instance caps and the versioned price table. |
 | **D211** The Display button | Every list's filter strip (§5 "The filter strip"): sort, direction, grouping and a container's list or photos behind one button at the end of the strip's row, a menu on desktop and a bottom sheet on phones; the Group by / Sort by bars are gone. |
+| **D240** A better Home | Home (§5): Get started as one line; Needs you as six fixed count tiles (a zero muted, never hidden; this replaces §8's rule); shortcuts; location cards with a map preview, places, value and flags; recent activity with Added / Moved / Checked chips and Photos to review; an Insights teaser where Money is on; two columns on a wide Home. |

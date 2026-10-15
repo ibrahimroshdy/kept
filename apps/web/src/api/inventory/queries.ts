@@ -30,6 +30,7 @@ import type {
   FileUrl,
   FileVariant,
   HistoryEvent,
+  HomeOverview,
   HomeResponse,
   LifecycleBody,
   Many,
@@ -137,6 +138,8 @@ export const inventoryKeys = {
   trash: (params: TrashParams = {}) => ['trash', params] as const,
   activity: (params: ActivityParams = {}) => ['activity', params] as const,
   home: ['home'] as const,
+  /** Under `home`, so whatever refreshes Home's counts refreshes its overview too. */
+  homeOverview: ['home', 'overview'] as const,
   hints: ['hints'] as const,
 };
 const k = inventoryKeys;
@@ -241,6 +244,7 @@ export const inventoryApi = {
     api.get<Page<HistoryEvent>>(p.placeHistory(id) + qs({ cursor })),
   activity: (params: ActivityParams = {}) => api.get<Page<HistoryEvent>>(p.activity + qs(params)),
   home: () => api.get<HomeResponse>(p.home),
+  homeOverview: () => api.get<HomeOverview>(p.homeOverview),
 };
 
 // ----- hooks -----------------------------------------------------------------------------------
@@ -324,3 +328,7 @@ export const useActivity = (params: ActivityParams = {}) =>
 /** GET /home; `enabled` false holds it back (the shell asks only once someone is signed in). */
 export const useHome = (enabled = true) =>
   useQuery({ queryKey: k.home, queryFn: inventoryApi.home, enabled });
+
+/** GET /home/overview: Home's own read (D240); no other page asks for it. */
+export const useHomeOverview = (enabled = true) =>
+  useQuery({ queryKey: k.homeOverview, queryFn: inventoryApi.homeOverview, enabled });
