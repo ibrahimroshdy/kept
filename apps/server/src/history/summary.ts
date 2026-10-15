@@ -64,6 +64,8 @@ const ENGLISH: Record<string, Sentence> = {
   // D236: a service line took the consumable off the shelf, or gave it back.
   'thing.stock_use': (p) => `Used ${p.name} in a service of ${p.service}`,
   'thing.stock_return': (p) => `Put ${p.name} back from a service of ${p.service}`,
+  // 1.x (D237): an arrange session on the location map, about the location.
+  'place.arrange': () => 'Arranged the map',
   'attachment.create': (p) => `Attached a file to ${p.name}`,
   'attachment.update': (p) => `Changed a file on ${p.name}`,
   'attachment.delete': (p) => `Removed a file from ${p.name}`,

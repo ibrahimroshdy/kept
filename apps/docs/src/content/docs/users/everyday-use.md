@@ -21,6 +21,8 @@ spots** ("room or spot" is Kept's word for any place), which hold **things**. A 
   and grouping. Filters live in the address, so a filtered list can be bookmarked or shared.
 - On a location, **Sort them** goes through Unplaced one thing at a time with a place picker.
 - A box opened from its label shows a photo grid of what's inside.
+- A location's **Display** button also offers **Map**: the location in 3D, floor by floor, with
+  its rooms, shelves and boxes ([The location map](/users/location-map/)).
 
 Links use IDs, never the path, so moving a thing never breaks a link to it.
 

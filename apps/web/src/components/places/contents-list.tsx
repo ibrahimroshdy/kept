@@ -511,6 +511,10 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
                 layouts: [
                   { value: 'list', label: t`List` },
                   { value: 'grid', label: t`Grid`, short: t`grid` },
+                  // 1.x (D237, M11): a location's map; its page draws it instead of this list.
+                  ...(parent.kind === 'location'
+                    ? [{ value: 'map', label: t`Map`, short: t`map` }]
+                    : []),
                 ],
               })}
         tiles={grid}

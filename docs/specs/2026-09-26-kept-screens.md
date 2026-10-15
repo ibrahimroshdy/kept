@@ -114,6 +114,19 @@ Each entry: **purpose · entry points · contents (in order) · primary action �
     is the Display menu's **Layout** section on a container's contents (D211), not a link of its own.
 - **Actions:** Add here, Move here (from the **Carrying** tray, §6), Box check, Print labels, Export view (D169).
 - **Location-only:**
+  - **Map** (D237): the third layout beside List and Grid (`view=map`, remembered per person and
+    location; List stays the default). An isometric 3D stage, or Plan from above: a breadcrumb
+    (location › floor › room), 3D · Plan, Arrange (members and up), pin chips (Low stock · Lent
+    out · Due soon; Low · Lent · Due on a phone), floor buttons like a lift (top floor first, All
+    stacks them) with zoom, turn and home; on a phone one row at the bottom, hidden while a card
+    is open. A tap opens the compact card (name, where, short ID, what's due) with Details (photo,
+    QR label, facts, Open the thing/place) and Inside. Arrange: Move · Draw a room · Add a floor ·
+    Cancel, a hint, Done; a room's card sets Kind, Floor and puts a thing of the room on the map; a
+    thing's card turns it, changes its Shape, or takes it off. Under the stage, "Places on this
+    level" (screen readers, M9) and "What's in <location>": a summary, a search, a floor filter,
+    By room · Needs attention, Show more, all in the address. Frames: desktop and phone, light
+    and dark, empty (one level, no rooms arranged), arranging, Arabic (the panel moves, the map
+    isn't mirrored).
   - Members (Members and roles, below), What to track and settings (for admins).
   - Unplaced ("Sort them": one-at-a-time triage with the move picker, or bulk select and move).
   - **Leave this location** (members, viewers, admins; not the owner).

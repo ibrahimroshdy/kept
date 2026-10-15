@@ -48,6 +48,9 @@ const HOUSEHOLD_SECTIONS = [
   '/src/components/charts/bars.tsx',
   '/src/components/charts/series.tsx',
   '/src/components/fuel/fuel-trends.tsx',
+  // 1.x (D237): the location map, with three.js and its engine; its .glb models are plain assets
+  // under assets/ (fingerprinted, a year's cache), never precached either (the glob below).
+  '/src/map/map-view.tsx',
 ];
 /** Route components (TanStack's split chunks) that read the server and load on demand. */
 const HOUSEHOLD_ROUTES = [
@@ -231,6 +234,10 @@ const HOUSEHOLD_SHARED = [
   '/node_modules/internmap/',
   '/node_modules/classnames/',
   '/node_modules/react-use-measure/',
+  // The location map's engine and three.js (1.x, D237), if the bundler splits them out.
+  '/src/map/',
+  '/node_modules/three/',
+  '/packages/shared/src/map.ts',
   // @visx/text's CSS calc() reducer.
   '/node_modules/balanced-match/',
   '/node_modules/reduce-function-call/',
@@ -317,9 +324,9 @@ export default defineConfig({
     rolldownOptions: {
       output: {
         chunkFileNames: chunkFileName,
-        // driver.js's CSS goes with its chunk (ON_DEMAND_ENTRIES).
+        // driver.js's CSS goes with its chunk (ON_DEMAND_ENTRIES), and the map's with its own.
         assetFileNames: (asset) =>
-          asset.names.some((n) => n.startsWith('driver-kit'))
+          asset.names.some((n) => n.startsWith('driver-kit') || n.startsWith('map-view'))
             ? 'assets/household/[name]-[hash][extname]'
             : 'assets/[name]-[hash][extname]',
       },

@@ -78,6 +78,8 @@ export const APPLY_ORDER: readonly ExportEntity[] = [
   'secret-field-policies',
   // After the things and their codes: a numbering location numbers new things only (0046).
   'own-code-settings',
+  // 1.x (D237): the map's layout, after every place and thing it names.
+  'map-nodes',
 ];
 
 /**
@@ -610,9 +612,22 @@ export async function applyRow(c: ApplyCtx, entity: ExportEntity, row: Row): Pro
       return applyCode(c, row);
     case 'condition-reports':
       return applyConditionReport(c, def, row);
+    case 'map-nodes':
+      return applyMapNode(c, def, row);
     default:
       return writeGeneric(c, def, row);
   }
+}
+
+/** A map layout row (1.x, D237): only for a room, place or thing the import holds; standing on
+ * something the import left out, it stands on the floor. */
+async function applyMapNode(c: ApplyCtx, def: EntityDef, row: Row): Promise<Applied> {
+  const subject = [row.placeId, row.thingId].find((v): v is string => typeof v === 'string');
+  if (!subject || !c.known.has(subject)) {
+    return { status: 'skipped', reason: 'its place or thing is not imported' };
+  }
+  const host = typeof row.hostId === 'string' && c.known.has(row.hostId) ? row.hostId : null;
+  return writeGeneric(c, def, { ...row, hostId: host });
 }
 
 /** Remembers what a source id became (import_source_ids), where that table names the entity. */

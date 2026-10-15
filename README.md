@@ -37,6 +37,16 @@ the things inside those, with their receipts, manuals, warranties and history. I
 machine, and nothing leaves it unless you turn it on: no telemetry, the update check is off by
 default, and the AI provider is yours to choose.
 
+## The location map
+
+Each location as a 3D map: floors, rooms, shelves and boxes, with what's inside one tap away. Arrange
+it yourself, or let Kept lay it out. Plan view, balconies and terraces, and phones included.
+
+<p align="center">
+  <img src="docs/assets/kept-map-light.webp" alt="A home on Kept's location map: rooms in 3D, a TV unit selected with its card open" width="720">
+  <img src="docs/assets/kept-map-phone-light.webp" alt="The location map on a phone, with a thing's card at the bottom" width="200">
+</p>
+
 ## What it does
 
 - **Inventory.** Locations, places, boxes and things, with photos, documents, tags, custom fields,

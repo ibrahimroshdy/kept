@@ -32,6 +32,7 @@ import { labelRoutes } from '../labels/routes.js';
 import { lendingRoutes } from '../lending/routes.js';
 import { mailboxRoutes } from '../mailin/routes.js';
 import type { MailSource } from '../mailin/source.js';
+import { mapRoutes } from '../map/routes.js';
 import { mcpRoutes } from '../mcp/routes.js';
 import { meterRoutes } from '../meters/routes.js';
 import { moneyRoutes } from '../money/routes.js';
@@ -186,6 +187,8 @@ export const INVENTORY_ROUTE_MODULES = [
   shareLinkRoutes,
   // 1.x (D234): Insights, part of Money.
   insightsRoutes,
+  // 1.x (D237): the location map and its arrange session.
+  mapRoutes,
 ] as const satisfies readonly ((app: KeptApp, deps: InventoryDeps) => Promise<void>)[];
 
 export async function registerInventoryRoutes(app: KeptApp, deps: InventoryDeps): Promise<void> {

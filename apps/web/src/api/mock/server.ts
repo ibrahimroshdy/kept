@@ -15,6 +15,7 @@ import { householdMockRoutes } from '../household/mock';
 import { insightsMockRoutes } from '../insights/mock';
 import { inventoryMockRoutes } from '../inventory/mock';
 import { mailinMockRoutes } from '../mailin/mock';
+import { mapMockRoutes } from '../map/mock';
 import { opsMockRoutes } from '../ops/mock';
 import { ops } from '../ops/mock/state';
 import { paths } from '../paths';
@@ -615,6 +616,8 @@ export function createMockApi(state: MockState): MockApi {
   for (const r of sharelinksMockRoutes(state)) add(r.method, r.template, r.handler);
   // ----- 1.x: Insights (D234) -------------------------------------------------------------------
   for (const r of insightsMockRoutes(state)) add(r.method, r.template, r.handler);
+  // ----- 1.x: the location map and its arrange session (D237) -------------------------------------
+  for (const r of mapMockRoutes(state)) add(r.method, r.template, r.handler);
 
   const mockFetch: typeof fetch = async (input, init) => {
     const url = new URL(

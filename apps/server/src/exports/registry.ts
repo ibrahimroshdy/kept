@@ -301,6 +301,17 @@ export const REGISTRY: readonly EntityDef[] = Object.freeze([
     thingRefs: ['x.thing_id'],
   },
   {
+    // 1.x (D237): the location map's layout. A node of a thing the export leaves out goes with it.
+    entity: 'map-nodes',
+    table: 'map_nodes',
+    scope: 'location',
+    key: ['id'],
+    fields:
+      'id:uuid place_id:uuid thing_id:uuid x_cm:int z_cm:int w_cm:int d_cm:int rot:int model:text room_kind:text surface:text host_id:uuid created_at:ts',
+    omit: 'location_id created_by',
+    thingRefs: ['x.thing_id'],
+  },
+  {
     entity: 'own-code-settings',
     table: 'own_code_settings',
     scope: 'location',

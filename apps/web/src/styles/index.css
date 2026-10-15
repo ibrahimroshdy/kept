@@ -312,3 +312,46 @@ html[data-pull] {
     max-inline-size: 48rem;
   }
 }
+
+/* D237: the Map option shines until someone has opened a map: a soft light crosses it three
+   times, six seconds apart, then stops. Reduced motion turns it off (the rule above). */
+.kept-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.kept-shine::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 60%;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    color-mix(in srgb, var(--amber) 55%, transparent) 50%,
+    transparent 100%
+  );
+  opacity: 0;
+  transform: translateX(-120%);
+  animation: kept-shine 6s ease-in-out 1.5s 3;
+}
+@keyframes kept-shine {
+  0% {
+    opacity: 0;
+    transform: translateX(-120%);
+  }
+  4% {
+    opacity: 1;
+  }
+  22% {
+    opacity: 1;
+    transform: translateX(260%);
+  }
+  26%,
+  100% {
+    opacity: 0;
+    transform: translateX(260%);
+  }
+}

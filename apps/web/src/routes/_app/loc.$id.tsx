@@ -42,7 +42,7 @@ import {
 import { AddHere } from '@/components/places/add-here-sheet';
 import { usePlaceTree } from '@/components/places/api';
 import { ContentsList } from '@/components/places/contents-list';
-import { contentsSearch } from '@/components/places/contents-search';
+import { locationSearch } from '@/components/places/contents-search';
 import { PlacesPanel, PlaceTree } from '@/components/places/tree';
 import { UnplacedCard } from '@/components/places/unplaced-sort';
 import { PrintInventory } from '@/components/reports/print-sheet';
@@ -52,9 +52,11 @@ import { locationAddress, locationIdOf, useCanonicalLocationAddress } from '@/li
 import { sep, useFormat } from '@/lib/format';
 import { useKindLabels, useLocationName, usePresetCopy, useRoleLabels } from '@/lib/labels';
 import { DOCKED, useMediaQuery } from '@/lib/media';
+import { LocationMapLazy } from '@/map/lazy';
+import { LayoutSwitch, useRememberedLayout } from '@/map/remembered';
 
 export const Route = createFileRoute('/_app/loc/$id')({
-  validateSearch: contentsSearch,
+  validateSearch: locationSearch,
   component: LocationPage,
 });
 
@@ -108,6 +110,111 @@ function LocationBody({ location }: { location: LocationDetail }) {
   const places = tree.data?.places ?? [];
   const unplaced = places.find((pl) => pl.isUnplaced) ?? null;
   const access = accessOf(location);
+  // 1.x (D237, M11): List, Grid or Map, remembered per person and location; List by default.
+  const layout = useRememberedLayout(location.id);
+
+  const meta = (
+    <>
+      {personal ? <Trans>Only you</Trans> : kinds[location.kind]}
+      {sep()}
+      <ThingCount n={location.thingCount} />
+      {personal ? null : (
+        <>
+          {sep()}
+          <PeopleCount n={location.memberCount} />
+        </>
+      )}
+    </>
+  );
+  const header = (
+    <div className="flex items-start gap-3">
+      <IconTile className="size-12 [&_svg]:size-6">
+        <KindIcon kind={location.kind} />
+      </IconTile>
+      <div className="grid gap-1.5">
+        <div className="text-ink-2">{meta}</div>
+        <div className="flex flex-wrap gap-1.5">
+          <Pill>{roles.you[location.role]}</Pill>
+          <Pill>{preset}</Pill>
+          {until ? (
+            <Pill tone="warn" icon={<ClockIcon />}>
+              <Trans>Your access ends {until}</Trans>
+            </Pill>
+          ) : null}
+          {location.require2fa ? (
+            <Pill icon={<ShieldIcon />}>
+              <Trans>Two-factor required</Trans>
+            </Pill>
+          ) : null}
+        </div>
+        {/* D201: every role that can see the location, viewers too. */}
+        <div className="flex flex-wrap items-center gap-2">
+          <PrintInventory scope={{ locationId: location.id }} locationIds={[location.id]} />
+          {/* 1.1: what was never labelled here; a place's own page narrows it to that place. */}
+          {access.moduleOn('labels') && access.can('labels.use') ? (
+            <Link
+              to="/labels"
+              search={{ loc: location.id, unprinted: 1 }}
+              className={buttonClass('secondary', 'small')}
+            >
+              <TagIcon className="size-4" />
+              <Trans>Print labels</Trans>
+            </Link>
+          ) : null}
+          {/* D158 (T26): the insurance report where money shows; incidents for their managers. */}
+          {access.money ? (
+            <Link
+              to="/reports/$kind"
+              params={{ kind: 'insurance' }}
+              search={{ loc: location.id }}
+              className={buttonClass('secondary', 'small')}
+            >
+              <PrinterIcon className="size-4" />
+              <Trans>Insurance report</Trans>
+            </Link>
+          ) : null}
+          {access.moduleOn('warranties') && access.can('incidents.manage') ? (
+            <Link
+              to="/incidents"
+              search={{ 'f.location': location.id }}
+              className={buttonClass('secondary', 'small')}
+            >
+              <AlertIcon className="size-4" />
+              <Trans>Incidents</Trans>
+            </Link>
+          ) : null}
+          {/* 1.x (D235): move-in and move-out condition reports, everyone's to read. */}
+          {location.kind === 'personal' ? null : (
+            <Link
+              to="/condition-reports"
+              search={{ 'f.location': location.id }}
+              className={buttonClass('secondary', 'small')}
+            >
+              <DocumentIcon className="size-4" />
+              <Trans>Condition reports</Trans>
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+  const addHere =
+    canEdit && unplaced ? (
+      <AddHere
+        locationId={location.id}
+        thingTarget={{ placeId: unplaced.id }}
+        placeParentId={null}
+        hereName={name}
+      />
+    ) : null;
+  const unplacedCard = unplaced ? (
+    <UnplacedCard
+      unplaced={unplaced}
+      locationId={location.id}
+      locationName={name}
+      canEdit={canEdit}
+    />
+  ) : null;
 
   const link =
     'block outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info';
@@ -128,116 +235,41 @@ function LocationBody({ location }: { location: LocationDetail }) {
           }
         : {})}
     >
-      <div className="flex items-start gap-3">
-        <IconTile className="size-12 [&_svg]:size-6">
-          <KindIcon kind={location.kind} />
-        </IconTile>
-        <div className="grid gap-1.5">
-          <div className="text-ink-2">
-            {personal ? <Trans>Only you</Trans> : kinds[location.kind]}
-            {sep()}
-            <ThingCount n={location.thingCount} />
-            {personal ? null : (
-              <>
-                {sep()}
-                <PeopleCount n={location.memberCount} />
-              </>
-            )}
+      {layout === 'map' ? (
+        <>
+          {/* D237: the map leads, under a one-line header; the rest follows it. */}
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+            <div className="text-ink-2">{meta}</div>
+            <LayoutSwitch />
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            <Pill>{roles.you[location.role]}</Pill>
-            <Pill>{preset}</Pill>
-            {until ? (
-              <Pill tone="warn" icon={<ClockIcon />}>
-                <Trans>Your access ends {until}</Trans>
-              </Pill>
-            ) : null}
-            {location.require2fa ? (
-              <Pill icon={<ShieldIcon />}>
-                <Trans>Two-factor required</Trans>
-              </Pill>
-            ) : null}
+          <LocationMapLazy locationId={location.id} name={name} />
+          {header}
+          {addHere}
+          {unplacedCard}
+        </>
+      ) : (
+        <>
+          {header}
+          {/* D237 (M11): the layouts as a visible switch, not only in the list's Display menu, so
+              Map can be found from List and Grid. */}
+          <div className="flex justify-end">
+            <LayoutSwitch />
           </div>
-          {/* D201: every role that can see the location, viewers too. */}
-          <div className="flex flex-wrap items-center gap-2">
-            <PrintInventory scope={{ locationId: location.id }} locationIds={[location.id]} />
-            {/* 1.1: what was never labelled here; a place's own page narrows it to that place. */}
-            {access.moduleOn('labels') && access.can('labels.use') ? (
-              <Link
-                to="/labels"
-                search={{ loc: location.id, unprinted: 1 }}
-                className={buttonClass('secondary', 'small')}
-              >
-                <TagIcon className="size-4" />
-                <Trans>Print labels</Trans>
-              </Link>
-            ) : null}
-            {/* D158 (T26): the insurance report where money shows; incidents for their managers. */}
-            {access.money ? (
-              <Link
-                to="/reports/$kind"
-                params={{ kind: 'insurance' }}
-                search={{ loc: location.id }}
-                className={buttonClass('secondary', 'small')}
-              >
-                <PrinterIcon className="size-4" />
-                <Trans>Insurance report</Trans>
-              </Link>
-            ) : null}
-            {access.moduleOn('warranties') && access.can('incidents.manage') ? (
-              <Link
-                to="/incidents"
-                search={{ 'f.location': location.id }}
-                className={buttonClass('secondary', 'small')}
-              >
-                <AlertIcon className="size-4" />
-                <Trans>Incidents</Trans>
-              </Link>
-            ) : null}
-            {/* 1.x (D235): move-in and move-out condition reports, everyone's to read. */}
-            {location.kind === 'personal' ? null : (
-              <Link
-                to="/condition-reports"
-                search={{ 'f.location': location.id }}
-                className={buttonClass('secondary', 'small')}
-              >
-                <DocumentIcon className="size-4" />
-                <Trans>Condition reports</Trans>
-              </Link>
-            )}
-          </div>
-        </div>
-      </div>
+          {addHere}
+          {unplacedCard}
+          <ContentsList
+            parent={{
+              kind: 'location',
+              locationId: location.id,
+              name,
+              unplacedId: unplaced?.id ?? null,
+            }}
+            canEdit={canEdit}
+          />
 
-      {canEdit && unplaced ? (
-        <AddHere
-          locationId={location.id}
-          thingTarget={{ placeId: unplaced.id }}
-          placeParentId={null}
-          hereName={name}
-        />
-      ) : null}
-
-      {unplaced ? (
-        <UnplacedCard
-          unplaced={unplaced}
-          locationId={location.id}
-          locationName={name}
-          canEdit={canEdit}
-        />
-      ) : null}
-
-      <ContentsList
-        parent={{
-          kind: 'location',
-          locationId: location.id,
-          name,
-          unplacedId: unplaced?.id ?? null,
-        }}
-        canEdit={canEdit}
-      />
-
-      <div data-tour="location-places">{panel ? null : <PlaceTree places={places} />}</div>
+          <div data-tour="location-places">{panel ? null : <PlaceTree places={places} />}</div>
+        </>
+      )}
 
       {/* D155: the whole home's documents (the lease, the insurance), while Paperwork is on. */}
       {(location.effectiveModules ?? location.modules).includes('paperwork') ? (

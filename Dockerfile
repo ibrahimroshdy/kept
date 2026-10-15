@@ -193,6 +193,7 @@ ADD --checksum=sha256:5888dbb9a1d2b18f2c3e6c5f6af1b39de658372b402a0577b002777f14
     https://raw.githubusercontent.com/nodejs/node/v24.21.0/LICENSE /notices/node-LICENSE
 COPY --from=prod-deps /src/node_modules /notices/node_modules
 COPY --from=build /src/apps/server/assets/fonts/*-OFL.txt /notices/fonts/
+COPY --from=build /src/apps/web/src/map/models/NOTICE.txt /notices/map-models-NOTICE.txt
 ARG VERSION=0.0.0-dev
 ARG TARGETARCH
 # Standard licence texts for packages that ship none: Debian's common-licenses, and MIT and ISC
@@ -212,6 +213,7 @@ RUN --mount=type=bind,source=scripts/third-party-notices.mjs,target=/notices/bin
       --extra "IBM Plex Sans (the inventory report's font)|OFL-1.1|/notices/fonts/IBMPlexSans-OFL.txt" \
       --extra "IBM Plex Sans Arabic (the inventory report's font)|OFL-1.1|/notices/fonts/IBMPlexSansArabic-OFL.txt" \
       --extra "IBM Plex Mono (the inventory report's font)|OFL-1.1|/notices/fonts/IBMPlexMono-OFL.txt" \
+      --extra "Poly Haven models (the location map's furniture, plants and AC units)|CC0-1.0|/notices/map-models-NOTICE.txt" \
       --version "${VERSION}" --arch "${TARGETARCH}" \
       --out /THIRD-PARTY-NOTICES.txt
 

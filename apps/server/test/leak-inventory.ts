@@ -110,6 +110,18 @@ export async function fillInventory(
      VALUES ($1, $2, $3, 'related')`,
     [t.locationId, thing, box],
   );
+  // The location map (1.x, D237): the room's rectangle, and the box standing in it with the
+  // room thing on top.
+  await c.query(
+    `INSERT INTO public.map_nodes (location_id, place_id, x_cm, z_cm, w_cm, d_cm, room_kind, surface)
+     VALUES ($1, $2, 0, 0, 400, 300, 'room', 'wood')`,
+    [t.locationId, room],
+  );
+  await c.query(
+    `INSERT INTO public.map_nodes (location_id, thing_id, x_cm, z_cm, rot, model)
+     VALUES ($1, $2, 20, 20, 90, 'box'), ($1, $3, 20, 20, 0, 'laptop')`,
+    [t.locationId, box, thing],
+  );
 
   // Purchases and meters (task 7): a purchase from the vendor with a line the room thing came
   // from; a meter on the box, with a reading and a replacement event.

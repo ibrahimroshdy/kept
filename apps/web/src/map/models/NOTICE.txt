@@ -1,0 +1,14 @@
+The location map's models (furniture, plants, storage and the AC units) are from Poly Haven,
+https://polyhaven.com, by their authors, dedicated to the public domain under Creative Commons
+CC0 1.0 Universal (https://creativecommons.org/publicdomain/zero/1.0/). Kept credits them as a
+courtesy; CC0 asks for nothing.
+
+Kept ships them shrunk for phones (meshes simplified, normal and occlusion maps removed, colour
+maps resized to WebP, compressed with meshopt), made with glTF Transform 4.5.1 from Poly Haven's
+1k glTF downloads:
+
+  Drill_01, cardboard_box_01, dining_chair_02, drawer_cabinet, exterior_aircon_unit,
+  modern_arm_chair_01, modern_coffee_table_01, outdoor_table_chair_set_01, planter_box_01,
+  planter_box_02, plastic_crate_02, plastic_monobloc_chair_01, potted_plant_02, potted_plant_04,
+  side_table_01, sofa_02, steel_frame_shelves_02, tool_cart, watering_can_metal_01,
+  wicker_basket_02, wooden_display_shelves_01
