@@ -3,6 +3,16 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.8.0 (2026-10-15)
+
+### Features
+
+- **api:** read what needs you from Home Assistant and dashboards (D244) (#100) (4cd5065)
+
+### Documentation
+
+- **release:** the 1.7.1 record (#99) (f076dd2)
+
 ## 1.7.1 (2026-10-15)
 
 ### Features
