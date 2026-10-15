@@ -1,6 +1,6 @@
 ---
 title: Paperless-ngx
-description: Link a thing or a place to its receipts, invoices, manuals and warranty cards in Paperless-ngx. Kept stores the link and a title, not the file, unless you copy a document in.
+description: Link a thing or place to its receipts, manuals and warranty cards in Paperless-ngx. Kept stores the link and a title, not the file, unless you copy it in.
 ---
 
 If you keep your paperwork in [Paperless-ngx](https://docs.paperless-ngx.com/), Kept can link a

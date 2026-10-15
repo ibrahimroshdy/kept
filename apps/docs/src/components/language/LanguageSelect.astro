@@ -9,9 +9,10 @@
  * Escape to close and return focus, and closing on a click outside or when focus leaves.
  *
  * The links follow Starlight's routing: the root locale has no prefix, every other locale is the
- * first path segment, after the site's base path. Starlight builds every page in every locale
- * (untranslated ones show the English text under its "not translated yet" notice), so every link
- * exists.
+ * first path segment, after the site's base path. Starlight builds every content page in every
+ * locale (untranslated ones show the English text under its "not translated yet" notice), so those
+ * links exist. The API reference (starlight-openapi) is built in English only, so from it the other
+ * languages link to their landing page; so does every language from the one 404 page.
  */
 import { locales } from '../../locales.mjs';
 import Flag from './Flag.astro';
@@ -25,7 +26,11 @@ function pathIn(code: string): string {
   if (base && path.startsWith(`${base}/`)) path = path.slice(base.length);
   const [, first = '', ...rest] = path.split('/');
   const tail = first !== 'root' && first in locales ? rest.join('/') : path.slice(1);
-  return `${base}${code === 'root' ? '' : `/${code}`}/${tail}`;
+  const prefix = code === 'root' ? '' : `/${code}`;
+  // The one 404 page, and the English-only API reference: that language's landing page.
+  const apiOnly = code !== 'root' && (tail === 'api/' || tail.startsWith('api/'));
+  if (Astro.locals.starlightRoute.id === '404' || apiOnly) return `${base}${prefix}/`;
+  return `${base}${prefix}/${tail}`;
 }
 
 const items = Object.entries(locales).map(([code, locale]) => ({

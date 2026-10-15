@@ -1,6 +1,6 @@
 ---
 title: Home Assistant
-description: Kept in Home Assistant. Sensors for what is overdue, due and expiring in each location, each vehicle's reading and next service, a calendar, and actions that send a car's odometer to Kept.
+description: "Kept in Home Assistant: sensors for what's overdue, due and expiring, each vehicle's reading and next service, a calendar, and odometer readings sent back."
 ---
 
 The Kept integration for [Home Assistant](https://www.home-assistant.io/) shows what needs you in

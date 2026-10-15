@@ -1,6 +1,6 @@
 ---
 title: Moving house
-description: Pack your home into numbered boxes, print a label and a contents sheet for each, track them in the van, and scan each box at the other end to unpack it into its room.
+description: Pack your home into numbered boxes, print a label and a contents sheet for each, track them in the van, and scan each box to unpack it into its room.
 ---
 
 **Moving** packs a home into numbered boxes and unpacks them at the other end. Each box is an
