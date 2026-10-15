@@ -3,6 +3,18 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.8.1 (2026-10-15)
+
+### Fixes
+
+- **schedules:** a one-off schedule is done once it's completed (D247) (#105) (0c6086f)
+
+### Documentation
+
+- **site:** try the whole app in the browser (D246) (#106) (0c5469e)
+- **release:** the 1.8.0 record (#104) (540a60f)
+- **screens:** showcase money in US dollars (#103) (8096d38)
+
 ## 1.8.0 (2026-10-15)
 
 ### Features
