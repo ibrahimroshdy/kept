@@ -6,8 +6,12 @@ description: 'Kept integrations: Homebox and LubeLogger import, CSV, email-in, n
 ---
 
 import IntegrationList from '../../components/landing/IntegrationList.astro';
+import { Image } from 'astro:assets';
+import integrations from '../../assets/landing/kept-integrations.webp';
 
 What Kept takes in, who it tells, how people sign in, and what it talks to.
 One entry each, with the page that sets it up. Everything here is in Kept today.
+
+<Image src={integrations} alt="Kept in the middle, linked both ways to Home Assistant and Paperless-ngx; imports from Homebox, LubeLogger and spreadsheets; notifications through ntfy, Telegram, Slack, Discord, Matrix, Signal, email and webhooks; the Kept MCP server for Claude and ChatGPT; AI models from OpenAI, Anthropic, Gemini, Groq, OpenRouter and Ollama" widths={[800, 1600]} sizes="(min-width: 50rem) 48rem, 100vw" loading="eager" />
 
 <IntegrationList />

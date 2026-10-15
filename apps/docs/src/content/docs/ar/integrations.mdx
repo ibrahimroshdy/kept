@@ -6,8 +6,12 @@ description: 'تكاملات Kept: الاستيراد من Homebox وLubeLogger 
 ---
 
 import IntegrationList from '../../../components/landing/IntegrationList.astro';
+import { Image } from 'astro:assets';
+import integrations from '../../../assets/landing/kept-integrations.webp';
 
 ما يستقبله Kept، ومن ينبّه، وكيف يدخل الناس إليه، وما يتحدث إليه.
 مدخل لكلٍّ منها، مع الصفحة التي تشرح إعداده. وكل ما هنا موجود في Kept اليوم.
+
+<Image src={integrations} alt="Kept في الوسط، مرتبط في الاتجاهين بـ Home Assistant وPaperless-ngx؛ الاستيراد من Homebox وLubeLogger وجداول البيانات؛ التنبيهات عبر ntfy وTelegram وSlack وDiscord وMatrix وSignal والبريد الإلكتروني وخطافات الويب؛ خادم Kept MCP لـ Claude وChatGPT؛ ونماذج الذكاء الاصطناعي من OpenAI وAnthropic وGemini وGroq وOpenRouter وOllama" widths={[800, 1600]} sizes="(min-width: 50rem) 48rem, 100vw" loading="eager" />
 
 <IntegrationList />
