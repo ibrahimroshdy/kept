@@ -735,27 +735,36 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
       `<div role="option" class="kshape-option" tabindex="-1" data-model="${m}" aria-selected="${m === it.model}"${m === it.model ? ' data-selected' : ''}>${thumb(m)}<span>${esc(names[m])}</span></div>`;
     const fill = () => {
       const q = search.value.trim();
-      const sections: [string, MapModelKey[]][] = q
-        ? [[w.shapesThatMatch, searchShapes(q, names)]]
-        : [
-            [w.suggested, suggestShapes(input).shapes.map((x) => x.model)],
-            ...SHAPE_GROUPS.map(
-              (g) =>
-                [pick(GROUP_NAMES[g]), MAP_MODEL_KEYS.filter((m) => SHAPE_GROUP[m] === g)] as [
-                  string,
-                  MapModelKey[],
-                ],
-            ),
-          ];
-      const shown = sections.filter(([, ms]) => ms.length);
-      list.innerHTML = shown.length
-        ? shown
-            .map(
-              ([title, ms], i) =>
-                `<div role="group" class="kshape-section" aria-labelledby="kd-sh-${i}"><div class="kshape-head" id="kd-sh-${i}" role="presentation">${esc(title)}</div>${ms.map(option).join('')}</div>`,
-            )
-            .join('')
-        : `<p class="kd-shapes-empty">${esc(w.noShape(q))}</p>`;
+      list.scrollTop = 0;
+      list.classList.toggle('kshape-found', !!q);
+      // While searching: only the matches, best first, in one grid (#130).
+      if (q) {
+        const found = searchShapes(q, names, lang);
+        list.innerHTML = found.length
+          ? found.map(option).join('')
+          : `<p class="kd-shapes-empty">${esc(w.noShape(q))}</p>`;
+        const opts = [...list.querySelectorAll<HTMLElement>('[role="option"]')];
+        const first = opts.find((o) => o.dataset.model === it.model) ?? opts[0];
+        if (first) first.tabIndex = 0;
+        return;
+      }
+      const sections: [string, MapModelKey[]][] = [
+        [w.suggested, suggestShapes(input).shapes.map((x) => x.model)],
+        ...SHAPE_GROUPS.map(
+          (g) =>
+            [pick(GROUP_NAMES[g]), MAP_MODEL_KEYS.filter((m) => SHAPE_GROUP[m] === g)] as [
+              string,
+              MapModelKey[],
+            ],
+        ),
+      ];
+      list.innerHTML = sections
+        .filter(([, ms]) => ms.length)
+        .map(
+          ([title, ms], i) =>
+            `<div role="group" class="kshape-section" aria-labelledby="kd-sh-${i}"><div class="kshape-head" id="kd-sh-${i}" role="presentation">${esc(title)}</div>${ms.map(option).join('')}</div>`,
+        )
+        .join('');
       const opts = [...list.querySelectorAll<HTMLElement>('[role="option"]')];
       const first = opts.find((o) => o.dataset.model === it.model) ?? opts[0];
       if (first) first.tabIndex = 0;
@@ -827,6 +836,21 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
     dlg.addEventListener('close', () => {
       dlg.remove();
       overlay.querySelector<HTMLElement>(`[data-k="${CSS.escape(`shapes:${id}`)}"]`)?.focus();
+    });
+    // On a phone the sheet stays above the on-screen keyboard and the browser's form bar: it
+    // follows the visual viewport, as the app's Sheet does (#130).
+    const vv = window.visualViewport;
+    const fit = () => {
+      if (!vv || vv.scale > 1.01) return;
+      dlg.style.setProperty('--kd-vv-top', `${Math.round(vv.offsetTop)}px`);
+      dlg.style.setProperty('--kd-vv-h', `${Math.round(vv.height)}px`);
+    };
+    fit();
+    vv?.addEventListener('resize', fit);
+    vv?.addEventListener('scroll', fit);
+    dlg.addEventListener('close', () => {
+      vv?.removeEventListener('resize', fit);
+      vv?.removeEventListener('scroll', fit);
     });
     fill();
     root.append(dlg);

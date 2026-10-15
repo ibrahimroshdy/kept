@@ -181,6 +181,7 @@
 }
 .kd-shapes[open] {
   display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
   gap: 12px;
 }
 .kd-shapes::backdrop {
@@ -206,11 +207,17 @@
   padding: 12px;
   color: var(--ink-2);
 }
+/* A phone: a sheet over the bottom of what can be seen, above the on-screen keyboard (#130):
+   demo.ts sets the visual viewport's top and height; only the shapes scroll. */
 @media (max-width: 600px) {
   .kd-shapes {
+    inset: auto 0;
+    top: calc(var(--kd-vv-top, 0px) + var(--kd-vv-h, 100dvh) * 0.08);
     width: 100%;
     max-width: none;
-    margin: auto 0 0;
+    height: calc(var(--kd-vv-h, 100dvh) * 0.92);
+    max-height: none;
+    margin: 0;
     border-end-start-radius: 0;
     border-end-end-radius: 0;
   }

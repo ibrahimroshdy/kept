@@ -23804,9 +23804,6 @@ msgstr "Formen"
 msgid "No shape matches “{query}”. Try Small thing or Small device, and give it a name that says what it is."
 msgstr "Keine Form passt zu „{query}“. Versuch es mit Kleines Ding oder Kleines Gerät und gib ihm einen Namen, der sagt, was es ist."
 
-#: src/map/shapes.tsx
-msgid "Shapes that match"
-msgstr "Passende Formen"
 
 #: src/components/places/contents-list.tsx
 msgid "Table"
@@ -24382,3 +24379,77 @@ msgstr "Karton ausgepackt"
 #: src/components/history/labels.ts
 msgid "Taken out of a move"
 msgstr "Aus einem Umzug genommen"
+
+#: src/map/labels.ts
+msgid "Desktop PC"
+msgstr "Desktop-PC"
+
+#: src/map/labels.ts
+msgid "Keyboard"
+msgstr "Tastatur"
+
+#: src/map/labels.ts
+msgid "Mouse"
+msgstr "Maus"
+
+#: src/map/labels.ts
+msgid "Webcam"
+msgstr "Webcam"
+
+#: src/map/labels.ts
+msgctxt "map shape"
+msgid "Camera"
+msgstr "Kamera"
+
+#: src/map/labels.ts
+msgid "Desk speaker"
+msgstr "Regallautsprecher"
+
+#: src/map/labels.ts
+msgid "Tall speaker"
+msgstr "Standlautsprecher"
+
+#: src/map/labels.ts
+msgid "Smart speaker"
+msgstr "Smarter Lautsprecher"
+
+#: src/map/labels.ts
+msgid "Soundbar"
+msgstr "Soundbar"
+
+#: src/map/labels.ts
+msgid "Headphones"
+msgstr "Kopfhörer"
+
+#: src/map/labels.ts
+msgid "Router"
+msgstr "Router"
+
+#: src/map/labels.ts
+msgid "Printer"
+msgstr "Drucker"
+
+#: src/map/labels.ts
+msgid "Game console"
+msgstr "Spielkonsole"
+
+#: src/map/labels.ts
+msgid "Game controller"
+msgstr "Gamecontroller"
+
+#: src/map/labels.ts
+msgctxt "map shape"
+msgid "Phone"
+msgstr "Handy"
+
+#: src/map/labels.ts
+msgid "Tablet"
+msgstr "Tablet"
+
+#: src/map/labels.ts
+msgid "Power strip"
+msgstr "Steckdosenleiste"
+
+#: src/map/labels.ts
+msgid "External drive"
+msgstr "Externe Festplatte"

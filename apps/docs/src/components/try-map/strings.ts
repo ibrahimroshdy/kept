@@ -49,6 +49,24 @@ export const MODEL_NAMES: Record<MapModelKey, Two> = {
   desk: ['Desk', 'مكتب'],
   monitor: ['Monitor', 'شاشة'],
   laptop: ['Laptop', 'حاسوب محمول'],
+  pc_tower: ['Desktop PC', 'كمبيوتر مكتبي'],
+  keyboard: ['Keyboard', 'لوحة مفاتيح'],
+  mouse: ['Mouse', 'فأرة'],
+  webcam: ['Webcam', 'كاميرا ويب'],
+  camera: ['Camera', 'كاميرا'],
+  speaker: ['Desk speaker', 'سماعة مكتبية'],
+  floor_speaker: ['Tall speaker', 'سماعة أرضية'],
+  smart_speaker: ['Smart speaker', 'سماعة ذكية'],
+  soundbar: ['Soundbar', 'ساوند بار'],
+  headphones: ['Headphones', 'سماعات رأس'],
+  router: ['Router', 'راوتر'],
+  printer: ['Printer', 'طابعة'],
+  console: ['Game console', 'جهاز ألعاب'],
+  controller: ['Game controller', 'يد تحكم'],
+  phone: ['Phone', 'هاتف'],
+  tablet: ['Tablet', 'جهاز لوحي'],
+  power_strip: ['Power strip', 'مشترك كهرباء'],
+  external_drive: ['External drive', 'هارد خارجي'],
   device: ['Small device', 'جهاز صغير'],
   chair: ['Desk chair', 'كرسي مكتب'],
   cabinet: ['Filing cabinet', 'خزانة ملفات'],
@@ -177,7 +195,6 @@ type Words = {
   findShapeHint: string;
   shapes: string;
   suggested: string;
-  shapesThatMatch: string;
   noShape: (query: string) => string;
   putOnMap: string;
   findThingIn: (name: string) => string;
@@ -300,7 +317,6 @@ export const WORDS: Record<Lang, Words> = {
     findShapeHint: 'Find a shape: TV, shelf, box…',
     shapes: 'Shapes',
     suggested: 'Suggested',
-    shapesThatMatch: 'Shapes that match',
     noShape: (q) =>
       `No shape matches “${q}”. Try Small thing or Small device, and give it a name that says what it is.`,
     putOnMap: 'Put on the map',
@@ -424,7 +440,6 @@ export const WORDS: Record<Lang, Words> = {
     findShapeHint: 'ابحث عن شكل: تلفاز، رف، صندوق…',
     shapes: 'الأشكال',
     suggested: 'مقترح',
-    shapesThatMatch: 'الأشكال المطابقة',
     noShape: (q) =>
       `لا يوجد شكل يطابق «${q}». جرّب «شيء صغير» أو «جهاز صغير»، وأعطه اسمًا يقول ما هو.`,
     putOnMap: 'ضع على الخريطة',
