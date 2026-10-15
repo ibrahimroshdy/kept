@@ -23,7 +23,7 @@ release_chart() {
       if (n !== 1) throw new Error(`values.yaml: expected one "${from.trim()}", found ${n}`);
       text = text.replace(from, to);
     };
-    swap("\n  repository: ghcr.io/ibrahimroshdy/kept\n", `\n  repository: ${repo}\n`);
+    swap("\n  repository: ghcr.io/keptinventory/kept\n", `\n  repository: ${repo}\n`);
     swap("\n  digest: \"\"\n", `\n  digest: "${digest}"\n`);
     fs.writeFileSync(file, text);
   ' "$stage/kept/values.yaml" "$registry" "$index_digest"

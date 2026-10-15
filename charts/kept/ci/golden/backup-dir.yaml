@@ -229,7 +229,7 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: wait-for-db
-          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          image: ghcr.io/keptinventory/kept:1.0.0
           imagePullPolicy: IfNotPresent
           command:
             - sh
@@ -253,7 +253,7 @@ spec:
               memory: 64Mi
       containers:
         - name: kept
-          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          image: ghcr.io/keptinventory/kept:1.0.0
           imagePullPolicy: IfNotPresent
           env:
             - name: KEPT_ROLE
@@ -525,7 +525,7 @@ spec:
       type: RuntimeDefault
   containers:
     - name: version
-      image: ghcr.io/ibrahimroshdy/kept:1.0.0
+      image: ghcr.io/keptinventory/kept:1.0.0
       imagePullPolicy: IfNotPresent
       command:
         - node
@@ -597,7 +597,7 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: wait-for-db
-          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          image: ghcr.io/keptinventory/kept:1.0.0
           imagePullPolicy: IfNotPresent
           command:
             - sh
@@ -621,7 +621,7 @@ spec:
               memory: 64Mi
       containers:
         - name: migrate
-          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          image: ghcr.io/keptinventory/kept:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["kept"]
           args: ["migrate"]

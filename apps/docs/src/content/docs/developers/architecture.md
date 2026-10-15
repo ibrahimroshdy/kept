@@ -9,7 +9,7 @@ API, runs the background jobs, and carries the `kept` command line. What a proce
 server's disk or in an S3 bucket.
 
 The design this page summarises is the engineering spec's §7 Foundations
-([engineering spec](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)).
+([engineering spec](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)).
 Where this page and the code disagree, the code is right; please open an issue.
 
 ## The processes and what they talk to
@@ -76,9 +76,9 @@ Where this page and the code disagree, the code is right; please open an issue.
 A web-only process still starts pg-boss, without its supervisor or schedule, because a request
 enqueues jobs inside its own transaction. A worker-only process serves no `/readyz`; it writes a
 heartbeat file the image's health check reads
-([`jobs/liveness.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/jobs/liveness.ts)).
+([`jobs/liveness.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/jobs/liveness.ts)).
 The startup order is in
-[`apps/server/src/main.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/main.ts):
+[`apps/server/src/main.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/main.ts):
 the release guard, pg-boss, file storage, the AI layer, then either the job registry, the HTTP
 app, or both.
 
@@ -125,7 +125,7 @@ app, or both.
 <figcaption>The hooks decide who is calling; the write, its audit row, any job it enqueues and its idempotency record commit or roll back together.</figcaption>
 </figure>
 
-1. **Hooks** ([`http/app.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/http/app.ts)).
+1. **Hooks** ([`http/app.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/http/app.ts)).
    Fastify gives the request a fresh UUIDv7 as its id and answers it in `x-request-id`. Then, in
    order: a cookie-bearing write from another site is refused (`csrfHook`), a
    `Authorization: Bearer kpt_…` token becomes the scope (`bearerHook`), and otherwise the
@@ -135,18 +135,18 @@ app, or both.
 2. **Validation.** zod schemas on params, query and body (`fastify-type-provider-zod`), then
    the module gate: a route with `config.module` answers 404 `module_off` for a read and 409 for
    a write when that module is off in the target location
-   ([`http/modules.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/http/modules.ts)).
+   ([`http/modules.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/http/modules.ts)).
 3. **The scope.** `scopedRead()` and `scopedWrite()`
-   ([`http/write.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/http/write.ts))
+   ([`http/write.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/http/write.ts))
    run the handler inside `withScope()`
-   ([`db/scope.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/db/scope.ts)):
+   ([`db/scope.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/db/scope.ts)):
    one transaction on a `kept_app` connection that first sets `app.user_id`, `app.mfa` and
    `app.token_id` transaction-locally. Row-level security reads them. See
    [row-level security](/developers/rls/).
 4. **The handler** queries through Drizzle. It sees only what the policies let that person see;
    anything else is a 404, the same as a missing row.
 5. **Audit.** Every write calls `audited(tx, event)`
-   ([`audit/audited.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/audit/audited.ts))
+   ([`audit/audited.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/audit/audited.ts))
    in the same transaction, and the route catalogue test fails any non-GET route that can finish
    without an audit row.
 6. **Commit and reply.** An undoable write answers `x-kept-audit-event`. Work that needs another
@@ -155,14 +155,14 @@ app, or both.
 
 ## The components
 
-**Web app** ([`apps/web`](https://github.com/ibrahimroshdy/kept/tree/main/apps/web)). React 19,
+**Web app** ([`apps/web`](https://github.com/keptinventory/kept/tree/main/apps/web)). React 19,
 TanStack Router and Query, React Aria, Lingui, Tailwind v4, built by Vite into static files the
 server serves with a strict CSP (`default-src 'self'`, no inline scripts but the pre-paint one by
 hash). A Serwist service worker precaches the shell, the fonts and the scanner's wasm, and never
 caches `/api` or `/f`. The phone keeps a read-only snapshot and a queue of offline changes in
 IndexedDB: [offline and sync](/developers/offline-sync/).
 
-**Server** ([`apps/server/src`](https://github.com/ibrahimroshdy/kept/tree/main/apps/server/src)).
+**Server** ([`apps/server/src`](https://github.com/keptinventory/kept/tree/main/apps/server/src)).
 Fastify 5 with zod, Drizzle over `pg`, Better Auth for sign-in. One directory per feature; the
 [monorepo page](/developers/monorepo/) lists them.
 
@@ -170,37 +170,37 @@ Fastify 5 with zod, Drizzle over `pg`, Better Auth for sign-in. One directory pe
 runtime ones, row-level security forced on every table. pg-boss keeps its queue in the same
 database, in schema `pgboss`; Better Auth keeps its tables in schema `auth`; Kept's functions live
 in schema `kept`. The `vector`, `pg_trgm` and `unaccent` extensions are created at database
-bootstrap ([`docker/initdb`](https://github.com/ibrahimroshdy/kept/tree/main/docker/initdb)).
+bootstrap ([`docker/initdb`](https://github.com/keptinventory/kept/tree/main/docker/initdb)).
 
-**Jobs** ([`apps/server/src/jobs`](https://github.com/ibrahimroshdy/kept/tree/main/apps/server/src/jobs)).
+**Jobs** ([`apps/server/src/jobs`](https://github.com/keptinventory/kept/tree/main/apps/server/src/jobs)).
 Every job is declared with `defineJob()` as `system` (cross-tenant, on `kept_system`, the only
 kind that may be scheduled) or `tenant` (re-assumes the sending request's user inside
 `withScope()`). A request enqueues with `sendInTx()` on its own connection, so a job exists only
 if the write commits. Retry and timeout policies are in `jobs/policies.ts`.
 
-**File storage** ([`apps/server/src/storage`](https://github.com/ibrahimroshdy/kept/tree/main/apps/server/src/storage)).
+**File storage** ([`apps/server/src/storage`](https://github.com/keptinventory/kept/tree/main/apps/server/src/storage)).
 One blob-store interface, two drivers: `local.ts` under `KEPT_DATA_DIR` and `s3.ts`
 (`KEPT_STORAGE=s3`). Originals stay byte-identical; display and thumbnail derivatives are made in
 the upload request. Every file is fetched through a five-minute signed URL: `/f/<token>` on local
 storage, a presigned URL on S3 (spec §7.11). See [file storage](/admin/storage/).
 
-**Mail** ([`apps/server/src/mail`](https://github.com/ibrahimroshdy/kept/tree/main/apps/server/src/mail)).
+**Mail** ([`apps/server/src/mail`](https://github.com/keptinventory/kept/tree/main/apps/server/src/mail)).
 Nodemailer over `KEPT_SMTP_URL`. Without it, mail is logged as due and reminders reach people in
 the app only.
 
-**AI** ([`apps/server/src/ai`](https://github.com/ibrahimroshdy/kept/tree/main/apps/server/src/ai)).
+**AI** ([`apps/server/src/ai`](https://github.com/keptinventory/kept/tree/main/apps/server/src/ai)).
 The Vercel AI SDK behind one call door with budgets, caps and a call ledger (`llm_calls`). Provider
 kinds: `openai`, `anthropic`, `google`, `openai_compatible`, `openrouter`, `groq`. Outbound
 requests go through the SSRF guard in `net/ssrf.ts`. `KEPT_AI_MOCK=1` answers every call from
 `ai/mock.ts` and is refused in production. See [AI providers](/developers/ai-providers/).
 
-**Backups** ([`apps/server/src/backup`](https://github.com/ibrahimroshdy/kept/tree/main/apps/server/src/backup)).
+**Backups** ([`apps/server/src/backup`](https://github.com/keptinventory/kept/tree/main/apps/server/src/backup)).
 The worker runs restic nightly (`KEPT_BACKUP_TIME`, default 02:30 UTC), dumping as `kept_owner`
 on its own connection: the one time a long-running process uses the owner login. See
 [backups](/admin/backups/).
 
-**MCP** ([`apps/server/src/mcp`](https://github.com/ibrahimroshdy/kept/tree/main/apps/server/src/mcp),
-[`packages/mcp`](https://github.com/ibrahimroshdy/kept/tree/main/packages/mcp)). `POST /mcp`
+**MCP** ([`apps/server/src/mcp`](https://github.com/keptinventory/kept/tree/main/apps/server/src/mcp),
+[`packages/mcp`](https://github.com/keptinventory/kept/tree/main/packages/mcp)). `POST /mcp`
 takes a personal token or an OAuth access token bound to the `/mcp` resource. Tools run through
 the same `runTool()` the in-app assistant uses (`tools/`). See [MCP](/developers/mcp/).
 

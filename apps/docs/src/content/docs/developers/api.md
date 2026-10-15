@@ -5,10 +5,10 @@ description: The rules every Kept HTTP route follows, from URLs and errors to pa
 
 The web app, the phone's offline queue, scripts and MCP tools all use the same HTTP API. Its
 conventions are the engineering spec's §7.7
-([engineering spec](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)),
-built in [`apps/server/src/http/conventions.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/http/conventions.ts),
-[`write.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/http/write.ts) and
-[`errors.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/http/errors.ts).
+([engineering spec](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)),
+built in [`apps/server/src/http/conventions.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/http/conventions.ts),
+[`write.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/http/write.ts) and
+[`errors.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/http/errors.ts).
 Every route is listed in the [API reference](/api/).
 
 ## URLs
@@ -38,7 +38,7 @@ Every error, from any route, has one shape:
 ```
 
 `code` is from the `ErrorCode` enum in
-[`packages/shared/src/errors.ts`](https://github.com/ibrahimroshdy/kept/blob/main/packages/shared/src/errors.ts);
+[`packages/shared/src/errors.ts`](https://github.com/keptinventory/kept/blob/main/packages/shared/src/errors.ts);
 clients branch on it, never on `error`, which is English text. Some errors add fields (a 412's
 `conflicts`, a 429's `retryAfter`). A 500 never carries a stack trace or the underlying message,
 and the log gets a copy with values withheld.
@@ -85,7 +85,7 @@ Lists are cursor-based: `?limit=` (1 to 200, default 20) and `?cursor=`. The ans
 `{ "items": [...], "next_cursor": "…" }`, with `next_cursor` null on the last page. Cursors are
 opaque; don't build them. A filter parameter may repeat (`?typeId=a&typeId=b`, "any of"), and
 `?not=typeId` turns it into "none of"
-([`http/list-filters.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/http/list-filters.ts)).
+([`http/list-filters.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/http/list-filters.ts)).
 Each list's own parameters are in the reference.
 
 ## Money
@@ -141,7 +141,7 @@ scheme. Routes marked `schema: { hide: true }` are left out, for example health,
 discovery documents and the OpenAPI document itself.
 
 This site's [API reference](/api/) is rendered from the same document.
-[`apps/docs/scripts/openapi.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/docs/scripts/openapi.ts)
+[`apps/docs/scripts/openapi.ts`](https://github.com/keptinventory/kept/blob/main/apps/docs/scripts/openapi.ts)
 builds the app in-process with every database pool pointed at a closed port, asks it for
 `/api/v1/openapi.json`, fails if anything touched the database, and writes the git-ignored
 `apps/docs/openapi/kept.json`:
@@ -154,11 +154,11 @@ pnpm --filter @kept/docs gen:openapi
 
 ## The route catalogue
 
-[`apps/server/test/route-catalogue.test.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/test/route-catalogue.test.ts)
+[`apps/server/test/route-catalogue.test.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/test/route-catalogue.test.ts)
 builds the app with every route module and fails any non-GET route that has neither a test proving
 its audit row (a `// catalogue: <METHOD> <url>` marker above the case) nor an allowlist entry with
 its reason. Which routes a token may call is a separate, single table: `TOKEN_ROUTES` in
-[`tokens/access.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/tokens/access.ts).
+[`tokens/access.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/tokens/access.ts).
 Adding a route means both; see [migrations](/developers/migrations/#what-a-new-route-needs).
 
 ## Versioning

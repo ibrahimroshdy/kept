@@ -7,7 +7,7 @@ Kept's tenancy is enforced by Postgres, not only by the application. Every reque
 that cannot bypass row-level security, inside a transaction that names its user, and every table
 has policies that read that name. A query that forgot to filter, or ran without a scope, returns
 nothing. The design is the engineering spec's §1.1, §7.1, §7.2 and §7.14
-([engineering spec](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)).
+([engineering spec](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)).
 
 ## The roles
 
@@ -67,16 +67,16 @@ nothing. The design is the engineering spec's §1.1, §7.1, §7.2 and §7.14
 
 All four logins are `NOSUPERUSER NOCREATEROLE NOBYPASSRLS`; `test/roles.test.ts` checks it on the
 development database. The SQL that makes them is
-[`docker/initdb/01-roles.sql`](https://github.com/ibrahimroshdy/kept/blob/main/docker/initdb/01-roles.sql)
+[`docker/initdb/01-roles.sql`](https://github.com/keptinventory/kept/blob/main/docker/initdb/01-roles.sql)
 in development and
-[`docker/initdb-prod/01-roles.sh`](https://github.com/ibrahimroshdy/kept/blob/main/docker/initdb-prod/01-roles.sh)
+[`docker/initdb-prod/01-roles.sh`](https://github.com/keptinventory/kept/blob/main/docker/initdb-prod/01-roles.sh)
 in production; for a managed database, see [managed Postgres](/install/managed-postgres/).
 Everything else (schemas, grants, policies) comes from the migrations, so every database gets the
 same privileges however it was made.
 
 ## How a request sets its scope
 
-[`db/scope.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/db/scope.ts) is
+[`db/scope.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/db/scope.ts) is
 the only way to query as a user. `withScope(pool, scope, fn)` takes a `kept_app` connection and
 runs:
 
@@ -103,7 +103,7 @@ nothing, and every policy denies: **fail closed**.
 hidden while it is false. `app.token_id` is set when the request came with a personal token or
 an OAuth grant; the location functions then intersect the creator's memberships with the token's
 locations, and a read token has nothing writable
-([`0070_tokens_rls.sql`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/migrations/0070_tokens_rls.sql)).
+([`0070_tokens_rls.sql`](https://github.com/keptinventory/kept/blob/main/apps/server/migrations/0070_tokens_rls.sql)).
 
 ## Policy shapes
 
@@ -111,7 +111,7 @@ Scopes (spec §1.1): **location** (most tables), **account** (the registries: ty
 vendors, people, tags, place kinds), **user** (profiles, channels, tokens, assistant threads) and
 **instance** (instance settings, backup runs). The membership functions are `SECURITY DEFINER`,
 `STABLE`, owned by `kept_owner` with a fixed `search_path`
-([`0006_rls.sql`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/migrations/0006_rls.sql)):
+([`0006_rls.sql`](https://github.com/keptinventory/kept/blob/main/apps/server/migrations/0006_rls.sql)):
 
 | Function | Returns |
 |---|---|
@@ -134,7 +134,7 @@ CREATE POLICY app_update ON public.places FOR UPDATE TO kept_app
 A user-scoped one compares `user_id = (SELECT kept.current_user_id())`. Wrapping each call in a
 sub-`SELECT` makes Postgres evaluate it once per statement, not once per row. The policies keep
 viewers from writing as defence in depth; the finer rules are `can(role, action)` in
-[`packages/shared/src/roles.ts`](https://github.com/ibrahimroshdy/kept/blob/main/packages/shared/src/roles.ts),
+[`packages/shared/src/roles.ts`](https://github.com/keptinventory/kept/blob/main/packages/shared/src/roles.ts),
 checked by the services.
 
 What a policy can't express goes through a `SECURITY DEFINER` function ("door") that checks its
@@ -148,12 +148,12 @@ Postgres won't use them as an index condition, and a search scans every visible 
 such matches through definer doors (`kept.search_thing_ids()`, migration 0030). Check any new
 query over a large table with `EXPLAIN` **as `kept_app`**, never as the owner, which shows a plan
 the app never gets. The measurements are in
-[the RLS benchmark](https://github.com/ibrahimroshdy/kept/blob/main/docs/perf/2026-09-26-rls-bench.md).
+[the RLS benchmark](https://github.com/keptinventory/kept/blob/main/docs/perf/2026-09-26-rls-bench.md).
 :::
 
 ## The leak test
 
-[`apps/server/test/leak.test.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/test/leak.test.ts)
+[`apps/server/test/leak.test.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/test/leak.test.ts)
 is generated from the catalogue (`pg_class`, `pg_policies`, `information_schema`), so **a new
 table is covered without editing it, and fails it until it has RLS, policies, a scope column and
 fixture rows.** It checks, among others:

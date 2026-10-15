@@ -11,11 +11,11 @@ to exact versions. TypeScript is shared through `tsconfig.base.json`.
 
 | Package | Path | What it is |
 |---|---|---|
-| `@kept/server` | [`apps/server`](https://github.com/ibrahimroshdy/kept/tree/main/apps/server) | The Fastify server, the job worker and the `kept` CLI (`bin: dist/cli/index.js`) |
-| `@kept/web` | [`apps/web`](https://github.com/ibrahimroshdy/kept/tree/main/apps/web) | The React web app and PWA, built by Vite into `apps/web/dist`, which the server serves |
-| `@kept/docs` | [`apps/docs`](https://github.com/ibrahimroshdy/kept/tree/main/apps/docs) | This site: Starlight, built to static files |
-| `@kept/shared` | [`packages/shared`](https://github.com/ibrahimroshdy/kept/tree/main/packages/shared) | Code both sides import: error codes, the role matrix (`roles.ts`), ids, money, modules, the sync contract, normalisation |
-| `@kept/mcp` | [`packages/mcp`](https://github.com/ibrahimroshdy/kept/tree/main/packages/mcp) | MCP tool definitions, their output shapes and vocabulary |
+| `@kept/server` | [`apps/server`](https://github.com/keptinventory/kept/tree/main/apps/server) | The Fastify server, the job worker and the `kept` CLI (`bin: dist/cli/index.js`) |
+| `@kept/web` | [`apps/web`](https://github.com/keptinventory/kept/tree/main/apps/web) | The React web app and PWA, built by Vite into `apps/web/dist`, which the server serves |
+| `@kept/docs` | [`apps/docs`](https://github.com/keptinventory/kept/tree/main/apps/docs) | This site: Starlight, built to static files |
+| `@kept/shared` | [`packages/shared`](https://github.com/keptinventory/kept/tree/main/packages/shared) | Code both sides import: error codes, the role matrix (`roles.ts`), ids, money, modules, the sync contract, normalisation |
+| `@kept/mcp` | [`packages/mcp`](https://github.com/keptinventory/kept/tree/main/packages/mcp) | MCP tool definitions, their output shapes and vocabulary |
 
 Inside the workspace `@kept/shared` and `@kept/mcp` resolve to their TypeScript sources; Node's
 `--conditions=kept-dist` selects their compiled `dist/` instead (the end-to-end server runs that

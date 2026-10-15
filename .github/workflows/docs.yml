@@ -7,9 +7,11 @@
 # The github-pages environment must allow tags `v*` (scripts/repo-settings.sh, group pages).
 #
 # The site is served at https://keptinventory.info/ (the Pages custom domain, apex, since
-# 2026-10-11); ibrahimroshdy.com/kept/ and ibrahimroshdy.github.io/kept/ 301 there, keeping the
-# path. The build is told that origin and base path directly, as KEPT_DOCS_SITE and
-# KEPT_DOCS_BASE (apps/docs/astro.config.mjs), so pull requests build the same links as main.
+# 2026-10-11). The old ibrahimroshdy.com/kept/ and ibrahimroshdy.github.io/kept/ addresses stopped
+# redirecting when the repository moved to keptinventory/kept (2026-10-15, D245): GitHub doesn't
+# carry Pages redirects across a transfer. The build is told that origin and base path directly,
+# as KEPT_DOCS_SITE and KEPT_DOCS_BASE (apps/docs/astro.config.mjs), so pull requests build the
+# same links as main.
 # Pages must be enabled with "GitHub Actions" as its source (a maintainer step on the 1.0
 # checklist). Actions pinned by commit SHA (spike W1).
 name: docs

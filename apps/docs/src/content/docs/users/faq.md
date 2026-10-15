@@ -98,12 +98,12 @@ English, Arabic (laid out right to left), French, German and Italian, chosen per
 The GNU Affero General Public License, version 3 (AGPL-3.0). You can run, change and share it; if
 you run a changed version for other people over a network, you must offer them its source. The
 text is in the repository's
-[LICENSE](https://github.com/ibrahimroshdy/kept/blob/main/LICENSE).
+[LICENSE](https://github.com/keptinventory/kept/blob/main/LICENSE).
 
 ## Is there a release?
 
-Yes: `1.0.0` was the first signed release, on GHCR as `ghcr.io/ibrahimroshdy/kept`, and every
-release since is listed on the [releases page](https://github.com/ibrahimroshdy/kept/releases).
+Yes: `1.0.0` was the first signed release, on GHCR as `ghcr.io/keptinventory/kept`, and every
+release since is listed on the [releases page](https://github.com/keptinventory/kept/releases).
 Upgrades run their migrations once, take a snapshot of the database first, and can
 go back one version. See [install with Docker Compose](/install/compose/) and
 [upgrades](/admin/upgrades/).

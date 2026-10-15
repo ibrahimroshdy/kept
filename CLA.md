@@ -18,7 +18,7 @@ title, and interest in and to Your Contributions.
 ## 1. Definitions
 
 "Maintainer" shall mean Ibrahim Roshdy, the owner of the Kept project
-(https://github.com/ibrahimroshdy/kept), and any person or legal entity to which he transfers the
+(https://github.com/keptinventory/kept), and any person or legal entity to which he transfers the
 project.
 
 "You" (or "Your") shall mean the copyright owner or legal entity authorized by the copyright

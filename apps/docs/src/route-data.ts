@@ -43,7 +43,7 @@ const CARDS: Record<string, { file: string; alt: string }> = {
 };
 
 const LICENSE = 'https://www.gnu.org/licenses/agpl-3.0.html';
-const REPOSITORY = 'https://github.com/ibrahimroshdy/kept';
+const REPOSITORY = 'https://github.com/keptinventory/kept';
 
 const OG_LOCALES: Record<string, string> = {
   en: 'en_US',

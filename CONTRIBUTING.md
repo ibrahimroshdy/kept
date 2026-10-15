@@ -36,7 +36,7 @@ On the docs site:
 ## Set up
 
 ```sh
-git clone https://github.com/ibrahimroshdy/kept.git && cd kept
+git clone https://github.com/keptinventory/kept.git && cd kept
 pnpm install
 git config core.hooksPath .githooks                # the commit-msg hook (no AI attribution)
 docker compose -f compose.dev.yaml up -d --wait    # Postgres on 5452, Mailpit on 8025 (UI) and 1025 (SMTP)

@@ -9,9 +9,9 @@ three go through one door in the server, so pacing, spend caps and the call ledg
 call the same way. For the person-facing side, see [AI providers](/users/ai-providers/).
 
 The design lives in the engineering spec
-([§2.1 extraction output, §7.8 capture and extraction, §7.15 keys, usage and the ledger](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md))
+([§2.1 extraction output, §7.8 capture and extraction, §7.15 keys, usage and the ledger](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md))
 and decisions D19, D121, D167, D202 and D206 in the
-[product design](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md).
+[product design](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md).
 
 ## The SDK and the provider kinds
 
@@ -29,7 +29,7 @@ kind. `PROVIDER_KINDS` lists them:
 
 `apps/server/src/ai/providers.ts` turns a resolved provider into a model object (`modelFor`,
 `embeddingModelFor`) and the call settings each kind needs (`callSettingsFor`). Two rules from the
-[step-3 AI SDK spike](https://github.com/ibrahimroshdy/kept/blob/main/docs/spikes/2026-09-26-step3-ai-sdk.md):
+[step-3 AI SDK spike](https://github.com/keptinventory/kept/blob/main/docs/spikes/2026-09-26-step3-ai-sdk.md):
 
 - **Always a model object, never a string id.** A plain string is routed by the `ai` package to a
   hosted gateway. `ModelObject` refuses strings.
@@ -108,7 +108,7 @@ until the reset. Neither spends a retry. Fields below 0.6 confidence always wait
 `apps/server/src/assistant/loop.ts` runs the loop itself. Every model step is one `callModel`:
 one provider request, one reservation, one ledger row. The SDK is never allowed to loop: tools
 carry no `execute`, and the stop condition is one step (proven in the
-[tool-calling spike](https://github.com/ibrahimroshdy/kept/blob/main/docs/spikes/2026-09-30-step6-tool-calling.md)).
+[tool-calling spike](https://github.com/keptinventory/kept/blob/main/docs/spikes/2026-09-30-step6-tool-calling.md)).
 
 The tools are the MCP tool definitions (`TOOL_DEFS` from `@kept/mcp`), handled by
 `apps/server/src/tools/registry.ts`. Read tools run at once as the person. **Write tools never
@@ -123,11 +123,11 @@ The source is the instance setting `embeddings_source`, set at boot from `KEPT_E
   `callModel`. A location with none is keyword-only.
 - `off`: no embedding jobs; keyword search only.
 - `local` (an on-server model) is **not built in 1.0**: the
-  [local-embeddings spike](https://github.com/ibrahimroshdy/kept/blob/main/docs/spikes/2026-09-30-step6-local-embeddings.md)
+  [local-embeddings spike](https://github.com/keptinventory/kept/blob/main/docs/spikes/2026-09-30-step6-local-embeddings.md)
   failed on memory, so the server refuses `KEPT_EMBEDDINGS=local`.
 
 Vectors are stored with pgvector and searched with an exact cosine scan inside a database door;
-the [embeddings spike](https://github.com/ibrahimroshdy/kept/blob/main/docs/spikes/2026-09-30-step6-embeddings.md)
+the [embeddings spike](https://github.com/keptinventory/kept/blob/main/docs/spikes/2026-09-30-step6-embeddings.md)
 measured HNSW as worse here.
 
 ## The mock provider
@@ -156,9 +156,9 @@ pnpm eval:search
 
 Each uses the mock unless `--provider` and `--model` are given. A real run reads its key only from
 `KEPT_EVAL_API_KEY`, never prints it, and stops before `--max-calls` or `--max-cost`. Reports go to
-[`docs/evals/`](https://github.com/ibrahimroshdy/kept/tree/main/docs/evals) with numbers and case
+[`docs/evals/`](https://github.com/keptinventory/kept/tree/main/docs/evals) with numbers and case
 ids only. The harness README is
-[`apps/server/eval/README.md`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/eval/README.md).
+[`apps/server/eval/README.md`](https://github.com/keptinventory/kept/blob/main/apps/server/eval/README.md).
 
 ## Adding a provider kind
 

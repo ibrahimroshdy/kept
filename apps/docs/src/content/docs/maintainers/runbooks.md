@@ -5,16 +5,16 @@ description: The maintainer's runbooks, how they relate to the admin pages, the 
 
 ## The runbooks
 
-Four runbooks live in [`docs/runbooks/`](https://github.com/ibrahimroshdy/kept/tree/main/docs/runbooks).
+Four runbooks live in [`docs/runbooks/`](https://github.com/keptinventory/kept/tree/main/docs/runbooks).
 Each is a procedure against a live system with copy-pasteable commands and a **Verify** step, and
 each starts with a dated status line saying what is built and what has actually been run.
 
 | Runbook | Use it when |
 |---|---|
-| [`backup-restore.md`](https://github.com/ibrahimroshdy/kept/blob/main/docs/runbooks/backup-restore.md) | Turning backups on, backing up by hand and reading its warnings, checking the repository, rolling back past one release (`downgrade_refused`), restoring after losing the server, the alpha's pre-restic backups, reading a backup without Kept, and `pg_dump`'s version. The reference for anything restic. |
-| [`restore-drill.md`](https://github.com/ibrahimroshdy/kept/blob/main/docs/runbooks/restore-drill.md) | The monthly drill (Admin → Status raises `restore_drill_due` after 30 days without one), and a real restore with the database swap. A failed drill is treated as an incident: the backups can't be trusted until one passes. |
-| [`upgrade.md`](https://github.com/ibrahimroshdy/kept/blob/main/docs/runbooks/upgrade.md) | Upgrading under Compose, rolling back one version, and a Postgres major upgrade, which is a dump and restore through Kept's own backup, never an image tag change on the old volume. |
-| [`release.md`](https://github.com/ibrahimroshdy/kept/blob/main/docs/runbooks/release.md) | Cutting a release: the one-time setup (W1–W4), each release, the laptop fallback (M1–M3), the dry run, and what to do when a stage fails. See [releasing](/maintainers/releasing/). |
+| [`backup-restore.md`](https://github.com/keptinventory/kept/blob/main/docs/runbooks/backup-restore.md) | Turning backups on, backing up by hand and reading its warnings, checking the repository, rolling back past one release (`downgrade_refused`), restoring after losing the server, the alpha's pre-restic backups, reading a backup without Kept, and `pg_dump`'s version. The reference for anything restic. |
+| [`restore-drill.md`](https://github.com/keptinventory/kept/blob/main/docs/runbooks/restore-drill.md) | The monthly drill (Admin → Status raises `restore_drill_due` after 30 days without one), and a real restore with the database swap. A failed drill is treated as an incident: the backups can't be trusted until one passes. |
+| [`upgrade.md`](https://github.com/keptinventory/kept/blob/main/docs/runbooks/upgrade.md) | Upgrading under Compose, rolling back one version, and a Postgres major upgrade, which is a dump and restore through Kept's own backup, never an image tag change on the old volume. |
+| [`release.md`](https://github.com/keptinventory/kept/blob/main/docs/runbooks/release.md) | Cutting a release: the one-time setup (W1–W4), each release, the laptop fallback (M1–M3), the dry run, and what to do when a stage fails. See [releasing](/maintainers/releasing/). |
 
 ### Runbooks and the admin pages
 
@@ -31,7 +31,7 @@ carries only what an operator needs.
 
 ## Scripts a maintainer runs
 
-All in [`scripts/`](https://github.com/ibrahimroshdy/kept/tree/main/scripts):
+All in [`scripts/`](https://github.com/keptinventory/kept/tree/main/scripts):
 
 | Script | What it does |
 |---|---|

@@ -7,10 +7,21 @@ The Kept integration for [Home Assistant](https://www.home-assistant.io/) shows 
 each location and sends readings back, such as the odometer a car integration already knows. It
 reads Kept with a [personal token](/users/mcp-clients/#make-a-personal-token).
 
-:::note[Not published yet]
-The integration is a separate repository, `kept-homeassistant`, installed with HACS as a custom
-repository. It isn't public yet; this page gets its link when it is.
-:::
+The integration: [keptinventory/kept-homeassistant](https://github.com/keptinventory/kept-homeassistant),
+installed with [HACS](https://hacs.xyz/) as a custom repository.
+
+Optional: only if you already run [Home Assistant](https://www.home-assistant.io/installation/).
+Kept works the same without it.
+
+## Before you start
+
+| You need | Why |
+|---|---|
+| **Home Assistant 2026.10 or later** | The integration is built and tested against it |
+| **HACS** in Home Assistant | It installs the integration. [Download HACS](https://hacs.xyz/docs/use/download/download/) ([what it needs](https://hacs.xyz/docs/use/download/prerequisites/)) |
+| **Kept 1.8.0 or later** | It adds the summary the sensors read |
+| **Kept over `https`** | Kept makes personal tokens only over HTTPS ([HTTPS](/install/https/)) |
+| **Home Assistant can reach Kept** | Same network, a VPN such as Tailscale, or a public address. Test it: open Kept's address from the machine Home Assistant runs on |
 
 ## What you get
 
@@ -41,8 +52,9 @@ A location or vehicle added in Kept later shows up after you reload the integrat
    Assistant should see. **Read only** is enough for the sensors and the calendar; **Read and
    change** also lets the actions below send readings and mark schedules done. Kept makes tokens
    only when it is served over `https` ([HTTPS](/install/https/)).
-2. **Install.** In HACS, add the integration's repository as a custom repository of type
-   **Integration**, install **Kept**, and restart Home Assistant.
+2. **Install.** In HACS, **⋮ → Custom repositories** ([how](https://hacs.xyz/docs/faq/custom_repositories/)): add
+   `https://github.com/keptinventory/kept-homeassistant`, type **Integration**. Install **Kept**,
+   and restart Home Assistant.
 3. **Add it.** **Settings → Devices & services → Add integration → Kept**. Enter Kept's address
    (`https://kept.example.org`) and the token. Turn off **Check the HTTPS certificate** only for a
    self-signed certificate on your own network.
@@ -64,6 +76,31 @@ What the setup tells you when something is wrong:
 **Configure** on the integration chooses which of the token's locations to show and how often to
 read Kept (every 5 minutes; 1 to 60). When the token is revoked or expires, Home Assistant asks for
 a new one.
+
+## On a dashboard
+
+Entity ids come from the names in Kept. For a location called **Home** and a car called
+**Corolla**: `sensor.home_overdue`, `sensor.home_due`, `sensor.home_expiring`,
+`sensor.home_lent_out`, `sensor.home_low_stock`, `calendar.home_due_dates`,
+`sensor.corolla_reading`, `sensor.corolla_next_service`. Check yours under **Settings → Devices &
+services → Kept**.
+
+A [tile card](https://www.home-assistant.io/dashboards/tile/) per count, or one
+[entities card](https://www.home-assistant.io/dashboards/entities/):
+
+```yaml
+type: entities
+title: Kept · Home
+entities:
+  - sensor.home_overdue
+  - sensor.home_due
+  - sensor.home_expiring
+  - sensor.home_lent_out
+  - sensor.home_low_stock
+  - sensor.corolla_next_service
+```
+
+The **Due dates** calendar shows in Home Assistant's **Calendar** panel.
 
 ## Actions
 
@@ -101,6 +138,13 @@ mode: queued
 `sensor.my_car_odometer` is your car integration's sensor. In the automation editor, pick the
 Kept vehicle in the action's **Vehicle** field to fill `device_id`. Send the reading in the unit
 of the vehicle's meter in Kept.
+
+## Update or remove
+
+- **Update:** a new release shows under **Settings → Updates** (HACS adds it there). Install it and
+  restart Home Assistant.
+- **Remove:** **Settings → Devices & services → Kept → ⋮ → Delete**, then remove **Kept** in
+  HACS and restart. Revoke the token in Kept: **Settings → Connections**.
 
 ## What it reads
 

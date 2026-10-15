@@ -10,7 +10,7 @@ Caddy من أجل HTTPS. تحتاج إلى Docker مع إضافة Compose، وإ
 ونواتَي معالجة ([ما يحتاجه](/ar/install/hardware/)).
 
 :::note[تبنيها أو تسحبها]
-تُنشر الإصدارات على `ghcr.io/ibrahimroshdy/kept` بالوسوم `1` و`1.2` و`1.2.3`، ولا يوجد `latest`
+تُنشر الإصدارات على `ghcr.io/keptinventory/kept` بالوسوم `1` و`1.2` و`1.2.3`، ولا يوجد `latest`
 أبدًا، والإصدار `1.0.0` أول إصدار موقَّع. ومن دون `KEPT_IMAGE` يبني `compose.yaml` الصورة من نسخة من
 المستودع ويوسمها `kept:local`. ولتشغيل إصدار بدلًا من
 ذلك، اضبط `KEPT_IMAGE` في `.env` على وسم إصدار ثم نفّذ `docker compose pull`، بعد أن

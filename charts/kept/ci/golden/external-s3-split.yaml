@@ -71,7 +71,7 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: wait-for-db
-          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          image: ghcr.io/keptinventory/kept:1.0.0
           imagePullPolicy: IfNotPresent
           command:
             - sh
@@ -95,7 +95,7 @@ spec:
               memory: 64Mi
       containers:
         - name: kept
-          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          image: ghcr.io/keptinventory/kept:1.0.0
           imagePullPolicy: IfNotPresent
           env:
             - name: KEPT_ROLE
@@ -254,7 +254,7 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: wait-for-db
-          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          image: ghcr.io/keptinventory/kept:1.0.0
           imagePullPolicy: IfNotPresent
           command:
             - sh
@@ -278,7 +278,7 @@ spec:
               memory: 64Mi
       containers:
         - name: kept
-          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          image: ghcr.io/keptinventory/kept:1.0.0
           imagePullPolicy: IfNotPresent
           env:
             - name: KEPT_ROLE
@@ -410,7 +410,7 @@ spec:
       type: RuntimeDefault
   containers:
     - name: version
-      image: ghcr.io/ibrahimroshdy/kept:1.0.0
+      image: ghcr.io/keptinventory/kept:1.0.0
       imagePullPolicy: IfNotPresent
       command:
         - node
@@ -481,7 +481,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: roles
-          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          image: ghcr.io/keptinventory/kept:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["bash", "-c", "#!/usr/bin/env bash\n# Kept's four logins and its extensions (D186), for the chart. The same statements as the\n# managed-Postgres page's SQL (apps/docs/src/content/docs/install/managed-postgres.md), so they run\n# as a superuser (the bundled Postgres, at its first start, from /docker-entrypoint-initdb.d) or\n# as a provider's admin (the roles Job, external Postgres with roles.create). Unlike\n# docker/initdb-prod/01-roles.sh it is idempotent: a login that exists gets its password reset to\n# the secret's, so a re-install over a kept database converges instead of failing.\n#\n# Connection: libpq's PG* variables (the Job sets PGHOST, PGPORT, PGPASSWORD, PGSSLMODE); unset,\n# the local socket (initdb). Passwords reach psql as variables (:'name' quotes them as literals),\n# never spliced into SQL text.\nset -euo pipefail\n\n: \"${KEPT_DB_OWNER_PASSWORD:?KEPT_DB_OWNER_PASSWORD is required}\"\n: \"${KEPT_DB_APP_PASSWORD:?KEPT_DB_APP_PASSWORD is required}\"\n: \"${KEPT_DB_AUTH_PASSWORD:?KEPT_DB_AUTH_PASSWORD is required}\"\n: \"${KEPT_DB_SYSTEM_PASSWORD:?KEPT_DB_SYSTEM_PASSWORD is required}\"\n\ndb=${POSTGRES_DB:-kept}\n\npsql -v ON_ERROR_STOP=1 --no-psqlrc --username \"${POSTGRES_USER:-postgres}\" --dbname \"$db\" \\\n  -v owner_pw=\"$KEPT_DB_OWNER_PASSWORD\" \\\n  -v app_pw=\"$KEPT_DB_APP_PASSWORD\" \\\n  -v auth_pw=\"$KEPT_DB_AUTH_PASSWORD\" \\\n  -v system_pw=\"$KEPT_DB_SYSTEM_PASSWORD\" \\\n  -v db=\"$db\" <<'SQL'\nSELECT NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'kept_owner')  AS make_owner,\n       NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'kept_app')    AS make_app,\n       NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'kept_auth')   AS make_auth,\n       NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'kept_system') AS make_system\n\\gset\n\\if :make_owner\nCREATE ROLE kept_owner  LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB NOBYPASSRLS;\n\\endif\n\\if :make_app\nCREATE ROLE kept_app    LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB NOBYPASSRLS;\n\\endif\n\\if :make_auth\nCREATE ROLE kept_auth   LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB NOBYPASSRLS;\n\\endif\n\\if :make_system\nCREATE ROLE kept_system LOGIN NOSUPERUSER NOCREATEROLE NOCREATEDB NOBYPASSRLS;\n\\endif\nALTER ROLE kept_owner  PASSWORD :'owner_pw';\nALTER ROLE kept_app    PASSWORD :'app_pw';\nALTER ROLE kept_auth   PASSWORD :'auth_pw';\nALTER ROLE kept_system PASSWORD :'system_pw';\n-- A request can't run away or sit idle inside a transaction.\nALTER ROLE kept_app SET statement_timeout = '15s';\nALTER ROLE kept_app SET idle_in_transaction_session_timeout = '30s';\nCREATE EXTENSION IF NOT EXISTS pg_trgm  WITH SCHEMA public;\nCREATE EXTENSION IF NOT EXISTS unaccent WITH SCHEMA public;\nCREATE EXTENSION IF NOT EXISTS vector   WITH SCHEMA public;\n-- A non-superuser admin may hand ownership to a role only while it is a member of that role.\nGRANT kept_owner TO CURRENT_USER;\nALTER DATABASE :\"db\" OWNER TO kept_owner;\nALTER SCHEMA public OWNER TO kept_owner;\nREVOKE kept_owner FROM CURRENT_USER;\nSQL\necho \"kept: the four logins and the extensions are in place in $db\"\n"]
           env:
@@ -581,7 +581,7 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: wait-for-db
-          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          image: ghcr.io/keptinventory/kept:1.0.0
           imagePullPolicy: IfNotPresent
           command:
             - sh
@@ -605,7 +605,7 @@ spec:
               memory: 64Mi
       containers:
         - name: migrate
-          image: ghcr.io/ibrahimroshdy/kept:1.0.0
+          image: ghcr.io/keptinventory/kept:1.0.0
           imagePullPolicy: IfNotPresent
           command: ["kept"]
           args: ["migrate"]

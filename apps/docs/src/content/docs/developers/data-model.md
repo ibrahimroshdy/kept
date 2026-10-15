@@ -4,10 +4,10 @@ description: The main tables, how they relate, and the rules every table follows
 ---
 
 The tables are declared with Drizzle in
-[`apps/server/src/db/schema/`](https://github.com/ibrahimroshdy/kept/tree/main/apps/server/src/db/schema),
+[`apps/server/src/db/schema/`](https://github.com/keptinventory/kept/tree/main/apps/server/src/db/schema),
 one file per area. The design and every column's reasoning are in the engineering spec: §1 for the
 tables and §7.13 for the integrity amendments, which win where the two differ
-([engineering spec](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)).
+([engineering spec](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)).
 This page is the map.
 
 ## Rules every table follows

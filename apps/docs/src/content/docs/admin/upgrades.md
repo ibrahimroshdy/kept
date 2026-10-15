@@ -23,6 +23,18 @@ the new schema, which is what makes going back possible.
 
 Read the release notes before a major version (`1.x` to `2.0`).
 
+### The image moved (1.8.0)
+
+Since 1.8.0 the image is `ghcr.io/keptinventory/kept` and the chart
+`oci://ghcr.io/keptinventory/charts/kept`. Releases up to 1.7.1 stay at
+`ghcr.io/ibrahimroshdy/kept`, which gets no new versions. To upgrade, change the image name once:
+
+- Compose: `KEPT_IMAGE=ghcr.io/keptinventory/kept:1.8.0`.
+- Helm: `image.repository: ghcr.io/keptinventory/kept`, or install the chart from its new address.
+
+The signing key is the same, so `cosign verify --key cosign.pub ghcr.io/keptinventory/kept:<version>`
+works as before ([Verify a release](/admin/verify-release/)).
+
 ### Knowing there's a new version
 
 Kept can check for new versions, and it is **off by default**. On, it asks GitHub once a day for
