@@ -35,7 +35,7 @@ an SBOM and a third-party notices file. The public key, `cosign.pub`, is committ
 repository. Check an image before running it:
 
 ```sh
-cosign verify --key cosign.pub ghcr.io/ibrahimroshdy/kept:X.Y.Z
+cosign verify --key cosign.pub ghcr.io/keptinventory/kept:X.Y.Z
 ```
 
 and run it by the digest that printed. Signatures are recorded in the public transparency log, and

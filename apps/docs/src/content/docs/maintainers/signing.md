@@ -5,7 +5,7 @@ description: How Kept's images and chart are signed with a cosign key, where the
 
 Kept's release images and Helm chart are signed with **cosign, using a key pair the maintainer
 holds** (key-based, decision D187 in the
-[product design's decision log](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md)).
+[product design's decision log](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md)).
 Users check a signature with the public half, `cosign.pub`; [verifying a release](/admin/verify-release/)
 is their side of this page.
 
@@ -28,7 +28,7 @@ Never in the repository. `.gitignore` already ignores `*.key`.
 The pair is made once with the pinned cosign (`bash scripts/tools.sh fetch cosign`, cosign
 v3.1.3, checksum-verified) and `cosign generate-key-pair`. The runbook's step W1 has the exact
 commands, including setting the two secrets with `gh secret set`:
-[docs/runbooks/release.md](https://github.com/ibrahimroshdy/kept/blob/main/docs/runbooks/release.md).
+[docs/runbooks/release.md](https://github.com/keptinventory/kept/blob/main/docs/runbooks/release.md).
 
 In the workflow, the key is written to a file only that job can read, used, and removed in a step
 that always runs. On the laptop, `KEPT_COSIGN_KEY` names the key file and `COSIGN_PASSWORD` is read
@@ -77,7 +77,7 @@ records it in the public log. Two reasons it isn't used yet:
 - D187 chose key-based signing because releases were cut from the laptop, which has no CI
   identity to sign with.
 - Keyless signing records the signer in the public transparency log, which the
-  [step-8 plan](https://github.com/ibrahimroshdy/kept/blob/main/docs/plans/2026-10-06-step-8-operations.md)
+  [step-8 plan](https://github.com/keptinventory/kept/blob/main/docs/plans/2026-10-06-step-8-operations.md)
   (its Q14) keeps off while the repository is private.
 
 Releases now run in GitHub Actions, which does have a CI identity, but no decision has moved Kept
@@ -91,7 +91,7 @@ It needs no real key. See [releasing](/maintainers/releasing/#the-dry-run).
 
 ## Sources
 
-- [`scripts/release/sign.sh`](https://github.com/ibrahimroshdy/kept/blob/main/scripts/release/sign.sh)
-- [`.github/workflows/release.yml`](https://github.com/ibrahimroshdy/kept/blob/main/.github/workflows/release.yml)
-- [Spike R2, the release pipeline](https://github.com/ibrahimroshdy/kept/blob/main/docs/spikes/2026-10-06-step8-release.md):
+- [`scripts/release/sign.sh`](https://github.com/keptinventory/kept/blob/main/scripts/release/sign.sh)
+- [`.github/workflows/release.yml`](https://github.com/keptinventory/kept/blob/main/.github/workflows/release.yml)
+- [Spike R2, the release pipeline](https://github.com/keptinventory/kept/blob/main/docs/spikes/2026-10-06-step8-release.md):
   the measured signing order and the cosign 3 transparency-log findings.

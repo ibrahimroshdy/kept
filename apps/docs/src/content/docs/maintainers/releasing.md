@@ -4,10 +4,10 @@ description: How a Kept release is cut - CI on main as the gate, a pushed tag, t
 ---
 
 A release is a pushed tag. The gate runs on the maintainer's machine first; the tag starts
-[`.github/workflows/release.yml`](https://github.com/ibrahimroshdy/kept/blob/main/.github/workflows/release.yml),
+[`.github/workflows/release.yml`](https://github.com/keptinventory/kept/blob/main/.github/workflows/release.yml),
 which runs `scripts/release.sh --ci` on a GitHub-hosted runner and creates the GitHub release.
 The full procedure, with every command and a table of what to do when a stage fails, is the
-[release runbook](https://github.com/ibrahimroshdy/kept/blob/main/docs/runbooks/release.md). This
+[release runbook](https://github.com/keptinventory/kept/blob/main/docs/runbooks/release.md). This
 page is the map.
 
 :::note[Releases so far]
@@ -48,8 +48,8 @@ In this order, stopping at the first failure (D87, D186, D187):
    `THIRD-PARTY-NOTICES.txt` and `X.Y.Z.md` attached, marked a prerelease for `X.Y.Z-…`.
 
 Nothing is tagged until both architectures passed and the signature verified, so a failed run
-leaves only untagged digests behind. The default registry is `ghcr.io/ibrahimroshdy/kept` (the
-chart under `ghcr.io/ibrahimroshdy/charts/kept`); the runbook records that this path was inferred
+leaves only untagged digests behind. The default registry is `ghcr.io/keptinventory/kept` (the
+chart under `ghcr.io/keptinventory/charts/kept`); the runbook records that this path was inferred
 from the Dockerfile and is to be confirmed (its step W2).
 
 ## Cutting one
@@ -124,4 +124,4 @@ and must end with a verified signature and no container left behind. ci-local's
 - [Signing](/maintainers/signing/): the key, what is signed, and why it isn't keyless yet.
 - [The changelog](/maintainers/changelog/).
 - [Runbooks and scripts](/maintainers/runbooks/): every ci-local step.
-- [The 1.0 checklist](https://github.com/ibrahimroshdy/kept/blob/main/docs/release/1.0-checklist.md).
+- [The 1.0 checklist](https://github.com/keptinventory/kept/blob/main/docs/release/1.0-checklist.md).

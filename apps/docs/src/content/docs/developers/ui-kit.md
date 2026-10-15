@@ -6,15 +6,15 @@ description: Kept's design tokens, type, brand and component primitives, and the
 The web app's look comes from two design files in the repo, and the code copies them rather than
 reinterpreting them:
 
-- [`docs/design/kept-design-board.html`](https://github.com/ibrahimroshdy/kept/blob/main/docs/design/kept-design-board.html):
+- [`docs/design/kept-design-board.html`](https://github.com/keptinventory/kept/blob/main/docs/design/kept-design-board.html):
   tokens, type, the brand and the visual motif;
-- [`docs/design/kept-screens.html`](https://github.com/ibrahimroshdy/kept/blob/main/docs/design/kept-screens.html):
+- [`docs/design/kept-screens.html`](https://github.com/keptinventory/kept/blob/main/docs/design/kept-screens.html):
   every screen as a frame, with flow maps and the component kit in both themes. It is built from
   the fragments in `docs/design/screens/` by `python3 docs/design/screens/assemble.py`; edit the
   fragments, not the output.
 
 Open either file in a browser. The screens spec
-([`docs/specs/2026-09-26-kept-screens.md`](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-26-kept-screens.md))
+([`docs/specs/2026-09-26-kept-screens.md`](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-26-kept-screens.md))
 is the text that goes with them.
 
 ## Tokens
@@ -79,13 +79,13 @@ paths, so the logo needs no font at any size, and the tape keeps its colours in 
 
 `apps/web/src/components/brand.tsx` exports `BrandLockup` (the mark and KEPT: the sidebar and the
 sign-in and setup pages) and `AppMark` (the mark alone). Every logo file comes from one script,
-[`scripts/render-icons.mjs`](https://github.com/ibrahimroshdy/kept/blob/main/scripts/render-icons.mjs),
+[`scripts/render-icons.mjs`](https://github.com/keptinventory/kept/blob/main/scripts/render-icons.mjs),
 which carries the same geometry: the web app's and the docs site's favicons, the docs site's logo,
 the app icons (including the maskable one) and the README's light and dark lockups.
-[`scripts/render-social-preview.mjs`](https://github.com/ibrahimroshdy/kept/blob/main/scripts/render-social-preview.mjs)
+[`scripts/render-social-preview.mjs`](https://github.com/keptinventory/kept/blob/main/scripts/render-social-preview.mjs)
 draws the repository's social preview (`docs/assets/social-preview.png`) from the same lockup.
 Change `brand.tsx` and `render-icons.mjs` together, run both scripts and commit what they write;
-then run [`scripts/capture-screens.mjs`](https://github.com/ibrahimroshdy/kept/blob/main/scripts/capture-screens.mjs)
+then run [`scripts/capture-screens.mjs`](https://github.com/keptinventory/kept/blob/main/scripts/capture-screens.mjs)
 so the screenshots on this site and the README hero show the new logo.
 
 The tape is also the one visual motif (D134): the `tape` utility in `index.css`, and the short-ID

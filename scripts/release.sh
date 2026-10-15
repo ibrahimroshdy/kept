@@ -51,7 +51,7 @@
 #      script never commits, tags or pushes to git.
 #
 # Settings (environment):
-#   KEPT_RELEASE_REGISTRY    the image path; default ghcr.io/ibrahimroshdy/kept, INFERRED from the
+#   KEPT_RELEASE_REGISTRY    the image path; default ghcr.io/keptinventory/kept, INFERRED from the
 #                            Dockerfile's SOURCE default and to be confirmed (plan Q14); --registry
 #   KEPT_RELEASE_CHART_REPO  where the chart goes; default <registry's parent>/charts
 #   KEPT_COSIGN_KEY          the private key file (a real run; never in the repository)
@@ -81,7 +81,7 @@ cd "$repo"
 # shellcheck source=tools.sh
 source "$repo/scripts/tools.sh"
 
-DEFAULT_REGISTRY=ghcr.io/ibrahimroshdy/kept
+DEFAULT_REGISTRY=ghcr.io/keptinventory/kept
 # Pins from spike R2 (Docker Hub, multi-arch index digests).
 BUILDKIT_IMAGE=moby/buildkit:v0.33.1@sha256:cec9f139f45e93c5c69c60f8b07cfad9f43f4ef6b6a6cd917527fea5ff2e3dea
 REGISTRY_IMAGE=registry:3.1.2@sha256:ddf754342cfc8acc51a56d5d0ab6af06826461864460636d8bd5c546dab2a7b8

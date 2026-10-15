@@ -460,7 +460,7 @@ function base(): MockState {
     version: {
       version: '0.1.0',
       revision: '3f9ed1d',
-      source: 'https://github.com/ibrahimroshdy/kept/tree/3f9ed1d',
+      source: 'https://github.com/keptinventory/kept/tree/3f9ed1d',
     },
     me: {
       user: {

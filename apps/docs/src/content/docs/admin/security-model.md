@@ -4,9 +4,9 @@ description: What an operator should know about how Kept keeps households apart,
 ---
 
 This page is the operator's summary. The full threat model is in the
-[product design, §13](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md),
+[product design, §13](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md),
 and the mechanisms are in the
-[engineering spec](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)
+[engineering spec](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)
 (§7.1–§7.3 and §7.10 for the database, keys and sign-in; §3.1b and §3.2 for limits).
 
 ## Households are kept apart by the database
@@ -106,7 +106,7 @@ socket, or from `X-Forwarded-For` only when the connection is from an address in
 Kept fetches only addresses someone configured: an AI provider's base URL, webhooks, push,
 an OIDC issuer, an OAuth client's metadata, a Homebox server to import from, barcode lookups,
 the update check and a location's email-in mailbox (IMAP). Each goes through the same guard
-([`apps/server/src/net/ssrf.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/net/ssrf.ts)):
+([`apps/server/src/net/ssrf.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/net/ssrf.ts)):
 
 - the address is checked **when the connection is made**, after the name resolves, so a name that
   changes between a check and the request can't slip through;
@@ -160,6 +160,6 @@ Kept's own re-encoded JPEGs. Exported CSV cells that start like a formula are ne
 
 Use GitHub's **private vulnerability reporting** on the repository (the **Security** tab →
 **Report a vulnerability**); it is the only channel, and there is no security email address. Don't
-open a public issue. [SECURITY.md](https://github.com/ibrahimroshdy/kept/blob/main/SECURITY.md)
+open a public issue. [SECURITY.md](https://github.com/keptinventory/kept/blob/main/SECURITY.md)
 has the details and the supported versions, which apply from 1.0. To check that an image is the
 one the maintainer built, see [verifying a release](/admin/verify-release/).

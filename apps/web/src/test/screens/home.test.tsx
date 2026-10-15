@@ -833,7 +833,7 @@ describe('the frame', () => {
   it('shows the version and the Source code link (D147)', async () => {
     await renderApp('/');
     const links = await screen.findAllByRole('link', { name: 'Source code' });
-    expect(links[0]).toHaveAttribute('href', 'https://github.com/ibrahimroshdy/kept/tree/3f9ed1d');
+    expect(links[0]).toHaveAttribute('href', 'https://github.com/keptinventory/kept/tree/3f9ed1d');
     expect(screen.getAllByText('v0.1.0').length).toBeGreaterThan(0);
   });
 

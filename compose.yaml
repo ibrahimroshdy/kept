@@ -15,7 +15,7 @@ name: kept
 
 x-kept-image: &kept-image
   # Unset, the image is built from this checkout and tagged kept:local. Set KEPT_IMAGE to a released
-  # image (e.g. ghcr.io/ibrahimroshdy/kept:1.0.0) to use that instead (`docker compose pull`).
+  # image (e.g. ghcr.io/keptinventory/kept:1.0.0) to use that instead (`docker compose pull`).
   image: ${KEPT_IMAGE:-kept:local}
   build:
     context: .

@@ -6,9 +6,9 @@ description: The tools Kept exposes over MCP, how clients authenticate with toke
 Kept runs an [MCP](https://modelcontextprotocol.io/) server at `POST /mcp` on the same process as
 the API. One tool set serves both MCP clients and Kept's own assistant: the contracts live in
 `packages/mcp`, the handlers in `apps/server/src/tools/`. The design is in the engineering spec
-[§2.5 MCP tools and §2.6 webhooks](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)
+[§2.5 MCP tools and §2.6 webhooks](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md)
 and decisions D63, D124 and D180 in the
-[product design](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md).
+[product design](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md).
 
 ## Where the code is
 
@@ -70,7 +70,7 @@ Streamable HTTP, **stateless** (D63), with `@modelcontextprotocol/server`. `mcp/
 `createMcpHandler` with a factory that builds a fresh `McpServer` for each HTTP request and
 registers only the tools that token may call. `GET /mcp` and `DELETE /mcp` answer 405. The route
 is mounted by hand on Fastify, as the
-[MCP SDK spike](https://github.com/ibrahimroshdy/kept/blob/main/docs/spikes/2026-09-30-step6-mcp-sdk.md)
+[MCP SDK spike](https://github.com/keptinventory/kept/blob/main/docs/spikes/2026-09-30-step6-mcp-sdk.md)
 decided, so the security headers, the request log and `x-request-id` still apply.
 
 Before the handler: the `Host` must be the public URL's host (or a former one), and the `Origin`
@@ -99,7 +99,7 @@ plugins (`apps/server/src/oauth/plugin.ts`):
 - discovery documents are served at `/.well-known/oauth-authorization-server` and
   `/.well-known/oauth-protected-resource` (and `/.well-known/oauth-protected-resource/mcp`).
 
-The [OAuth and CIMD spike](https://github.com/ibrahimroshdy/kept/blob/main/docs/spikes/2026-09-30-step6-oauth-cimd.md)
+The [OAuth and CIMD spike](https://github.com/keptinventory/kept/blob/main/docs/spikes/2026-09-30-step6-oauth-cimd.md)
 proved the flow with the official MCP client against a local fixture. Connecting hosted clients
 (claude.ai, ChatGPT) needs a public HTTPS URL and is still a pending check by the maintainer.
 

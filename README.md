@@ -17,11 +17,11 @@
   repository is public.
 -->
 <p align="center">
-  <a href="https://github.com/ibrahimroshdy/kept/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/ibrahimroshdy/kept?sort=semver&display_name=tag&style=flat-square&label=release&labelColor=55524C&color=F0B03A"></a>
-  <a href="https://github.com/ibrahimroshdy/kept/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/ibrahimroshdy/kept/ci.yml?branch=main&style=flat-square&label=ci&labelColor=55524C"></a>
+  <a href="https://github.com/keptinventory/kept/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/keptinventory/kept?sort=semver&display_name=tag&style=flat-square&label=release&labelColor=55524C&color=F0B03A"></a>
+  <a href="https://github.com/keptinventory/kept/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/keptinventory/kept/ci.yml?branch=main&style=flat-square&label=ci&labelColor=55524C"></a>
   <a href="LICENSE"><img alt="Licence: AGPL-3.0" src="https://img.shields.io/badge/licence-AGPL--3.0-F0B03A?style=flat-square&labelColor=55524C"></a>
   <a href="https://keptinventory.info/"><img alt="Documentation" src="https://img.shields.io/badge/docs-keptinventory.info-F0B03A?style=flat-square&labelColor=55524C&label=docs"></a>
-  <a href="https://github.com/users/ibrahimroshdy/packages/container/package/kept"><img alt="Container image: ghcr.io/ibrahimroshdy/kept" src="https://img.shields.io/badge/image-ghcr.io%2Fibrahimroshdy%2Fkept-F0B03A?style=flat-square&labelColor=55524C"></a>
+  <a href="https://github.com/orgs/keptinventory/packages/container/package/kept"><img alt="Container image: ghcr.io/keptinventory/kept" src="https://img.shields.io/badge/image-ghcr.io%2Fkeptinventory%2Fkept-F0B03A?style=flat-square&labelColor=55524C"></a>
   <a href="CONTRIBUTING.md#sign-the-cla-once-and-sign-off-every-commit"><img alt="CLA and DCO sign-off" src="https://img.shields.io/badge/CLA%20%2B%20DCO-sign--off-F0B03A?style=flat-square&labelColor=55524C"></a>
 </p>
 
@@ -74,12 +74,12 @@ it yourself, or let Kept lay it out. Plan view, balconies and terraces, and phon
 Docker with Compose v2:
 
 ```sh
-git clone --branch v1.7.1 --depth 1 https://github.com/ibrahimroshdy/kept.git && cd kept
+git clone --branch v1.7.1 --depth 1 https://github.com/keptinventory/kept.git && cd kept
 cp compose.env.example .env
 for v in SUPERUSER OWNER APP AUTH SYSTEM; do
   sed -i.bak "s/^KEPT_DB_${v}_PASSWORD=\$/KEPT_DB_${v}_PASSWORD=$(openssl rand -hex 32)/" .env
 done
-sed -i.bak 's|^KEPT_IMAGE=$|KEPT_IMAGE=ghcr.io/ibrahimroshdy/kept:1.7.1|' .env && rm .env.bak
+sed -i.bak 's|^KEPT_IMAGE=$|KEPT_IMAGE=ghcr.io/keptinventory/kept:1.7.1|' .env && rm .env.bak
 # Set KEPT_PUBLIC_URL in .env to the address you will open, e.g. http://<this host>:8080
 docker compose up -d
 docker compose logs kept | grep "KEPT SETUP CODE"

@@ -103,7 +103,7 @@ the invite is the only way to make an account.
 | **Viewer** | Look and search only. Money is hidden unless the location allows viewers to see it; the assistant answers but can't change anything. |
 
 The full matrix is in the
-[product design](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md#71-role-matrix-per-location).
+[product design](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-product-design.md#71-role-matrix-per-location).
 
 ### People without email
 

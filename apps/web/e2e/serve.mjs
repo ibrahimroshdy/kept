@@ -215,7 +215,7 @@ const env = {
   KEPT_AUTH_DATABASE_URL: url('kept_auth'),
   KEPT_SYSTEM_DATABASE_URL: url('kept_system'),
   KEPT_PUBLIC_URL: `${tls ? 'https' : 'http'}://localhost:${port}`,
-  KEPT_SOURCE_URL: 'https://github.com/ibrahimroshdy/kept',
+  KEPT_SOURCE_URL: 'https://github.com/keptinventory/kept',
   KEPT_CONFIG_DIR: `${state}config`,
   KEPT_DATA_DIR: `${state}data`,
   KEPT_ROLE: 'all',

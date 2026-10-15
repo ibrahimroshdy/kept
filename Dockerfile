@@ -224,7 +224,7 @@ COPY --from=os / /
 # Stamped by the build (D147, D186, L100). REVISION is the commit; SOURCE the repository.
 ARG VERSION=0.0.0-dev
 ARG REVISION=
-ARG SOURCE=https://github.com/ibrahimroshdy/kept
+ARG SOURCE=https://github.com/keptinventory/kept
 
 LABEL org.opencontainers.image.title="Kept" \
       org.opencontainers.image.description="Kept: a home inventory you can self-host" \

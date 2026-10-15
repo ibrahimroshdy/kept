@@ -28,7 +28,7 @@
 // package scripts (ASTRO_TELEMETRY_DISABLED=1), so a build makes no network call at all.
 //
 // Publishing (D199, .github/workflows/docs.yml): the site lives at https://keptinventory.info/, the
-// GitHub Pages custom domain (the old ibrahimroshdy.com/kept/ address redirects there). The workflow
+// GitHub Pages custom domain of keptinventory/kept (D245). The workflow
 // passes that origin and base path as KEPT_DOCS_SITE and KEPT_DOCS_BASE; a local build has neither
 // and is served from `/`.
 import { satteri } from '@astrojs/markdown-satteri';
@@ -166,7 +166,7 @@ export default defineConfig({
         '../web/src/styles/tokens.css',
         './src/styles/kept.css',
       ],
-      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ibrahimroshdy/kept' }],
+      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/keptinventory/kept' }],
       plugins: [
         // fr/de/it are fallback pages by design (Q19), so links into them must not fail. The API
         // reference is injected routes the validator can't see, so links to it aren't checked

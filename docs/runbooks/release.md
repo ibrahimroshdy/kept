@@ -67,7 +67,7 @@ minutes a month, both read from GitHub's billing docs on 2026-10-07). Re-pushing
 costs a minute or two: the build jobs stop at "already published".
 
 **The layer cache** is a registry cache per architecture in GHCR,
-`ghcr.io/ibrahimroshdy/kept-cache:buildcache-amd64` and `…-arm64` (`mode=max`: every stage's
+`ghcr.io/keptinventory/kept-cache:buildcache-amd64` and `…-arm64` (`mode=max`: every stage's
 layers, not only the final image's). Every release reads the previous one's, so an unchanged
 lockfile skips both installs, and an unchanged OS stage skips apt and restic. Actions' own cache
 (`type=gha`, used for `0.9.0`) is scoped by ref, so a new tag could never read it. The first run
@@ -103,8 +103,8 @@ COSIGN=$(bash scripts/tools.sh path cosign)
 mkdir -p ~/kept-signing && chmod 700 ~/kept-signing && cd ~/kept-signing
 "$COSIGN" generate-key-pair                 # asks for a password; writes cosign.key and cosign.pub
 gh auth switch --user ibrahimroshdy
-gh secret set COSIGN_PRIVATE_KEY -R ibrahimroshdy/kept < cosign.key
-gh secret set COSIGN_PASSWORD -R ibrahimroshdy/kept       # prompts; type the key's password
+gh secret set COSIGN_PRIVATE_KEY -R keptinventory/kept < cosign.key
+gh secret set COSIGN_PASSWORD -R keptinventory/kept       # prompts; type the key's password
 ```
 
 Put `cosign.key` and its password in your password manager too. Copy `cosign.pub` to the
@@ -113,9 +113,9 @@ it). `cosign.key` never enters the repository (`.gitignore` already ignores `*.k
 key-based (D187), not keyless: keyless signing records the signer in the public transparency log,
 which plan Q14 keeps off while the repository is private.
 
-**W2. The registry path.** `ghcr.io/ibrahimroshdy/kept` (and the chart at
-`ghcr.io/ibrahimroshdy/charts/kept`) is **inferred** from the Dockerfile's `SOURCE` default
-(`https://github.com/ibrahimroshdy/kept`), never confirmed (plan Q14). Confirm it, or set
+**W2. The registry path.** `ghcr.io/keptinventory/kept` (and the chart at
+`ghcr.io/keptinventory/charts/kept`) is **inferred** from the Dockerfile's `SOURCE` default
+(`https://github.com/keptinventory/kept`), never confirmed (plan Q14). Confirm it, or set
 `KEPT_RELEASE_REGISTRY` (and `KEPT_RELEASE_CHART_REPO`) in the release step's `env:` in
 `release.yml`. The chart's own default (`charts/kept/values.yaml` `image.repository`) carries the
 same path; a release rewrites it in the packaged chart to wherever it published.
@@ -159,7 +159,7 @@ pull request.
 2. Wait for `ci` on the merged commit to pass on main (the gate, D222):
 
    ```sh
-   gh run watch "$(gh run list -R ibrahimroshdy/kept --workflow ci.yml --branch main --limit 1 --json databaseId --jq '.[0].databaseId')" -R ibrahimroshdy/kept --exit-status
+   gh run watch "$(gh run list -R keptinventory/kept --workflow ci.yml --branch main --limit 1 --json databaseId --jq '.[0].databaseId')" -R keptinventory/kept --exit-status
    ```
 
    The release workflow's preflight checks it again and refuses the tag if it hasn't passed.
@@ -169,7 +169,7 @@ pull request.
 
    ```sh
    git tag -a vX.Y.Z -m "Kept X.Y.Z" && git push origin vX.Y.Z
-   gh run watch "$(gh run list -R ibrahimroshdy/kept --workflow release.yml --limit 1 --json databaseId --jq '.[0].databaseId')" -R ibrahimroshdy/kept
+   gh run watch "$(gh run list -R keptinventory/kept --workflow release.yml --limit 1 --json databaseId --jq '.[0].databaseId')" -R keptinventory/kept
    ```
 
 4. When it is green, the release record into the repository (it is also on the GitHub release), by
@@ -177,7 +177,7 @@ pull request.
 
    ```sh
    git switch -c release-record-X.Y.Z
-   gh release download vX.Y.Z -R ibrahimroshdy/kept -p 'X.Y.Z.md' -D docs/releases
+   gh release download vX.Y.Z -R keptinventory/kept -p 'X.Y.Z.md' -D docs/releases
    git add docs/releases/X.Y.Z.md && git commit -m "docs(release): the X.Y.Z record"
    git push -u origin release-record-X.Y.Z
    gh pr create --fill --base main && gh pr merge --squash --delete-branch
@@ -186,14 +186,14 @@ pull request.
 5. Verify from outside, as a user would (the commands are in the record):
 
    ```sh
-   cosign verify --key cosign.pub ghcr.io/ibrahimroshdy/kept:X.Y.Z
-   docker buildx imagetools inspect ghcr.io/ibrahimroshdy/kept:X.Y.Z --format '{{ json .SBOM }}'
+   cosign verify --key cosign.pub ghcr.io/keptinventory/kept:X.Y.Z
+   docker buildx imagetools inspect ghcr.io/keptinventory/kept:X.Y.Z --format '{{ json .SBOM }}'
    ```
 
 A pushed tag is never moved. If the release needs a code fix, release the next version (or the
 next `-rc.N`). If the run failed for a reason outside the code (a registry timeout, a slow smoke),
 re-run it: "Re-run all jobs" on the run's page, or `gh workflow run release.yml -R
-ibrahimroshdy/kept -f tag=vX.Y.Z`. Nothing is tagged until both architectures passed and the
+keptinventory/kept -f tag=vX.Y.Z`. Nothing is tagged until both architectures passed and the
 signature verified, so a failed run leaves only untagged digests behind (GHCR's untagged versions;
 delete them in the package settings if you like). After a failure in **publish** only, "Re-run
 failed jobs" re-runs publish alone with the build jobs' digests: no rebuild.
@@ -223,7 +223,7 @@ For when Actions can't run. The laptop needs credentials the workflow gets from 
 
   cosign reads Docker's login. Use the Docker config the release will use (`DOCKER_CONFIG`, or
   `~/.docker`), and make sure it has the `buildx` plugin (`docker buildx version`).
-- **M3**, `gh` as the repository owner's account: `gh auth switch --user ibrahimroshdy`.
+- **M3**, `gh` as an admin of the `keptinventory` organisation: `gh auth switch --user ibrahimroshdy`.
 
 Then, on `main`, clean, at the commit to release, with the tools fetched
 (`bash scripts/tools.sh fetch`) and 15 GB free:
@@ -281,4 +281,4 @@ exercise the later stages meanwhile, a dry run (never a release) can smoke with 
 | publish, join | "the joined index has linux/… but the build job smoked …" | Never expected (imagetools copies manifests as they are). Re-run all jobs; if it repeats, release from the laptop and report it |
 | sign | `COSIGN_PASSWORD` wrong, or no registry login for cosign | W1 (the secret), M1–M2 on the laptop |
 | chart | "chart X.Y.Z is already published" | Release the next version (the chart's version is the release's; never bump `Chart.yaml`) |
-| GitHub release | the last step failed after everything was published | The notes are in that step's log: save them to a file, then `gh release create vX.Y.Z --verify-tag --title "Kept X.Y.Z" --notes-file <file>`, attaching `THIRD-PARTY-NOTICES.txt` (`docker run --rm --entrypoint cat ghcr.io/ibrahimroshdy/kept:X.Y.Z /app/THIRD-PARTY-NOTICES.txt`) |
+| GitHub release | the last step failed after everything was published | The notes are in that step's log: save them to a file, then `gh release create vX.Y.Z --verify-tag --title "Kept X.Y.Z" --notes-file <file>`, attaching `THIRD-PARTY-NOTICES.txt` (`docker run --rm --entrypoint cat ghcr.io/keptinventory/kept:X.Y.Z /app/THIRD-PARTY-NOTICES.txt`) |

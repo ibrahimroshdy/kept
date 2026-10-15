@@ -7,10 +7,9 @@ The Kept integration for [Home Assistant](https://www.home-assistant.io/) shows 
 each location and sends readings back, such as the odometer a car integration already knows. It
 reads Kept with a [personal token](/users/mcp-clients/#make-a-personal-token).
 
-:::note[Not published yet]
-The integration is a separate repository, `kept-homeassistant`, installed with HACS as a custom
-repository. It isn't public yet; this page gets its link when it is.
-:::
+The integration: [keptinventory/kept-homeassistant](https://github.com/keptinventory/kept-homeassistant),
+installed with [HACS](https://hacs.xyz/) as a custom repository. Needs Home Assistant 2026.10 or
+later and Kept 1.8.0 or later.
 
 ## What you get
 
@@ -41,8 +40,9 @@ A location or vehicle added in Kept later shows up after you reload the integrat
    Assistant should see. **Read only** is enough for the sensors and the calendar; **Read and
    change** also lets the actions below send readings and mark schedules done. Kept makes tokens
    only when it is served over `https` ([HTTPS](/install/https/)).
-2. **Install.** In HACS, add the integration's repository as a custom repository of type
-   **Integration**, install **Kept**, and restart Home Assistant.
+2. **Install.** In HACS, **⋮ → Custom repositories**: add
+   `https://github.com/keptinventory/kept-homeassistant`, type **Integration**. Install **Kept**,
+   and restart Home Assistant.
 3. **Add it.** **Settings → Devices & services → Add integration → Kept**. Enter Kept's address
    (`https://kept.example.org`) and the token. Turn off **Check the HTTPS certificate** only for a
    self-signed certificate on your own network.

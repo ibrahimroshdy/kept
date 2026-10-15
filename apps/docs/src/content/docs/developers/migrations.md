@@ -4,13 +4,13 @@ description: How a schema change is made, how kept migrate applies it, and what 
 ---
 
 The schema lives in two places that must agree: the Drizzle table definitions in
-[`apps/server/src/db/schema/`](https://github.com/ibrahimroshdy/kept/tree/main/apps/server/src/db/schema)
+[`apps/server/src/db/schema/`](https://github.com/keptinventory/kept/tree/main/apps/server/src/db/schema)
 and the SQL files in
-[`apps/server/migrations/`](https://github.com/ibrahimroshdy/kept/tree/main/apps/server/migrations).
+[`apps/server/migrations/`](https://github.com/keptinventory/kept/tree/main/apps/server/migrations).
 The rules are the engineering spec's §7.12
-([engineering spec](https://github.com/ibrahimroshdy/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md))
+([engineering spec](https://github.com/keptinventory/kept/blob/main/docs/specs/2026-09-25-kept-engineering-spec.md))
 and the "Migrations are additive" section of
-[CONTRIBUTING.md](https://github.com/ibrahimroshdy/kept/blob/main/CONTRIBUTING.md).
+[CONTRIBUTING.md](https://github.com/keptinventory/kept/blob/main/CONTRIBUTING.md).
 
 ## Two kinds of migration
 
@@ -26,7 +26,7 @@ Files are numbered and listed in `migrations/meta/_journal.json`; drizzle-kit ke
 per migration beside it. Statements in one file are separated by `--> statement-breakpoint`.
 
 The configuration is
-[`apps/server/drizzle.config.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/drizzle.config.ts):
+[`apps/server/drizzle.config.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/drizzle.config.ts):
 dialect `postgresql`, schema `./src/db/schema/index.ts`, output `./migrations`, schemas `public`,
 `kept` and `auth`, and the applied-migrations table `kept_meta.migrations`.
 
@@ -79,12 +79,12 @@ policies, a scope and rows, `test/leak.test.ts` fails.
 ## What a new route needs
 
 Every non-GET route must leave an audit row, and a test must prove it.
-[`apps/server/test/route-catalogue.test.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/test/route-catalogue.test.ts)
+[`apps/server/test/route-catalogue.test.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/test/route-catalogue.test.ts)
 builds the app, collects each non-GET route as it is added, and requires either a
 `// catalogue: <METHOD> <url>` marker directly above an `it(` case that asserts the audit row, or
 an entry on its `ALLOWLIST` with the reason no audit row is right (a read-only preview, a
 sign-in). A route a personal token may call also goes in `TOKEN_ROUTES` in
-[`tokens/access.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/tokens/access.ts);
+[`tokens/access.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/tokens/access.ts);
 routes are closed to tokens unless listed.
 
 ## Additive only
@@ -99,9 +99,9 @@ leaves behind:
 
 ## How `kept migrate` runs
 
-[`db/migrate.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/db/migrate.ts),
+[`db/migrate.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/db/migrate.ts),
 started by `kept migrate`
-([`cli/index.ts`](https://github.com/ibrahimroshdy/kept/blob/main/apps/server/src/cli/index.ts)):
+([`cli/index.ts`](https://github.com/keptinventory/kept/blob/main/apps/server/src/cli/index.ts)):
 
 1. Connects once as **`kept_owner`** with `KEPT_OWNER_DATABASE_URL`.
 2. Takes the advisory lock (`pg_try_advisory_lock`, polled, 60 s by default), so two migrators

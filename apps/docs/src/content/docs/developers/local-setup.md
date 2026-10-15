@@ -15,7 +15,7 @@ git config core.hooksPath .githooks
 
 The commit-msg hook in `.githooks/` rejects AI attribution in commit messages
 (`scripts/check-attribution.sh`). Sign your commits with `git commit -s`; see
-[CONTRIBUTING.md](https://github.com/ibrahimroshdy/kept/blob/main/CONTRIBUTING.md).
+[CONTRIBUTING.md](https://github.com/keptinventory/kept/blob/main/CONTRIBUTING.md).
 
 ## 2. Start the database and the mail catcher
 
@@ -23,7 +23,7 @@ The commit-msg hook in `.githooks/` rejects AI attribution in commit messages
 docker compose -f compose.dev.yaml up -d --wait
 ```
 
-[`compose.dev.yaml`](https://github.com/ibrahimroshdy/kept/blob/main/compose.dev.yaml) (project
+[`compose.dev.yaml`](https://github.com/keptinventory/kept/blob/main/compose.dev.yaml) (project
 name `kept-dev`) starts:
 
 | Service | Image | Host ports |
@@ -33,7 +33,7 @@ name `kept-dev`) starts:
 | `s3` (only with `--profile s3`) | RustFS, an S3-compatible store | 9452 → 9000 |
 
 On the database's first start,
-[`docker/initdb/01-roles.sql`](https://github.com/ibrahimroshdy/kept/blob/main/docker/initdb/01-roles.sql)
+[`docker/initdb/01-roles.sql`](https://github.com/keptinventory/kept/blob/main/docker/initdb/01-roles.sql)
 creates the four logins (`kept_owner`, `kept_app`, `kept_auth`, `kept_system`, each with its role
 name as its password), makes `kept_owner` own the `kept` database, and creates the `pg_trgm`,
 `unaccent` and `vector` extensions in `kept` and in `template1`. These are development passwords
@@ -51,7 +51,7 @@ cp .env.example .env
 set -a; . ./.env; set +a
 ```
 
-[`.env.example`](https://github.com/ibrahimroshdy/kept/blob/main/.env.example) has the four
+[`.env.example`](https://github.com/keptinventory/kept/blob/main/.env.example) has the four
 database URLs on port 5452, `KEPT_ROLE=all`, `KEPT_LOG_FORMAT=pretty`,
 `KEPT_SMTP_URL=smtp://localhost:1025` and `KEPT_STORAGE=local`, plus commented lines for S3, the
 AI mock, push, embeddings and OIDC. The server doesn't read `.env` itself; export it in the shell
@@ -91,7 +91,7 @@ The `households` scenario creates the sample cast and their households: people, 
 with photos, purchases and history, warranties, loans, documents, and the Garage's car with six
 months of readings, fills and services. The accounts' shared password is in the README's
 "Development" section. The other scenario, `bench`, is the 10,000-thing load fixture for
-[the RLS benchmark](https://github.com/ibrahimroshdy/kept/blob/main/docs/perf/2026-09-26-rls-bench.md).
+[the RLS benchmark](https://github.com/keptinventory/kept/blob/main/docs/perf/2026-09-26-rls-bench.md).
 The seed refuses to run with `NODE_ENV=production`.
 
 ## 6. Run it

@@ -11,9 +11,9 @@
 publicUrl: ""
 
 image:
-  # The release's image (D187). Inferred as ghcr.io/ibrahimroshdy/kept from the Dockerfile's
+  # The release's image (D187). Inferred as ghcr.io/keptinventory/kept from the Dockerfile's
   # SOURCE default, to be confirmed by the maintainer (plan Q14).
-  repository: ghcr.io/ibrahimroshdy/kept
+  repository: ghcr.io/keptinventory/kept
   # Defaults to the chart's appVersion. Never `latest` (the chart refuses it).
   tag: ""
   # `sha256:…`: pins the exact image the release verified and signed; the tag is then a label.

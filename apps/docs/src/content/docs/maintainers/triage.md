@@ -5,13 +5,13 @@ description: How issues and pull requests reach Kept, which checks run on a pull
 
 Kept's repository went public on 2026-10-07. This page has two parts: what is in the repository
 today, and what the
-[go-public plan](https://github.com/ibrahimroshdy/kept/blob/main/docs/release/go-public-plan.md)
+[go-public plan](https://github.com/keptinventory/kept/blob/main/docs/release/go-public-plan.md)
 intends. Anything in the second part is a plan, not a setting that exists yet.
 
 ## Issues
 
 Two templates live in
-[`.github/ISSUE_TEMPLATE/`](https://github.com/ibrahimroshdy/kept/tree/main/.github/ISSUE_TEMPLATE):
+[`.github/ISSUE_TEMPLATE/`](https://github.com/keptinventory/kept/tree/main/.github/ISSUE_TEMPLATE):
 
 | Template | Label it applies | What it asks for |
 |---|---|---|
@@ -31,7 +31,7 @@ Renovate's pull requests carry `dependencies` (`renovate.json`) once Renovate is
 
 ## Pull requests
 
-The template ([`.github/pull_request_template.md`](https://github.com/ibrahimroshdy/kept/blob/main/.github/pull_request_template.md))
+The template ([`.github/pull_request_template.md`](https://github.com/keptinventory/kept/blob/main/.github/pull_request_template.md))
 asks for what changes for the people who use or run Kept and why, with a linked issue, and a
 checklist:
 
@@ -54,7 +54,7 @@ so a failure reproduces locally with the same `--only` list. Every job is gated 
 
 | Workflow | Job | What it checks |
 |---|---|---|
-| [`ci`](https://github.com/ibrahimroshdy/kept/blob/main/.github/workflows/ci.yml) | `fast` | `pnpm install --frozen-lockfile`, `bash scripts/ci-local.sh --fast` (lint, catalogues, typecheck, unit tests, the mock evaluation), then `node scripts/check-licences.mjs` |
+| [`ci`](https://github.com/keptinventory/kept/blob/main/.github/workflows/ci.yml) | `fast` | `pnpm install --frozen-lockfile`, `bash scripts/ci-local.sh --fast` (lint, catalogues, typecheck, unit tests, the mock evaluation), then `node scripts/check-licences.mjs` |
 | `ci` | `db-test` | `ci-local.sh --only compose,test`: the server's tests on Postgres with pgvector and RustFS, in three shards |
 | `ci` | `db-ops` | `ci-local.sh --only compose,drift,prod-boot,portability,backup`: migration drift, a production boot, portability and backup |
 | `ci` | `db` | the required check: green exactly when both halves are |
@@ -65,7 +65,7 @@ so a failure reproduces locally with the same `--only` list. Every job is gated 
 | `ci` | `helm` | the pinned Helm and kubeconform, then `ci-local.sh --only helm` |
 | `ci` | `attribution` | `scripts/check-attribution.sh` over the pull request's commits and its description |
 | `ci` | `dco` | `scripts/check-dco.sh` over the pull request's commits |
-| [`docs`](https://github.com/ibrahimroshdy/kept/blob/main/.github/workflows/docs.yml) | `build` | the configuration reference is current, then the docs site builds; a broken link fails it |
+| [`docs`](https://github.com/keptinventory/kept/blob/main/.github/workflows/docs.yml) | `build` | the configuration reference is current, then the docs site builds; a broken link fails it |
 
 `ci` also runs on pushes to `main`; `docs` also deploys to GitHub Pages from `main`. `release.yml`
 never runs on a pull request.
@@ -78,8 +78,8 @@ description, or run it themselves before merging.
 
 ## What the go-public plan adds
 
-From the [go-public plan](https://github.com/ibrahimroshdy/kept/blob/main/docs/release/go-public-plan.md),
-§4 and §5, and the [go-public audit](https://github.com/ibrahimroshdy/kept/blob/main/docs/release/go-public-audit.md).
+From the [go-public plan](https://github.com/keptinventory/kept/blob/main/docs/release/go-public-plan.md),
+§4 and §5, and the [go-public audit](https://github.com/keptinventory/kept/blob/main/docs/release/go-public-audit.md).
 None of this exists yet:
 
 - **Issue forms** for bug, feature and question, with questions sent to GitHub Discussions; a

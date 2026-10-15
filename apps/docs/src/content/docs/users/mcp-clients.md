@@ -151,7 +151,7 @@ higher. The part of Kept a tool needs is the name under **What to track**.
 
 Every tool that takes an id also takes a 6-character short ID such as `K7D2QX`. The full
 contracts are in
-[`packages/mcp/src/tools.ts`](https://github.com/ibrahimroshdy/kept/blob/main/packages/mcp/src/tools.ts).
+[`packages/mcp/src/tools.ts`](https://github.com/keptinventory/kept/blob/main/packages/mcp/src/tools.ts).
 
 ## Revoke access
 
