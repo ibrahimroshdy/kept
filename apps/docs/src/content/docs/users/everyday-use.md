@@ -1,6 +1,6 @@
 ---
 title: Everyday use
-description: Home, places and boxes, the spreadsheet view, things and their labels, paperwork, search, moving things, vehicles and machines, reminders, sharing and the insurance report.
+description: Home, places and boxes, the spreadsheet view, things and labels, paperwork, search, moving things, vehicles, reminders, sharing and the insurance report.
 ---
 
 Kept answers three questions about everything you own: where it is, what paperwork it has, and

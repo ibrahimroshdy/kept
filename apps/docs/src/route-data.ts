@@ -22,8 +22,23 @@
  *   from src/data/integrations.ts, which Starlight can't see, so its groups are added here from the
  *   same data.
  *
- * Starlight already writes the canonical link, an hreflang alternate per locale and x-default,
- * and the sitemap link, all from `site`.
+ * Search engines (2026-10-16 audit, measured over dist/ before and after):
+ *
+ * - hreflang names only pages that exist in that language. Starlight writes an alternate for every
+ *   locale on every page, but French, German and Italian have no pages of their own (Q19: they
+ *   are the English text under the "not translated yet" notice) and Arabic has a few; the API
+ *   reference has no other locale at all, so its alternates were 404s. Now: `en` and x-default
+ *   always, `ar` when src/content/docs/ar/ has the page.
+ * - A fallback page (English text at /fr/…, /de/…, /it/…, or an untranslated /ar/… page) is a
+ *   duplicate of the English one, so its canonical and og:url point there. astro.config.mjs keeps
+ *   the same pages out of the sitemap.
+ * - The API reference's pages had no description of their own (all 424 shared the site's), and
+ *   its overview was titled "Overview": each gets one from its method and path.
+ * - The 404 page is noindex.
+ * - The landing pages also describe the project (Organization, the GitHub organisation) and the
+ *   site (WebSite) as JSON-LD, in one @graph with the SoftwareApplication.
+ *
+ * Starlight writes the sitemap link from `site`.
  */
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
 import arabic400 from '@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-400-normal.woff2?url';
@@ -44,6 +59,14 @@ const CARDS: Record<string, { file: string; alt: string }> = {
 
 const LICENSE = 'https://www.gnu.org/licenses/agpl-3.0.html';
 const REPOSITORY = 'https://github.com/keptinventory/kept';
+const ORGANIZATION = 'https://github.com/keptinventory';
+
+/** The pages Arabic has of its own, as paths under /ar/ ('' is the landing page). */
+const ARABIC = new Set(
+  Object.keys(import.meta.glob('./content/docs/ar/**/*.{md,mdx}')).map((file) =>
+    file.replace(/^\.\/content\/docs\/ar\//, '').replace(/(^|\/)index\.mdx?$|\.mdx?$/, ''),
+  ),
+);
 
 const OG_LOCALES: Record<string, string> = {
   en: 'en_US',
@@ -66,6 +89,61 @@ export const onRequest = defineRouteMiddleware((context) => {
   };
 
   meta('property', 'og:locale', OG_LOCALES[route.lang] ?? route.lang);
+
+  // The page's path with no base and no locale ('install/compose', '' for a landing page).
+  let path = context.url.pathname;
+  if (base && path.startsWith(`${base}/`)) path = path.slice(base.length);
+  path = path.replace(/^\/+|\/+$/g, '');
+  if (route.locale) path = path.replace(new RegExp(`^${route.locale}(/|$)`), '');
+  const url = (prefix: string) =>
+    context.site ? new URL(`${base}/${prefix}${path}${path ? '/' : ''}`, context.site).href : null;
+  const english = url('');
+
+  if (english) {
+    const alternates = [{ lang: 'en', href: english }];
+    if (ARABIC.has(path)) alternates.push({ lang: 'ar', href: url('ar/') as string });
+    alternates.push({ lang: 'x-default', href: english });
+    for (let i = head.length - 1; i >= 0; i--) {
+      if (head[i].tag === 'link' && head[i].attrs?.rel === 'alternate' && head[i].attrs?.hreflang) {
+        head.splice(i, 1);
+      }
+    }
+    head.push(
+      ...alternates.map(({ lang, href }) => ({
+        tag: 'link' as const,
+        attrs: { rel: 'alternate', hreflang: lang, href },
+        content: '',
+      })),
+    );
+    if (route.isFallback) {
+      const canonical = head.find((t) => t.tag === 'link' && t.attrs?.rel === 'canonical');
+      if (canonical) canonical.attrs = { ...canonical.attrs, href: english };
+      meta('property', 'og:url', english);
+    }
+  }
+
+  if (route.id === '404') meta('name', 'robots', 'noindex');
+
+  if (path === 'api' || path.startsWith('api/')) {
+    const title = route.entry.data.title;
+    // Operation pages are titled "<path> (<METHOD>)", or "<path>" alone when it has one method.
+    const op = /^(\/\S+?)(?: \((\w+)\))?$/.exec(title);
+    const text =
+      path === 'api'
+        ? "Kept's HTTP API reference, generated from its OpenAPI document: every endpoint, by method and path."
+        : op
+          ? `Kept HTTP API: ${op[2] ? `${op[2]} ` : ''}${op[1]}. Its parameters, request body and responses.`
+          : null;
+    if (text) {
+      meta('name', 'description', text);
+      meta('property', 'og:description', text);
+    }
+    if (path === 'api') {
+      const tag = head.find((t) => t.tag === 'title');
+      if (tag) tag.content = 'HTTP API reference | Kept';
+      meta('property', 'og:title', 'HTTP API reference');
+    }
+  }
   if (route.lang === 'ar') {
     head.push({
       tag: 'link',
@@ -90,8 +168,16 @@ export const onRequest = defineRouteMiddleware((context) => {
 
   if (route.entry.data.hero) {
     meta('property', 'og:type', 'website');
+    const home = context.site ? new URL(`${base}/`, context.site).href : null;
+    const org = {
+      '@type': 'Organization',
+      '@id': `${home ?? ORGANIZATION}#organization`,
+      name: 'Kept',
+      url: home ?? ORGANIZATION,
+      ...(context.site ? { logo: new URL(`${base}/favicon.svg`, context.site).href } : {}),
+      sameAs: [ORGANIZATION, REPOSITORY],
+    };
     const app = {
-      '@context': 'https://schema.org',
       '@type': 'SoftwareApplication',
       name: 'Kept',
       description: route.entry.data.description,
@@ -101,16 +187,28 @@ export const onRequest = defineRouteMiddleware((context) => {
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       isAccessibleForFree: true,
       license: LICENSE,
-      sameAs: [REPOSITORY],
-      ...(cardUrl ? { screenshot: cardUrl } : {}),
+      sameAs: [REPOSITORY, ORGANIZATION],
+      publisher: { '@id': org['@id'] },
+      ...(cardUrl ? { image: cardUrl, screenshot: cardUrl } : {}),
       inLanguage: route.entryMeta.lang,
-      ...(context.site ? { url: new URL(`${base}/`, context.site).href } : {}),
+      ...(home ? { url: home } : {}),
+    };
+    const site = {
+      '@type': 'WebSite',
+      ...(home ? { '@id': `${home}#website` } : {}),
+      name: 'Kept',
+      ...(home ? { url: home } : {}),
+      inLanguage: route.entryMeta.lang,
+      publisher: { '@id': org['@id'] },
     };
     head.push({
       tag: 'script',
       attrs: { type: 'application/ld+json' },
       // `<` escaped, so no text in it can close the script element.
-      content: JSON.stringify(app).replaceAll('<', '\\u003c'),
+      content: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [app, org, site],
+      }).replaceAll('<', '\\u003c'),
     });
   }
 

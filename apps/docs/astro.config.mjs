@@ -35,7 +35,15 @@
 // GitHub Pages custom domain of keptinventory/kept (D245). The workflow
 // passes that origin and base path as KEPT_DOCS_SITE and KEPT_DOCS_BASE; a local build has neither
 // and is served from `/`.
+//
+// The sitemap is @astrojs/sitemap configured here rather than Starlight's own copy (Starlight adds
+// its own only when none is configured): the same per-locale alternates, but only the pages that
+// exist in their language. French, German and Italian pages and the untranslated Arabic ones are
+// the English text, so they stay out of it and their canonical link names the English page
+// (src/route-data.ts, which keeps the hreflang alternates to the same pages). The 404 page is out.
+import { readdirSync } from 'node:fs';
 import { satteri } from '@astrojs/markdown-satteri';
+import sitemap from '@astrojs/sitemap';
 import starlight from '@astrojs/starlight';
 import { defineConfig } from 'astro/config';
 import { defineMdastPlugin } from 'satteri';
@@ -46,6 +54,23 @@ import { locales } from './src/locales.mjs';
 const site = process.env.KEPT_DOCS_SITE || undefined;
 const base = process.env.KEPT_DOCS_BASE || '/';
 const prefix = base.replace(/\/+$/, '');
+
+/** The pages Arabic has of its own, as paths under ar/ ('' is the landing page). */
+const arabic = new Set(
+  readdirSync(new URL('./src/content/docs/ar/', import.meta.url), { recursive: true })
+    .filter((file) => /\.mdx?$/.test(file))
+    .map((file) => file.replaceAll('\\', '/').replace(/(^|\/)index\.mdx?$|\.mdx?$/, '')),
+);
+
+/** Whether a built page belongs in the sitemap: its own language's text, and not the 404 page. */
+function inSitemap(page) {
+  let path = new URL(page).pathname;
+  if (prefix && path.startsWith(`${prefix}/`)) path = path.slice(prefix.length);
+  const [first = '', ...rest] = path.replace(/^\/+|\/+$/g, '').split('/');
+  if (first === '404') return false;
+  if (first === 'ar') return arabic.has(rest.join('/'));
+  return !(first in locales);
+}
 
 // Pages link to each other as `/install/compose/`. Astro doesn't add the base path to Markdown
 // links, so under a base this adds it, before the link check reads them (the check expects
@@ -145,6 +170,15 @@ export default defineConfig({
   // `process` (apps/web/vite.config.ts does the same).
   vite: { define: { 'process.env.KEPT_VERSION': 'undefined' } },
   integrations: [
+    sitemap({
+      filter: inSitemap,
+      i18n: {
+        defaultLocale: 'root',
+        locales: Object.fromEntries(
+          Object.entries(locales).map(([code, { lang }]) => [code, lang]),
+        ),
+      },
+    }),
     starlight({
       title: 'Kept',
       description:

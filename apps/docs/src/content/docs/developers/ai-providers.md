@@ -1,5 +1,8 @@
 ---
 title: AI providers
+head:
+  - tag: title
+    content: AI providers in the server | Kept
 description: How the server talks to AI providers, how every call is paced, capped and recorded, and how to add a provider.
 ---
 
