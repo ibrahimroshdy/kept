@@ -3,6 +3,17 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.10.0 (2026-10-15)
+
+### Features
+
+- **moving:** pack, track and unpack boxes (D251) (#126) (a6105fb)
+- **things:** a spreadsheet view with edit in place and bulk edit (D250) (#125) (1090c2c)
+
+### Documentation
+
+- **release:** the 1.9.2 record (#124) (1fe3cde)
+
 ## 1.9.2 (2026-10-15)
 
 ### Documentation
