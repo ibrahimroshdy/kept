@@ -22336,6 +22336,7 @@ msgstr "Il ne reste que {left} de {name}."
 msgid "Only {left} left."
 msgstr "Il n'en reste que {left}."
 
+#: src/assistant/confirm-card.tsx
 #: src/components/services/log-service-sheet.tsx
 msgid "From stock"
 msgstr "Depuis le stock"

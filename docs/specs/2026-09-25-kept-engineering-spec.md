@@ -275,7 +275,7 @@ response stays under about 8 KB.
 | `create_place` | write | `parent_id`, `name`, `kind` |
 | `lend_thing` / `return_thing` / `borrow_thing` | write | `thing_id`, `person` (name or id), `due_on` |
 | `log_reading` | write | `thing_id` or `meter_id`, `value`, `taken_at` |
-| `log_service` | write | `thing_id` or `place_id`, `serviced_on`, `vendor`, `total`, `lines`, `completes` (schedule ids) |
+| `log_service` | write | `thing_id` or `place_id`, `serviced_on`, `vendor`, `total`, `lines` (each: `description`, `amount`, and from stock `consumable_thing_id` with an optional `consumed_quantity`, D236), `completes` (schedule ids) |
 | `log_fuel` | write | `thing_id`, `amount`, `unit`, `cost`, `full`, `reading` |
 | `complete_schedule` / `snooze_schedule` | write | `schedule_id`, `until_date` or `until_value` |
 | `add_warranty` | write | `thing_id`, `kind`, `ends_on` or `term_months`, `provider` |

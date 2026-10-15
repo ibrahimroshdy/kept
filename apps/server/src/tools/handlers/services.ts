@@ -1,7 +1,7 @@
 import type pg from 'pg';
-import { invalid } from '../../http/errors.js';
+import { AppError, invalid, notFound } from '../../http/errors.js';
 import { createService, type LineInput, type VendorInput } from '../../schedules/services.js';
-import { locationOfRef, placeIn, thingIn } from '../resolve.js';
+import { findRef, locationOfRef, placeIn, thingIn } from '../resolve.js';
 import type { Handler, Op } from '../types.js';
 import { eventOf } from './household.js';
 
@@ -14,6 +14,14 @@ import { eventOf } from './household.js';
 // on the Log a service form (T9, Q12), and the assistant never runs a write tool until the person
 // confirms its card (step-6 plan T13, D22). Undoable for 7 days when it completes a schedule,
 // as the route's is (D150); a plain log is removed by DELETE.
+//
+// D236: a line may name a consumable it used (`consumable_thing_id`, an id or a short ID) and how
+// much (`consumed_quantity`, else 1), as the form's **From stock** does; createService moves the
+// count (services/stock.ts). Its refusals come back in the tool's shape, pointed at the line:
+// `not_enough_stock` (saying what is left), `not_consumable`, `not_found` for a thing that isn't
+// in the location, and Consumables off answers `tool_unavailable` as any module that is off does
+// (D113). A hint never carries the consumable's name: names are user-written text, which a
+// tool's answer keeps under `untrusted` (D179), and an error has none.
 
 const locationOf = (op: Op) => {
   if (!op.location) throw new Error('a write tool always runs in one location');
@@ -37,6 +45,48 @@ async function vendorOf(
   return rows[0] ? { id: rows[0].id } : { name: raw };
 }
 
+/** The line's consumable, in the call's location: its id, else 404 pointing at the line. */
+async function consumableIn(
+  client: pg.ClientBase,
+  locationId: string,
+  raw: string,
+  line: number,
+): Promise<string> {
+  const found = await findRef(client, raw);
+  if (found?.kind !== 'thing' || found.locationId !== locationId) {
+    throw notFound(`Check lines.${line}.consumable_thing_id: no such thing in this location.`);
+  }
+  return found.id;
+}
+
+/** A stock refusal from createService, re-said for the line that caused it (no names, D179). */
+function stockRefusal(err: unknown, lines: readonly LineInput[]): unknown {
+  if (!(err instanceof AppError)) return err;
+  const at = (id: unknown) => {
+    const i = lines.findIndex((l) => typeof id === 'string' && l.consumableThingId === id);
+    return i < 0 ? 'lines' : `lines.${i}`;
+  };
+  if (err.code === 'not_enough_stock') {
+    const thing = err.extra?.thing as { id?: unknown } | undefined;
+    const left = err.extra?.left;
+    return new AppError(
+      'not_enough_stock',
+      409,
+      `Check ${at(thing?.id)}.consumed_quantity: only ${String(left)} left of that consumable. Lower it, or adjust_stock first.`,
+      err.extra as Record<string, unknown>,
+    );
+  }
+  if (err.code === 'not_consumable') {
+    return new AppError(
+      'not_consumable',
+      409,
+      `Check ${at(err.extra?.thingId)}.consumable_thing_id: only things you run out of can be used from stock.`,
+      err.extra as Record<string, unknown>,
+    );
+  }
+  return err;
+}
+
 export const logServiceTool: Handler<'log_service'> = {
   action: 'logs.add',
   subjectLocation: (client, input) => locationOfRef(client, input.thing_id ?? input.place_id),
@@ -58,11 +108,22 @@ export const logServiceTool: Handler<'log_service'> = {
     if (currencies.size > 1) throw invalid('Give the total and the lines in one currency.');
     const [currency] = currencies;
 
-    const lines: LineInput[] = (input.lines ?? []).map((l) => ({
-      kind: 'other',
-      description: l.description,
-      ...(l.amount ? { quantity: '1', unitCost: l.amount.amount } : {}),
-    }));
+    const lines: LineInput[] = [];
+    for (const [i, l] of (input.lines ?? []).entries()) {
+      lines.push({
+        kind: 'other',
+        description: l.description,
+        ...(l.amount ? { quantity: '1', unitCost: l.amount.amount } : {}),
+        ...(l.consumable_thing_id
+          ? {
+              consumableThingId: await consumableIn(op.client, loc.id, l.consumable_thing_id, i),
+              ...(l.consumed_quantity !== undefined
+                ? { consumedQuantity: String(l.consumed_quantity) }
+                : {}),
+            }
+          : {}),
+      });
+    }
     const vendor = input.vendor?.trim();
     const record = await createService(op, {
       subject,
@@ -72,6 +133,8 @@ export const logServiceTool: Handler<'log_service'> = {
       ...(currency ? { currency } : {}),
       lines,
       ...(input.completes?.length ? { completes: input.completes } : {}),
+    }).catch((err: unknown) => {
+      throw stockRefusal(err, lines);
     });
     return {
       data: { ...(await eventOf(op, 'service_record', record.id)), service_id: record.id },

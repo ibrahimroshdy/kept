@@ -22336,6 +22336,7 @@ msgstr "Only {left} left of {name}."
 msgid "Only {left} left."
 msgstr "Only {left} left."
 
+#: src/assistant/confirm-card.tsx
 #: src/components/services/log-service-sheet.tsx
 msgid "From stock"
 msgstr "From stock"

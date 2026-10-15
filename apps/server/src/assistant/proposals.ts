@@ -138,6 +138,13 @@ async function refsOf(
       if (typeof np?.parent_id === 'string') raws.push({ key: 'parent_id', raw: np.parent_id });
     }
   }
+  // log_service: each line's consumable (D236), so the card names what comes off the shelf.
+  if (Array.isArray(args.lines)) {
+    for (const line of args.lines as Record<string, unknown>[]) {
+      const raw = line?.consumable_thing_id;
+      if (typeof raw === 'string') raws.push({ key: 'consumable_thing_id', raw });
+    }
+  }
   for (const { key, raw } of raws) {
     if (!parseRef(raw)) continue;
     const found = await findRef(client, raw);

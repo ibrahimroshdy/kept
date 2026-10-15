@@ -18,7 +18,9 @@ export type Val =
   | { t: 'date'; v: string }
   | { t: 'money'; amount: string; currency: string }
   | { t: 'yes'; v: boolean }
-  | { t: 'list'; v: string[] };
+  | { t: 'list'; v: string[] }
+  /** D236: what a service line takes off a consumable's shelf; no name when Kept can't name it. */
+  | { t: 'take'; n: number; name?: string };
 
 export type FieldKey =
   | 'from'
@@ -52,7 +54,8 @@ export type FieldKey =
   | 'value'
   | 'until'
   | 'delta'
-  | 'quantity';
+  | 'quantity'
+  | 'stock';
 
 export type Field = { key: FieldKey; before?: Val; after: Val };
 
@@ -321,6 +324,12 @@ export function rowsOf(p: Proposal): CardRow[] {
         ? a.lines.map((l) => str(rec(l).description)).filter((x): x is string => !!x)
         : [];
       if (lines.length) push('lines', { t: 'list', v: lines });
+      // D236: each line that uses stock, one row per line: how much (1 unless said) of what.
+      for (const l of Array.isArray(a.lines) ? a.lines.map(rec) : []) {
+        if (!str(l.consumable_thing_id)) continue;
+        const name = ref(l.consumable_thing_id)?.name;
+        push('stock', { t: 'take', n: num(l.consumed_quantity) ?? 1, ...(name ? { name } : {}) });
+      }
       return [{ ...base, verb: 'service', target: target(a.thing_id ?? a.place_id), fields }];
     }
     case 'log_fuel': {
