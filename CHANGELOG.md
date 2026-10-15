@@ -3,6 +3,16 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.6.0 (2026-10-15)
+
+### Features
+
+- **map:** see a location as a 3D map, floor by floor, and arrange it (D237) (#83) (8164c22)
+
+### Documentation
+
+- **release:** the 1.5.1 record (#82) (73faedc)
+
 ## 1.5.1 (2026-10-15)
 
 ### Features
