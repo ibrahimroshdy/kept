@@ -12,6 +12,8 @@
  *   `StorageFullError` so the capture screen can say so instead of losing the capture silently.
  */
 
+import { TRY } from '@/try/flag';
+
 /** The phone has no room for this write, even after the thumbnail cache was emptied. */
 export class StorageFullError extends Error {
   constructor(message = 'The phone is out of storage for Kept.') {
@@ -49,6 +51,9 @@ const storageManager = (): StorageManagerLike | undefined =>
  * browser has no Storage API (the answer is then unknown, and nothing is shown).
  */
 export async function requestPersistence(): Promise<boolean | null> {
+  // Try Kept (D246) keeps its database in memory: there is nothing to make last, and Firefox
+  // would ask the visitor.
+  if (TRY) return null;
   const s = storageManager();
   if (!s?.persist) return null;
   try {

@@ -23,6 +23,7 @@ import { Button, buttonClass } from '@/components/ui/button';
 import { toast } from '@/components/ui/toast';
 import { autoDownloads, canShareType, downloadsWork, downloadUrl, shareFiles } from '@/lib/files';
 import { useFormat } from '@/lib/format';
+import { TRY } from '@/try/flag';
 
 /** The server's cap on one report (apps/server/src/reports/gather.ts `MAX_THINGS`). */
 const MAX_THINGS = 2000;
@@ -103,6 +104,14 @@ function ReadyActions({
   const { t } = useLingui();
   const [sharing, setSharing] = useState(false);
   const viewUrl = run.viewUrl ?? run.fileUrl;
+  // Try Kept (D246): the demo has no server to make the PDF; it says so instead of handing out a
+  // blank one.
+  if (TRY)
+    return (
+      <span className="text-small text-ink-2">
+        <Trans>Your own Kept makes the PDF here. This demo has no files.</Trans>
+      </span>
+    );
   const canDownload = downloadsWork();
   // A press on a link that aged since the last check waits for the new one instead.
   const guard = (e: MouseEvent) => {
@@ -205,9 +214,9 @@ export function ReportProgress({
   const hours = f.num(KEPT_HOURS);
   const done = run?.status === 'done';
   const links = useLinksFresh(query.dataUpdatedAt, done);
-  const fileUrl = done && links.fresh ? run?.fileUrl : undefined;
+  const fileUrl = done && links.fresh && !TRY ? run?.fileUrl : undefined;
   const [shareable] = useState(() => canShareType('kept-inventory.pdf', 'application/pdf'));
-  const file = useReportFile(done ? run : undefined, shareable && links.fresh, filename);
+  const file = useReportFile(done && !TRY ? run : undefined, shareable && links.fresh, filename);
   // Aged links: read the run again for new ones (the poll does too, a minute before this).
   const { refetch, isFetching } = query;
   useEffect(() => {

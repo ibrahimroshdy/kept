@@ -6,7 +6,8 @@ description: Home, places and boxes, things and their labels, paperwork, search,
 Kept answers three questions about everything you own: where it is, what paperwork it has, and
 what it needs next. This page walks through the screens that do that. Which of them you see
 depends on your role and on what each location tracks
-([presets and roles](/users/first-run/#3-create-your-first-home)).
+([presets and roles](/users/first-run/#3-create-your-first-home)). To click through them before
+installing, [try Kept](/try/kept/) with a sample household in your browser.
 
 ## Home
 

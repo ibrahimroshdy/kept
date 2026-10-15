@@ -40,21 +40,21 @@ describe('Insights', () => {
 
     const value = section('Value by place');
     const kitchen = within(value).getByRole('link', { name: 'Kitchen' });
-    expect(kitchen).toHaveAttribute('href', '/p/KT4C9H');
+    expect(kitchen).toHaveAttribute('href', `/p/${MOCK_INSIGHT_IDS.kitchen}`);
     expect(within(value).getByText('Valued: 36 of 136 things')).toBeInTheDocument();
     expect(within(value).getByText('Unplaced')).toBeInTheDocument();
 
     const vehicles = section('Vehicle costs');
     expect(within(vehicles).getAllByText('Running cost per month, EGP')[0]).toBeInTheDocument();
     const corolla = within(vehicles).getByRole('link', { name: 'Toyota Corolla' });
-    expect(corolla).toHaveAttribute('href', '/t/C0R0LA?tab=costs');
+    expect(corolla).toHaveAttribute('href', '/t/CAR7TY?tab=costs');
     expect(within(vehicles).getByRole('columnheader', { name: `${Y} so far` })).toBeInTheDocument();
 
     const warranties = section('Warranty coverage');
     expect(within(warranties).getByText('Covered now: 40 of 214 things')).toBeInTheDocument();
-    expect(within(warranties).getByRole('link', { name: 'Dishwasher' })).toHaveAttribute(
+    expect(within(warranties).getByRole('link', { name: 'Galaxy S23' })).toHaveAttribute(
       'href',
-      '/t/D15HW4',
+      '/t/PH0N3S',
     );
     expect(within(warranties).getByRole('link', { name: 'See all on Expiring' })).toHaveAttribute(
       'href',

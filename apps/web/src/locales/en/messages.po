@@ -23431,3 +23431,47 @@ msgstr "Done"
 #: src/components/schedules/labels.tsx
 msgid "Done {day}"
 msgstr "Done {day}"
+
+#: src/try/banner.tsx
+msgid "A sample household in your browser. Nothing is saved."
+msgstr "A sample household in your browser. Nothing is saved."
+
+#: src/try/banner.tsx
+msgid "Reset"
+msgstr "Reset"
+
+#: src/try/off.ts
+msgid "Off in this demo: this would open another site."
+msgstr "Off in this demo: this would open another site."
+
+#: src/components/scan/scanner-view.tsx
+msgid "The camera is off in this demo."
+msgstr "The camera is off in this demo."
+
+#: src/components/notifications/settings/channels.tsx
+msgid "Push is off in this demo."
+msgstr "Push is off in this demo."
+
+#: src/components/capture/file-fallback.tsx
+msgid "The camera is off in this demo"
+msgstr "The camera is off in this demo"
+
+#: src/components/capture/file-fallback.tsx
+msgid "In your own Kept, Capture opens the camera here. Photos you pick stay in this tab."
+msgstr "In your own Kept, Capture opens the camera here. Photos you pick stay in this tab."
+
+#: src/components/device/app-lock-settings.tsx
+msgid "The app lock is off in this demo."
+msgstr "The app lock is off in this demo."
+
+#: src/try/files.ts
+msgid "Downloads are off in this demo."
+msgstr "Downloads are off in this demo."
+
+#: src/components/reports/progress.tsx
+msgid "Your own Kept makes the PDF here. This demo has no files."
+msgstr "Your own Kept makes the PDF here. This demo has no files."
+
+#: src/assistant/conversation.tsx
+msgid "Sample answers in this demo: no AI is asked."
+msgstr "Sample answers in this demo: no AI is asked."

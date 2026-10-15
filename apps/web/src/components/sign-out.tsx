@@ -9,6 +9,7 @@ import { LeaveIcon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useConfirm } from '@/components/ui/confirm';
 import { currentOffline, wipeOffline } from '@/offline/open';
+import { TRY } from '@/try/flag';
 
 /** Ops on this phone the server hasn't answered: captures, moves, readings (D36). */
 async function unsyncedCount(): Promise<number> {
@@ -60,7 +61,12 @@ export function useSignOut() {
   };
 }
 
+/** Try Kept (D246) has no account to leave: its banner's Reset starts the household again. */
 export function SignOutButton() {
+  return TRY ? null : <SignOut />;
+}
+
+function SignOut() {
   const signOutAndLeave = useSignOut();
   const [pending, setPending] = useState(false);
   return (

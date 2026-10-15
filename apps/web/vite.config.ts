@@ -6,12 +6,39 @@ import { serwist } from '@serwist/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 
 // Explicit, because the root `vitest` run starts from the repo root, where Lingui would look.
 // The macro plugin gets the resolved config too: the preset doesn't pass it on.
 const configPath = fileURLToPath(new URL('./lingui.config.ts', import.meta.url));
 const linguiConfig = getConfig({ configPath });
+
+/**
+ * Try Kept (D246, src/try/flag.ts): the demo build the docs site serves under a sub-path
+ * (`pnpm build:try`; apps/docs/scripts/try-app.mjs passes the docs site's base in KEPT_TRY_BASE).
+ * No service worker and no web app manifest, so nothing installs or takes over pages under the
+ * docs site's origin, and the page asks search engines not to index it.
+ */
+const TRY = process.env.VITE_KEPT_TRY === '1';
+const TRY_BASE = process.env.KEPT_TRY_BASE || '/try/kept/app/';
+function tryHtml(): Plugin {
+  const swap = (html: string, from: RegExp, to: string) => {
+    if (!from.test(html)) throw new Error(`index.html: ${from} not found for the Try build`);
+    return html.replace(from, to);
+  };
+  return {
+    name: 'kept-try-html',
+    transformIndexHtml(html) {
+      let out = swap(html, /\n\s*<link rel="manifest"[^>]*>/, '');
+      out = swap(
+        out,
+        /<title>Kept<\/title>/,
+        '<title>Try Kept</title>\n    <meta name="robots" content="noindex" />',
+      );
+      return out;
+    },
+  };
+}
 
 /**
  * Chunks the service worker caches when first used instead of precaching (sw.ts, plan T23):
@@ -265,6 +292,7 @@ const chunkFileName = (chunk: { facadeModuleId: string | null; moduleIds: string
 
 // The router plugin must run before react() so it can split route files (TanStack docs).
 export default defineConfig({
+  base: TRY ? TRY_BASE : '/',
   plugins: [
     tanstackRouter({
       target: 'react',
@@ -279,30 +307,33 @@ export default defineConfig({
     lingui({ configPath }),
     babel({ presets: [linguiTransformerBabelPreset({ linguiConfig }, { configPath })] }),
     tailwindcss(),
+    ...(TRY ? [tryHtml()] : []),
     // The service worker (plan T23; spike docs/spikes/2026-09-26-step3-serwist.md): src/sw.ts is
     // built to dist/sw.js with the precache manifest injected. The precache is the shell, the
     // fonts Kept renders (Latin and Arabic), the icons and the scanner's wasm, so capture and scan
     // work offline (D101). Never /api or /f: authenticated responses stay out of the Cache API
     // (D181, sw.ts). scripts/check-bundle.mjs holds its size budget.
-    serwist({
-      swSrc: 'src/sw.ts',
-      swDest: 'sw.js',
-      globDirectory: 'dist',
-      injectionPoint: 'self.__SW_MANIFEST',
-      rollupFormat: 'iife',
-      // The default is only '**/*.{js,css,html}', which leaves out the fonts and the wasm.
-      globPatterns: ['**/*.{js,css,html,woff2,wasm,svg,png,webmanifest}'],
-      globIgnores: [
-        // Cached when first used (sw.ts): lucide's icons and its DynamicIcon map, and the
-        // catalogues, of which the shell needs only the one in use.
-        'assets/icons/**',
-        'assets/locales/**',
-        'assets/household/**',
-        'sw.js',
-        // Font subsets Kept never renders: its languages are Latin-script and Arabic (D204).
-        'assets/ibm-plex-*-{cyrillic,cyrillic-ext,greek,vietnamese}-*.woff2',
-      ],
-    }),
+    // Not in the Try build (D246): see TRY above.
+    !TRY &&
+      serwist({
+        swSrc: 'src/sw.ts',
+        swDest: 'sw.js',
+        globDirectory: 'dist',
+        injectionPoint: 'self.__SW_MANIFEST',
+        rollupFormat: 'iife',
+        // The default is only '**/*.{js,css,html}', which leaves out the fonts and the wasm.
+        globPatterns: ['**/*.{js,css,html,woff2,wasm,svg,png,webmanifest}'],
+        globIgnores: [
+          // Cached when first used (sw.ts): lucide's icons and its DynamicIcon map, and the
+          // catalogues, of which the shell needs only the one in use.
+          'assets/icons/**',
+          'assets/locales/**',
+          'assets/household/**',
+          'sw.js',
+          // Font subsets Kept never renders: its languages are Latin-script and Arabic (D204).
+          'assets/ibm-plex-*-{cyrillic,cyrillic-ext,greek,vietnamese}-*.woff2',
+        ],
+      }),
   ],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },

@@ -1,6 +1,7 @@
 /** Better Auth calls (sign-in, second factor, passkeys). Paths in ./paths.ts. */
 import { startAuthentication } from '@simplewebauthn/browser';
 import { assistantStore } from '@/assistant/store';
+import { TRY } from '@/try/flag';
 import { api } from './client';
 import { paths } from './paths';
 import type {
@@ -134,6 +135,8 @@ export async function signInWithPasskey(): Promise<unknown> {
 }
 
 export function passkeysSupported(): boolean {
+  // Try Kept (D246) never asks the browser for a passkey.
+  if (TRY) return false;
   return typeof window !== 'undefined' && typeof window.PublicKeyCredential === 'function';
 }
 

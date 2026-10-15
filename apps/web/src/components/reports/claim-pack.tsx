@@ -41,6 +41,8 @@ import { sep, useBytes, useFormat } from '@/lib/format';
 import { useLocationName } from '@/lib/labels';
 import { useOnline } from '@/lib/online';
 import { usePrefs } from '@/lib/prefs';
+import { downloadsAreOff } from '@/try/files';
+import { TRY } from '@/try/flag';
 import type { ReportSearch } from './insurance-report';
 
 /** At most this many things in a selection's pack (the server's limit). */
@@ -335,6 +337,8 @@ function PackReady({ pack }: { pack: ClaimPack }) {
     }
   };
   const getZip = async (url: string) => {
+    // Try Kept (D246): no server holds the file.
+    if (TRY) return downloadsAreOff();
     setBusy('zip');
     try {
       setZip(await fetchZip(url, new Date().toISOString().slice(0, 10)));

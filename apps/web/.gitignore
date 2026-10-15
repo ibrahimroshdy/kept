@@ -1,2 +1,4 @@
 # The demo build (pnpm build:demo): fixture API compiled in, for screenshots only.
 dist-demo/
+# The Try Kept build (pnpm build:try, D246): the demo for the docs site's /try/kept/app/.
+dist-try/

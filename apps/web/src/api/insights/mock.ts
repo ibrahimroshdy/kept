@@ -5,6 +5,7 @@
  * location lets viewers see it), as the server's gate does.
  */
 
+import { INV_IDS } from '../inventory/mock/fixtures';
 import { fixtureMoney, perCurrency } from '../mock/dollars';
 import type { MockState } from '../mock/fixtures';
 import { IDS } from '../mock/fixtures';
@@ -14,14 +15,18 @@ import { insightsPaths as p } from './paths';
 import type { CostAmounts, Insights, LocationValue, VehicleCosts } from './types';
 
 /** The Corolla in the mock's Home (api/vehicles/mock). */
+/**
+ * The things and places Insights names are the inventory's own (api/inventory/mock/fixtures.ts),
+ * so each link opens (D246: Try Kept's route walk found them leading nowhere).
+ */
 export const MOCK_INSIGHT_IDS = {
-  corolla: '01926f00-0000-7000-8000-00000000e101',
-  dishwasher: '01926f00-0000-7000-8000-00000000e102',
-  tv: '01926f00-0000-7000-8000-00000000e103',
-  living: '01926f00-0000-7000-8000-00000000e201',
-  kitchen: '01926f00-0000-7000-8000-00000000e202',
-  bedroom: '01926f00-0000-7000-8000-00000000e203',
-  unplaced: '01926f00-0000-7000-8000-00000000e204',
+  corolla: INV_IDS.thing.car,
+  phone: INV_IDS.thing.phone,
+  tv: INV_IDS.thing.tv,
+  living: INV_IDS.place.livingRoom,
+  kitchen: INV_IDS.place.kitchen,
+  bedroom: INV_IDS.place.bedroom,
+  unplaced: INV_IDS.place.homeUnplaced,
 } as const;
 
 const showsMoney = (l: LocationDetail) =>
@@ -72,7 +77,7 @@ function homeValue(state: MockState, money: boolean): LocationValue {
     places: [
       {
         id: MOCK_INSIGHT_IDS.kitchen,
-        shortCode: 'KT4C9H',
+        shortCode: null,
         name: 'Kitchen',
         unplaced: false,
         things: 61,
@@ -83,7 +88,7 @@ function homeValue(state: MockState, money: boolean): LocationValue {
       },
       {
         id: MOCK_INSIGHT_IDS.living,
-        shortCode: 'LV8R2M',
+        shortCode: null,
         name: 'Living room',
         unplaced: false,
         things: 42,
@@ -131,7 +136,7 @@ export function insightsOf(state: MockState, filter: string[]): Insights {
   ]);
   const corolla: VehicleCosts = {
     id: MOCK_INSIGHT_IDS.corolla,
-    shortCode: 'C0R0LA',
+    shortCode: 'CAR7TY',
     name: 'Toyota Corolla',
     locationId: IDS.home,
     ended: false,
@@ -235,16 +240,16 @@ export function insightsOf(state: MockState, filter: string[]): Insights {
           expiringSoon: home
             ? [
                 {
-                  id: MOCK_INSIGHT_IDS.dishwasher,
-                  shortCode: 'D15HW4',
-                  name: 'Dishwasher',
+                  id: MOCK_INSIGHT_IDS.phone,
+                  shortCode: 'PH0N3S',
+                  name: 'Galaxy S23',
                   locationId: IDS.home,
                   endsOn: `${addMonths(thisMonth, 1)}-03`,
                 },
                 {
                   id: MOCK_INSIGHT_IDS.tv,
-                  shortCode: null,
-                  name: 'Living room TV',
+                  shortCode: '5MT0QD',
+                  name: 'Samsung TV, 55″',
                   locationId: IDS.home,
                   endsOn: `${addMonths(thisMonth, 1)}-20`,
                 },

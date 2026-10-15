@@ -18,6 +18,7 @@
  * The diagnostics probe (pwa/probes.ts) reads `dictationSupport()` and `lastDictationError()`.
  */
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { TRY } from '@/try/flag';
 
 /** The parts of the Web Speech API this uses (no typings for it are relied on). */
 export type RecognitionAlternative = { transcript: string };
@@ -48,14 +49,15 @@ type SpeechWindow = Window & {
 
 /** The browser's recogniser, or null where there is none. */
 export function recognitionCtor(): RecognitionCtor | null {
-  if (typeof window === 'undefined') return null;
+  // Try Kept (D246) never asks for the microphone: no mic shows.
+  if (TRY || typeof window === 'undefined') return null;
   const w = window as SpeechWindow;
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
 /** For the diagnostics probe: which name the API has here. */
 export function dictationSupport(): 'SpeechRecognition' | 'webkitSpeechRecognition' | null {
-  if (typeof window === 'undefined') return null;
+  if (TRY || typeof window === 'undefined') return null;
   const w = window as SpeechWindow;
   if (w.SpeechRecognition) return 'SpeechRecognition';
   if (w.webkitSpeechRecognition) return 'webkitSpeechRecognition';

@@ -7,6 +7,8 @@
  * Needs HTTPS (or localhost): `navigator.mediaDevices` doesn't exist on a plain-HTTP page.
  */
 
+import { TRY } from '@/try/flag';
+
 export const CAMERA_CONSTRAINTS: MediaStreamConstraints = {
   audio: false,
   video: { facingMode: 'environment', width: { ideal: 3840 }, height: { ideal: 2160 } },
@@ -23,7 +25,9 @@ export type CameraProblem =
   | 'no_camera'
   /** Another app holds the camera. */
   | 'busy'
-  | 'failed';
+  | 'failed'
+  /** Try Kept on the docs site (D246): no camera is asked for. */
+  | 'demo';
 
 export type MediaAccess = Pick<MediaDevices, 'getUserMedia'>;
 
@@ -46,6 +50,7 @@ export function cameraEnv(): CameraEnv {
 
 /** A problem known before asking: over HTTP, or no camera API. */
 export function problemUpfront(env: CameraEnv): CameraProblem | null {
+  if (TRY) return 'demo';
   if (!env.secure) return 'insecure';
   if (!env.media) return 'unsupported';
   return null;
