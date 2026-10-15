@@ -3,6 +3,13 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.10.1 (2026-10-15)
+
+### Documentation
+
+- a README with a quick hosting guide and more pictures; SEO for keptinventory.info (#131) (e2f6ba6)
+- **release:** the 1.10.0 record (#128) (53816f1)
+
 ## 1.10.0 (2026-10-15)
 
 ### Features
