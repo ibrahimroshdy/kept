@@ -904,3 +904,88 @@ details[open] > .kmap-orow .kmap-chev {
   color: var(--ink);
   font-weight: 600;
 }
+
+/* Put on… and Add on it (#137): a list of holders or things, each with its shape's picture. */
+.kput {
+  display: grid;
+  gap: 12px;
+  min-height: 0;
+}
+.kput-now {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--sunken);
+  font: 500 13.5px / 1.35 var(--sans);
+  overflow-wrap: anywhere;
+}
+.kput-cap {
+  margin: 0;
+  color: var(--ink-2);
+  font: 500 13px / 1.4 var(--sans);
+  overflow-wrap: anywhere;
+}
+.kput-list {
+  display: grid;
+  gap: 6px;
+  max-height: min(56dvh, 30rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 2px;
+  outline: none;
+}
+.kput-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding-block: 4px;
+  padding-inline: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  outline: none;
+}
+.kput-option[data-hovered],
+.kput-option:hover {
+  border-color: var(--ink-3);
+}
+.kput-option[data-focus-visible],
+.kput-option:focus-visible {
+  outline: 2px solid var(--info);
+  outline-offset: 1px;
+}
+.kput-option[data-selected],
+.kput-option[aria-selected="true"] {
+  border-color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 16%, var(--surface));
+  box-shadow: inset 0 0 0 1px var(--amber);
+}
+.kput-option[data-disabled],
+.kput-option[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.kput-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  font: 500 14px / 1.3 var(--sans);
+  overflow-wrap: anywhere;
+}
+.kput-text small {
+  color: var(--ink-3);
+  font: 500 12px / 1.3 var(--sans);
+}
+.kput-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

@@ -24465,3 +24465,111 @@ msgstr "الأشياء · <0>{thingCount}</0>"
 #: src/components/places/contents-list.tsx
 msgid "Things here · <0>{thingCount}</0>"
 msgstr "الأشياء هنا · <0>{thingCount}</0>"
+
+#: src/map/card.tsx
+msgid "Put on…"
+msgstr "ضع على…"
+
+#: src/map/card.tsx
+msgid "Add on it"
+msgstr "أضف عليه"
+
+#: src/map/labels.ts
+msgid "Monitor arm"
+msgstr "ذراع شاشة"
+
+#: src/map/labels.ts
+msgid "Dual monitor arm"
+msgstr "ذراع لشاشتين"
+
+#: src/map/labels.ts
+msgid "Portable speaker"
+msgstr "سماعة محمولة"
+
+#: src/map/labels.ts
+msgid "Boombox"
+msgstr "سماعة حفلات"
+
+#: src/map/labels.ts
+msgid "Headset"
+msgstr "سماعة بميكروفون"
+
+#: src/map/labels.ts
+msgid "Earbuds"
+msgstr "سماعات أذن"
+
+#: src/map/put-on.tsx
+msgid "{shape} · on {on}"
+msgstr "{shape} · على {on}"
+
+#: src/map/put-on.tsx
+msgid "Put {0} on…"
+msgstr "ضع {0} على…"
+
+#: src/map/put-on.tsx
+msgid "On {0}"
+msgstr "على {0}"
+
+#: src/map/put-on.tsx
+msgid "Take off"
+msgstr "أنزله"
+
+#: src/map/put-on.tsx
+msgid "Find a place to put it"
+msgstr "ابحث عن مكان تضعه عليه"
+
+#: src/map/put-on.tsx
+msgid "Find in {roomName}"
+msgstr "ابحث في {roomName}"
+
+#: src/map/put-on.tsx
+msgid "What can carry it"
+msgstr "ما يمكنه حمله"
+
+#: src/map/put-on.tsx
+msgid "Nothing else in {roomName} can carry it."
+msgstr "لا شيء آخر في {roomName} يمكنه حمله."
+
+#: src/map/put-on.tsx
+msgid "Nothing in {roomName} can carry it. Put a desk, a shelf or a monitor on the map first."
+msgstr "لا شيء في {roomName} يمكنه حمله. ضع مكتبًا أو رفًا أو شاشة على الخريطة أولًا."
+
+#: src/map/put-on.tsx
+msgid "Add on {0}"
+msgstr "أضف على {0}"
+
+#: src/map/put-on.tsx
+msgid "{max, plural, one {Full: it holds one monitor.} other {Full: it holds # monitors.}}"
+msgstr "{max, plural, zero {ممتلئ: لا يحمل شاشات.} one {ممتلئ: يحمل شاشة واحدة.} two {ممتلئ: يحمل شاشتين.} few {ممتلئ: يحمل # شاشات.} many {ممتلئ: يحمل # شاشة.} other {ممتلئ: يحمل # شاشة.}}"
+
+#: src/map/put-on.tsx
+msgid "{left, plural, one {Room for one more.} other {Room for # more.}}"
+msgstr "{left, plural, zero {لا مكان لمزيد.} one {مكان لواحدة أخرى.} two {مكان لاثنتين أخريين.} few {مكان لـ# أخرى.} many {مكان لـ# أخرى.} other {مكان لـ# أخرى.}}"
+
+#: src/map/put-on.tsx
+msgid "Find a thing to add"
+msgstr "ابحث عن شيء لإضافته"
+
+#: src/map/put-on.tsx
+msgid "Things to add on it"
+msgstr "أشياء توضع عليه"
+
+#: src/map/put-on.tsx
+msgid "No monitor in {roomName} is free. Put one on the map first."
+msgstr "لا توجد شاشة متاحة في {roomName}. ضع واحدة على الخريطة أولًا."
+
+#: src/map/put-on.tsx
+msgid "Everything small in {roomName} is on something, or not on the map yet."
+msgstr "كل شيء صغير في {roomName} موضوع على شيء، أو ليس على الخريطة بعد."
+
+#: src/map/put-on.tsx
+msgid "{n, plural, one {Put # on it} other {Put # on it}}"
+msgstr "{n, plural, zero {ضع # عليه} one {ضع واحدًا عليه} two {ضع اثنين عليه} few {ضع # عليه} many {ضع # عليه} other {ضع # عليه}}"
+
+#: src/map/put-on.tsx
+msgid "Pick what goes on it"
+msgstr "اختر ما يوضع عليه"
+
+#: src/map/put-on.tsx
+msgid "On it now: {onNow}"
+msgstr "عليه الآن: {onNow}"

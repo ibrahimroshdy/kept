@@ -1,13 +1,13 @@
-import {
-  canHost,
-  canStandOn,
-  footprintOf,
-  isMapModel,
-  type MapModelKey,
-  rectsOverlap,
-} from '@kept/shared';
+import { canCarry, footprintOf, isMapModel, type MapModelKey, rectsOverlap } from '@kept/shared';
 import { describe, expect, it } from 'vitest';
-import { planOf } from '../../../../web/src/map/layout';
+import {
+  addableOn,
+  centreOf,
+  holdersFor,
+  planOf,
+  putOn,
+  takeOff,
+} from '../../../../web/src/map/layout';
 import { sampleHome } from './sample';
 import { MODEL_NAMES } from './strings';
 
@@ -70,8 +70,7 @@ describe('the Try the map sample home (D241)', () => {
       if (layout.hostId) {
         const host = nodes.get(layout.hostId);
         expect(host?.roomId).toBe(n.roomId);
-        expect(canHost(host?.layout?.model as MapModelKey)).toBe(true);
-        expect(canStandOn(model)).toBe(true);
+        expect(canCarry(host?.layout?.model as MapModelKey, model)).toBe(true);
       }
     }
   });
@@ -87,6 +86,25 @@ describe('the Try the map sample home (D241)', () => {
     }
     const arPlan = planOf(ar.view, { noFloor: 'ليست على طابق', location: ar.location });
     expect(arPlan.levels.map((l) => l.short)).toEqual(['أ', '1', 'س']);
+  });
+
+  it('has a webcam on the monitor’s edge that Put on… and Take off work with (#137)', () => {
+    const plan = planOf(en.view, { noFloor: 'Not on a floor', location: en.location });
+    const monitor = plan.items.find((i) => i.name === 'Dell monitor');
+    const webcam = plan.items.find((i) => i.name === 'HD webcam');
+    const desk = plan.items.find((i) => i.id === monitor?.on);
+    if (!monitor || !webcam || !desk) throw new Error('no office');
+    expect(webcam.on).toBe(monitor.id);
+    // On the edge's line: 3 cm in front of the monitor's middle.
+    expect(centreOf(webcam).z - centreOf(monitor).z).toBeCloseTo(0.03, 2);
+    takeOff(plan.items, plan.rooms, webcam);
+    expect(webcam.on).toBeNull();
+    expect(holdersFor(plan.items, webcam).map((h) => h.name)).toEqual(
+      expect.arrayContaining(['Dell monitor', desk.name]),
+    );
+    expect(addableOn(plan.items, monitor).map((c) => c.id)).toContain(webcam.id);
+    expect(putOn(plan.items, webcam, monitor)).toBe(true);
+    expect(webcam.on).toBe(monitor.id);
   });
 
   it('pins what is low, lent out and due, on things that exist, with dates from today', () => {

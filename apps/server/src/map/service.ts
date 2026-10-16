@@ -1,6 +1,7 @@
 import {
-  canHost,
-  canStandOn,
+  canCarry,
+  capacityOf,
+  carryOf,
   firstOverlap,
   isMapModel,
   MAP_LIMITS,
@@ -27,8 +28,9 @@ import { mapTree, NODE_COLUMNS, type NodeRow, nodeRows, placeRows, versionOf } f
 //   `conflict` with `reason: 'arranged_since'`, so nobody overwrites another's work unseen.
 // - Checked: every room is a room of this location (a live place on a floor or at the top);
 //   every node a live place in a room or a live thing in use in a room, each at most once; a
-//   model from the catalogue; a host that is another node of the session, something can stand
-//   on, holding only small things, with no loop; rooms on one floor don't overlap.
+//   model from the catalogue; a host that is another node of the session and can carry it (small
+//   things on a top, a webcam on a screen's edge, monitors on an arm, #137), no more than an arm
+//   holds, with no loop; rooms on one floor don't overlap.
 // - Audited `place.arrange` on the location with the whole layout before and after (the diff's
 //   `layout`, which the web never shows), undoable for ten minutes (undo.ts).
 
@@ -222,13 +224,17 @@ async function checkedImage(
       host: n.hostId ? n.hostId.toLowerCase() : null,
     });
   }
+  const carried = new Map<string, number>();
   for (const [id, host] of hosts) {
     const hostModel = models.get(host);
     if (!hostModel) throw refuse(`Check nodes: ${id} stands on ${host}, which is not on the map.`);
-    if (!canHost(hostModel)) throw refuse(`Check nodes: nothing can stand on ${host}.`);
-    if (!canStandOn(models.get(id) as MapModelKey)) {
-      throw refuse(`Check nodes: ${id} is too big to stand on something.`);
+    if (!carryOf(hostModel)) throw refuse(`Check nodes: nothing can stand on ${host}.`);
+    if (!canCarry(hostModel, models.get(id) as MapModelKey)) {
+      throw refuse(`Check nodes: ${host} can't carry ${id}.`);
     }
+    const n = (carried.get(host) ?? 0) + 1;
+    if (n > capacityOf(hostModel)) throw refuse(`Check nodes: ${host} is full.`);
+    carried.set(host, n);
     const chain = new Set([id]);
     let cur: string | undefined = host;
     while (cur) {

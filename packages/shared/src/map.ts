@@ -11,6 +11,11 @@
  * bounds, or the drawn model's size. `top` is the height something can stand on; `holds` says it
  * is storage with contents. `glb` names a Poly Haven model (CC0) the web ships, `rotFix` turns it
  * to face +z, `simple` names the drawn stand-in used when detailed models are off.
+ *
+ * Holders (#137): a model with `top` carries small things on it (a desk, a shelf, a box); one with
+ * a `mount` carries them another way, on a screen's top edge (a webcam on a monitor) or on an arm
+ * (monitors on a monitor arm). The saved layout only says which node something is on; how it
+ * sits there comes from the holder's model, so the layout's format is the same for all three.
  */
 
 export const MAP_ROOM_KINDS = ['room', 'balcony', 'terrace', 'garden'] as const;
@@ -32,6 +37,19 @@ export type MapTurn = (typeof MAP_TURNS)[number];
 
 export type MapModelKind = 'furniture' | 'storage' | 'thing';
 
+/**
+ * How a holder without a top carries things (#137), in metres from its footprint's middle before
+ * a turn (`z` towards its front):
+ * - `edge`: a screen's top edge at height `h`, its line `z` from the middle. Small things whose
+ *   footprint fits the edge clip on along it (EDGE_FIT).
+ * - `arm`: one place per `slots` entry (the offset across), each `z` forward and `h` up, for the
+ *   models in `fits`.
+ */
+export type MapMount = Readonly<
+  | { on: 'edge'; h: number; z: number }
+  | { on: 'arm'; h: number; z: number; slots: readonly number[]; fits: readonly string[] }
+>;
+
 export type MapModel = Readonly<{
   w: number;
   d: number;
@@ -40,6 +58,7 @@ export type MapModel = Readonly<{
   top?: number;
   holds?: boolean;
   small?: boolean;
+  mount?: MapMount;
   glb?: string;
   rotFix?: number;
   simple?: string;
@@ -169,7 +188,7 @@ export const MAP_MODELS = {
     rotFix: 90,
   },
   // Drawn: modern appliances and pieces the free library doesn't have.
-  tv: { w: 1.24, d: 0.26, kind: 'thing' },
+  tv: { w: 1.24, d: 0.26, kind: 'thing', mount: { on: 'edge', h: 0.83, z: 0 } },
   bookshelf: { w: 1.2, d: 0.35, kind: 'storage', holds: true },
   lamp: { w: 0.4, d: 0.4, kind: 'thing' },
   counter: { w: 1.8, d: 0.62, kind: 'furniture', top: 0.92, holds: true },
@@ -182,8 +201,34 @@ export const MAP_MODELS = {
   wardrobe: { w: 1.5, d: 0.6, kind: 'storage', holds: true },
   table_lamp: { w: 0.3, d: 0.3, kind: 'thing', small: true },
   desk: { w: 1.4, d: 0.7, kind: 'furniture', top: 0.74, holds: true },
-  monitor: { w: 0.62, d: 0.22, kind: 'thing' },
-  laptop: { w: 0.31, d: 0.22, kind: 'thing', small: true },
+  // A screen's top edge carries a webcam or a small speaker (#137): its height and its line, from
+  // the drawn model (draw.ts).
+  monitor: { w: 0.62, d: 0.22, kind: 'thing', mount: { on: 'edge', h: 0.545, z: 0.03 } },
+  laptop: {
+    w: 0.31,
+    d: 0.22,
+    kind: 'thing',
+    small: true,
+    mount: { on: 'edge', h: 0.215, z: -0.06 },
+  },
+  // Monitor arms (#137): a 10 cm clamp and a 45 cm pole on a desk; one or two monitors 22 cm in
+  // front of the pole, raised 8 cm (their own stands aren't drawn there).
+  monitor_arm: {
+    w: 0.1,
+    d: 0.1,
+    h: 0.45,
+    kind: 'thing',
+    small: true,
+    mount: { on: 'arm', h: 0.08, z: 0.22, slots: [0], fits: ['monitor'] },
+  },
+  dual_monitor_arm: {
+    w: 0.1,
+    d: 0.1,
+    h: 0.45,
+    kind: 'thing',
+    small: true,
+    mount: { on: 'arm', h: 0.08, z: 0.22, slots: [-0.32, 0.32], fits: ['monitor'] },
+  },
   // Everyday electronics, drawn at their real sizes (#130).
   pc_tower: { w: 0.2, d: 0.43, h: 0.45, kind: 'thing', small: true },
   keyboard: { w: 0.44, d: 0.14, h: 0.03, kind: 'thing', small: true },
@@ -191,10 +236,18 @@ export const MAP_MODELS = {
   webcam: { w: 0.1, d: 0.06, h: 0.08, kind: 'thing', small: true },
   camera: { w: 0.13, d: 0.1, h: 0.1, kind: 'thing', small: true },
   speaker: { w: 0.16, d: 0.22, h: 0.27, kind: 'thing', small: true },
+  /** A Bluetooth speaker you carry about (a JBL Flip, a UE Boom). */
+  portable_speaker: { w: 0.18, d: 0.07, h: 0.07, kind: 'thing', small: true },
   floor_speaker: { w: 0.2, d: 0.28, h: 1.0, kind: 'thing' },
+  /** A party speaker with a handle, standing on the floor (a JBL PartyBox). */
+  boombox: { w: 0.35, d: 0.2, h: 0.55, kind: 'thing' },
   smart_speaker: { w: 0.1, d: 0.1, h: 0.15, kind: 'thing', small: true },
   soundbar: { w: 0.9, d: 0.1, h: 0.07, kind: 'thing', small: true },
   headphones: { w: 0.18, d: 0.09, h: 0.2, kind: 'thing', small: true },
+  /** Over-ear headphones with a boom microphone. */
+  headset: { w: 0.19, d: 0.1, h: 0.21, kind: 'thing', small: true },
+  /** A charging case with two buds beside it. */
+  earbuds: { w: 0.08, d: 0.07, h: 0.03, kind: 'thing', small: true },
   router: { w: 0.24, d: 0.15, h: 0.2, kind: 'thing', small: true },
   printer: { w: 0.43, d: 0.36, h: 0.2, kind: 'thing', small: true },
   console: { w: 0.3, d: 0.26, h: 0.07, kind: 'thing', small: true },
@@ -279,6 +332,96 @@ export const canStandOn = (key: MapModelKey): boolean => {
   const m = mapModel(key);
   return m.kind === 'thing' || m.small === true;
 };
+
+export type MapCarry = 'top' | 'edge' | 'arm';
+
+/** How a model carries things (#137): on its top, on a screen's edge, on an arm, or not at all. */
+export function carryOf(key: MapModelKey): MapCarry | null {
+  const m = mapModel(key);
+  if (m.top !== undefined) return 'top';
+  return m.mount?.on ?? null;
+}
+
+/** What clips onto a screen's top edge: a small thing at most this deep and high (a webcam, a
+ * smart speaker, a light), no wider than the screen, and no holder itself. */
+export const EDGE_FIT = { d: 0.12, h: 0.2 } as const;
+
+/** Whether `host` can carry `child` (the server's check and the web's). */
+export function canCarry(host: MapModelKey, child: MapModelKey): boolean {
+  const h = mapModel(host);
+  const c = mapModel(child);
+  if (h.top !== undefined) return canStandOn(child);
+  if (h.mount?.on === 'edge') {
+    return (
+      c.kind === 'thing' &&
+      c.small === true &&
+      !c.mount &&
+      c.d <= EDGE_FIT.d &&
+      c.h !== undefined &&
+      c.h <= EDGE_FIT.h &&
+      c.w <= h.w
+    );
+  }
+  if (h.mount?.on === 'arm') return h.mount.fits.includes(child);
+  return false;
+}
+
+/** How many things a holder carries at most: an arm one per place, anything else no limit. */
+export function capacityOf(key: MapModelKey): number {
+  const m = mapModel(key).mount;
+  return m?.on === 'arm' ? m.slots.length : Number.POSITIVE_INFINITY;
+}
+
+/** The height what a holder carries stands at, above the holder's own base. */
+export function seatHeight(key: MapModelKey): number {
+  const m = mapModel(key);
+  return m.top ?? m.mount?.h ?? 0;
+}
+
+/**
+ * Whether `child` belongs on `host` when someone picks a holder from a list (Put on…, Add on it):
+ * it can carry it, and on a top it fits inside the top's footprint either way round. Dragging
+ * keeps the looser canCarry, as before.
+ */
+export function fitsOn(host: MapModelKey, child: MapModelKey): boolean {
+  if (!canCarry(host, child)) return false;
+  if (carryOf(host) !== 'top') return true;
+  const h = mapModel(host);
+  const c = mapModel(child);
+  return (c.w <= h.w && c.d <= h.d) || (c.d <= h.w && c.w <= h.d);
+}
+
+/** Whether a model could be carried by some holder from a list (it gets Put on…). */
+export const canBeCarried = (key: MapModelKey): boolean =>
+  mapModel(key).small === true ||
+  MAP_MODEL_KEYS.some((h) => carryOf(h) === 'arm' && canCarry(h, key));
+
+/**
+ * A point in a holder's own frame (`x` across, `z` towards its front, from its footprint's middle)
+ * turned as the holder is: the map turns a model by `rot` degrees the way three.js turns about y
+ * by −rot (engine.ts placeItem).
+ */
+export function turnOffset(x: number, z: number, rot: number): { x: number; z: number } {
+  const a = (-rot * Math.PI) / 180;
+  const c = Math.round(Math.cos(a));
+  const s = Math.round(Math.sin(a));
+  return { x: x * c + z * s, z: -x * s + z * c };
+}
+
+/** The other way: a point near a turned holder back in the holder's own frame. */
+export function unturnOffset(x: number, z: number, rot: number): { x: number; z: number } {
+  return turnOffset(x, z, (360 - (rot % 360)) % 360);
+}
+
+/**
+ * The drag's grid (#137): about a centimetre for small things (a webcam moves a centimetre, not a
+ * webcam), 5 cm for things, 10 cm for furniture and storage, as before. In metres.
+ */
+export function snapStep(key: MapModelKey): number {
+  const m = mapModel(key);
+  if (m.small || Math.max(m.w, m.d) < 0.3) return 0.01;
+  return m.kind === 'thing' ? 0.05 : 0.1;
+}
 
 /** Words in a name that pick a model (lower case, whole words or word starts). First match wins. */
 const NAME_MODELS: readonly (readonly [RegExp, MapModelKey])[] = [

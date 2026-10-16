@@ -227,6 +227,7 @@ export function materials() {
   return {
     fabric: mat('fabric', cloth([127, 140, 154])),
     fabricDark: mat('fabricDark', cloth([96, 107, 120])),
+    fabricBlue: mat('fabricBlue', cloth([46, 86, 124])),
     cushion: mat('cushion', cloth([140, 153, 167])),
     linen: mat('linen', cloth([237, 230, 216])),
     duvet: mat('duvet', cloth([204, 212, 221])),
@@ -371,6 +372,22 @@ function tor(
   g.add(o);
   return o;
 }
+/** A round bar from one point to another. */
+function rod(
+  g: THREE.Object3D,
+  a: readonly [number, number, number],
+  b: readonly [number, number, number],
+  r: number,
+  m: Mat,
+) {
+  const from = new THREE.Vector3(...a);
+  const dir = new THREE.Vector3(...b).sub(from);
+  const o = new THREE.Mesh(new THREE.CylinderGeometry(r, r, dir.length(), 12), m);
+  o.position.copy(from).addScaledVector(dir, 0.5);
+  o.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
+  g.add(o);
+  return o;
+}
 function legs4(
   g: THREE.Object3D,
   w: number,
@@ -412,6 +429,13 @@ function slab(
 // ---- Drawn models ---------------------------------------------------------------------------
 
 type Build = (g: THREE.Group, w: number, d: number) => void;
+
+/** A monitor arm's clamp and pole (#137). */
+function armBase(g: THREE.Object3D, w: number, d: number, F: Materials) {
+  rb(g, 0.08, 0.02, 0.1, w / 2, 0.01, d / 2, F.black, 0.006);
+  cy(g, 0.018, 0.018, 0.43, w / 2, 0.235, d / 2, F.steel, 0, 0, 16);
+  cy(g, 0.022, 0.022, 0.025, w / 2, 0.42, d / 2, F.black, 0, 0, 16);
+}
 
 /** The drawn models by name (MAP_MODELS' own key, or a `simple` stand-in's). */
 export function drawnModels(F: Materials): Record<string, Build> {
@@ -622,6 +646,31 @@ export function drawnModels(F: Materials): Record<string, Build> {
       rb(g, 0.06, 0.24, 0.03, w / 2, 0.15, d / 2 - 0.02, F.steel, 0.01);
       rb(g, 0.24, 0.012, 0.16, w / 2, 0.006, d / 2, F.steel, 0.006);
     },
+    /** A monitor on an arm (#137): the screen and its mount plate, no stand. */
+    monitor_on_arm(g, w, d) {
+      rb(g, w, 0.37, 0.02, w / 2, 0.36, d / 2 + 0.03, F.black, 0.008);
+      rb(g, w - 0.02, 0.35, 0.003, w / 2, 0.365, d / 2 + 0.041, F.screen, 0.002);
+      rb(g, 0.12, 0.12, 0.012, w / 2, 0.36, d / 2 + 0.014, F.black, 0.004);
+    },
+    // ---- Monitor arms (#137): a clamp, a pole and the arms to the monitors' mount plates. The
+    // monitors sit where the shape's mount says (map.ts): 22 cm in front, raised 8 cm.
+    monitor_arm(g, w, d) {
+      armBase(g, w, d, F);
+      const at = [w / 2, 0.42, d / 2] as const;
+      const elbow = [w / 2 + 0.09, 0.425, d / 2 + 0.11] as const;
+      rod(g, at, elbow, 0.014, F.steel);
+      rod(g, elbow, [w / 2, 0.44, d / 2 + 0.2], 0.012, F.steel);
+      rb(g, 0.1, 0.1, 0.008, w / 2, 0.44, d / 2 + 0.226, F.black, 0.004);
+    },
+    dual_monitor_arm(g, w, d) {
+      armBase(g, w, d, F);
+      for (const s of [-0.32, 0.32]) {
+        const elbow = [w / 2 + s * 0.6, 0.425, d / 2 + 0.08] as const;
+        rod(g, [w / 2, 0.42, d / 2], elbow, 0.013, F.steel);
+        rod(g, elbow, [w / 2 + s, 0.44, d / 2 + 0.2], 0.011, F.steel);
+        rb(g, 0.1, 0.1, 0.008, w / 2 + s, 0.44, d / 2 + 0.226, F.black, 0.004);
+      }
+    },
     laptop(g, w, d) {
       rb(g, w, 0.012, d, w / 2, 0.006, d / 2, F.steel, 0.006);
       const lid = rb(g, w, 0.008, d, w / 2, 0.11, 0.02, F.steel, 0.004);
@@ -745,6 +794,88 @@ export function drawnModels(F: Materials): Record<string, Build> {
       pad.rotation.z = Math.PI * 0.225;
       g.add(pad);
       for (const x of [0.016, w - 0.016]) rb(g, 0.006, 0.03, 0.012, x, 0.1, d / 2, F.steel, 0.002);
+    },
+    /** Over-ear headphones with a boom microphone. */
+    headset(g, w, d) {
+      for (const [x, cx] of [
+        [0.018, 0.04],
+        [w - 0.018, w - 0.04],
+      ] as const) {
+        cy(g, 0.048, 0.048, 0.034, x, 0.058, d / 2, F.black, 0, Math.PI / 2, 24);
+        cy(g, 0.042, 0.042, 0.014, cx, 0.058, d / 2, F.fabricDark, 0, Math.PI / 2, 24);
+        const ring = tor(g, 0.036, 0.003, x + (x < w / 2 ? -0.0175 : 0.0175), 0.058, d / 2, F.red);
+        ring.rotation.y = Math.PI / 2;
+      }
+      const band = new THREE.Mesh(
+        new THREE.TorusGeometry(w / 2 - 0.018, 0.009, 8, 28, Math.PI),
+        F.black,
+      );
+      band.position.set(w / 2, 0.11, d / 2);
+      g.add(band);
+      for (const x of [0.018, w - 0.018])
+        rb(g, 0.008, 0.035, 0.014, x, 0.11, d / 2, F.steel, 0.002);
+      // The boom: from the left cup, forward and in towards the mouth.
+      const tip = [0.06, 0.03, d - 0.004] as const;
+      rod(g, [0.012, 0.045, d / 2 + 0.02], [0.03, 0.035, d - 0.01], 0.0035, F.black);
+      rod(g, [0.03, 0.035, d - 0.01], tip, 0.0035, F.black);
+      sp(g, 0.007, ...tip, F.mesh);
+    },
+    /** A charging case, lid shut, with two buds in front of it. */
+    earbuds(g, w, d) {
+      rb(g, 0.06, 0.022, 0.045, w / 2, 0.011, 0.0245, F.white, 0.01);
+      rb(g, 0.058, 0.0012, 0.043, w / 2, 0.016, 0.0245, F.steel, 0);
+      sp(g, 0.0022, w / 2, 0.012, 0.047, F.green);
+      for (const s of [-1, 1]) {
+        const x = w / 2 + s * 0.016;
+        const z = d - 0.009;
+        sp(g, 0.0085, x - s * 0.006, 0.0085, z, F.white, 1, 0.95, 1);
+        sp(g, 0.004, x - s * 0.006, 0.0085, z + 0.006, F.black);
+        cy(g, 0.0028, 0.0028, 0.02, x + s * 0.006, 0.004, z, F.white, 0, Math.PI / 2, 12);
+      }
+    },
+    /** A Bluetooth speaker you carry: a fabric cylinder lying down, rubber ends. */
+    portable_speaker(g, w, d) {
+      const r = Math.min(d, 0.07) / 2 - 0.001;
+      cy(g, r, r, w - 0.016, w / 2, r, d / 2, F.fabricBlue, 0, Math.PI / 2, 28);
+      for (const x of [0.004, w - 0.004]) {
+        cy(g, r + 0.001, r + 0.001, 0.008, x, r, d / 2, F.rubber, 0, Math.PI / 2, 28);
+        cy(
+          g,
+          r * 0.6,
+          r * 0.6,
+          0.002,
+          x + (x < w / 2 ? -0.004 : 0.004),
+          r,
+          d / 2,
+          F.black,
+          0,
+          Math.PI / 2,
+          24,
+        );
+      }
+      for (let i = -1; i <= 1; i++)
+        rb(g, 0.012, 0.004, 0.012, w / 2 + i * 0.018, 2 * r, d / 2, F.rubber, 0.003);
+      rb(g, 0.05, 0.004, 0.006, w / 2, 0.002, d / 2, F.rubber, 0.002);
+    },
+    /** A party speaker: a tall cabinet, two woofers with a light ring, a handle on top. */
+    boombox(g, w, d) {
+      for (const x of [0.04, w - 0.04])
+        for (const z of [0.04, d - 0.04])
+          cy(g, 0.015, 0.015, 0.012, x, 0.006, z, F.rubber, 0, 0, 12);
+      rb(g, w, 0.48, d, w / 2, 0.252, d / 2, F.black, 0.03);
+      for (const [y, r] of [
+        [0.165, 0.12],
+        [0.38, 0.075],
+      ] as const) {
+        cy(g, r, r, 0.008, w / 2, y, d + 0.001, F.mesh, Math.PI / 2, 0, 32);
+        const ring = tor(g, r + 0.008, 0.005, w / 2, y, d + 0.004, F.glow);
+        ring.rotation.x = 0;
+        sp(g, r * 0.3, w / 2, y, d - 0.005, F.black, 1, 1, 0.4);
+      }
+      for (const x of [w / 2 - 0.1, w / 2 + 0.1])
+        rb(g, 0.03, 0.05, 0.04, x, 0.515, d / 2, F.black, 0.01);
+      rb(g, 0.24, 0.024, 0.045, w / 2, 0.536, d / 2, F.rubber, 0.01);
+      rb(g, 0.1, 0.004, 0.05, w / 2, 0.493, d / 2 - 0.05, F.keys, 0.002);
     },
     router(g, w, d) {
       for (const x of [0.03, w - 0.03])

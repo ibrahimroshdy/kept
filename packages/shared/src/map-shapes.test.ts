@@ -161,7 +161,7 @@ describe('suggestShapes: then the name, in five languages', () => {
 
 describe('suggestShapes: everyday electronics (#130)', () => {
   it.each([
-    ['4K webcam', 'webcam'],
+    ['HD webcam', 'webcam'],
     ['Logitech webcam', 'webcam'],
     ['Webcam', 'webcam'],
     ['Caméra web', 'webcam'],
@@ -173,10 +173,10 @@ describe('suggestShapes: everyday electronics (#130)', () => {
     ['كاميرا', 'camera'],
     ['Wi-Fi router', 'router'],
     ['Routeur', 'router'],
-    ['Bluetooth speaker', 'speaker'],
-    ['Lautsprecher', 'speaker'],
-    ['altoparlante', 'speaker'],
-    ['سماعة', 'speaker'],
+    ['Bluetooth speaker', 'portable_speaker'],
+    ['PC-Lautsprecher', 'speaker'],
+    ['altoparlante da scrivania', 'speaker'],
+    ['سماعة بلوتوث', 'portable_speaker'],
     ['Floorstanding speaker', 'floor_speaker'],
     ['Echo Dot', 'smart_speaker'],
     ['Barre de son', 'soundbar'],
@@ -211,7 +211,7 @@ describe('suggestShapes: everyday electronics (#130)', () => {
   });
 
   it('gives a webcam its own shape at a webcam’s size, not a box’s', () => {
-    expect(shapeOnAdd({ name: '4K webcam' })).toEqual({ model: 'webcam', from: 'name' });
+    expect(shapeOnAdd({ name: 'HD webcam' })).toEqual({ model: 'webcam', from: 'name' });
     const m = mapModel('webcam');
     expect(m.w).toBeLessThanOrEqual(0.15);
     expect(m.d).toBeLessThanOrEqual(0.1);
@@ -256,7 +256,7 @@ describe('suggestShapes: everyday electronics (#130)', () => {
     expect(cam.confident).toBe(false);
     expect(first({ name: 'Office', typeKey: 'network_device' })).toBe('router');
     // A webcam typed as a camera: the name settles it.
-    expect(shapeOnAdd({ name: '4K webcam', typeKey: 'camera' })).toEqual({
+    expect(shapeOnAdd({ name: 'HD webcam', typeKey: 'camera' })).toEqual({
       model: 'webcam',
       from: 'name',
     });
@@ -274,6 +274,85 @@ describe('suggestShapes: everyday electronics (#130)', () => {
     // Inside a shape's own phrase an accessory word is just a word.
     expect(shapeOnAdd({ name: 'TV stand' })).toEqual({ model: 'tv_stand', from: 'name' });
     expect(sure({ name: 'حامل تلفاز' })).toBe(true);
+  });
+});
+
+describe('suggestShapes: headsets, earbuds, speakers in sizes and monitor arms', () => {
+  it.each([
+    ['AirPods Pro', 'earbuds'],
+    ['airpods case', 'earbuds'],
+    ['Galaxy Buds', 'earbuds'],
+    ['Écouteurs sans fil', 'earbuds'],
+    ['سماعات أذن', 'earbuds'],
+    ['gaming headset', 'headset'],
+    ['HyperX Cloud headset', 'headset'],
+    ['Jabra headset', 'headset'],
+    ['Casque micro', 'headset'],
+    ['Sony WH-1000XM5 headphones', 'headphones'],
+    ['Bose QC headphones', 'headphones'],
+    ['JBL Flip 6', 'portable_speaker'],
+    ['UE Boom 3', 'portable_speaker'],
+    ['JBL PartyBox 110', 'boombox'],
+    ['Ghetto blaster', 'boombox'],
+    ['Edifier desk speakers', 'speaker'],
+    ['Echo Dot', 'smart_speaker'],
+    ['Ergotron LX', 'monitor_arm'],
+    ['Amazon Basics monitor arm', 'monitor_arm'],
+    ['Monitor mount', 'monitor_arm'],
+    ['dual monitor arm', 'dual_monitor_arm'],
+    ['Doppel-Monitorarm', 'dual_monitor_arm'],
+  ] as const)('%s gets the %s, given by itself', (name, model) => {
+    const s = suggestShapes({ name });
+    expect(s.shapes[0]).toMatchObject({ model, from: 'name' });
+    expect(s.confident).toBe(true);
+  });
+
+  it('suggests every speaker size for a plain speaker, and gives none by itself', () => {
+    for (const name of ['speaker', 'Lautsprecher', 'سماعة']) {
+      const s = suggestShapes({ name });
+      expect(s.confident, name).toBe(false);
+      expect(s.shapes.map((x) => x.model).sort(), name).toEqual(
+        [
+          'boombox',
+          'floor_speaker',
+          'portable_speaker',
+          'smart_speaker',
+          'soundbar',
+          'speaker',
+        ].sort(),
+      );
+    }
+  });
+
+  it('does not give a monitor stand the monitor', () => {
+    const s = suggestShapes({ name: 'monitor stand' });
+    expect(s.confident).toBe(false);
+    expect(shapeOnAdd({ name: 'monitor stand' }).from).toBe('guess');
+  });
+
+  it('keeps the accessory rule for everything but the earbuds’ own case', () => {
+    expect(sure({ name: 'Phone case' })).toBe(false);
+    expect(sure({ name: 'Headphones case' })).toBe(false);
+    expect(shapeOnAdd({ name: 'Etui AirPods' })).toEqual({ model: 'earbuds', from: 'name' });
+  });
+
+  it('draws them at their real sizes, small enough to stand on things but the boombox', () => {
+    const sizes: Record<string, [number, number, number]> = {
+      headset: [19, 10, 21],
+      earbuds: [8, 7, 3],
+      portable_speaker: [18, 7, 7],
+      boombox: [35, 20, 55],
+      monitor_arm: [10, 10, 45],
+      dual_monitor_arm: [10, 10, 45],
+    };
+    for (const [key, [w, d, h]] of Object.entries(sizes)) {
+      const m = mapModel(key as MapModelKey);
+      expect(m.w * 100, key).toBeCloseTo(w, -0.7);
+      expect(m.d * 100, key).toBeCloseTo(d, -0.7);
+      expect((m.h ?? 0) * 100, key).toBeCloseTo(h, -0.7);
+      expect(SHAPE_GROUP[key as MapModelKey], key).toBe('electronics');
+      expect(m.small === true, key).toBe(key !== 'boombox');
+    }
   });
 });
 

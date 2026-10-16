@@ -8,9 +8,11 @@
  * from its corner, around anything arranged there. A room nobody arranged is sized to fit.
  */
 import {
-  canHost,
-  canStandOn,
+  canCarry,
+  capacityOf,
+  carryOf,
   cmToM,
+  fitsOn,
   footprintOf,
   guessModel,
   isMapModel,
@@ -20,10 +22,14 @@ import {
   type MapRect,
   type MapRoomKind,
   type MapSurface,
+  mapModel,
   mToCm,
   ROOM_KIND_SURFACE,
   rectsOverlap,
   type ShapeFrom,
+  snapStep,
+  turnOffset,
+  unturnOffset,
 } from '@kept/shared';
 import type {
   LayoutBody,
@@ -178,12 +184,19 @@ export function planOf(view: MapView, names: PlanNames): Plan {
       items.push(itemOf(n, models[i] as MapModelKey, p.x, p.z));
     });
   }
-  // Stand only on something that is on the map, can hold it, and doesn't stand on it.
+  // Stand only on something that is on the map, can carry it and has room for it (an arm holds
+  // one or two monitors), and doesn't stand on it.
   const byId = new Map(items.map((i) => [i.id, i]));
+  const carried = new Map<string, number>();
   for (const it of items) {
     const host = it.on ? byId.get(it.on) : undefined;
-    if (!host || host.roomId !== it.roomId || !canHost(host.model) || !canStandOn(it.model))
+    if (!host || host.roomId !== it.roomId || !canCarry(host.model, it.model)) {
       it.on = null;
+      continue;
+    }
+    const n = (carried.get(host.id) ?? 0) + 1;
+    if (n > capacityOf(host.model)) it.on = null;
+    else carried.set(host.id, n);
   }
   for (const it of items) {
     const seen = new Set([it.id]);
@@ -330,23 +343,290 @@ export function moveBy(items: readonly Item[], it: Item, dx: number, dz: number)
   }
 }
 
-/** A quarter turn about its middle, carrying what stands on it. */
-export function turn(items: readonly Item[], rooms: readonly Room[], it: Item): void {
-  const f0 = fp(it);
-  const cx = it.x + f0.w / 2;
-  const cz = it.z + f0.d / 2;
-  it.rot = (it.rot + 90) % 360;
+/** The middle of a thing's footprint, in its room. */
+export function centreOf(it: Pick<Item, 'x' | 'z' | 'model' | 'rot'>): { x: number; z: number } {
   const f = fp(it);
-  it.x = cx - f.w / 2;
-  it.z = cz - f.d / 2;
-  const room = rooms.find((r) => r.id === it.roomId);
-  if (!it.on && room) clampIn(it, room);
-  for (const c of childrenOn(items, it.id)) {
-    c.rot = (c.rot + 90) % 360;
-    const cf = fp(c);
-    c.x = it.x + f.w / 2 - cf.w / 2;
-    c.z = it.z + f.d / 2 - cf.d / 2;
+  return { x: it.x + f.w / 2, z: it.z + f.d / 2 };
+}
+
+/** Moves a thing and everything on it so the thing's middle is at a point. */
+function centreAt(items: readonly Item[], it: Item, p: { x: number; z: number }): void {
+  const c = centreOf(it);
+  moveBy(items, it, p.x - c.x, p.z - c.z);
+}
+
+/** Quarter turns a thing and everything on it, as one, about the thing's middle. */
+function turnStack(items: readonly Item[], it: Item, quarters: number): void {
+  const q = ((quarters % 4) + 4) % 4;
+  if (!q) return;
+  const c = centreOf(it);
+  for (const t of [it, ...standingOn(items, it.id).map((id) => items.find((i) => i.id === id))]) {
+    if (!t) continue;
+    const tc = centreOf(t);
+    let dx = tc.x - c.x;
+    let dz = tc.z - c.z;
+    for (let i = 0; i < q; i++) [dx, dz] = [-dz, dx];
+    t.rot = (t.rot + 90 * q) % 360;
+    const f = fp(t);
+    t.x = c.x + dx - f.w / 2;
+    t.z = c.z + dz - f.d / 2;
   }
+}
+
+/** Whether a thing is clipped to a screen's edge or held by an arm: it sits where its holder says
+ * and turns only with it. */
+export function seated(items: readonly Item[], it: Item): boolean {
+  const host = it.on ? items.find((i) => i.id === it.on) : undefined;
+  const how = host ? carryOf(host.model) : null;
+  return how === 'edge' || how === 'arm';
+}
+
+/** A quarter turn about its middle, carrying what stands on it (side by side stays side by side).
+ * Something seated on an edge or an arm turns with its holder, not by itself. */
+export function turn(items: readonly Item[], rooms: readonly Room[], it: Item): void {
+  if (seated(items, it)) return;
+  turnStack(items, it, 1);
+  const room = rooms.find((r) => r.id === it.roomId);
+  if (!it.on && room) {
+    const bx = it.x;
+    const bz = it.z;
+    clampIn(it, room);
+    for (const id of standingOn(items, it.id)) {
+      const t = items.find((i) => i.id === id);
+      if (t) {
+        t.x += it.x - bx;
+        t.z += it.z - bz;
+      }
+    }
+  }
+}
+
+// ---- Holders (#137): putting a thing on a desk, a screen's edge or an arm, and off again ------
+
+/** Metres between things put side by side on a holder. */
+const SIDE_GAP = 0.02;
+
+/** Where on a holder a thing's middle goes: `along` metres across it from its middle and, on a
+ * top, `depth` metres towards its front; on a screen's edge line, or in front of an arm. */
+export function spotOn(host: Item, along: number, depth = 0): { x: number; z: number } {
+  const m = mapModel(host.model).mount;
+  const c = centreOf(host);
+  const o = turnOffset(along, m ? m.z : depth, host.rot);
+  return { x: c.x + o.x, z: c.z + o.z };
+}
+
+/** Where a thing's middle is in its holder's own frame. */
+function localOf(host: Item, it: Item): { x: number; z: number } {
+  const hc = centreOf(host);
+  const c = centreOf(it);
+  return unturnOffset(c.x - hc.x, c.z - hc.z, host.rot);
+}
+
+/** A thing's width across its holder once it faces the holder's way. */
+const widthAcross = (it: Pick<Item, 'model'>) => mapModel(it.model).w;
+
+/** How many more things a holder takes (an arm one per place; anything else no limit). */
+export function roomOn(items: readonly Item[], host: Item, except?: string): number {
+  return capacityOf(host.model) - childrenOn(items, host.id).filter((c) => c.id !== except).length;
+}
+
+/**
+ * Where on a holder a thing goes, in the holder's frame: an arm's first free place; on an edge the
+ * free spot along it nearest `near`; on a top the free spot nearest `near` across its middle row,
+ * then rows to the front and back. Beside what is there already, overlapping only when nothing
+ * else fits. Null when an arm is full.
+ */
+export function freeSpot(
+  items: readonly Item[],
+  host: Item,
+  it: Pick<Item, 'id' | 'model'>,
+  near = 0,
+): { along: number; depth: number } | null {
+  const m = mapModel(host.model);
+  const others = childrenOn(items, host.id).filter((c) => c.id !== it.id);
+  if (m.mount?.on === 'arm') {
+    const free = m.mount.slots.filter(
+      (s) => !others.some((o) => Math.abs(localOf(host, o).x - s) < 0.05),
+    );
+    if (!free.length) return null;
+    const a = [...free].sort((x, y) => Math.abs(x - near) - Math.abs(y - near))[0] ?? 0;
+    return { along: a, depth: 0 };
+  }
+  const mine = mapModel(it.model);
+  const hw = mine.w / 2;
+  const hd = mine.d / 2;
+  const taken = others.map((o) => {
+    const at = localOf(host, o);
+    const om = mapModel(o.model);
+    const turned = (o.rot - host.rot) % 180 !== 0;
+    return { ...at, hw: (turned ? om.d : om.w) / 2, hd: (turned ? om.w : om.d) / 2 };
+  });
+  const g = SIDE_GAP / 2;
+  const fits = (x: number, z: number) =>
+    taken.every(
+      (t) =>
+        x + hw + g <= t.x - t.hw ||
+        x - hw - g >= t.x + t.hw ||
+        z + hd + g <= t.z - t.hd ||
+        z - hd - g >= t.z + t.hd,
+    );
+  const xr = Math.max(0, m.w / 2 - hw);
+  const zr = m.mount?.on === 'edge' ? 0 : Math.max(0, m.d / 2 - hd);
+  const x0 = Math.min(xr, Math.max(-xr, near));
+  const steps = (r: number, from: number) => {
+    const out = [from];
+    for (let i = 1; i <= Math.ceil((2 * r) / 0.01); i++)
+      for (const v of [from + i * 0.01, from - i * 0.01])
+        if (v >= -r - 1e-9 && v <= r + 1e-9) out.push(v);
+    return out;
+  };
+  const xs = steps(xr, x0);
+  for (const z of steps(zr, 0))
+    for (const x of xs)
+      if (fits(x, z)) return { along: Math.round(x * 100) / 100, depth: Math.round(z * 100) / 100 };
+  return { along: x0, depth: 0 };
+}
+
+/** Across a holder only: an arm's free place or an edge's free spot (null when an arm is full). */
+export function freeAlong(
+  items: readonly Item[],
+  host: Item,
+  it: Pick<Item, 'id' | 'model'>,
+  near = 0,
+): number | null {
+  return freeSpot(items, host, it, near)?.along ?? null;
+}
+
+/** The holders a thing would loop through: itself and everything standing on it. */
+const stackOf = (items: readonly Item[], it: Item) => new Set([it.id, ...standingOn(items, it.id)]);
+
+/** Whether `host` may take `it` now: same room, it can carry it, has room, and no loop. */
+export function canPutOn(items: readonly Item[], host: Item, it: Item): boolean {
+  if (host.id === it.id || host.roomId !== it.roomId) return false;
+  if (!canCarry(host.model, it.model) || stackOf(items, it).has(host.id)) return false;
+  return it.on === host.id || roomOn(items, host, it.id) > 0;
+}
+
+/**
+ * Puts a thing (and what is on it) on a holder: facing the holder's way, at a free spot across it
+ * (or `along`). Map only: nothing moves in Kept. False when it can't go there.
+ */
+export function putOn(items: readonly Item[], it: Item, host: Item, along?: number): boolean {
+  if (!canPutOn(items, host, it)) return false;
+  const at = along === undefined ? freeSpot(items, host, it) : { along, depth: 0 };
+  if (at === null) return false;
+  turnStack(items, it, (host.rot - it.rot) / 90);
+  it.on = host.id;
+  centreAt(items, it, spotOn(host, at.along, at.depth));
+  return true;
+}
+
+/** The thing at the bottom of a stack: what stands on the room's floor. */
+export function groundOf(items: readonly Item[], it: Item): Item {
+  let cur = it;
+  const seen = new Set([it.id]);
+  for (;;) {
+    const up = cur.on ? items.find((i) => i.id === cur.on) : undefined;
+    if (!up || seen.has(up.id)) return cur;
+    seen.add(up.id);
+    cur = up;
+  }
+}
+
+/**
+ * Takes a thing (and what is on it) off its holder onto the room's floor, next to what its holder
+ * stands on: to its side, else in front, behind, or the other side, where nothing stands.
+ */
+export function takeOff(items: readonly Item[], rooms: readonly Room[], it: Item): void {
+  if (!it.on) return;
+  const ground = groundOf(items, it);
+  it.on = null;
+  const room = rooms.find((r) => r.id === it.roomId);
+  const g = fp(ground);
+  const f = fp(it);
+  const gap = 0.05;
+  const tries = [
+    { x: ground.x + g.w + gap, z: ground.z + g.d / 2 - f.d / 2 },
+    { x: ground.x + g.w / 2 - f.w / 2, z: ground.z + g.d + gap },
+    { x: ground.x - f.w - gap, z: ground.z + g.d / 2 - f.d / 2 },
+    { x: ground.x + g.w / 2 - f.w / 2, z: ground.z - f.d - gap },
+  ];
+  const mine = stackOf(items, it);
+  const floor = items.filter((i) => i.roomId === it.roomId && !i.on && !mine.has(i.id));
+  const inside = (p: { x: number; z: number }) =>
+    !room ||
+    (p.x >= 0.12 && p.z >= 0.12 && p.x + f.w <= room.w - 0.08 && p.z + f.d <= room.d - 0.08);
+  const free = (p: { x: number; z: number }) =>
+    !floor.some((o) => rectsOverlap({ ...p, w: f.w, d: f.d }, { x: o.x, z: o.z, ...fp(o) }));
+  const at = tries.find((p) => inside(p) && free(p)) ?? tries.find(inside) ?? tries[0];
+  if (at) moveBy(items, it, at.x - it.x, at.z - it.z);
+  if (room) {
+    const bx = it.x;
+    const bz = it.z;
+    clampIn(it, room);
+    for (const id of standingOn(items, it.id)) {
+      const t = items.find((i) => i.id === id);
+      if (t) {
+        t.x += it.x - bx;
+        t.z += it.z - bz;
+      }
+    }
+  }
+}
+
+/** What in its room can carry a thing, for its Put on… list: holders it fits on, with room for
+ * it, not the one it is on, by name. */
+export function holdersFor(items: readonly Item[], it: Item): Item[] {
+  return items
+    .filter((h) => h.id !== it.on && fitsOn(h.model, it.model) && canPutOn(items, h, it))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/** The room's things on nothing yet that a holder can take, for its Add on it list, by name. */
+export function addableOn(items: readonly Item[], host: Item): Item[] {
+  return items
+    .filter(
+      (c) =>
+        c.roomId === host.roomId &&
+        !c.on &&
+        c.id !== host.id &&
+        fitsOn(host.model, c.model) &&
+        canPutOn(items, host, c),
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * Where a dragged thing lands on a holder (#137), from where its middle is (`c`, in its room):
+ * an arm's nearest free place, a screen edge's line, or a top; across a holder it snaps by its own
+ * step from the holder's middle, so things line up on the desk, not on the room's grid. `free`
+ * (Alt held) drops it where it is, to the centimetre.
+ */
+export function dropOn(
+  items: readonly Item[],
+  it: Item,
+  host: Item,
+  c: { x: number; z: number },
+  free = false,
+): void {
+  const hc = centreOf(host);
+  const local = unturnOffset(c.x - hc.x, c.z - hc.z, host.rot);
+  const how = carryOf(host.model);
+  if (how === 'arm' || how === 'edge') {
+    const a = how === 'arm' ? freeAlong(items, host, it, local.x) : local.x;
+    if (a === null) return;
+    const m = mapModel(host.model);
+    const room = Math.max(0, m.w / 2 - widthAcross(it) / 2);
+    const along = how === 'arm' ? a : Math.min(room, Math.max(-room, free ? a : snap(a, 0.01)));
+    turnStack(items, it, (host.rot - it.rot) / 90);
+    it.on = host.id;
+    centreAt(items, it, spotOn(host, Math.round(along * 100) / 100));
+    return;
+  }
+  const step = free ? 0.01 : snapStep(it.model);
+  const p = turnOffset(snap(local.x, step), snap(local.z, step), host.rot);
+  it.on = host.id;
+  centreAt(items, it, { x: hc.x + p.x, z: hc.z + p.z });
 }
 
 /** Whether a rectangle overlaps another room on the level. */
@@ -371,22 +651,45 @@ export function roomAt(
   );
 }
 
-/** What `it` would stand on at a point: only small things go on a counter, desk, shelf or box. */
+/**
+ * What `it` would stand on at a point (the map's own coordinates): a holder that can carry it and
+ * has room for it (#137), under the point, or for an arm, a free place in front of it. Where
+ * several are under the point the highest wins: the monitor on the desk, not the desk.
+ */
 export function hostAt(
   plan: Plan,
   levelKey: string,
   p: { x: number; z: number },
   it: Item,
 ): Item | undefined {
-  if (!canStandOn(it.model)) return undefined;
-  const mine = new Set([it.id, ...standingOn(plan.items, it.id)]);
-  return plan.items.find((h) => {
-    if (mine.has(h.id) || !canHost(h.model)) return false;
+  const mine = stackOf(plan.items, it);
+  const depth = (h: Item) => {
+    let n = 0;
+    for (let c = h; c.on && n < 20; n++) {
+      const up = plan.items.find((i) => i.id === c.on);
+      if (!up) break;
+      c = up;
+    }
+    return n;
+  };
+  const hits = plan.items.filter((h) => {
+    if (mine.has(h.id) || h.roomId !== it.roomId) return false;
+    if (!canCarry(h.model, it.model) || (it.on !== h.id && roomOn(plan.items, h, it.id) <= 0))
+      return false;
     const r = plan.rooms.find((x) => x.id === h.roomId);
     if (!r || r.levelKey !== levelKey) return false;
+    const q = { x: p.x - r.x, z: p.z - r.z };
     const f = fp(h);
-    return p.x >= r.x + h.x && p.x <= r.x + h.x + f.w && p.z >= r.z + h.z && p.z <= r.z + h.z + f.d;
+    if (q.x >= h.x && q.x <= h.x + f.w && q.z >= h.z && q.z <= h.z + f.d) return true;
+    const m = mapModel(h.model).mount;
+    if (m?.on !== 'arm') return false;
+    const c = fp({ model: it.model, rot: h.rot });
+    return m.slots.some((s) => {
+      const at = spotOn(h, s);
+      return Math.abs(q.x - at.x) <= c.w / 2 && Math.abs(q.z - at.z) <= c.d / 2;
+    });
   });
+  return hits.sort((a, b) => depth(b) - depth(a))[0];
 }
 
 /** Moves a room's things into another room (the map's own coordinates). */
