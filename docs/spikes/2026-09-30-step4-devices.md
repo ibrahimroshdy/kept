@@ -3,7 +3,7 @@
 Written 2026-09-30 (step-4 plan, Task 0); statuses set by T30 the same day. Step 4's screens and
 senders are built, so every row can be run now. **None has been run on a device yet: each device
 row's Result is "maintainer check pending"**, with the fallback in use named in its row. They
-need the maintainer's phones, a Mac, SMTP credentials or a receiving URL. No agent runs them.
+need real phones, a Mac, SMTP credentials or a receiving URL. No agent runs them.
 V21 needs no device and passes by test.
 
 The build never waits for these. Every row ships its fallback first (the "In use now" column). A

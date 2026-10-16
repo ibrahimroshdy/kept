@@ -1198,7 +1198,7 @@ test('the insurance report for an incident: the PDF downloads', async ({ browser
   const file = await download.path();
   const bytes = readFileSync(file);
   expect(bytes.subarray(0, 5).toString('latin1')).toBe('%PDF-');
-  // Its text, where poppler's pdftotext is installed (it is on the maintainer's Mac).
+  // Its text, where poppler's pdftotext is installed (it is on a Mac).
   let text: string | null = null;
   try {
     text = execFileSync('pdftotext', ['-layout', file, '-'], { encoding: 'utf8' });

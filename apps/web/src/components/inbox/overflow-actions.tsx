@@ -1,5 +1,5 @@
 /**
- * An inbox item's secondary actions (found on the maintainer's iPhone: Accept, Edit, Move and
+ * An inbox item's secondary actions (found on an iPhone: Accept, Edit, Move and
  * Set type filled a row and Discard wrapped alone). From `md` up they are buttons in the item's
  * one row; on a phone they fold into **More**, a bottom sheet holding a React Aria Menu (arrow
  * keys move, Enter chooses, Escape closes; screens §5, the thing's action menu does the same).

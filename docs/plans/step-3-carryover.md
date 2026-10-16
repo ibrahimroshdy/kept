@@ -49,7 +49,7 @@ pass over the web; all eleven are done, most in the phone pass of 2026-09-30 (be
   Display words (Last seen or Changed, by type). jsdom has no layout, so this is an e2e test.
 
 **The phone pass (2026-09-30)** checked every route at 375 and 390 px, light, dark and Arabic, in
-Chromium with iPhone emulation, after the maintainer's iPhone report. Besides the lows above it
+Chromium with iPhone emulation, after an iPhone report. Besides the lows above it
 fixed: a date or an approximate cost splitting across lines (72c4d3d), What uses AI's lines starting
 with "·" (ec51ff7), the saved key's card (840c6ee), Admin → Users' Disable alone on a row (ba570e4),
 a price's Stop pricing alone on a row (9f02d95), a date field's Western digits in Arabic (f782bef),

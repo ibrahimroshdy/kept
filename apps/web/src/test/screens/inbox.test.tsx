@@ -306,7 +306,7 @@ describe('the inbox', () => {
     expect(list.textContent).toMatch(/Waiting: AI paused until/);
     expect(list.textContent).toMatch(/Naming…/);
     expect(list.textContent).toMatch(/Waiting for Groq/);
-    // Short (the maintainer's iPhone): the model id is in the call's detail, and Garage's
+    // Short (an iPhone): the model id is in the call's detail, and Garage's
     // account is the viewer's own.
     expect(list.textContent).toMatch(/AI · Groq · 2\.5K tokens · ≈ \$0\.004 · paid by you/);
     const failed = within(list)

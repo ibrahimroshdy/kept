@@ -340,7 +340,7 @@ export const useInbox = (params: InboxParams = {}, enabled = true) =>
       captureApi.inbox({ ...params, ...(pageParam ? { cursor: pageParam } : {}) }),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: nextCursor,
-    // "Naming…" turns into the name without leaving the page (the maintainer's phone, 2026-10-07:
+    // "Naming…" turns into the name without leaving the page (a phone, 2026-10-07:
     // photos named on the server still read "Unnamed" until the inbox was opened again).
     refetchInterval: (q) => (inboxIsNaming(q.state.data?.pages) ? INBOX_NAMING_POLL_MS : false),
   });

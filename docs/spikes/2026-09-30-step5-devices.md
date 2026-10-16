@@ -2,7 +2,7 @@
 
 Written 2026-09-30 (step-5 plan, Task 0). **Step 5 is built (T25, 2026-10-06), and no row has
 been run on a device: every Result reads "maintainer check pending", with the fallback in use.**
-The rows need the maintainer's phones and his own photos, invoices and fill-ups. No agent runs
+The rows need real phones and real photos, invoices and fill-ups. No agent runs
 them.
 
 The build never waits for these. Every row ships its fallback first (the "In use now" column). A

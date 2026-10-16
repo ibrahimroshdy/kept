@@ -22,7 +22,7 @@ through Playwright 1.63.0.
 - **A 400×400 QR on a canvas decodes.**
   - The QR was drawn with `uqr` and decoded with `new BarcodeDetector({formats: ['qr_code','ean_13','ean_8','upc_a','upc_e','code_128']}).detect(canvas)`.
   - It gave `rawValue` `https://kept.example/l/K7Q2XM` and `format` `qr_code`.
-- **It is fast on a desktop.** Measured in headless Chromium on the maintainer's Mac (Apple M1 Pro):
+- **It is fast on a desktop.** Measured in headless Chromium on a Mac (Apple M1 Pro):
   - the first `detect()` took **32–42 ms**, including fetching and compiling the wasm;
   - after that, **3.2–3.4 ms per frame**.
 

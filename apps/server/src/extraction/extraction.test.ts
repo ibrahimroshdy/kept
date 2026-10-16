@@ -914,7 +914,7 @@ describe('pauses, retries and failures', () => {
   });
 
   it('a capture trashed before its photo is read is not sent; restored, it can be named', async () => {
-    // The maintainer's phone, 2026-10-07: two photos captured with no provider were undone into
+    // On a phone, 2026-10-07: two photos captured with no provider were undone into
     // the trash; connecting Groq then read them anyway, and their names had nowhere to go.
     const keyOff = (off: boolean) =>
       own(

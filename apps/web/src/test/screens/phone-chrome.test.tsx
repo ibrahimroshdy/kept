@@ -1,5 +1,5 @@
 /**
- * The phone's bottom chrome (found on the maintainer's iPhone): the tab bar with its Capture
+ * The phone's bottom chrome (found on an iPhone): the tab bar with its Capture
  * button raised 24 px above it, and the home indicator. What scrolls must end clear of all three.
  * The geometry itself is checked in Chromium's iPhone emulation (the phone pass); this holds the
  * classes that make it.

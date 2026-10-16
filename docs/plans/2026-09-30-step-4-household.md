@@ -1678,7 +1678,7 @@ Tailscale cert). The build **never waits** for a device result: every task ships
 
 | # | Check | Needs | Built meanwhile | If it fails |
 |---|---|---|---|---|
-| **V8** | iPhone web push works **only from the installed app** (iOS 16.4+): subscribe from Settings → Me in the installed app, receive an overdue reminder, tap it and land on the thing | the maintainer's iPhone, Kept installed to the home screen, HTTPS | The iOS rule in T25: not installed → told plainly, offered email; e2e covers push in Chromium | Email stays the iPhone path; Settings says push isn't available on this device |
+| **V8** | iPhone web push works **only from the installed app** (iOS 16.4+): subscribe from Settings → Me in the installed app, receive an overdue reminder, tap it and land on the thing | an iPhone, Kept installed to the home screen, HTTPS | The iOS rule in T25: not installed → told plainly, offered email; e2e covers push in Chromium | Email stays the iPhone path; Settings says push isn't available on this device |
 | — | The permission prompt appears from the tap on "Enable" (a user gesture) in the installed iPhone app and in Safari desktop | iPhone, a Mac | The prompt is only ever asked from that tap (D139) | Help explains how to allow notifications in iOS Settings |
 | — | Android Chrome: push installed and in the browser; the notification opens the installed app | an Android phone | Same code path as desktop Chrome | — |
 | — | A notification's tap opens the right page in the **installed** app, not Safari | iPhone | `notificationclick` focuses or opens same-origin URLs | The notification opens Kept's Home and the centre lists the item |

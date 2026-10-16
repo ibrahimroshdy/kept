@@ -1,6 +1,6 @@
 /**
  * Whether to mention keys ("press E", "esc", the inbox's shortcut list). A phone has no keys to
- * press, so its hints say "tap" instead (found on the maintainer's iPhone: "Needs a name: press
+ * press, so its hints say "tap" instead (found on an iPhone: "Needs a name: press
  * E, or Edit, to type one."). Keys are likely when the main pointer is a fine one that hovers (a
  * mouse or trackpad), or once a key is pressed outside a text field, which only a hardware
  * keyboard does (the on-screen one appears only in fields): an iPad with its keyboard gets the

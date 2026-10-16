@@ -281,7 +281,7 @@ export const RECOMMENDED = Object.freeze({
  * REFERENCE_FIGURES' costs were worked out from it (ai.test.ts checks they agree). Saved as a
  * `provider_listing` price, with the listing's date (the recording has the day only), when an
  * instance admin connects the recommended model and no price is set, so its cost shows from the
- * first call (the maintainer's iPhone showed "cost unknown" on every call, 2026-09-29). A fresh
+ * first call (an iPhone showed "cost unknown" on every call, 2026-09-29). A fresh
  * listing's own price wins over it; the admin can change it in the price table.
  */
 export const RECOMMENDED_PRICE = Object.freeze({

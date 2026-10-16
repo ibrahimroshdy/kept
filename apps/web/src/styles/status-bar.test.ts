@@ -1,5 +1,5 @@
 /**
- * The installed app's top edge (iOS 26+, found on the maintainer's iPhone 2026-09-29): the page
+ * The installed app's top edge (iOS 26+, found on an iPhone 2026-09-29): the page
  * header, the status bar's colour and the Liquid Glass strip must be one colour, and the header
  * must be opaque, or the status bar reads as a second band and scrolled content smudges through
  * behind the title. Liquid Glass itself can only be confirmed on a phone; this holds the parts a
