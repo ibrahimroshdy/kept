@@ -24453,3 +24453,15 @@ msgstr "Multiprise"
 #: src/map/labels.ts
 msgid "External drive"
 msgstr "Disque externe"
+
+#: src/components/places/contents-list.tsx
+msgid "Large"
+msgstr "Grand"
+
+#: src/components/places/contents-list.tsx
+msgid "Things · <0>{thingCount}</0>"
+msgstr "Objets · <0>{thingCount}</0>"
+
+#: src/components/places/contents-list.tsx
+msgid "Things here · <0>{thingCount}</0>"
+msgstr "Objets ici · <0>{thingCount}</0>"

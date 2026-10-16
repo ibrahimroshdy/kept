@@ -1,8 +1,9 @@
 /**
  * List state in the URL (the list standard, lessons L88): the search text `q`, one `f.<name>`
  * per filter, `not` (the filters that are "is none of", D205), `saved` (the saved view it
- * was opened from, D205), `group`, `sort` and `dir` (the sort turned around, D211), and `view`
- * (the layout, where the route declares one, D211). Every list is linkable, and Back restores it.
+ * was opened from, D205), `group`, `sort` and `dir` (the sort turned around, D211), `view`
+ * (the layout, where the route declares one, D211) and `size` (a grid's tiles, #139). Every
+ * list is linkable, and Back restores it.
  *
  * A route declares it with `validateSearch: listSearch(['type', 'tag'])`; the list and its query
  * both read it with `useListState()`. TanStack Router JSON-parses search values (`?q=123` arrives
@@ -31,6 +32,8 @@ export type ListState = {
   dir?: SortDir | '' | undefined;
   /** The layout (`view=photos`, D211), on a route that declares `view`. */
   layout?: string | undefined;
+  /** A grid's tile size (`size=small`, 1.x #139), on a route that declares `size`. */
+  size?: string | undefined;
 };
 
 export type SortDir = 'asc' | 'desc';
@@ -101,6 +104,7 @@ export function toListState(search: Record<string, unknown>): ListState {
     sort: str(search.sort),
     dir: search.dir === 'asc' || search.dir === 'desc' ? search.dir : undefined,
     layout: str(search.view),
+    size: str(search.size),
   };
 }
 
@@ -112,6 +116,7 @@ export function fromListState(state: Partial<ListState>): Record<string, unknown
   if (state.sort !== undefined) out.sort = state.sort || undefined;
   if (state.dir !== undefined) out.dir = state.dir || undefined;
   if (state.layout !== undefined) out.view = state.layout || undefined;
+  if (state.size !== undefined) out.size = state.size || undefined;
   if (state.savedView !== undefined) out.saved = state.savedView || undefined;
   if (state.not !== undefined) out.not = state.not.length ? state.not : undefined;
   for (const [name, list] of Object.entries(state.filters ?? {}))

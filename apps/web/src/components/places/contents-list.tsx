@@ -13,6 +13,9 @@
  * - A place lists its child places, then the things directly in it.
  * - A container lists what's directly inside it; `view=photos` leads with a photo grid (D195),
  *   chosen under the strip's Display button with the sort, its direction and the grouping (D211).
+ * - A location's or place's Grid keeps List's sections, Places · N then Things, each folding away,
+ *   in tiles of the Display menu's Size (Small · Medium · Large, `size`, remembered per person on
+ *   the device; #139).
  *
  * With `canEdit`, things can be selected and moved together (D45), picked up together into the
  * carrying tray (D175, design frame 7a: the tray is on this phone, so it works offline), or sent
@@ -58,6 +61,7 @@ import {
 import { usePlaceName, useTypeName } from './labels';
 import { MoveThingsDialog, placeMatches } from './move-picker';
 import { PhotoTile, PlaceRowView, PlaceTile, ThingRowView } from './rows';
+import { useTileSize } from './tile-size';
 
 export { CONTENTS_FILTERS, contentsSearch } from './contents-search';
 
@@ -184,12 +188,15 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
   const placeCount = fmt.num(entries.filter((e) => e.kind === 'place').length);
   const hasPlaces = entries.some((e) => e.kind === 'place');
   const things = entries.flatMap((e) => (e.kind === 'thing' ? [e.thing] : []));
+  // The things heading's count (#139): what has loaded, with "+" while more pages wait.
+  const thingCount = `${fmt.num(things.length)}${query.hasNextPage ? '+' : ''}`;
 
   // ----- selection and moves -----
   const [selecting, setSelecting] = useState(false);
   // A location's or place's places and things as tiles (1.1); selecting goes back to rows, where
   // the checkboxes are.
   const grid = (view ?? list.layout) === 'grid' && parent.kind !== 'container' && !selecting;
+  const size = useTileSize(grid);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [moving, setMoving] = useState<string[] | null>(null);
   const toggle = (id: string) =>
@@ -302,7 +309,11 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
 
   const renderRow = (e: Entry) => {
     if (grid)
-      return e.kind === 'place' ? <PlaceTile place={e.place} /> : <PhotoTile thing={e.thing} />;
+      return e.kind === 'place' ? (
+        <PlaceTile place={e.place} size={size} />
+      ) : (
+        <PhotoTile thing={e.thing} size={size} showPath={parent.kind === 'location'} />
+      );
     if (e.kind === 'place')
       return (
         <div
@@ -523,37 +534,50 @@ export function ContentsList({ parent, canEdit, view, empty }: ContentsListProps
                     : []),
                 ],
               })}
-        tiles={grid}
+        tiles={grid && size}
+        {...(grid
+          ? {
+              sizes: [
+                { value: 'small', label: t`Small` },
+                { value: 'medium', label: t`Medium` },
+                { value: 'large', label: t`Large` },
+              ],
+              defaultSize: 'medium',
+            }
+          : {})}
         query={query}
         getKey={(e) => (e.kind === 'place' ? `p:${e.place.id}` : `t:${e.thing.id}`)}
         renderRow={renderRow}
-        // Places, then Things, each a section that folds away (1.1): a location with 200 things
-        // stays navigable. Things get a heading only below places.
+        // Places, then Things, each a section that folds away (1.1), in List and Grid alike
+        // (#139): a location with 200 things stays navigable. Things get a heading only below
+        // places.
         sections={(e) =>
-          grid
-            ? null
-            : e.kind === 'place'
+          e.kind === 'place'
+            ? {
+                key: '__places',
+                label: (
+                  <Trans>
+                    Places · <span className="tabular-nums">{placeCount}</span>
+                  </Trans>
+                ),
+              }
+            : hasPlaces
               ? {
-                  key: '__places',
-                  label: (
-                    <Trans>
-                      Places · <span className="tabular-nums">{placeCount}</span>
-                    </Trans>
-                  ),
+                  key: '__things',
+                  label:
+                    parent.kind === 'location' ? (
+                      <Trans>
+                        Things · <span className="tabular-nums">{thingCount}</span>
+                      </Trans>
+                    ) : (
+                      <Trans>
+                        Things here · <span className="tabular-nums">{thingCount}</span>
+                      </Trans>
+                    ),
                 }
-              : hasPlaces
-                ? {
-                    key: '__things',
-                    label:
-                      parent.kind === 'location' ? (
-                        <Trans>Things</Trans>
-                      ) : (
-                        <Trans>Things here</Trans>
-                      ),
-                  }
-                : null
+              : null
         }
-        {...(grid ? {} : { collapsible: 'contents' })}
+        collapsible="contents"
         groupOf={(e) =>
           e.kind === 'place'
             ? { key: '__places', label: <Trans>Places</Trans> }

@@ -24453,3 +24453,15 @@ msgstr "مشترك كهرباء"
 #: src/map/labels.ts
 msgid "External drive"
 msgstr "هارد خارجي"
+
+#: src/components/places/contents-list.tsx
+msgid "Large"
+msgstr "كبير"
+
+#: src/components/places/contents-list.tsx
+msgid "Things · <0>{thingCount}</0>"
+msgstr "الأشياء · <0>{thingCount}</0>"
+
+#: src/components/places/contents-list.tsx
+msgid "Things here · <0>{thingCount}</0>"
+msgstr "الأشياء هنا · <0>{thingCount}</0>"

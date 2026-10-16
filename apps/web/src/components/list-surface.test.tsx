@@ -364,3 +364,114 @@ describe('ListSurface (the list standard, L88)', () => {
     expect(names()).toEqual(['Box 3']);
   });
 });
+
+/** A tiled list with sections (a location's Places and Things, #139), sized from the URL. */
+function TileList() {
+  const [list] = useListState();
+  const query = useInfiniteQuery({
+    queryKey: ['tiles'],
+    queryFn: async () => ({ items: ITEMS, next_cursor: null }),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: () => undefined,
+  });
+  const size = (['small', 'large'] as const).find((s) => s === list.size) ?? 'medium';
+  return (
+    <ListSurface
+      label="Tiles"
+      query={query}
+      tiles={size}
+      sizes={[
+        { value: 'small', label: 'Small' },
+        { value: 'medium', label: 'Medium' },
+        { value: 'large', label: 'Large' },
+      ]}
+      defaultSize="medium"
+      sorts={[{ value: 'name', label: 'Name' }]}
+      collapsible="tiles-test"
+      getKey={(x) => x.id}
+      sections={(x) =>
+        x.kind === 'box' ? null : { key: x.kind, label: x.kind === 'tool' ? 'Tools' : 'Cables' }
+      }
+      renderRow={(x) => (
+        <Link to={'/other' as never} className="block p-3">
+          {x.name}
+        </Link>
+      )}
+      empty={<p>Nothing here yet</p>}
+    />
+  );
+}
+
+async function renderTiles(path = '/tiles', locale: 'en' | 'ar' = 'en') {
+  const root = createRootRoute({ component: Outlet });
+  const route = createRoute({
+    getParentRoute: () => root,
+    path: '/tiles',
+    validateSearch: listSearch([], { size: z.optional(z.string()) }),
+    component: TileList,
+  });
+  const other = createRoute({ getParentRoute: () => root, path: '/other', component: () => null });
+  const router = createRouter({
+    routeTree: root.addChildren([route, other]),
+    history: createMemoryHistory({ initialEntries: [path] }),
+  });
+  const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const out = await renderUI(
+    <QueryClientProvider client={qc}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>,
+    { locale },
+  );
+  await screen.findByRole('list', { name: 'Tiles' });
+  return { ...out, router };
+}
+
+describe('tiles with sections and sizes (#139)', () => {
+  it('puts each heading on a row of its own across the grid, folding its tiles away', async () => {
+    localStorage.clear();
+    const { user } = await renderTiles();
+    const ul = screen.getByRole('list', { name: 'Tiles' });
+    expect(ul).toHaveAttribute('data-tile-size', 'medium');
+    expect(ul.className).toContain('grid-cols-2');
+    const tools = within(ul).getAllByRole('button', { name: 'Tools' });
+    // Consecutive rows share a heading; the fixture alternates, so each run gets its own.
+    for (const b of tools) expect(b.closest('li')).toHaveClass('col-span-full');
+    // A heading's row is not a tile: Load more's focus counts only the tiles.
+    expect(ul.querySelectorAll('[data-list-row]').length).toBe(ITEMS.length);
+    const first = tools[0] as HTMLElement;
+    await user.click(first);
+    expect(first).toHaveAttribute('aria-expanded', 'false');
+    expect(within(ul).queryByRole('link', { name: 'Drill' })).toBeNull();
+    expect(within(ul).getByRole('link', { name: 'HDMI cable' })).toBeInTheDocument();
+    await user.click(first);
+    expect(within(ul).getByRole('link', { name: 'Drill' })).toBeInTheDocument();
+    localStorage.clear();
+  });
+
+  it('Size in the Display menu writes `size`, Medium writes nothing, and Back undoes it', async () => {
+    const { user, router } = await renderTiles();
+    await user.click(display());
+    let sheet = await screen.findByRole('dialog', { name: 'Display' });
+    const group = within(sheet).getByRole('group', { name: 'Size' });
+    await user.click(within(group).getByRole('menuitemradio', { name: 'Large' }));
+    await waitFor(() => expect(search(router).size).toBe('large'));
+    const ul = () => screen.getByRole('list', { name: 'Tiles', hidden: true });
+    await waitFor(() => expect(ul().className).toContain('grid-cols-1'));
+    await user.click(within(sheet).getByRole('menuitemradio', { name: 'Small' }));
+    await waitFor(() => expect(ul().className).toContain('grid-cols-3'));
+    await user.click(within(sheet).getByRole('button', { name: 'Done' }));
+    act(() => router.history.back());
+    await waitFor(() => expect(search(router).size).toBe('large'));
+    await user.click(display());
+    sheet = await screen.findByRole('dialog', { name: 'Display' });
+    await user.click(within(sheet).getByRole('menuitemradio', { name: 'Medium' }));
+    await waitFor(() => expect(search(router).size).toBeUndefined());
+  });
+
+  it('reads the size from a linked URL, right to left with logical CSS only', async () => {
+    await renderTiles('/tiles?size=small', 'ar');
+    expect(document.documentElement.dir).toBe('rtl');
+    expect(screen.getByRole('list', { name: 'Tiles' })).toHaveAttribute('data-tile-size', 'small');
+    expectLogicalOnly();
+  });
+});

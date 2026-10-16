@@ -24453,3 +24453,15 @@ msgstr "Ciabatta"
 #: src/map/labels.ts
 msgid "External drive"
 msgstr "Disco esterno"
+
+#: src/components/places/contents-list.tsx
+msgid "Large"
+msgstr "Grande"
+
+#: src/components/places/contents-list.tsx
+msgid "Things · <0>{thingCount}</0>"
+msgstr "Oggetti · <0>{thingCount}</0>"
+
+#: src/components/places/contents-list.tsx
+msgid "Things here · <0>{thingCount}</0>"
+msgstr "Oggetti qui · <0>{thingCount}</0>"
