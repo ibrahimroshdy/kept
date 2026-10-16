@@ -455,7 +455,9 @@ describe('a thing’s history shows its AI calls (step 6, T18; D206, §7.15)', (
       ok(await call(t, `/api/v1/things/${thingId}/history${q}`, { as })) as unknown as Page;
     const all = await history(louis);
     expect(all.items.map((e) => e.action)).toContain('ai.call');
-    expect(all.items.map((e) => e.action)).toContain('thing.extract');
+    // #140: the extraction joins its capture's row, one row per action.
+    expect(all.items.map((e) => e.action)).toContain('thing.capture');
+    expect(all.items.map((e) => e.action)).not.toContain('thing.extract');
     const ai = await history(louis, '?kind=ai');
     expect(ai.items).toHaveLength(1);
     expect(ai.items[0]).toMatchObject({

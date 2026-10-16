@@ -1,5 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
-import { can, type Role } from '@kept/shared';
+import { type AuditAction, can, type Role } from '@kept/shared';
 import type { FastifyBaseLogger } from 'fastify';
 import type pg from 'pg';
 import { z } from 'zod';
@@ -55,7 +55,8 @@ export type UndoableEvent = {
   ownerAccountId: string | null;
   actorType: string;
   actorId: string | null;
-  action: string;
+  /** A registered handler's action, so an undo writes it back as it is (#140). */
+  action: AuditAction;
   entityType: string;
   entityId: string | null;
   rootThingId: string | null;
@@ -116,7 +117,7 @@ const HANDLERS = new Map<string, UndoHandler>();
 const ACCOUNT_HANDLERS = new Map<string, AccountUndoHandler>();
 
 /** Registers the handler for an account-level `action` (e.g. `fx_rate.set`). One per action. */
-export function registerAccountUndo(action: string, handler: AccountUndoHandler): void {
+export function registerAccountUndo(action: AuditAction, handler: AccountUndoHandler): void {
   if (ACCOUNT_HANDLERS.has(action) && ACCOUNT_HANDLERS.get(action) !== handler) {
     throw new Error(`account undo handler for ${action} is already registered`);
   }
@@ -124,7 +125,7 @@ export function registerAccountUndo(action: string, handler: AccountUndoHandler)
 }
 
 /** Registers the handler for `action` (e.g. `place.update`). One handler per action. */
-export function registerUndo(action: string, handler: UndoHandler): void {
+export function registerUndo(action: AuditAction, handler: UndoHandler): void {
   if (HANDLERS.has(action) && HANDLERS.get(action) !== handler) {
     throw new Error(`undo handler for ${action} is already registered`);
   }
@@ -324,7 +325,8 @@ export async function undoEvent(
     ownerAccountId: e.owner_account_id,
     actorType: e.actor_type,
     actorId: e.actor_id,
-    action: e.action,
+    // Only an action with a handler gets here, and handlers are registered by AuditAction.
+    action: e.action as AuditAction,
     entityType: e.entity_type,
     entityId: e.entity_id,
     rootThingId: e.root_thing_id,
@@ -406,7 +408,8 @@ async function undoAccountEvent(
     ownerAccountId: accountId,
     actorType: e.actor_type,
     actorId: e.actor_id,
-    action: e.action,
+    // Only an action with a handler gets here, and handlers are registered by AuditAction.
+    action: e.action as AuditAction,
     entityType: e.entity_type,
     entityId: e.entity_id,
     rootThingId: e.root_thing_id,

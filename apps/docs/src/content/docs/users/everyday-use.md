@@ -117,6 +117,13 @@ tracks: **Details**, **Paperwork and warranties**, **Value**, **Meters**, **Loan
   Trash.
 - **History** lists every change with who made it; most changes can be undone from there or from
   the toast that follows them. **Activity** in the menu is the same across your locations.
+  Each change is one sentence: "Put Galaxy S23 on the map in Office", "Captured Bosch drill, 18 V
+  from a photo", "Made an insurance report for Home". A field set for the first time shows its value; a
+  map arrangement with more than five changes says how many, and **Show** lists them.
+
+  ![Activity in Home: Arranged the map with four changes listed under it, a capture showing the name and model it got, and an insurance report with 8 things and photos](../../../assets/screens/activity-desktop-light.webp)
+
+  ![The same activity in the dark theme](../../../assets/screens/activity-desktop-dark.webp)
 - **Trash** keeps trashed things for 30 days; members and above restore, admins delete for good.
 - **Passwords and codes** (the Complete preset) are secret fields: hidden until someone allowed
   to reveals one, which is logged.

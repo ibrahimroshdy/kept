@@ -131,6 +131,7 @@ type HistoryEvent = {
   summary: string;
   summaryKey: string;
   summaryParams: Record<string, string>;
+  summaryLines?: { key: string; params: Record<string, string>; text: string }[];
   movedInFromElsewhere?: true;
 };
 type Page = { items: HistoryEvent[]; next_cursor: string | null };
@@ -633,8 +634,8 @@ describe('GET /api/v1/activity (D174)', () => {
       const items = (await feed(as, '?limit=200')).items;
       expect(items.find((e) => e.id === brandEvent)).toMatchObject({
         location_id: null,
-        summaryKey: 'event',
-        summaryParams: { action: 'brand.create' },
+        // #140: every action has a sentence of its own; `event` is for unknown ones only.
+        summaryKey: 'brand.create',
         summary: 'Brand added',
       });
     }
@@ -729,5 +730,170 @@ describe('GET /api/v1/locations/:id/actors', () => {
     expect(byId.get(ola.userId)).toBe(names.get(ola.userId));
     expect(byId.has(bob.userId)).toBe(false);
     expect((await get(bob, `/api/v1/locations/${home.id}/actors`)).statusCode).toBe(404);
+  });
+});
+
+describe('#140: plain sentences, not JSON and event codes', () => {
+  const plain = (before: unknown, after: unknown) => ({ before, after, class: 'plain' });
+  const node = (id: string, s: 'thing' | 'place', more: Record<string, unknown> = {}) => ({
+    id,
+    s,
+    x: 100,
+    z: 100,
+    w: null,
+    d: null,
+    rot: 0,
+    model: s === 'thing' ? 'device' : 'desk',
+    kind: null,
+    surface: null,
+    host: null,
+    ...more,
+  });
+  const arrange = (before: unknown[], after: unknown[]) =>
+    event({
+      loc: home,
+      actor: max,
+      action: 'place.arrange',
+      entity: { type: 'location', id: home.id },
+      rootThingId: null,
+      diff: { layout: plain(before, after) },
+    });
+  const one = async (as: Person, id: string) =>
+    (await feed(as, `?locationId=${home.id}&limit=200`)).items.find((e) => e.id === id);
+
+  it('says an arrangement in words, and never sends its layout', async () => {
+    const study = await place(home, 'Study');
+    const desk = await place(home, 'Corner desk');
+    const webcam = newId();
+    await own(
+      `INSERT INTO public.things (id, location_id, place_id, name) VALUES ($1, $2, $3, $4)`,
+      [webcam, home.id, study, 'HD webcam'],
+    );
+    const lamp = await thing(home, 'Desk lamp');
+    const theirs = await thing(bobs, 'Bob radio');
+    const id = await arrange(
+      [node(desk, 'place'), node(lamp, 'thing', { model: 'lamp' })],
+      [
+        node(desk, 'place'),
+        node(lamp, 'thing', { model: 'device', host: desk }),
+        node(webcam, 'thing'),
+        node(theirs, 'thing'),
+      ],
+    );
+    const row = await one(max, id);
+    expect(row?.summaryKey).toBe('place.arrange');
+    expect(row?.summary).toBe('Arranged the map');
+    expect(row?.summaryLines?.map((l) => l.text)).toEqual([
+      'Put a thing on the map',
+      'Put Desk lamp on Corner desk',
+      'Changed the shape of Desk lamp: lamp → device',
+      'Put HD webcam on the map in Study',
+    ]);
+    expect(row?.summaryLines?.[2]).toMatchObject({
+      key: 'map.shape',
+      params: { from: 'lamp', to: 'device', vocab: 'model' },
+    });
+    // The layout is in the lines; neither it nor the other location's thing's name is sent.
+    expect(row?.diff).toEqual({});
+    expect(JSON.stringify(row)).not.toContain('Bob radio');
+    expect(JSON.stringify(row)).not.toContain('"layout"');
+    // Bob sees no row of a location he can't see.
+    expect((await feed(bob, '?limit=200')).items.some((e) => e.id === id)).toBe(false);
+  });
+
+  it('counts a busy arrangement, with every change in its lines', async () => {
+    const things = await Promise.all(
+      Array.from({ length: 6 }, (_, i) => thing(home, `Box ${i + 1}`)),
+    );
+    const id = await arrange(
+      things.map((x) => node(x, 'thing')),
+      things.map((x) => node(x, 'thing', { x: 300, rot: 90 })),
+    );
+    const row = await one(ola, id);
+    expect(row?.summaryKey).toBe('place.arrange.many');
+    expect(row?.summaryParams.count).toBe('12');
+    expect(row?.summary).toBe('Arranged the map: 12 changes');
+    expect(row?.summaryLines).toHaveLength(12);
+    expect(row?.summaryLines?.slice(0, 2).map((l) => l.text)).toEqual([
+      'Moved Box 1',
+      'Turned Box 1',
+    ]);
+  });
+
+  it('folds an upload into the row that took it up, and an extraction into its capture', async () => {
+    const lamp = await thing(home, 'Reading lamp');
+    const fileId = newId();
+    const upload = await event({
+      loc: home,
+      actor: max,
+      action: 'file.upload',
+      entity: { type: 'file', id: fileId },
+      rootThingId: null,
+      diff: { mime: plain(null, 'image/jpeg'), bytes: plain(null, 1000) },
+    });
+    const attach = await event({
+      loc: home,
+      actor: max,
+      action: 'attachment.create',
+      entity: { type: 'attachment', id: newId() },
+      rootThingId: lamp,
+      diff: { role: plain(null, 'photo'), file_id: plain(null, fileId) },
+    });
+    const lone = newId();
+    const alone = await event({
+      loc: home,
+      actor: max,
+      action: 'file.upload',
+      entity: { type: 'file', id: lone },
+      rootThingId: null,
+    });
+    const keyboard = await thing(home, 'Wireless keyboard');
+    const capture = await event({
+      loc: home,
+      actor: max,
+      action: 'thing.capture',
+      entity: { type: 'thing', id: keyboard },
+      diff: {
+        mode: plain(null, 'thing'),
+        file_ids: plain(null, [newId()]),
+        name: plain(null, null),
+      },
+    });
+    const extract = await event({
+      loc: home,
+      actor: max,
+      action: 'thing.extract',
+      entity: { type: 'thing', id: keyboard },
+      diff: { name: plain(null, 'Wireless keyboard') },
+    });
+    const items = (await feed(max, `?locationId=${home.id}&limit=200`)).items;
+    const ids = items.map((e) => e.id);
+    expect(ids).not.toContain(upload);
+    expect(ids).toContain(alone);
+    expect(ids).not.toContain(extract);
+    expect(items.find((e) => e.id === attach)?.summary).toBe('Added a photo to Reading lamp');
+    const row = items.find((e) => e.id === capture);
+    expect(row?.summary).toBe('Captured Wireless keyboard from a photo');
+    expect(row?.diff?.name).toEqual(plain(null, 'Wireless keyboard'));
+  });
+
+  it("says a report's kind and what it covered, by the location's name", async () => {
+    const id = await event({
+      loc: home,
+      actor: ola,
+      action: 'report.generate',
+      entity: { type: 'report', id: newId() },
+      rootThingId: null,
+      diff: {
+        kind: plain(null, 'insurance'),
+        include: plain(null, { photos: true }),
+        filters: plain(null, { thingIds: [newId(), newId()] }),
+        locale: plain(null, 'en'),
+        digits: plain(null, 'latn'),
+      },
+    });
+    const row = await one(ola, id);
+    expect(row?.summary).toBe('Made an insurance report for Home');
+    expect(row?.summaryLines?.map((l) => l.text)).toEqual(['2 things', 'With photos']);
   });
 });

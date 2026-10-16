@@ -1,4 +1,4 @@
-import { type Action, can, type Role } from '@kept/shared';
+import { type Action, type AuditAction, can, type Role } from '@kept/shared';
 import type pg from 'pg';
 import { actorOf } from '../audit/actor.js';
 import { audited } from '../audit/audited.js';
@@ -71,7 +71,7 @@ export async function auditRegistry(
     accountId: string;
     userId: string;
     tokenId?: string | null;
-    action: string;
+    action: AuditAction;
     entity: { type: string; id: string };
     before?: Record<string, unknown> | null;
     after?: Record<string, unknown> | null;

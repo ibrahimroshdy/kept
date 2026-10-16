@@ -5,6 +5,7 @@ import {
   ARCHIVE_SOURCES,
   type ArchiveRefusal,
   type ArchiveSource,
+  type AuditAction,
   HomeboxChoices,
   IMPORT_ISSUE_CODES,
   IMPORT_STALE_MINUTES,
@@ -260,7 +261,7 @@ type Ctx = { tx: Tx; client: pg.PoolClient; scope: Scope; requestId: string };
 export async function auditRun(
   c: Ctx,
   run: Pick<ArchiveRunRow, 'id' | 'location_id'>,
-  action: string,
+  action: AuditAction,
   after: Record<string, unknown>,
   before: Record<string, unknown> | null = null,
 ): Promise<void> {
@@ -335,7 +336,7 @@ async function refuse(
   req: FastifyRequest,
   run: ArchiveRunRow,
   err: ArchiveError | ArchiveContentError,
-  action: string,
+  action: AuditAction,
 ): Promise<AppError> {
   // The detail may hold a name from the archive: logged, never answered.
   req.log.info(
@@ -369,7 +370,7 @@ async function withArchive<T>(
   req: FastifyRequest,
   files: FileStorage,
   run: ArchiveRunRow,
-  action: string,
+  action: AuditAction,
   fn: (archive: OpenArchive, importer: ArchiveImporter) => Promise<T>,
 ): Promise<T> {
   const importer = importerOf(run.source);

@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { PROVIDER_KINDS, type ProviderKind } from '@kept/shared';
+import { type AuditAction, PROVIDER_KINDS, type ProviderKind } from '@kept/shared';
 import type pg from 'pg';
 import { audited } from '../audit/audited.js';
 import { isUndeliverableEmail } from '../auth/emails.js';
@@ -105,7 +105,7 @@ async function checkOne(
   deps: ConfigNoticeDeps,
   key: string,
   hash: string,
-  action: string,
+  action: AuditAction,
   facts: Record<string, unknown>,
 ): Promise<string | null> {
   return withSystem(deps.pools.system, async (tx, client) => {

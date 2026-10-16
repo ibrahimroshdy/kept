@@ -1,4 +1,5 @@
 import {
+  type AuditAction,
   BACKUP_PASSWORD_MAX,
   BACKUP_PASSWORD_MIN,
   BACKUP_RUN_KINDS,
@@ -117,7 +118,7 @@ async function isInstanceAdmin(deps: InventoryDeps, req: FastifyRequest) {
 function auditInstance(
   tx: Tx,
   req: FastifyRequest,
-  action: string,
+  action: AuditAction,
   after: Record<string, unknown>,
 ) {
   return audited(tx, {

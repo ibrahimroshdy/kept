@@ -1,5 +1,6 @@
 import {
   type Action,
+  type AuditAction,
   can,
   canonicalAmount,
   isShortCode,
@@ -289,7 +290,7 @@ export type CaptureExtras = {
   fieldStatus?: Record<string, unknown>;
   /** The caller checked the client id already (a sync op's 90-day window, Q2). */
   idChecked?: boolean;
-  audit?: { action: string; after?: Record<string, unknown>; undoableUntil?: Date };
+  audit?: { action: AuditAction; after?: Record<string, unknown>; undoableUntil?: Date };
 };
 
 /** CreateBody, with the name a draft may leave out. */

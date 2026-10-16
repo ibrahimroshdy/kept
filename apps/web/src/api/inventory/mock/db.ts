@@ -4,6 +4,7 @@
  * the way the server does), pagination over `next_cursor`, If-Match checks with the D156 412
  * body, and a small Arabic-aware fold for search. Test and demo data only.
  */
+import { isAuditAction } from '@kept/shared';
 import type { LocationDetail } from '../../types';
 import type {
   AccountSummary,
@@ -301,8 +302,11 @@ export function summaryOf(
       : { summaryKey: action, summaryParams: { name }, summary: `Changed the status of ${name}` };
   }
   const sentence = SENTENCES[action];
+  // #140: every action the server writes has a key of its own; `event` is for unknown ones.
   if (!sentence)
-    return { summaryKey: 'event', summaryParams: { action }, summary: action.replace('.', ' ') };
+    return isAuditAction(action)
+      ? { summaryKey: action, summaryParams: { name }, summary: action.replace('.', ' ') }
+      : { summaryKey: 'event', summaryParams: { action }, summary: action.replace('.', ' ') };
   return {
     summaryKey: action,
     summaryParams: action === 'thing.move.in' ? {} : { name },

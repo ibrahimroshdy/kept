@@ -24573,3 +24573,555 @@ msgstr "Pick what goes on it"
 #: src/map/put-on.tsx
 msgid "On it now: {onNow}"
 msgstr "On it now: {onNow}"
+
+#: src/components/history/labels.ts
+msgid "Added a photo to {name}"
+msgstr "Added a photo to {name}"
+
+#: src/components/history/labels.ts
+msgid "Captured {name} from a photo"
+msgstr "Captured {name} from a photo"
+
+#: src/components/history/labels.ts
+msgid "Logged a reading of {name} from a photo"
+msgstr "Logged a reading of {name} from a photo"
+
+#: src/components/history/labels.ts
+msgid "Filled in {name} from a photo"
+msgstr "Filled in {name} from a photo"
+
+#: src/components/history/labels.ts
+msgid "Read the photo of {name} again"
+msgstr "Read the photo of {name} again"
+
+#: src/components/history/labels.ts
+msgid "Merged a duplicate into {name}"
+msgstr "Merged a duplicate into {name}"
+
+#: src/components/history/labels.ts
+msgid "Arranged the map"
+msgstr "Arranged the map"
+
+#: src/components/history/labels.ts
+msgid "Checked what is in {name}"
+msgstr "Checked what is in {name}"
+
+#: src/components/history/labels.ts
+msgid "Gave {name} a label"
+msgstr "Gave {name} a label"
+
+#: src/components/history/labels.ts
+msgid "Changed how {name} numbers its codes"
+msgstr "Changed how {name} numbers its codes"
+
+#: src/components/history/labels.ts
+msgid "Handed {name} to a new owner"
+msgstr "Handed {name} to a new owner"
+
+#: src/components/history/labels.ts
+msgid "Made an inventory report of {name}"
+msgstr "Made an inventory report of {name}"
+
+#: src/components/history/labels.ts
+msgid "Made an insurance report for {name}"
+msgstr "Made an insurance report for {name}"
+
+#: src/components/history/labels.ts
+msgid "Made a vehicle history report for {name}"
+msgstr "Made a vehicle history report for {name}"
+
+#: src/components/history/labels.ts
+msgid "Cancelled the account deletion"
+msgstr "Cancelled the account deletion"
+
+#: src/components/history/labels.ts
+msgid "Asked to delete the account"
+msgstr "Asked to delete the account"
+
+#: src/components/history/labels.ts
+msgid "Changed the account email"
+msgstr "Changed the account email"
+
+#: src/components/history/labels.ts
+msgid "Reset a password from the command line"
+msgstr "Reset a password from the command line"
+
+#: src/components/history/labels.ts
+msgid "Turned off an account from the command line"
+msgstr "Turned off an account from the command line"
+
+#: src/components/history/labels.ts
+msgid "Turned an account back on from the command line"
+msgstr "Turned an account back on from the command line"
+
+#: src/components/history/labels.ts
+msgid "Turned off a currency"
+msgstr "Turned off a currency"
+
+#: src/components/history/labels.ts
+msgid "Turned on a currency"
+msgstr "Turned on a currency"
+
+#: src/components/history/labels.ts
+msgid "Made someone an instance admin"
+msgstr "Made someone an instance admin"
+
+#: src/components/history/labels.ts
+msgid "Removed an instance admin"
+msgstr "Removed an instance admin"
+
+#: src/components/history/labels.ts
+msgid "Discarded a failed job"
+msgstr "Discarded a failed job"
+
+#: src/components/history/labels.ts
+msgid "Retried a failed job"
+msgstr "Retried a failed job"
+
+#: src/components/history/labels.ts
+msgid "Turned off an account"
+msgstr "Turned off an account"
+
+#: src/components/history/labels.ts
+msgid "Turned an account back on"
+msgstr "Turned an account back on"
+
+#: src/components/history/labels.ts
+msgid "Reset someone’s two-step sign-in"
+msgstr "Reset someone’s two-step sign-in"
+
+#: src/components/history/labels.ts
+msgid "Signed someone out everywhere"
+msgstr "Signed someone out everywhere"
+
+#: src/components/history/labels.ts
+msgid "Removed the AI spending cap"
+msgstr "Removed the AI spending cap"
+
+#: src/components/history/labels.ts
+msgid "Set the AI spending cap"
+msgstr "Set the AI spending cap"
+
+#: src/components/history/labels.ts
+msgid "Paused AI"
+msgstr "Paused AI"
+
+#: src/components/history/labels.ts
+msgid "Resumed AI"
+msgstr "Resumed AI"
+
+#: src/components/history/labels.ts
+msgid "Looked up AI prices"
+msgstr "Looked up AI prices"
+
+#: src/components/history/labels.ts
+msgid "Worked out AI costs again with new prices"
+msgstr "Worked out AI costs again with new prices"
+
+#: src/components/history/labels.ts
+msgid "Removed an AI price"
+msgstr "Removed an AI price"
+
+#: src/components/history/labels.ts
+msgid "Set an AI price"
+msgstr "Set an AI price"
+
+#: src/components/history/labels.ts
+msgid "Listed an AI provider’s models"
+msgstr "Listed an AI provider’s models"
+
+#: src/components/history/labels.ts
+msgid "Removed an AI provider"
+msgstr "Removed an AI provider"
+
+#: src/components/history/labels.ts
+msgid "Set up an AI provider"
+msgstr "Set up an AI provider"
+
+#: src/components/history/labels.ts
+msgid "Tested an AI provider"
+msgstr "Tested an AI provider"
+
+#: src/components/history/labels.ts
+msgid "Exported AI usage"
+msgstr "Exported AI usage"
+
+#: src/components/history/labels.ts
+msgid "Google sign-in settings changed"
+msgstr "Google sign-in settings changed"
+
+#: src/components/history/labels.ts
+msgid "Set a managed account’s password"
+msgstr "Set a managed account’s password"
+
+#: src/components/history/labels.ts
+msgid "Made a reset code for a managed account"
+msgstr "Made a reset code for a managed account"
+
+#: src/components/history/labels.ts
+msgid "Changed notification settings"
+msgstr "Changed notification settings"
+
+#: src/components/history/labels.ts
+msgid "Changed which notifications arrive"
+msgstr "Changed which notifications arrive"
+
+#: src/components/history/labels.ts
+msgid "Changed preferences"
+msgstr "Changed preferences"
+
+#: src/components/history/labels.ts
+msgid "Signed out a session"
+msgstr "Signed out a session"
+
+#: src/components/history/labels.ts
+msgid "Turned down an app’s request to connect"
+msgstr "Turned down an app’s request to connect"
+
+#: src/components/history/labels.ts
+msgid "Let an app connect"
+msgstr "Let an app connect"
+
+#: src/components/history/labels.ts
+msgid "Made an access token"
+msgstr "Made an access token"
+
+#: src/components/history/labels.ts
+msgid "Revoked an access token"
+msgstr "Revoked an access token"
+
+#: src/components/history/labels.ts
+msgid "Changed an access token"
+msgstr "Changed an access token"
+
+#: src/components/history/labels.ts
+msgid "Turned on notifications on a device"
+msgstr "Turned on notifications on a device"
+
+#: src/components/history/labels.ts
+msgid "Turned off notifications on a device"
+msgstr "Turned off notifications on a device"
+
+#: src/components/history/labels.ts
+msgid "Changed notifications on a device"
+msgstr "Changed notifications on a device"
+
+#: src/components/history/labels.ts
+msgid "Dismissed a tip"
+msgstr "Dismissed a tip"
+
+#: src/components/history/labels.ts
+msgid "Brought back a tip"
+msgstr "Brought back a tip"
+
+#: src/components/history/labels.ts
+msgid "Read a tip"
+msgstr "Read a tip"
+
+#: src/components/history/labels.ts
+msgid "Changed how a list shows"
+msgstr "Changed how a list shows"
+
+#: src/components/history/labels.ts
+msgid "Removed a member"
+msgstr "Removed a member"
+
+#: src/components/history/labels.ts
+msgid "Changed when guest access ends"
+msgstr "Changed when guest access ends"
+
+#: src/components/history/labels.ts
+msgid "Told the owner about a new guest"
+msgstr "Told the owner about a new guest"
+
+#: src/components/history/labels.ts
+msgid "Set up the mailbox"
+msgstr "Set up the mailbox"
+
+#: src/components/history/labels.ts
+msgid "Changed the mailbox"
+msgstr "Changed the mailbox"
+
+#: src/components/history/labels.ts
+msgid "Removed the mailbox"
+msgstr "Removed the mailbox"
+
+#: src/components/history/labels.ts
+msgid "Added a notification channel"
+msgstr "Added a notification channel"
+
+#: src/components/history/labels.ts
+msgid "Removed a notification channel"
+msgstr "Removed a notification channel"
+
+#: src/components/history/labels.ts
+msgid "Made a calendar feed"
+msgstr "Made a calendar feed"
+
+#: src/components/history/labels.ts
+msgid "Revoked a calendar feed"
+msgstr "Revoked a calendar feed"
+
+#: src/components/history/labels.ts
+msgid "Undid a capture"
+msgstr "Undid a capture"
+
+#: src/components/history/labels.ts
+msgid "Discarded a draft"
+msgstr "Discarded a draft"
+
+#: src/components/history/labels.ts
+msgid "Dealt with an inbox item"
+msgstr "Dealt with an inbox item"
+
+#: src/components/history/labels.ts
+msgid "Brought back an inbox item"
+msgstr "Brought back an inbox item"
+
+#: src/components/history/labels.ts
+msgid "Changed several inbox items at once"
+msgstr "Changed several inbox items at once"
+
+#: src/components/history/labels.ts
+msgid "Printed labels"
+msgstr "Printed labels"
+
+#: src/components/history/labels.ts
+msgid "Captured a receipt"
+msgstr "Captured a receipt"
+
+#: src/components/history/labels.ts
+msgid "Confirmed a receipt"
+msgstr "Confirmed a receipt"
+
+#: src/components/history/labels.ts
+msgid "Read a receipt"
+msgstr "Read a receipt"
+
+#: src/components/history/labels.ts
+msgid "Read a meter from a photo"
+msgstr "Read a meter from a photo"
+
+#: src/components/history/labels.ts
+msgid "Cropped a photo"
+msgstr "Cropped a photo"
+
+#: src/components/history/labels.ts
+msgid "Changed the photo shown"
+msgstr "Changed the photo shown"
+
+#: src/components/history/labels.ts
+msgid "Added a template"
+msgstr "Added a template"
+
+#: src/components/history/labels.ts
+msgid "Changed a template"
+msgstr "Changed a template"
+
+#: src/components/history/labels.ts
+msgid "Deleted a template"
+msgstr "Deleted a template"
+
+#: src/components/history/labels.ts
+msgid "Changed a claim’s status"
+msgstr "Changed a claim’s status"
+
+#: src/components/history/labels.ts
+msgid "Made a claim pack"
+msgstr "Made a claim pack"
+
+#: src/components/history/labels.ts
+msgid "Shared a claim pack link"
+msgstr "Shared a claim pack link"
+
+#: src/components/history/labels.ts
+msgid "Revoked a claim pack link"
+msgstr "Revoked a claim pack link"
+
+#: src/components/history/labels.ts
+msgid "Started a condition report"
+msgstr "Started a condition report"
+
+#: src/components/history/labels.ts
+msgid "Changed a condition report"
+msgstr "Changed a condition report"
+
+#: src/components/history/labels.ts
+msgid "Finished a condition report"
+msgstr "Finished a condition report"
+
+#: src/components/history/labels.ts
+msgid "Deleted a condition report"
+msgstr "Deleted a condition report"
+
+#: src/components/history/labels.ts
+msgid "Added a room to a condition report"
+msgstr "Added a room to a condition report"
+
+#: src/components/history/labels.ts
+msgid "Changed a room in a condition report"
+msgstr "Changed a room in a condition report"
+
+#: src/components/history/labels.ts
+msgid "Removed a room from a condition report"
+msgstr "Removed a room from a condition report"
+
+#: src/components/history/labels.ts
+msgid "Started an export"
+msgstr "Started an export"
+
+#: src/components/history/labels.ts
+msgid "Cancelled an export"
+msgstr "Cancelled an export"
+
+#: src/components/history/labels.ts
+msgid "Downloaded an export"
+msgstr "Downloaded an export"
+
+#: src/components/history/labels.ts
+msgid "Put secrets in an export"
+msgstr "Put secrets in an export"
+
+#: src/components/history/labels.ts
+msgid "Uploaded a file to import"
+msgstr "Uploaded a file to import"
+
+#: src/components/history/labels.ts
+msgid "Uploaded an archive to import"
+msgstr "Uploaded an archive to import"
+
+#: src/components/history/labels.ts
+msgid "Opened an archive to import"
+msgstr "Opened an archive to import"
+
+#: src/components/history/labels.ts
+msgid "Entered an import’s passphrase"
+msgstr "Entered an import’s passphrase"
+
+#: src/components/history/labels.ts
+msgid "Chose where an import goes"
+msgstr "Chose where an import goes"
+
+#: src/components/history/labels.ts
+msgid "Changed an import’s choices"
+msgstr "Changed an import’s choices"
+
+#: src/components/history/labels.ts
+msgid "Checked an import"
+msgstr "Checked an import"
+
+#: src/components/history/labels.ts
+msgid "Started an import"
+msgstr "Started an import"
+
+#: src/components/history/labels.ts
+msgid "Ran an import"
+msgstr "Ran an import"
+
+#: src/components/history/labels.ts
+msgid "Cancelled an import"
+msgstr "Cancelled an import"
+
+#: src/components/history/labels.ts
+msgid "Exported a report as a CSV"
+msgstr "Exported a report as a CSV"
+
+#: src/components/history/labels.ts
+msgid "Scheduled a report"
+msgstr "Scheduled a report"
+
+#: src/components/history/labels.ts
+msgid "Stopped a scheduled report"
+msgstr "Stopped a scheduled report"
+
+#: src/components/history/labels.ts
+msgid "Made a condition report for {name}"
+msgstr "Made a condition report for {name}"
+
+#: src/components/history/labels.ts
+msgid "Made a moving report for {name}"
+msgstr "Made a moving report for {name}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Made # blank label} other {Made # blank labels}}"
+msgstr "{count, plural, one {Made # blank label} other {Made # blank labels}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Made labels for # thing} other {Made labels for # things}}"
+msgstr "{count, plural, one {Made labels for # thing} other {Made labels for # things}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Made labels for # place} other {Made labels for # places}}"
+msgstr "{count, plural, one {Made labels for # place} other {Made labels for # places}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Arranged the map: # change} other {Arranged the map: # changes}}"
+msgstr "{count, plural, one {Arranged the map: # change} other {Arranged the map: # changes}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {# thing} other {# things}}"
+msgstr "{count, plural, one {# thing} other {# things}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {With # thing inside} other {With # things inside}}"
+msgstr "{count, plural, one {With # thing inside} other {With # things inside}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {# thing taken out first} other {# things taken out first}}"
+msgstr "{count, plural, one {# thing taken out first} other {# things taken out first}}"
+
+#: src/components/history/labels.ts
+msgid "With photos"
+msgstr "With photos"
+
+#: src/components/history/labels.ts
+msgid "Put {name} on the map in {room}"
+msgstr "Put {name} on the map in {room}"
+
+#: src/components/history/labels.ts
+msgid "Put {name} on the map"
+msgstr "Put {name} on the map"
+
+#: src/components/history/labels.ts
+msgid "Took {name} off the map"
+msgstr "Took {name} off the map"
+
+#: src/components/history/labels.ts
+msgid "Put {name} on {host}"
+msgstr "Put {name} on {host}"
+
+#: src/components/history/labels.ts
+msgid "Took {name} off {host}"
+msgstr "Took {name} off {host}"
+
+#: src/components/history/labels.ts
+msgid "Turned {name}"
+msgstr "Turned {name}"
+
+#: src/components/history/labels.ts
+msgid "Changed the shape of {name}: {from} → {to}"
+msgstr "Changed the shape of {name}: {from} → {to}"
+
+#: src/components/history/labels.ts
+msgid "Resized {name}"
+msgstr "Resized {name}"
+
+#: src/components/history/labels.ts
+msgid "Changed the kind of {name}: {from} → {to}"
+msgstr "Changed the kind of {name}: {from} → {to}"
+
+#: src/components/history/labels.ts
+msgid "Changed the floor of {name}: {from} → {to}"
+msgstr "Changed the floor of {name}: {from} → {to}"
+
+#: src/components/history/timeline.tsx
+msgid "Show the changes"
+msgstr "Show the changes"
+
+#: src/components/history/timeline.tsx
+msgid "Hide the changes"
+msgstr "Hide the changes"
+
+#: src/components/history/timeline.tsx
+msgid "Hide"
+msgstr "Hide"

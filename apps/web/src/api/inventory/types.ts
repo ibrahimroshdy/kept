@@ -1271,6 +1271,9 @@ export type RenderedChange = (
  * A history or activity row: the server's `RenderedAuditEvent` (snake_case, as `renderAudit`
  * returns it) plus the actor's display name and a one-line summary (plan task 21).
  */
+/** A history row's detail line (#140): a key and params the web says, and the server's English. */
+export type SummaryLineView = { key: string; params: Record<string, string>; text: string };
+
 export type HistoryEvent = {
   id: string;
   at: string;
@@ -1295,6 +1298,8 @@ export type HistoryEvent = {
    */
   summaryKey: string;
   summaryParams: Record<string, string>;
+  /** #140: what the action covered, one line each (an arrangement's changes, a report's counts). */
+  summaryLines?: SummaryLineView[];
   /** A `thing.move` arriving from a location the viewer can't see (D183): rendered with no diff. */
   movedInFromElsewhere?: boolean;
   /**

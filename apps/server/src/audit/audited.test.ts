@@ -159,7 +159,7 @@ describe('audited()', () => {
       audited(tx, {
         locationId: t.locationId,
         actor: { type: 'user', id: t.userId },
-        action: 'invite.update',
+        action: 'invite.create',
         entity: { type: 'invite', id: inviteId },
         before: { tokenHash: oldHash, role: 'member' },
         after: { tokenHash: newHash, role: 'viewer' },
@@ -181,7 +181,7 @@ describe('audited()', () => {
       audited(tx, {
         locationId: t.locationId,
         actor: { type: 'user', id: t.userId },
-        action: 'invite.update',
+        action: 'invite.create',
         entity: { type: 'invite', id: newId() },
         before: { tokenHash: 'a' },
         after: { tokenHash: 'b' },
@@ -263,7 +263,7 @@ describe('audited()', () => {
         locationId: null,
         ownerAccountId: t.accountId,
         actor: { type: 'user', id: t.userId },
-        action: 'account.update',
+        action: 'account.email_change',
         entity: { type: 'account', id: t.accountId },
         before: { x: 1 },
         after: { x: 2 },
