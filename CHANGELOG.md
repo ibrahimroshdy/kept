@@ -3,6 +3,20 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.10.3 (2026-10-16)
+
+### Features
+
+- **map:** put small things on a desk or a monitor without dragging (#137) (#144) (03dbcfa)
+
+### Fixes
+
+- **web:** grid keeps places and things apart, with tile sizes (#139) (#143) (b2621da)
+
+### Documentation
+
+- **release:** the 1.10.2 record (#136) (f82584f)
+
 ## 1.10.2 (2026-10-15)
 
 ### Fixes
