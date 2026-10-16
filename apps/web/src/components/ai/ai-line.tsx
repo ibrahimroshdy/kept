@@ -8,7 +8,7 @@
  * paid (`paidBy.mine`). A failed read says why instead. Used by the inbox (T27), the thing
  * header's extraction status and the capture screen (T25). It was "Read by qwen/qwen3.8-27b
  * (Groq) · 1,640 tokens · cost unknown · paid by Personal", dotted-underlined and wrapping over
- * two lines on the maintainer's iPhone.
+ * two lines on an iPhone.
  */
 import { Trans } from '@lingui/react/macro';
 import { Fragment, useState } from 'react';

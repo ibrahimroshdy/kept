@@ -2,7 +2,7 @@
 
 T30, 2026-09-30. Each item of "Definition of done for step 4"
 ([2026-09-30-step-4-household.md](2026-09-30-step-4-household.md)) is **met**, **met with a
-note**, **not met**, or **maintainer check pending** (it needs the maintainer's phone, mailbox or
+note**, **not met**, or **maintainer check pending** (it needs a real phone, mailbox or
 a fresh install; the fallback in use is named). The evidence is a test (file and title), a commit
 or a document. What is left open, and where it goes, is
 [step-4-carryover.md](step-4-carryover.md).

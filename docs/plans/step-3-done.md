@@ -2,7 +2,7 @@
 
 T32 part B, 2026-09-29/30. Each item of "Definition of done for step 3"
 ([2026-09-26-step-3-capture.md](2026-09-26-step-3-capture.md)) is **met**, **met with a note**,
-**not met**, or **device check pending** (it needs the maintainer's phone; the fallback in use is
+**not met**, or **device check pending** (it needs a real phone; the fallback in use is
 named). The evidence is a test (file and title), a commit or a document.
 
 **Summary:** 8 met or met with a note, 1 not met in a single run for reasons outside the code
