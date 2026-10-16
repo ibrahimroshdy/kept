@@ -1,7 +1,8 @@
 /**
  * "Print inventory" (D201, task 32), against the mock server: the filter sheet on the location
  * page and on Settings → Account, the request it posts, the run's progress, the download once it
- * is done, a failure with Try again, the hourly limit, a viewer, and offline.
+ * is done, a failure with Try again, the hourly limit, a viewer, and offline. 1.10.5 (#141): the
+ * email-only options locked, with their reason, where mail can't go out.
  */
 import { screen, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -9,8 +10,9 @@ import { INV_IDS } from '@/api/inventory/mock/fixtures';
 import { reportSchedulesOf } from '@/api/inventory/mock/reports';
 import { inventoryPaths as p } from '@/api/inventory/paths';
 import type { ReportRun } from '@/api/inventory/types';
-import { IDS, type MockState, ownerScenario } from '@/api/mock/fixtures';
+import { IDS, type MockState, memberScenario, ownerScenario } from '@/api/mock/fixtures';
 import { MockReply } from '@/api/mock/kit';
+import { MAIL_SETUP_DOCS } from '@/components/setup-code-help';
 import { findHeading, renderApp } from '@/test/app';
 import { expectLogicalOnly } from '@/test/render';
 
@@ -231,5 +233,95 @@ describe('Emailed and scheduled reports (D228)', () => {
     expect(
       mock.lastCall('DELETE', p.reportSchedule('01926f00-0000-7000-8000-00000000e301')),
     ).toBeDefined();
+  });
+});
+
+describe("Email-only options lock when mail can't go out (#141)", () => {
+  const mailOff = (state: MockState) => {
+    state.household.settings.smtpConfigured = false;
+    return state;
+  };
+  const LINE = "Email isn't set up on this server.";
+
+  it('with mail set up, nothing is locked', async () => {
+    const { user } = await renderApp(`/loc/${IDS.home}`);
+    await findHeading('Home');
+    const dialog = await openSheet(user);
+    expect(within(dialog).getByRole('switch', { name: 'Email it to me' })).toBeEnabled();
+    expect(within(dialog).getByRole('radio', { name: 'Every week' })).toBeEnabled();
+    expect(within(dialog).queryByText(LINE)).toBeNull();
+  });
+
+  it('without mail, an owner sees both locked, why, and Set up email', async () => {
+    const { user, mock } = await renderApp(`/loc/${IDS.home}`, { state: mailOff(ownerScenario()) });
+    await findHeading('Home');
+    const dialog = await openSheet(user);
+    const email = within(dialog).getByRole('switch', { name: 'Email it to me' });
+    await waitFor(() => expect(email).toBeDisabled());
+    expect(email).toHaveAccessibleDescription(`${LINE} Set up email`);
+    for (const name of ['Never', 'Every week', 'Every month'])
+      expect(within(dialog).getByRole('radio', { name })).toBeDisabled();
+    expect(
+      within(dialog).getByRole('radiogroup', { name: 'Send it again' }),
+    ).toHaveAccessibleDescription(`${LINE} Set up email`);
+    expect(within(dialog).getByRole('link', { name: 'Set up email' })).toHaveAttribute(
+      'href',
+      MAIL_SETUP_DOCS,
+    );
+    expect(within(dialog).queryByText('Ask the owner to set up email.')).toBeNull();
+    // The PDF itself still works, without email.
+    await user.click(within(dialog).getByRole('button', { name: 'Make the PDF' }));
+    await waitFor(() => expect(mock.lastCall('POST', p.reportsInventory)).toBeDefined());
+    expect(mock.lastCall('POST', p.reportsInventory)?.body).not.toHaveProperty('email');
+    expect(mock.lastCall('PUT', p.reportSchedules)).toBeUndefined();
+  });
+
+  it('a member is told to ask the owner, with no link', async () => {
+    const { user } = await renderApp(`/loc/${IDS.home}`, { state: mailOff(memberScenario()) });
+    await findHeading('Home');
+    const dialog = await openSheet(user);
+    expect(await within(dialog).findByText('Ask the owner to set up email.')).toBeInTheDocument();
+    expect(within(dialog).getByText(LINE)).toBeInTheDocument();
+    expect(within(dialog).queryByRole('link', { name: 'Set up email' })).toBeNull();
+    expect(within(dialog).getByRole('switch', { name: 'Email it to me' })).toBeDisabled();
+  });
+
+  it('an account with no email address gets the same lock', async () => {
+    const state = ownerScenario();
+    state.me.user.email = null;
+    const { user } = await renderApp(`/loc/${IDS.home}`, { state });
+    await findHeading('Home');
+    const dialog = await openSheet(user);
+    const email = within(dialog).getByRole('switch', { name: 'Email it to me' });
+    expect(email).toBeDisabled();
+    expect(email).toHaveAccessibleDescription('Add an email address to your account.');
+    expect(within(dialog).queryByText(LINE)).toBeNull();
+  });
+
+  it("says the server's refusal in a sentence", async () => {
+    const { user } = await renderApp(`/loc/${IDS.home}`, {
+      setup: (m) =>
+        m.on(
+          'POST',
+          p.reportsInventory,
+          () => new MockReply(409, { error: LINE, code: 'mail_not_configured' }),
+        ),
+    });
+    await findHeading('Home');
+    const dialog = await openSheet(user);
+    await user.click(within(dialog).getByRole('switch', { name: 'Email it to me' }));
+    await user.click(within(dialog).getByRole('button', { name: 'Make the PDF' }));
+    expect(await within(dialog).findByText(LINE)).toBeInTheDocument();
+  });
+
+  it('in Arabic, the locked sheet keeps to logical CSS', async () => {
+    const { user } = await renderApp(`/loc/${IDS.home}`, {
+      locale: 'ar',
+      state: mailOff(ownerScenario()),
+    });
+    await user.click(await screen.findByRole('button', { name: 'اطبع الجرد' }));
+    const dialog = await screen.findByRole('dialog', { name: 'اطبع الجرد' });
+    await waitFor(() => expect(within(dialog).getAllByRole('switch').at(-1)).toBeDisabled());
+    expectLogicalOnly();
   });
 });

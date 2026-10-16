@@ -8,6 +8,7 @@ import type { InventoryDeps } from '../http/routes.js';
 import { scopedRead, scopedWrite } from '../http/write.js';
 import { gatherInsurance, insuranceCsv } from '../incidents/report.js';
 import { locationOfMove } from '../moving/routes.js';
+import { requireMail } from './schedules.js';
 import {
   ConditionReportBody,
   createConditionRun,
@@ -35,7 +36,9 @@ import {
 //    include?: {photos? = true, qr? = false, money? = true},
 //    locale?: 'en' | 'ar', digits?: 'western' | 'eastern'}
 //   → 202 {id, status: 'queued', expiresAt}; 404 for a scope the caller can't see; 429 past
-//   five an hour (`retryAfter` seconds in the body and the Retry-After header).
+//   five an hour (`retryAfter` seconds in the body and the Retry-After header). With `email: true`,
+//   409 `mail_not_configured` on a server without mail, or `no_email_address` for an account with
+//   no address (1.10.5, #141; the insurance report the same).
 // GET /api/v1/reports/:id
 //   → {id, status: 'queued'|'running'|'done'|'failed'|'expired', scope, progress: {done, total},
 //      fileUrl? (five minutes, attachment), viewUrl? (the same, inline), bytes?, error?,
@@ -105,10 +108,13 @@ export async function reportRoutes(app: KeptApp, deps: InventoryDeps): Promise<v
     async (req, reply) => {
       const { jobs } = needs();
       try {
-        return await scopedWrite(pools, req, reply, async (tx, client, scope) => ({
-          status: 202,
-          body: await createInventoryRun(tx, client, scope, jobs, req.body, req.id),
-        }));
+        return await scopedWrite(pools, req, reply, async (tx, client, scope) => {
+          if (req.body.email === true) await requireMail(deps, scope.userId);
+          return {
+            status: 202,
+            body: await createInventoryRun(tx, client, scope, jobs, req.body, req.id),
+          };
+        });
       } catch (err) {
         const retryAfter = err instanceof AppError ? err.extra?.retryAfter : undefined;
         if (typeof retryAfter === 'number') reply.header('retry-after', String(retryAfter));
@@ -149,10 +155,13 @@ export async function reportRoutes(app: KeptApp, deps: InventoryDeps): Promise<v
     async (req, reply) => {
       const { jobs } = needs();
       try {
-        return await scopedWrite(pools, req, reply, async (tx, client, scope) => ({
-          status: 202,
-          body: await createInsuranceRun(tx, client, scope, jobs, req.body, req.id),
-        }));
+        return await scopedWrite(pools, req, reply, async (tx, client, scope) => {
+          if (req.body.email === true) await requireMail(deps, scope.userId);
+          return {
+            status: 202,
+            body: await createInsuranceRun(tx, client, scope, jobs, req.body, req.id),
+          };
+        });
       } catch (err) {
         const retryAfter = err instanceof AppError ? err.extra?.retryAfter : undefined;
         if (typeof retryAfter === 'number') reply.header('retry-after', String(retryAfter));

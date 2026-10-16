@@ -25125,3 +25125,15 @@ msgstr "أخفِ التغييرات"
 #: src/components/history/timeline.tsx
 msgid "Hide"
 msgstr "أخفِ"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Email isn't set up on this server."
+msgstr "البريد الإلكتروني غير مُعَد على هذا الخادم."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Ask the owner to set up email."
+msgstr "اطلب من المالك إعداد البريد الإلكتروني."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Add an email address to your account."
+msgstr "أضف عنوان بريد إلكتروني إلى حسابك."

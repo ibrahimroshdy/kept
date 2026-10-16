@@ -1,4 +1,4 @@
-import { REPORT_CADENCES, SCHEDULED_REPORT_KINDS } from '@kept/shared';
+import { ErrorCode, REPORT_CADENCES, SCHEDULED_REPORT_KINDS } from '@kept/shared';
 import { z } from 'zod';
 import { isUndeliverableEmail } from '../auth/emails.js';
 import { withScope, withSystem } from '../db/scope.js';
@@ -29,6 +29,9 @@ import {
 // A person's own, for a location they can see, and only a report they could ask for now: the
 // inventory for any member, the insurance report for whoever may read its money (D158). Audited
 // on the person's account (`report.schedule`, `report.unschedule`).
+//
+// A schedule is refused (409 `mail_not_configured` / `no_email_address`, requireMail) when the
+// report could never reach the person (1.10.5, #141).
 //
 // The hourly `report-schedules` job (kept_system) finds the schedules due (Mondays or the 1st,
 // from 08:00 in the location's time zone, once that local day) and requests each run in its
@@ -103,6 +106,8 @@ export async function reportScheduleRoutes(app: KeptApp, deps: InventoryDeps): P
         const { locationId, kind, cadence } = req.body;
         // Only what the person could ask for by hand (404 for a location they can't see).
         await requireMembership(client, locationId);
+        // A schedule only ever mails (#141).
+        await requireMail(deps, scope.userId);
         if (kind === 'insurance') {
           await requireInsuranceReader(
             tx,
@@ -152,6 +157,26 @@ export async function reportScheduleRoutes(app: KeptApp, deps: InventoryDeps): P
         return { status: 204, body: undefined };
       }),
   );
+}
+
+/**
+ * 1.10.5 (#141): refuse a request that asks for an email Kept can't send, instead of accepting it
+ * and dropping the mail: 409 `mail_not_configured` on a server without KEPT_SMTP_URL, 409
+ * `no_email_address` for an account with no address to send to (a managed one, D47). An address
+ * that isn't verified yet is still accepted: verifying it is the person's next step, and the mail
+ * waits for nothing (mailReport skips it).
+ */
+export async function requireMail(
+  deps: Pick<InventoryDeps, 'pools' | 'notify'>,
+  userId: string,
+): Promise<void> {
+  if (!deps.notify?.mailConfigured) throw new AppError(ErrorCode.mail_not_configured, 409);
+  const { rows } = await deps.pools.auth.query<{ email: string | null }>(
+    'SELECT email FROM auth."user" WHERE id = $1',
+    [userId],
+  );
+  const email = rows[0]?.email;
+  if (!email || isUndeliverableEmail(email)) throw new AppError(ErrorCode.no_email_address, 409);
 }
 
 /** A person's deliverable address and language, as the report mail needs it; null for a managed,

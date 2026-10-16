@@ -299,7 +299,8 @@ To hand someone a list on paper instead, print it (below).
   see money. Anyone who can see the location can make one. **Email it to me** also mails the PDF
   when it's ready, and **Send it again** mails the whole location every Monday or on the 1st of the
   month; Settings → Me → Notifications lists these and stops them. A report over 10 MB isn't
-  attached: print it from Kept instead.
+  attached: print it from Kept instead. Both are locked, with the reason under them, when the
+  server has no mail set up or your account has no email address.
 - **Insurance report** (where you can see money): every thing with its photo, brand, model,
   serial, purchase date, price, current value and receipts, with totals per place and per currency,
   as a PDF and a CSV. **Also total in** adds one converted total when your exchange rates cover

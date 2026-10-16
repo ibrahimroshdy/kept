@@ -11,21 +11,29 @@
  * 1.3 (D228): "Email it to me" also mails the PDF when it's done, and for a location "Send it
  * again" keeps a weekly or monthly schedule of the whole location (Settings → Me → Notifications
  * lists and stops them).
+ *
+ * 1.10.5 (#141): both only work by email, so where it can't go out they're disabled, dimmed, and
+ * a line with a lock says why (MailLock): mail isn't set up on this server (owners and admins get
+ * the docs' setup page, others are told to ask the owner), or the account has no address. The
+ * server refuses them the same way (`mail_not_configured`, `no_email_address`).
  */
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState, useSyncExternalStore } from 'react';
+import { useId, useState, useSyncExternalStore } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 import { isApiError } from '@/api/client';
+import { useNotificationSettings } from '@/api/household/queries';
 import { reportKeys, reportsApi } from '@/api/inventory/reports';
 import type { InventoryReportBody, ReportScope } from '@/api/inventory/types';
+import { useLocations, useMe } from '@/api/queries';
 import { FieldEditor } from '@/components/filters/panel';
 import { useFilterRegistry } from '@/components/filters/registry';
 import type { FilterDef } from '@/components/filters/types';
 import { useValueLabels } from '@/components/filters/values';
-import { ChevronEndIcon, ChevronStartIcon, DocumentIcon } from '@/components/icons';
+import { ChevronEndIcon, ChevronStartIcon, DocumentIcon, LockIcon } from '@/components/icons';
 import { Notice, useErrorText } from '@/components/page';
 import { Sheet } from '@/components/places/sheet';
+import { MAIL_SETUP_DOCS } from '@/components/setup-code-help';
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
 import { Segmented } from '@/components/ui/segmented';
@@ -48,6 +56,72 @@ function useOnline(): boolean {
     subscribeOnline,
     () => navigator.onLine,
     () => true,
+  );
+}
+
+/** Why email can't go out from here, or null while it can (or isn't known yet: the server
+ * refuses it then anyway). */
+type MailBlock = 'server' | 'address' | null;
+
+function useMailBlock(locationIds: string[]): { block: MailBlock; canSetUp: boolean } {
+  const settings = useNotificationSettings();
+  const me = useMe();
+  const locations = useLocations();
+  const user = me.data?.user;
+  const block: MailBlock =
+    settings.data?.smtpConfigured === false
+      ? 'server'
+      : user && (user.managed || !user.email)
+        ? 'address'
+        : null;
+  // The instance admin sets mail up; an owner or admin of these locations is who people ask.
+  const canSetUp =
+    !!user?.instanceAdmin ||
+    (locations.data ?? []).some(
+      (l) => locationIds.includes(l.id) && (l.role === 'owner' || l.role === 'admin'),
+    );
+  return { block, canSetUp };
+}
+
+/** The line under the email-only options: a lock, why, and what to do about it. */
+function MailLock({
+  id,
+  block,
+  canSetUp,
+}: {
+  id: string;
+  block: 'server' | 'address';
+  canSetUp: boolean;
+}) {
+  return (
+    <p id={id} className="m-0 flex items-start gap-1.5 text-small text-ink-2">
+      <LockIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-ink-3" />
+      <span>
+        {block === 'address' ? (
+          <Trans>Add an email address to your account.</Trans>
+        ) : (
+          <>
+            <span>
+              <Trans>Email isn't set up on this server.</Trans>
+            </span>{' '}
+            {canSetUp ? (
+              <a
+                href={MAIL_SETUP_DOCS}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-ink underline underline-offset-2"
+              >
+                <Trans>Set up email</Trans>
+              </a>
+            ) : (
+              <span>
+                <Trans>Ask the owner to set up email.</Trans>
+              </span>
+            )}
+          </>
+        )}
+      </span>
+    </p>
   );
 }
 
@@ -112,8 +186,13 @@ function PrintForm({
   const [includeEnded, setIncludeEnded] = useState(false);
   const [includeTrashed, setIncludeTrashed] = useState(false);
   const [qr, setQr] = useState(false);
-  const [email, setEmail] = useState(false);
-  const [repeat, setRepeat] = useState<'never' | 'weekly' | 'monthly'>('never');
+  const [emailChosen, setEmail] = useState(false);
+  const [repeatChosen, setRepeat] = useState<'never' | 'weekly' | 'monthly'>('never');
+  const { block, canSetUp } = useMailBlock(locationIds);
+  const lockId = useId();
+  // Locked, neither goes in the request whatever was chosen before the settings arrived.
+  const email = emailChosen && !block;
+  const repeat = block ? 'never' : repeatChosen;
   const [runId, setRunId] = useState<string | null>(null);
   const qc = useQueryClient();
   const locationId = 'locationId' in scope ? scope.locationId : null;
@@ -147,10 +226,19 @@ function PrintForm({
     },
     onSuccess: ({ id }) => setRunId(id),
   });
-  const startError = (e: unknown) =>
-    isApiError(e) && e.code === 'rate_limited'
-      ? t`Kept makes at most five reports an hour. Try again later.`
-      : errorText(e);
+  const startError = (e: unknown) => {
+    if (!isApiError(e)) return errorText(e);
+    switch (e.code) {
+      case 'rate_limited':
+        return t`Kept makes at most five reports an hour. Try again later.`;
+      case 'mail_not_configured':
+        return t`Email isn't set up on this server.`;
+      case 'no_email_address':
+        return t`Add an email address to your account.`;
+      default:
+        return errorText(e);
+    }
+  };
 
   if (runId)
     return (
@@ -247,7 +335,12 @@ function PrintForm({
         <Switch isSelected={qr} onChange={setQr}>
           <Trans>QR codes</Trans>
         </Switch>
-        <Switch isSelected={email} onChange={setEmail}>
+        <Switch
+          isSelected={email}
+          onChange={setEmail}
+          isDisabled={!!block}
+          aria-describedby={block ? lockId : undefined}
+        >
           <Trans>Email it to me</Trans>
         </Switch>
       </div>
@@ -257,6 +350,8 @@ function PrintForm({
             label={t`Send it again`}
             value={repeat}
             onChange={setRepeat}
+            isDisabled={!!block}
+            aria-describedby={block ? lockId : undefined}
             options={[
               { id: 'never', label: t`Never` },
               { id: 'weekly', label: t`Every week` },
@@ -273,6 +368,7 @@ function PrintForm({
           ) : null}
         </div>
       ) : null}
+      {block ? <MailLock id={lockId} block={block} canSetUp={canSetUp} /> : null}
       {start.error ? <Notice tone="danger">{startError(start.error)}</Notice> : null}
       <DialogFooter>
         <Button variant="secondary" onPress={onClose}>

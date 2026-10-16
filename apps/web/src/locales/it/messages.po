@@ -25125,3 +25125,15 @@ msgstr "Nascondi le modifiche"
 #: src/components/history/timeline.tsx
 msgid "Hide"
 msgstr "Nascondi"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Email isn't set up on this server."
+msgstr "L'email non è configurata su questo server."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Ask the owner to set up email."
+msgstr "Chiedi al proprietario di configurare l'email."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Add an email address to your account."
+msgstr "Aggiungi un indirizzo email al tuo account."
