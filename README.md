@@ -138,12 +138,12 @@ Docker with Compose v2, on a machine with at least 2 GB of RAM and 2 CPU cores
 ([what it needs](https://keptinventory.info/install/hardware/)).
 
 ```sh
-git clone --branch v1.10.2 --depth 1 https://github.com/keptinventory/kept.git && cd kept
+git clone --branch v1.10.3 --depth 1 https://github.com/keptinventory/kept.git && cd kept
 cp compose.env.example .env
 for v in SUPERUSER OWNER APP AUTH SYSTEM; do
   sed -i.bak "s/^KEPT_DB_${v}_PASSWORD=\$/KEPT_DB_${v}_PASSWORD=$(openssl rand -hex 32)/" .env
 done
-sed -i.bak 's|^KEPT_IMAGE=$|KEPT_IMAGE=ghcr.io/keptinventory/kept:1.10.2|' .env && rm .env.bak
+sed -i.bak 's|^KEPT_IMAGE=$|KEPT_IMAGE=ghcr.io/keptinventory/kept:1.10.3|' .env && rm .env.bak
 # Set KEPT_PUBLIC_URL in .env to the address you will open, e.g. http://<this host>:8080
 docker compose pull
 docker compose up -d
