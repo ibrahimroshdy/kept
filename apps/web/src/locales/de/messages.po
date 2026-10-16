@@ -24453,3 +24453,15 @@ msgstr "Steckdosenleiste"
 #: src/map/labels.ts
 msgid "External drive"
 msgstr "Externe Festplatte"
+
+#: src/components/places/contents-list.tsx
+msgid "Large"
+msgstr "Groß"
+
+#: src/components/places/contents-list.tsx
+msgid "Things · <0>{thingCount}</0>"
+msgstr "Gegenstände · <0>{thingCount}</0>"
+
+#: src/components/places/contents-list.tsx
+msgid "Things here · <0>{thingCount}</0>"
+msgstr "Gegenstände hier · <0>{thingCount}</0>"

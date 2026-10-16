@@ -19,21 +19,26 @@ export const CONTENTS_FILTERS = [
   'importRun',
 ] as const;
 
-/** `validateSearch` for a route that hosts a ContentsList: the list keys plus `view`. */
+/** A grid's tile size (1.x, #139): Small · Medium · Large; Medium when the address names none. */
+const size = z.optional(z.catch(z.enum(['small', 'medium', 'large']), 'medium'));
+
+/** `validateSearch` for a route that hosts a ContentsList: the list keys plus `view` and `size`. */
 export const contentsSearch = listSearch(CONTENTS_FILTERS, {
   view: z.optional(z.catch(z.enum(['list', 'photos', 'grid']), 'list')),
+  size,
 });
 
 const word = z.optional(z.catch(z.string(), ''));
 
 /**
- * A location's page: the contents list's keys, `view` with the map (1.x, D237, M11) and the
+ * A location's page: the contents list's keys, `size`, `view` with the map (1.x, D237, M11) and the
  * spreadsheet (`table`, 1.x, D250), and the
  * map's own list: `find` (its search), `floor` (a floor's id, `_` for rooms on no floor), `show`
  * (`attention` for what needs it) and `debug` (`map` shows the map's measurements).
  */
 export const locationSearch = listSearch(CONTENTS_FILTERS, {
   view: z.optional(z.catch(z.enum(['list', 'photos', 'grid', 'map', 'table']), 'list')),
+  size,
   find: word,
   floor: word,
   show: z.optional(z.catch(z.enum(['room', 'attention']), 'room')),

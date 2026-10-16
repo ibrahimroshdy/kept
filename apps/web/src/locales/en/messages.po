@@ -24453,3 +24453,15 @@ msgstr "Power strip"
 #: src/map/labels.ts
 msgid "External drive"
 msgstr "External drive"
+
+#: src/components/places/contents-list.tsx
+msgid "Large"
+msgstr "Large"
+
+#: src/components/places/contents-list.tsx
+msgid "Things · <0>{thingCount}</0>"
+msgstr "Things · <0>{thingCount}</0>"
+
+#: src/components/places/contents-list.tsx
+msgid "Things here · <0>{thingCount}</0>"
+msgstr "Things here · <0>{thingCount}</0>"

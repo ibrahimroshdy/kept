@@ -53,8 +53,16 @@ spots** ("room or spot" is Kept's word for any place), which hold **things**. A 
 - A location's page switches between **List**, **Grid** and **Map**: the map shows the location in
   3D, floor by floor, with its rooms, shelves and boxes ([The location map](/users/location-map/)).
   On a computer, **Table** shows its things as a spreadsheet ([below](#the-spreadsheet-view)).
+- **Grid** shows a location's or room's places and things as tiles, under the same **Places** and
+  **Things** headings as List; each heading folds away. **Display → Size** picks **Small**,
+  **Medium** or **Large** tiles (3, 2 or 1 a row on a phone), and Kept remembers your size on that
+  device.
 - On a computer or tablet, the sidebar marks the location you're in: on its page, and on its
   rooms, things, boxes and settings.
+
+![A location in Grid with Small tiles: the Places · 9 heading over the rooms, then the Things · 20+ heading over the things, six tiles a row, each with its name only](../../../assets/screens/grid-desktop-light.webp)
+
+![The same grid in the dark theme](../../../assets/screens/grid-desktop-dark.webp)
 
 Links use IDs, never the path, so moving a thing never breaks a link to it.
 

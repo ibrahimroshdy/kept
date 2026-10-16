@@ -10,6 +10,7 @@ import type { ReactNode } from 'react';
 import type { PathStep, PlaceNode, ThingRow } from '@/api/inventory/types';
 import { ChevronEndIcon } from '@/components/icons';
 import { IdChip } from '@/components/id-chip';
+import type { TileSize } from '@/components/list-surface';
 import { StatusPill } from '@/components/status-pill';
 import { TypeIcon } from '@/components/type-icon';
 import { addressOf } from '@/lib/address';
@@ -71,27 +72,52 @@ export function PlaceRowView({ place, trailing }: { place: PlaceNode; trailing?:
   );
 }
 
-/** A place as a grid tile (1.1): its kind's icon in a square, its name and what it holds. */
-export function PlaceTile({ place }: { place: PlaceNode }) {
+/** A tile's link, its picture's box and its name, per size (#139); Medium is the 1.1 tile. */
+const tileLink =
+  'grid content-start rounded-[10px] p-1 text-ink outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:outline-info';
+const tileGap: Record<TileSize, string> = { small: 'gap-1', medium: 'gap-1.5', large: 'gap-2' };
+const tilePicture: Record<TileSize, string> = {
+  small: 'aspect-square [&_svg]:size-6',
+  medium: 'aspect-square [&_svg]:size-8',
+  large: 'aspect-[4/3] [&_svg]:size-10',
+};
+const tileName: Record<TileSize, string> = {
+  small: 'text-[13px] leading-tight',
+  medium: 'text-small leading-snug',
+  large: 'text-[15px] leading-snug',
+};
+
+/**
+ * A place as a grid tile (1.1): its kind's icon in a square, its name and what it holds. Small
+ * is the name alone; Large is a wider picture (#139).
+ */
+export function PlaceTile({ place, size = 'medium' }: { place: PlaceNode; size?: TileSize }) {
   const nameOf = usePlaceName();
   return (
     <Link
       to="/p/$id"
       params={{ id: addressOf(place) }}
-      className="grid content-start gap-1.5 rounded-[10px] p-1 text-ink outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:outline-info"
+      data-tile-size={size}
+      className={cn(tileLink, tileGap[size])}
     >
       <span
         aria-hidden="true"
-        className="grid aspect-square w-full place-items-center rounded-lg border border-line bg-surface text-ink-3 [&_svg]:size-8"
+        className={cn(
+          'grid w-full place-items-center rounded-lg border border-line bg-surface text-ink-3',
+          // A place has an icon, never a photo: a Large one stays a band, not a page of space.
+          size === 'large' ? 'aspect-[2/1] [&_svg]:size-10' : tilePicture[size],
+        )}
       >
         <TypeIcon icon={placeIcon(place)} />
       </span>
-      <span className="text-small font-semibold leading-snug [overflow-wrap:anywhere]">
+      <span className={cn('font-semibold [overflow-wrap:anywhere]', tileName[size])}>
         <bdi>{nameOf(place)}</bdi>
       </span>
-      <span className="text-small text-ink-2">
-        <PlaceCounts place={place} />
-      </span>
+      {size === 'small' ? null : (
+        <span className="text-small text-ink-2">
+          <PlaceCounts place={place} />
+        </span>
+      )}
     </Link>
   );
 }
@@ -163,16 +189,30 @@ export function ThingRowView({
 }
 
 /** A container's thumbnail grid (D195): photos first, the type icon where there is none. */
-export function PhotoTile({ thing }: { thing: ThingRow }) {
+export function PhotoTile({
+  thing,
+  size = 'medium',
+  showPath = false,
+}: {
+  thing: ThingRow;
+  /** #139: Small is the name alone, Medium adds the short ID, Large a wider photo and where. */
+  size?: TileSize;
+  /** The list spans depths (a location's things): a Large tile says where each one is. */
+  showPath?: boolean;
+}) {
   return (
     <Link
       to="/t/$id"
       params={{ id: addressOf(thing) }}
-      className="grid content-start gap-1.5 rounded-[10px] p-1 text-ink outline-none hover:bg-sunken focus-visible:outline-2 focus-visible:outline-info"
+      data-tile-size={size}
+      className={cn(tileLink, tileGap[size])}
     >
       <span
         aria-hidden="true"
-        className="grid aspect-square w-full place-items-center overflow-hidden rounded-lg bg-sunken text-ink-3 [&_svg]:size-8"
+        className={cn(
+          'grid w-full place-items-center overflow-hidden rounded-lg bg-sunken text-ink-3',
+          tilePicture[size],
+        )}
       >
         {thing.thumbUrl ? (
           <img src={thing.thumbUrl} alt="" className="size-full object-cover" />
@@ -180,10 +220,17 @@ export function PhotoTile({ thing }: { thing: ThingRow }) {
           <TypeIcon icon={thing.type?.icon} />
         )}
       </span>
-      <span className="text-small font-medium leading-snug [overflow-wrap:anywhere]">
+      <span
+        className={cn(
+          '[overflow-wrap:anywhere]',
+          size === 'large' ? 'font-semibold' : 'font-medium',
+          tileName[size],
+        )}
+      >
         {thing.name ? <bdi>{thing.name}</bdi> : <Trans>Untitled draft</Trans>}
       </span>
-      {thing.shortCode ? <IdChip code={thing.shortCode} /> : null}
+      {size === 'large' && showPath && thing.path.length ? <PathText path={thing.path} /> : null}
+      {size !== 'small' && thing.shortCode ? <IdChip code={thing.shortCode} /> : null}
     </Link>
   );
 }

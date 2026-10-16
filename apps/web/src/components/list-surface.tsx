@@ -20,12 +20,13 @@
 import type { ListSurface as Surface } from '@kept/shared';
 import { Trans, useLingui } from '@lingui/react/macro';
 import type { InfiniteData, UseInfiniteQueryResult } from '@tanstack/react-query';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { Fragment, type ReactNode, useEffect, useRef, useState } from 'react';
 import type { Page } from '@/api/inventory/types';
 import {
   DisplayButton,
   type DisplayGroup,
   type DisplayLayout,
+  type DisplaySize,
   type DisplaySort,
 } from '@/components/filters/display';
 import { FilterStrip } from '@/components/filters/strip';
@@ -44,6 +45,18 @@ export type GroupDef = DisplayGroup;
 export type SortDef = DisplaySort;
 /** A layout in the Display menu (D211), held in the URL's `view`; the first is the default. */
 export type LayoutDef = DisplayLayout;
+/** A tile size in the Display menu (#139), held in the URL's `size`. */
+export type SizeDef = DisplaySize;
+
+/** How dense a grid of tiles is (#139). Medium is the grid as it was before sizes. */
+export type TileSize = 'small' | 'medium' | 'large';
+
+/** Columns per tile size: on a phone 3 · 2 · 1, more as the screen widens. */
+export const TILE_COLUMNS: Record<TileSize, string> = {
+  small: 'grid-cols-3 md:grid-cols-5 xl:grid-cols-6',
+  medium: 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4',
+  large: 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3',
+};
 
 export type ListSurfaceProps<T> = {
   /** The list's accessible name. */
@@ -57,6 +70,10 @@ export type ListSurfaceProps<T> = {
   sorts?: SortDef[];
   /** Layouts (D211: a container's list or photos); the route must declare `view`. */
   layouts?: LayoutDef[];
+  /** Tile sizes for the layout on screen (#139); the route must declare `size`. */
+  sizes?: SizeDef[];
+  /** The size when the URL names none (default: the first). */
+  defaultSize?: string;
   query: UseInfiniteQueryResult<InfiniteData<Page<T>>>;
   getKey: (item: T) => string;
   renderRow: (item: T) => ReactNode;
@@ -75,10 +92,11 @@ export type ListSurfaceProps<T> = {
    */
   defaultGroup?: string;
   /**
-   * Rows as tiles in a grid (a Display layout such as Paperwork's Grid, D211): two a row on a
-   * phone, more from `md`, each tile its own card. A tiled list has no grouping.
+   * Rows as tiles in a grid (a Display layout such as Paperwork's Grid, D211), each tile its own
+   * card; `true` is Medium (two a row on a phone, more from `md`), or name a size (#139).
+   * Headings, grouped or `sections`, span the whole row above their tiles, and fold like a list's.
    */
-  tiles?: boolean;
+  tiles?: boolean | TileSize;
   /** Shown when there are no rows and nothing is searched or filtered. */
   empty: ReactNode;
   /** Shown when a search or filter matched nothing (default: a plain sentence). */
@@ -94,6 +112,8 @@ export function ListSurface<T>({
   groups,
   sorts,
   layouts,
+  sizes,
+  defaultSize,
   query,
   getKey,
   renderRow,
@@ -110,6 +130,7 @@ export function ListSurface<T>({
   const [list, setList] = useListState();
   const items = query.data?.pages.flatMap((pg) => pg.items) ?? [];
   const narrowed = list.q !== '' || Object.keys(list.filters).length > 0;
+  const tileSize: TileSize | null = tiles === true ? 'medium' : tiles || null;
 
   // Focus the first new row after "Load more".
   const listRef = useRef<HTMLUListElement>(null);
@@ -131,6 +152,7 @@ export function ListSurface<T>({
   };
 
   let lastGroup: string | null = null;
+  let headings = 0;
   return (
     <div className={cn('grid min-w-0 content-start gap-3', className)}>
       {search !== false || filters.length || surface || groups || sorts || layouts ? (
@@ -144,6 +166,8 @@ export function ListSurface<T>({
                   ...(groups ? { groups } : {}),
                   ...(sorts ? { sorts } : {}),
                   ...(layouts ? { layouts } : {}),
+                  ...(sizes?.length ? { sizes } : {}),
+                  ...(defaultSize ? { defaultSize } : {}),
                   ...(defaultGroup ? { defaultGroup } : {}),
                 }}
                 list={list}
@@ -182,9 +206,10 @@ export function ListSurface<T>({
         <ul
           ref={listRef}
           aria-label={label}
+          data-tile-size={tileSize ?? undefined}
           className={
-            tiles
-              ? 'm-0 grid list-none grid-cols-2 gap-2 p-0 md:grid-cols-3 xl:grid-cols-4'
+            tileSize
+              ? cn('m-0 grid list-none gap-2 p-0', TILE_COLUMNS[tileSize])
               : 'm-0 grid list-none overflow-hidden rounded-[10px] border border-line bg-surface p-0'
           }
         >
@@ -196,45 +221,67 @@ export function ListSurface<T>({
             if (group) lastGroup = group.key;
             const isFolded = !!collapsible && !!group && folded.has(group.key);
             if (isFolded && !heading) return null;
+            const head =
+              heading && collapsible ? (
+                <button
+                  type="button"
+                  aria-expanded={!isFolded}
+                  onClick={() => fold(heading.key)}
+                  className={cn(
+                    'eyebrow flex w-full items-center gap-1.5 bg-sunken px-3.5 py-2 text-start outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info',
+                    tileSize && 'rounded-lg',
+                  )}
+                >
+                  <ChevronDownIcon
+                    aria-hidden="true"
+                    className={cn(
+                      'size-3.5 shrink-0 transition-transform',
+                      isFolded && '-rotate-90 rtl:rotate-90',
+                    )}
+                  />
+                  {heading.label}
+                </button>
+              ) : heading ? (
+                <div
+                  className={cn('eyebrow bg-sunken px-3.5 py-2', tileSize && 'rounded-lg')}
+                  role="presentation"
+                >
+                  {heading.label}
+                </div>
+              ) : null;
+            const rowClass =
+              'outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info';
+            // Tiles: a heading is a row of its own across the grid, its tiles under it (#139),
+            // never squeezed into a tile's cell.
+            if (tileSize) {
+              const spaced = head !== null && headings++ > 0;
+              return (
+                <Fragment key={getKey(item)}>
+                  {head ? (
+                    <li className={cn('col-span-full', spaced && 'mt-2')} data-list-heading="">
+                      {head}
+                    </li>
+                  ) : null}
+                  {isFolded ? null : (
+                    <li
+                      data-list-row=""
+                      tabIndex={-1}
+                      className={cn(rowClass, 'grid min-w-0 content-start gap-2 rounded-[10px]')}
+                    >
+                      {renderRow(item)}
+                    </li>
+                  )}
+                </Fragment>
+              );
+            }
             return (
               <li
                 key={getKey(item)}
                 data-list-row=""
                 tabIndex={-1}
-                className={cn(
-                  'outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info',
-                  tiles
-                    ? 'grid min-w-0 content-start gap-2 rounded-[10px]'
-                    : 'border-line not-first:border-t',
-                )}
+                className={cn(rowClass, 'border-line not-first:border-t')}
               >
-                {heading && collapsible ? (
-                  <button
-                    type="button"
-                    aria-expanded={!isFolded}
-                    onClick={() => fold(heading.key)}
-                    className={cn(
-                      'eyebrow flex w-full items-center gap-1.5 bg-sunken px-3.5 py-2 text-start outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-info',
-                      tiles && 'rounded-lg',
-                    )}
-                  >
-                    <ChevronDownIcon
-                      aria-hidden="true"
-                      className={cn(
-                        'size-3.5 shrink-0 transition-transform',
-                        isFolded && '-rotate-90 rtl:rotate-90',
-                      )}
-                    />
-                    {heading.label}
-                  </button>
-                ) : heading ? (
-                  <div
-                    className={cn('eyebrow bg-sunken px-3.5 py-2', tiles && 'rounded-lg')}
-                    role="presentation"
-                  >
-                    {heading.label}
-                  </div>
-                ) : null}
+                {head}
                 {isFolded ? null : renderRow(item)}
               </li>
             );

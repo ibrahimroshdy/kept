@@ -347,6 +347,192 @@ describe('a grid of a location (1.1)', () => {
   });
 });
 
+describe('a grid keeps places and things apart, in three sizes (#139)', () => {
+  const contents = () => list('Contents of Home');
+  const hrefsUnder = (ul: HTMLElement, prefix: string) =>
+    within(ul)
+      .queryAllByRole('link')
+      .filter((a) => a.getAttribute('href')?.startsWith(prefix));
+  const openDisplay = async (user: ReturnType<typeof userEvent.setup>) => {
+    await user.click(screen.getByRole('button', { name: /^Display options/ }));
+    return screen.findByRole('dialog', { name: 'Display' });
+  };
+
+  it('shows Places · N, then Things · N, as headings across the grid that fold away', async () => {
+    localStorage.clear();
+    const { user } = await renderApp(`/loc/${IDS.home}?view=grid`);
+    const ul = await contents();
+    const places = within(ul).getByRole('button', { name: /^Places · \d+$/ });
+    const things = within(ul).getByRole('button', { name: /^Things · \d+\+?$/ });
+    // The headings are rows of their own across the grid, Places before Things.
+    expect(places.closest('li')).toHaveClass('col-span-full');
+    expect(things.closest('li')).toHaveClass('col-span-full');
+    expect(places.compareDocumentPosition(things) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    const placeTiles = hrefsUnder(ul, '/p/');
+    expect(places.textContent).toBe(`Places · ${placeTiles.length}`);
+    expect(things.textContent).toBe(`Things · ${hrefsUnder(ul, '/t/').length}`);
+    // Every place tile comes before the Things heading, every thing tile after it.
+    for (const a of placeTiles)
+      expect(a.compareDocumentPosition(things) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    for (const a of hrefsUnder(ul, '/t/'))
+      expect(things.compareDocumentPosition(a) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+    await user.click(places);
+    expect(places).toHaveAttribute('aria-expanded', 'false');
+    expect(hrefsUnder(ul, '/p/')).toEqual([]);
+    expect(hrefsUnder(ul, '/t/').length).toBeGreaterThan(0);
+    await user.click(things);
+    expect(hrefsUnder(ul, '/t/')).toEqual([]);
+    await user.click(places);
+    expect(hrefsUnder(ul, '/p/').length).toBe(placeTiles.length);
+    localStorage.clear();
+  });
+
+  it('List gets the same Things count', async () => {
+    await renderApp(`/loc/${IDS.home}`);
+    const ul = await contents();
+    expect(within(ul).getByRole('button', { name: /^Things · \d+\+?$/ })).toBeInTheDocument();
+  });
+
+  it('groups things by type inside the grid, below Places', async () => {
+    await renderApp(`/loc/${IDS.home}?view=grid&group=type`);
+    const ul = await contents();
+    const headings = within(ul)
+      .getAllByRole('button', { expanded: true })
+      .map((b) => b.closest('li'));
+    expect(headings.length).toBeGreaterThan(2);
+    for (const li of headings) expect(li).toHaveClass('col-span-full');
+    expect(within(ul).getAllByRole('button', { expanded: true })[0]?.textContent).toBe('Places');
+  });
+
+  it('Size under Display: Small, Medium or Large, in the address, with 3 · 2 · 1 columns on a phone', async () => {
+    localStorage.clear();
+    const { user, router } = await renderApp(`/loc/${IDS.home}?view=grid`);
+    let ul = await contents();
+    expect(ul).toHaveAttribute('data-tile-size', 'medium');
+    expect(ul.className).toContain('grid-cols-2');
+    // Medium is today's tile: the name and the short ID.
+    const galaxy = () => within(ul).getByRole('link', { name: /Galaxy S23/ });
+    expect(within(galaxy()).getByRole('img')).toBeInTheDocument();
+
+    let sheet = await openDisplay(user);
+    const size = within(sheet).getByRole('group', { name: 'Size' });
+    expect(
+      within(size)
+        .getAllByRole('menuitemradio')
+        .map((r) => r.textContent),
+    ).toEqual(['Small', 'Medium', 'Large']);
+    expect(within(size).getByRole('menuitemradio', { name: 'Medium' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    await user.click(within(size).getByRole('menuitemradio', { name: 'Small' }));
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ size: 'small' }));
+    await user.click(within(sheet).getByRole('button', { name: 'Done' }));
+    ul = await contents();
+    await waitFor(() => expect(ul).toHaveAttribute('data-tile-size', 'small'));
+    expect(ul.className).toContain('grid-cols-3');
+    // Small is the name alone: the tile's name is the thing's name.
+    expect(galaxy()).toHaveAccessibleName('Galaxy S23');
+    expect(within(galaxy()).queryByRole('img')).toBeNull();
+
+    sheet = await openDisplay(user);
+    await user.click(within(sheet).getByRole('menuitemradio', { name: 'Large' }));
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ size: 'large' }));
+    await user.click(within(sheet).getByRole('button', { name: 'Done' }));
+    ul = await contents();
+    await waitFor(() => expect(ul).toHaveAttribute('data-tile-size', 'large'));
+    expect(ul.className).toContain('grid-cols-1');
+    // Large says where a thing is, as List does on a location.
+    expect(
+      within(ul).getByRole('link', { name: /HDMI cable, 2 m.*Office.*Desk drawer.*Cable box/ }),
+    ).toBeInTheDocument();
+
+    // Medium is the default, so choosing it clears the address.
+    sheet = await openDisplay(user);
+    await user.click(within(sheet).getByRole('menuitemradio', { name: 'Medium' }));
+    await waitFor(() => expect(router.state.location.search).not.toHaveProperty('size'));
+    localStorage.clear();
+  });
+
+  it('a linked size opens as it, and the last size comes back for the same person', async () => {
+    localStorage.clear();
+    const linked = await renderApp(`/loc/${IDS.home}?view=grid&size=large`);
+    expect(await contents()).toHaveAttribute('data-tile-size', 'large');
+    await waitFor(() =>
+      expect(localStorage.getItem(`kept.grid.size.${IDS.ibrahim}`)).toBe('large'),
+    );
+    linked.unmount?.();
+    document.body.innerHTML = '';
+
+    // Another visit with no size in the address: the grid restores Large into it.
+    const again = await renderApp(`/loc/${IDS.garage}?view=grid`);
+    await waitFor(() =>
+      expect(again.router.state.location.search).toMatchObject({ size: 'large' }),
+    );
+    expect(await list('Contents of Garage')).toHaveAttribute('data-tile-size', 'large');
+    localStorage.clear();
+  });
+
+  it('an unknown size is Medium, and the List has no Size', async () => {
+    const { user, router } = await renderApp(`/loc/${IDS.home}?view=grid&size=huge`);
+    expect(await contents()).toHaveAttribute('data-tile-size', 'medium');
+    await router.navigate({
+      to: '.',
+      search: (prev: Record<string, unknown>) => ({ ...prev, view: undefined }),
+    } as never);
+    await waitFor(async () => expect(await contents()).not.toHaveAttribute('data-tile-size'));
+    const sheet = await openDisplay(user);
+    expect(within(sheet).queryByRole('group', { name: 'Size' })).toBeNull();
+  });
+
+  it('a place keeps Places, then Things here, in its grid', async () => {
+    const state = ownerScenario();
+    const galaxy = state.inventory.things.find((x) => x.name === 'Galaxy S23');
+    if (galaxy) Object.assign(galaxy, { placeId: P.office, containerId: null });
+    await renderApp(`/p/${P.office}?view=grid&size=small`, { state });
+    const ul = await list('Contents of Office');
+    expect(ul).toHaveAttribute('data-tile-size', 'small');
+    const places = within(ul).getByRole('button', { name: 'Places · 1' });
+    const things = within(ul).getByRole('button', { name: /^Things here · \d+$/ });
+    expect(places.compareDocumentPosition(things) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(within(ul).getByRole('link', { name: 'Galaxy S23' })).toBeInTheDocument();
+  });
+
+  it('a viewer gets the same sections and sizes', async () => {
+    const { user } = await renderApp(`/loc/${IDS.home}?view=grid`, { state: asRole('viewer') });
+    const ul = await contents();
+    expect(within(ul).getByRole('button', { name: /^Places/ })).toBeInTheDocument();
+    const sheet = await openDisplay(user);
+    expect(within(sheet).getByRole('group', { name: 'Size' })).toBeInTheDocument();
+  });
+
+  it('reads right to left in Arabic, in the reader’s digits', async () => {
+    const { user } = await renderApp(`/loc/${IDS.family}?view=grid&size=small`, {
+      locale: 'ar',
+    });
+    const ul = await screen.findByRole('list', { name: 'محتويات «بيت العائلة»' });
+    expect(ul).toHaveAttribute('data-tile-size', 'small');
+    console.log(
+      within(ul)
+        .getAllByRole('button')
+        .map((b) => JSON.stringify(b.textContent)),
+    );
+    expect(within(ul).getByRole('button', { name: /^الأماكن، [٠-٩]+$/ })).toBeInTheDocument();
+    expect(within(ul).getByRole('button', { name: /^الأشياء، [٠-٩]+\+?$/ })).toBeInTheDocument();
+    expect(document.documentElement.dir).toBe('rtl');
+    expectLogicalOnly();
+    await user.click(screen.getByRole('button', { name: /^خيارات العرض/ }));
+    const sheet = await screen.findByRole('dialog');
+    const size = within(sheet).getByRole('group', { name: 'الحجم' });
+    expect(
+      within(size)
+        .getAllByRole('menuitemradio')
+        .map((r) => r.textContent),
+    ).toEqual(['صغير', 'متوسط', 'كبير']);
+  });
+});
+
 describe('select and move (D45)', () => {
   it('moves selected things, warning who loses sight across locations', async () => {
     const { user, mock } = await renderApp(`/loc/${IDS.home}`);

@@ -8,10 +8,11 @@
  * The button names the current state ("Name", "Name · by type", "Changed · photos"); on a narrow
  * phone it keeps the icon and the sort's name, never cut short. It opens a React Aria menu (a
  * popover from 768 px, a bottom sheet on phones): a Sort list with a check mark, the direction
- * (A to Z / Z to A for words, Newest first / Oldest first for dates), then Group and Layout.
+ * (A to Z / Z to A for words, Newest first / Oldest first for dates), then Group and Layout, and
+ * a grid's Size (Small · Medium · Large, #139) where the list offers one.
  * Arrow keys move, Enter or Space chooses, Escape closes and focus returns to the button.
  *
- * Everything is URL state (lib/url-state.ts): `sort`, `dir`, `group` and `view`. Choosing a
+ * Everything is URL state (lib/url-state.ts): `sort`, `dir`, `group`, `view` and `size`. Choosing a
  * list's default writes nothing, so a saved view (D205) compares equal to the list it was saved
  * from.
  */
@@ -67,12 +68,19 @@ export type DisplayLayout = {
   short?: string;
 };
 
+/** A grid's tile size (#139), held in the URL's `size`. */
+export type DisplaySize = { value: string; label: string };
+
 export type DisplayOptions = {
   sorts?: DisplaySort[];
   groups?: DisplayGroup[];
   /** The grouping when the URL names none (default: the first). */
   defaultGroup?: string;
   layouts?: DisplayLayout[];
+  /** Tile sizes, for a layout of tiles (#139); offered only while that layout shows. */
+  sizes?: DisplaySize[];
+  /** The size when the URL names none (default: the first). */
+  defaultSize?: string;
 };
 
 /** A sort's default direction: A to Z for words, newest first for dates, soonest first when due. */
@@ -88,7 +96,11 @@ export function displayState(list: ListState, o: DisplayOptions) {
     o.groups?.find((g) => g.value === (list.group ?? groupDefault)) ??
     o.groups?.find((g) => g.value === groupDefault);
   const layout = o.layouts?.find((l) => l.value === list.layout) ?? o.layouts?.[0];
-  return { sort, kind, dir, group, groupDefault, layout };
+  const sizeDefault = o.defaultSize ?? o.sizes?.[0]?.value;
+  const size =
+    o.sizes?.find((z) => z.value === (list.size || sizeDefault)) ??
+    o.sizes?.find((z) => z.value === sizeDefault);
+  return { sort, kind, dir, group, groupDefault, layout, size, sizeDefault };
 }
 
 const itemClass =
@@ -121,9 +133,9 @@ export function DisplayButton({
   const { t } = useLingui();
   const wide = useMediaQuery(WIDE);
   const [open, setOpen] = useState(false);
-  const { sorts, groups, layouts } = options;
+  const { sorts, groups, layouts, sizes } = options;
   const state = displayState(list, options);
-  const { sort, kind, dir, group, groupDefault, layout } = state;
+  const { sort, kind, dir, group, groupDefault, layout, size, sizeDefault } = state;
   const grouped = !!group && group.value !== 'none';
   const groupName = group?.label ?? '';
   const groupShort = grouped ? (group.short ?? t`by ${groupName}`) : undefined;
@@ -292,6 +304,33 @@ export function DisplayButton({
             ))}
           </MenuSection>
         </>
+      ) : null}
+      {sizes?.length ? (
+        // One row of three, like the order above: a radio group the arrow keys walk (#139).
+        <MenuSection
+          selectionMode="single"
+          disallowEmptySelection
+          selectedKeys={size ? [`size:${size.value}`] : []}
+          onSelectionChange={(keys) => {
+            const next = only(keys)?.slice(5);
+            if (next !== undefined) pick({ size: next === sizeDefault ? '' : next });
+          }}
+          className="mx-2 mb-1 grid grid-cols-3 gap-1"
+        >
+          <Header className={cn(headerClass, 'col-span-3 px-1')}>
+            <Trans>Size</Trans>
+          </Header>
+          {sizes.map((z) => (
+            <MenuItem
+              key={z.value}
+              id={`size:${z.value}`}
+              textValue={z.label}
+              className={cn(dirClass, 'bg-sunken data-selected:ring-1 data-selected:ring-line')}
+            >
+              {z.label}
+            </MenuItem>
+          ))}
+        </MenuSection>
       ) : null}
     </Menu>
   );
