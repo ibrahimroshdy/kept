@@ -3,6 +3,16 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.10.4 (2026-10-16)
+
+### Fixes
+
+- **activity:** plain sentences, not JSON and event codes (#140) (#147) (ca480d8)
+
+### Documentation
+
+- **release:** the 1.10.3 record (#146) (fc0cd57)
+
 ## 1.10.3 (2026-10-16)
 
 ### Features
