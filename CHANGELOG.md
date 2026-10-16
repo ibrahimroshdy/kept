@@ -3,6 +3,16 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.10.5 (2026-10-16)
+
+### Fixes
+
+- **reports:** lock email-only options when mail isn't set up (#141) (#153) (aa82d5c)
+
+### Documentation
+
+- **release:** the 1.10.4 record (#149) (4591eed)
+
 ## 1.10.4 (2026-10-16)
 
 ### Fixes
