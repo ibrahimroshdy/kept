@@ -388,11 +388,18 @@ export function sampleHome(lang: Lang, today: Date = new Date()): Sample {
       C(['Passport folder', 'ملف جوازات السفر']),
     ],
   });
-  on(desk, 'monitor', 0.4, 0.08, {
+  const monitor = on(desk, 'monitor', 0.4, 0.08, {
     name: ['Dell monitor', 'شاشة Dell'],
     brand: 'Dell',
     model: 'U2723QE, 27″',
     serial: 'CN-0U27-23QE',
+  });
+  // #137: a webcam clipped to the monitor's top edge, on its line (3 cm in front of its middle).
+  on(monitor, 'webcam', 0.26, 0.11, {
+    name: ['HD webcam', 'كاميرا ويب HD'],
+  });
+  on(desk, 'earbuds', 0.15, 0.45, {
+    name: ['Wireless earbuds', 'سماعات أذن لاسلكية'],
   });
   on(desk, 'laptop', 1.0, 0.35, {
     name: ['MacBook Air', 'MacBook Air'],

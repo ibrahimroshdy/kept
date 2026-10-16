@@ -14,7 +14,7 @@
  *   to resize it, draw a room on empty ground, turn a thing. Changes go into the plan; the
  *   React side saves the session.
  */
-import { canStandOn, mapModel } from '@kept/shared';
+import { carryOf, mapModel, seatHeight, snapStep } from '@kept/shared';
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -23,6 +23,7 @@ import { declutter, LABEL_PRIORITY, type Rect } from '../declutter';
 import {
   childrenOn,
   clampIn,
+  dropOn,
   fp,
   hostAt,
   type Item,
@@ -305,7 +306,7 @@ export class MapEngine {
     let host = it.on ? this.itemOf(it.on) : undefined;
     while (host && !seen.has(host.id)) {
       seen.add(host.id);
-      y += mapModel(host.model).top ?? 0;
+      y += seatHeight(host.model);
       host = host.on ? this.itemOf(host.on) : undefined;
     }
     return y;
@@ -534,16 +535,26 @@ export class MapEngine {
         if (isMesh(o)) o.userData.pick = pick;
       });
     } else {
-      let d = this.drawn.get(it.model);
+      // On an arm a monitor is drawn without its own stand (#137).
+      const host = it.on ? this.itemOf(it.on) : undefined;
+      const armed = host && carryOf(host.model) === 'arm' && this.BUILD[`${it.model}_on_arm`];
+      const cacheKey = armed ? `${it.model}_on_arm` : it.model;
+      let d = this.drawn.get(cacheKey);
       if (!d) {
         // A Poly Haven model's stand-in, else the shape's own drawing, else its stand-in (the
         // tall plant has no model of its own and is drawn as a plant).
-        const key = m.glb ? m.simple : this.BUILD[it.model] ? it.model : m.simple;
+        const key = armed
+          ? cacheKey
+          : m.glb
+            ? m.simple
+            : this.BUILD[it.model]
+              ? it.model
+              : m.simple;
         const build = key ? this.BUILD[key] : undefined;
         if (build) build(parts, m.w, m.d);
         else block(parts, it.model, this.F);
         d = this.mergeByMaterial(parts, null);
-        this.drawn.set(it.model, d);
+        this.drawn.set(cacheKey, d);
       }
       body = d.clone(true);
       body.traverse((o) => {
@@ -1488,7 +1499,8 @@ export class MapEngine {
       Math.hypot(e.clientX - this.gesture.sx, e.clientY - this.gesture.sy),
     );
     if (this.drag && this.pts.size === 1) {
-      this.dragTo(e.clientX, e.clientY);
+      // Alt (Option) held drags freely, to the centimetre (#137).
+      this.dragTo(e.clientX, e.clientY, e.altKey);
       return;
     }
     const now = this.snapshot();
@@ -1506,7 +1518,7 @@ export class MapEngine {
     this.request();
   }
 
-  private dragTo(x: number, y: number): void {
+  private dragTo(x: number, y: number, free = false): void {
     const g = this.groundAt(x, y);
     const drag = this.drag;
     if (!g || !drag || !this.gesture) return;
@@ -1522,13 +1534,19 @@ export class MapEngine {
       // Into another room: saving the session moves it there in Kept too (map-view.tsx).
       if (room.id !== it.roomId) rehome(this.plan.items, it, home, room);
       const host = hostAt(this.plan, this.s.levelKey, c, it);
-      moveBy(
-        this.plan.items,
-        it,
-        snap(c.x - room.x - f.w / 2, 0.1) - it.x,
-        snap(c.z - room.z - f.d / 2, 0.1) - it.z,
-      );
-      it.on = host && host.roomId === it.roomId && canStandOn(it.model) ? host.id : null;
+      // #137: on a holder it lines up with the holder (an edge's line, an arm's place, a desk's
+      // own middle); on the floor by its own step: a centimetre for a webcam, 10 cm for a sofa.
+      if (host) dropOn(this.plan.items, it, host, { x: c.x - room.x, z: c.z - room.z }, free);
+      else {
+        const step = free ? 0.01 : snapStep(it.model);
+        it.on = null;
+        moveBy(
+          this.plan.items,
+          it,
+          snap(c.x - room.x - f.w / 2, step) - it.x,
+          snap(c.z - room.z - f.d / 2, step) - it.z,
+        );
+      }
       if (!it.on) {
         const bx = it.x;
         const bz = it.z;

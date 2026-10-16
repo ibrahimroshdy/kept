@@ -304,7 +304,12 @@ describe('arranging', () => {
     expect(desk.x + 0.35).toBeCloseTo(before.cx);
     expect(desk.z + 0.7).toBeCloseTo(before.cz);
     expect(laptop.rot).toBe(90);
-    expect(laptop.x + fp(laptop).w / 2).toBeCloseTo(desk.x + 0.35);
+    // #137: what stands on it keeps its place on it, turned with it (side by side stays so).
+    const lc = { x: laptop.x + fp(laptop).w / 2, z: laptop.z + fp(laptop).d / 2 };
+    // Before: 4.5 cm left of the desk's middle and 4 cm behind; a quarter turn sends (x, z) to
+    // (−z, x).
+    expect(lc.x - before.cx).toBeCloseTo(0.04);
+    expect(lc.z - before.cz).toBeCloseTo(-0.045);
   });
 
   it('moves what stands on a thing with it', () => {

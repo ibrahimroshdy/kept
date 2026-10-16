@@ -86,14 +86,17 @@ in them, beside the map.
 Owners, admins and members can arrange a location; viewers see it as arranged. **Arrange** starts:
 
 - **Move**: drag anything. Small things (a laptop, a lamp, a box) can stand on a counter, desk,
-  shelf or box, and move with it. Drag a thing into another room to move it there in Kept too.
+  shelf or box, and move with it; a webcam clips to a monitor's top edge. Drag a thing into
+  another room to move it there in Kept too. Small things move a centimetre at a time, other
+  things 5 cm and furniture 10 cm; on a desk or shelf they line up with its edges. On a computer,
+  hold **Alt** (**Option** on a Mac) to drag freely.
 - Drag a room's **amber corner** to resize it. Rooms on a floor can't overlap.
 - **Draw a room** on empty ground. It becomes a new place on that floor straight away.
 - **Add a floor** adds a place of the kind Floor, with one room in it.
 - Select a room to set its **kind** (room, balcony, terrace, garden) and its **floor** (wood, tiles,
   concrete, deck, grass), or to **put a thing of that room on the map**.
-- Select a thing to **turn** it, change its **shape** (see below), or **take it off the map** (only
-  what you put there yourself).
+- Select a thing to **turn** it, change its **shape** (see below), **put it on** a desk, shelf or
+  monitor, **add things on it**, or **take it off the map** (only what you put there yourself).
 
 **Done** saves the whole arrangement at once, and the toast offers **Undo** for ten minutes.
 **Cancel** puts the map back. If someone else arranged the same location while you were, Kept
@@ -146,6 +149,34 @@ members can do it.
   caption="Putting the TV on the map in Try Kept's sample household. The card says the shape came from its type; the picker shows Suggested first, and a search for TV finds it."
 />
 
+### Put small things on a desk, a shelf or a monitor
+
+A webcam is a few pixels wide at room zoom, so you don't have to drag it. In **Arrange**:
+
+1. Select the small thing, such as the webcam, and tap **Put on…**. It lists what in the same room
+   can carry it, each with its shape's picture: "Desk", "Monitor", "Shelf 2".
+2. Tap one. The thing snaps onto it, in the middle or beside what is there already.
+3. To go the other way, select the desk or the monitor and tap **Add on it**. Pick one or several
+   of the room's small things that aren't on anything yet, then **Put 3 on it**. They go side by
+   side, not on top of each other.
+4. **Take off**, in **Put on…**, puts the thing back on the room's floor next to its holder.
+
+![Put on… for a webcam: the room's desk and monitor, each with its picture](../../../assets/screens/map-put-on-phone-light.webp)
+
+What can carry what:
+
+- **On top**: a desk, table, counter, shelf, TV stand or box carries small things.
+- **On the top edge**: a monitor, a TV or a laptop's screen carries a webcam, a smart speaker or a
+  light: small things up to 12 cm deep and 20 cm high, no wider than the screen.
+- **On an arm**: a **monitor arm** stands on a desk and holds one monitor, a **dual monitor arm**
+  two, side by side and raised off the desk. **Add on it** on an arm lists the room's monitors
+  and says when the arm is full. A webcam on a monitor on an arm still works.
+
+Moving a holder moves what is on it: move the desk and its arm, the monitors and their webcam go
+with it. Turn the desk and they turn with it. This is the map only: putting a webcam on a monitor
+changes where it stands on the map, not its place in Kept. **Done** saves it with the rest of the
+session, and **Undo** takes it back. Viewers see it, and can't change it.
+
 ### How Kept picks the shape
 
 - **From the type first.** A thing whose type is TV, car, bicycle, motorbike or box gets that
@@ -156,9 +187,12 @@ members can do it.
   other words ("couch", "telly", "Kühlschrank", "تلفزيون"). A name that points at one shape
   ("Samsung TV") gets it by itself; one that could be two ("Screen": a TV or a monitor) is a guess.
 - **Everyday electronics have their own shapes**, at their real sizes: webcam, camera, desk
-  speaker, tall speaker, smart speaker, soundbar, headphones, keyboard, mouse, desktop PC, laptop,
-  monitor, router, printer, game console, game controller, phone, tablet, power strip and
-  external drive. A thing named "4K webcam" gets the webcam by itself.
+  speaker, portable speaker, tall speaker, boombox, smart speaker, soundbar, headphones, headset,
+  earbuds, keyboard, mouse, desktop PC, laptop, monitor, monitor arm, dual monitor arm, router,
+  printer, game console, game controller, phone, tablet, power strip and external drive. A thing
+  named "HD webcam" gets the webcam by itself, "AirPods Pro" the earbuds, "JBL Flip 6" the
+  portable speaker and "Ergotron LX" the monitor arm. Plain "Speaker" could be any size, so Kept
+  suggests every speaker and lets you pick.
 - **Accessories are a guess.** "Phone case", "TV remote" or "Laptop stand" names what it is for,
   not what it is, so Kept suggests shapes and lets you pick.
 - **Nothing fits?** Things with no shape of their own, such as a thermostat, a hub or a charger,

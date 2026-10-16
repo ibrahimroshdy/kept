@@ -323,6 +323,72 @@ describe('PUT /api/v1/locations/:id/layout', () => {
     expect((await putLayout(ola, twice)).statusCode).toBe(400);
   });
 
+  it('carries a webcam on a screen’s edge and monitors on an arm, no more than it holds (#137)', async () => {
+    const base = fullLayout(null);
+    const [shelf, box, tv] = base.nodes as [
+      (typeof base.nodes)[0],
+      (typeof base.nodes)[0],
+      (typeof base.nodes)[0],
+    ];
+    const drill = { id: ids.drill, x: 300, z: 300, rot: 0, model: 'monitor', hostId: null };
+    // A webcam on a monitor's edge, the monitor on a desk-top box: the layout's format is the same.
+    const onEdge = {
+      ...base,
+      nodes: [shelf, { ...box, model: 'monitor' }, { ...tv, model: 'webcam', hostId: ids.box }],
+    };
+    expect((await putLayout(ola, onEdge)).statusCode).toBe(200);
+    const map = await json<MapJson>(getMap(ola));
+    expect(map.nodes.find((n) => n.id === ids.tv)?.layout).toMatchObject({
+      model: 'webcam',
+      hostId: ids.box,
+    });
+    const refused: unknown[] = [
+      // Too deep for an edge.
+      {
+        ...base,
+        version: map.version,
+        nodes: [shelf, { ...box, model: 'monitor' }, { ...tv, model: 'speaker', hostId: ids.box }],
+      },
+      // A single arm holds one monitor, not two.
+      {
+        ...base,
+        version: map.version,
+        nodes: [
+          shelf,
+          { ...box, model: 'monitor_arm' },
+          { ...tv, model: 'monitor', hostId: ids.box },
+          { ...drill, hostId: ids.box },
+        ],
+      },
+      // An arm holds monitors only.
+      {
+        ...base,
+        version: map.version,
+        nodes: [
+          shelf,
+          { ...box, model: 'monitor_arm' },
+          { ...tv, model: 'webcam', hostId: ids.box },
+        ],
+      },
+    ];
+    for (const body of refused) {
+      const res = await putLayout(ola, body);
+      expect(res.statusCode, res.body).toBe(400);
+    }
+    const dual = {
+      ...base,
+      version: map.version,
+      nodes: [
+        shelf,
+        { ...box, model: 'dual_monitor_arm' },
+        { ...tv, model: 'monitor', hostId: ids.box },
+        { ...drill, hostId: ids.box },
+      ],
+    };
+    const ok = await putLayout(ola, dual);
+    expect(ok.statusCode, ok.body).toBe(200);
+  });
+
   it('refuses what isn’t a room or node of this location, an unknown model and a bad host', async () => {
     const base = fullLayout(null);
     const bobRoom = await placeOf(bobs, 'Bob room', null);

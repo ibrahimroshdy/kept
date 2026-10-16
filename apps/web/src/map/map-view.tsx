@@ -10,7 +10,8 @@
  * moves anything dragged into another room there in Kept first), Cancel throws it away.
  */
 import {
-  canHost,
+  canCarry,
+  capacityOf,
   isMapModel,
   type MapModelKey,
   type MapRoomKind,
@@ -50,7 +51,9 @@ import {
   type Item,
   type Plan,
   planOf,
+  putOn,
   type Room,
+  takeOff,
 } from './layout';
 import { type ListQuery, type ListShow, whereOf } from './list';
 import { WhatsIn } from './whats-in';
@@ -372,9 +375,44 @@ function MapBody({ data, locationId, name }: { data: MapData; locationId: string
       delete it.shapeFrom;
       chosen.current.set(id, model);
       if (!it.on) clampIn(it, room);
-      if (!canHost(model)) for (const c of p.items) if (c.on === id) c.on = null;
+      // What it can no longer carry, or more than it holds, goes back on the floor (#137).
+      let n = 0;
+      for (const c of p.items.filter((x) => x.on === id)) {
+        if (canCarry(model, c.model) && ++n <= capacityOf(model)) continue;
+        takeOff(p.items, p.rooms, c);
+      }
     });
     engineRef.current?.select({ type: 'item', id });
+  }
+
+  /** #137: Put on…, Take off and Add on it. Map only: Kept's places don't change. */
+  function putThingOn(id: string, hostId: string) {
+    mutate((p) => {
+      const it = p.items.find((i) => i.id === id);
+      const host = p.items.find((i) => i.id === hostId);
+      if (it && host) putOn(p.items, it, host);
+    });
+    engineRef.current?.select({ type: 'item', id });
+  }
+
+  function takeThingOff(id: string) {
+    mutate((p) => {
+      const it = p.items.find((i) => i.id === id);
+      if (it) takeOff(p.items, p.rooms, it);
+    });
+    engineRef.current?.select({ type: 'item', id });
+  }
+
+  function addOnIt(hostId: string, ids: string[]) {
+    mutate((p) => {
+      const host = p.items.find((i) => i.id === hostId);
+      if (!host) return;
+      for (const id of ids) {
+        const it = p.items.find((i) => i.id === id);
+        if (it) putOn(p.items, it, host);
+      }
+    });
+    engineRef.current?.select({ type: 'item', id: hostId });
   }
 
   function removeItem(id: string) {
@@ -835,6 +873,9 @@ function MapBody({ data, locationId, name }: { data: MapData; locationId: string
             onRoomKind={(id, kind) => setRoom(id, { kind })}
             onSurface={(id, surface) => setRoom(id, { surface })}
             onAdd={addThing}
+            onPutOn={putThingOn}
+            onTakeOff={takeThingOff}
+            onAddOn={addOnIt}
           />
         ) : null}
       </section>

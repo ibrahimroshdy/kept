@@ -3,9 +3,12 @@
  * ID, anything due), Details for the label and the facts, Inside for what's in it. A thing picked
  * from Inside shows its own card. Everything links to Kept's real place and thing pages. While
  * arranging, the card also turns a thing, changes its shape, takes it off the map, and sets a
- * room's kind and floor, or puts a thing of the room on the map.
+ * room's kind and floor, or puts a thing of the room on the map. A small thing's card puts it on
+ * a holder (Put on…) and a holder's card puts the room's small things on it (Add on it), #137.
  */
 import {
+  canBeCarried,
+  carryOf,
   MAP_ROOM_KINDS,
   MAP_SURFACES,
   type MapModelKey,
@@ -31,12 +34,15 @@ import {
   type Contents,
   countIn,
   flagsOf,
+  holdersFor,
   type Item,
   type Level,
   type Plan,
   type Room,
+  seated,
 } from './layout';
 import { matches, whereOf } from './list';
+import { AddOnSheet, PutOnSheet } from './put-on';
 import { ShapeField, shapeInputOf } from './shapes';
 
 export type CardSel = { type: 'room' | 'item'; id: string };
@@ -64,6 +70,10 @@ export type CardProps = {
   onRoomKind: (id: string, kind: MapRoomKind) => void;
   onSurface: (id: string, surface: MapSurface) => void;
   onAdd: (roomId: string, thing: MapThingView) => void;
+  /** #137: put a thing on a holder, take it off onto the floor, put several on a holder. */
+  onPutOn: (id: string, hostId: string) => void;
+  onTakeOff: (id: string) => void;
+  onAddOn: (hostId: string, ids: string[]) => void;
 };
 
 function Dots({ flags }: { flags: MapAttentionKind[] }) {
@@ -275,6 +285,7 @@ export function MapCard(p: CardProps) {
   const surfaces = useSurfaceNames();
   const [filter, setFilter] = useState('');
   const [adding, setAdding] = useState('');
+  const [sheet, setSheet] = useState<'put' | 'add' | null>(null);
   const { plan, view, contents } = p;
   const rooms = useMemo(() => new Map(plan.rooms.map((r) => [r.id, r])), [plan.rooms]);
 
@@ -498,6 +509,10 @@ export function MapCard(p: CardProps) {
     lent: (c) => t`${c} lent out inside`,
     due: (c) => t`${c} due inside`,
   };
+  // #137: a small thing goes on a holder of its room; a holder takes the room's small things.
+  const canPut =
+    p.arranging && canBeCarried(it.model) && (!!it.on || holdersFor(plan.items, it).length > 0);
+  const canAdd = p.arranging && carryOf(it.model) !== null;
   const buttons = (
     <div className="kmap-row">
       {stairs.map((l) => (
@@ -528,7 +543,27 @@ export function MapCard(p: CardProps) {
           <Trans>Details</Trans>
         </button>
       )}
-      {p.arranging ? (
+      {canPut ? (
+        <button
+          type="button"
+          className="kmap-btn"
+          aria-haspopup="dialog"
+          onClick={() => setSheet('put')}
+        >
+          <Trans>Put on…</Trans>
+        </button>
+      ) : null}
+      {canAdd ? (
+        <button
+          type="button"
+          className="kmap-btn"
+          aria-haspopup="dialog"
+          onClick={() => setSheet('add')}
+        >
+          <Trans>Add on it</Trans>
+        </button>
+      ) : null}
+      {p.arranging && !seated(plan.items, it) ? (
         <button type="button" className="kmap-btn" onClick={() => p.onTurn(it.id)}>
           <Trans>Turn</Trans>
         </button>
@@ -542,6 +577,34 @@ export function MapCard(p: CardProps) {
         <button type="button" className="kmap-btn ghost" onClick={() => p.setDetail(false)}>
           <Trans>Less</Trans>
         </button>
+      ) : null}
+      {sheet === 'put' && p.arranging ? (
+        <PutOnSheet
+          item={it}
+          plan={plan}
+          roomName={room?.name ?? ''}
+          onOpenChange={(open) => setSheet(open ? 'put' : null)}
+          onPut={(hostId) => {
+            setSheet(null);
+            p.onPutOn(it.id, hostId);
+          }}
+          onTakeOff={() => {
+            setSheet(null);
+            p.onTakeOff(it.id);
+          }}
+        />
+      ) : null}
+      {sheet === 'add' && p.arranging ? (
+        <AddOnSheet
+          host={it}
+          plan={plan}
+          roomName={room?.name ?? ''}
+          onOpenChange={(open) => setSheet(open ? 'add' : null)}
+          onAdd={(ids) => {
+            setSheet(null);
+            p.onAddOn(it.id, ids);
+          }}
+        />
       ) : null}
     </div>
   );

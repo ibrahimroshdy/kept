@@ -84,7 +84,7 @@ describe('ShapePicker', () => {
 
   it('shows only the matches while searching, word starts first, and the groups again after (#130)', async () => {
     const { user } = await picker(vi.fn(), {
-      name: '4K webcam',
+      name: 'HD webcam',
       typeKey: null,
       typeName: null,
       isContainer: false,

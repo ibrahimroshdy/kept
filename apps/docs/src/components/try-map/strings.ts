@@ -49,16 +49,22 @@ export const MODEL_NAMES: Record<MapModelKey, Two> = {
   desk: ['Desk', 'مكتب'],
   monitor: ['Monitor', 'شاشة'],
   laptop: ['Laptop', 'حاسوب محمول'],
+  monitor_arm: ['Monitor arm', 'ذراع شاشة'],
+  dual_monitor_arm: ['Dual monitor arm', 'ذراع لشاشتين'],
   pc_tower: ['Desktop PC', 'كمبيوتر مكتبي'],
   keyboard: ['Keyboard', 'لوحة مفاتيح'],
   mouse: ['Mouse', 'فأرة'],
   webcam: ['Webcam', 'كاميرا ويب'],
   camera: ['Camera', 'كاميرا'],
   speaker: ['Desk speaker', 'سماعة مكتبية'],
+  portable_speaker: ['Portable speaker', 'سماعة محمولة'],
   floor_speaker: ['Tall speaker', 'سماعة أرضية'],
+  boombox: ['Boombox', 'سماعة حفلات'],
   smart_speaker: ['Smart speaker', 'سماعة ذكية'],
   soundbar: ['Soundbar', 'ساوند بار'],
   headphones: ['Headphones', 'سماعات رأس'],
+  headset: ['Headset', 'سماعة بميكروفون'],
+  earbuds: ['Earbuds', 'سماعات أذن'],
   router: ['Router', 'راوتر'],
   printer: ['Printer', 'طابعة'],
   console: ['Game console', 'جهاز ألعاب'],
@@ -200,6 +206,27 @@ type Words = {
   findThingIn: (name: string) => string;
   findThingLabel: string;
   everythingOnMap: string;
+  /** #137: Put on…, Add on it and Take off. */
+  put: {
+    putOn: string;
+    addOn: string;
+    putTitle: (name: string) => string;
+    addTitle: (name: string) => string;
+    onNow: (name: string) => string;
+    takeOff: string;
+    list: string;
+    shapeOn: (shape: string, on: string) => string;
+    nothing: (room: string) => string;
+    nothingElse: (room: string) => string;
+    toAdd: string;
+    full: (n: number, f: string) => string;
+    left: (n: number, f: string) => string;
+    noMonitor: (room: string) => string;
+    allOn: (room: string) => string;
+    putN: (n: number, f: string) => string;
+    pick: string;
+    onItNow: (names: string) => string;
+  };
 };
 
 /** Arabic plural forms (zero, one, two, few, many, other), as the app's catalogue writes them. */
@@ -323,6 +350,27 @@ export const WORDS: Record<Lang, Words> = {
     findThingIn: (name) => `Find a thing in ${name}`,
     findThingLabel: 'Find a thing to put on the map',
     everythingOnMap: 'Everything here is on the map.',
+    put: {
+      putOn: 'Put on…',
+      addOn: 'Add on it',
+      putTitle: (name) => `Put ${name} on…`,
+      addTitle: (name) => `Add on ${name}`,
+      onNow: (name) => `On ${name}`,
+      takeOff: 'Take off',
+      list: 'What can carry it',
+      shapeOn: (shape, on) => `${shape} · on ${on}`,
+      nothing: (room) =>
+        `Nothing in ${room} can carry it. Put a desk, a shelf or a monitor on the map first.`,
+      nothingElse: (room) => `Nothing else in ${room} can carry it.`,
+      toAdd: 'Things to add on it',
+      full: (n, f) => (n === 1 ? 'Full: it holds one monitor.' : `Full: it holds ${f} monitors.`),
+      left: (n, f) => (n === 1 ? 'Room for one more.' : `Room for ${f} more.`),
+      noMonitor: (room) => `No monitor in ${room} is free. Put one on the map first.`,
+      allOn: (room) => `Everything small in ${room} is on something, or not on the map yet.`,
+      putN: (_n, f) => `Put ${f} on it`,
+      pick: 'Pick what goes on it',
+      onItNow: (names) => `On it now: ${names}`,
+    },
   },
   ar: {
     sample: 'منزل تجريبي في متصفحك. لا يُحفظ أي شيء تغيّره ولا يُرسل إلى أي مكان.',
@@ -446,6 +494,50 @@ export const WORDS: Record<Lang, Words> = {
     findThingIn: (name) => `ابحث عن شيء في ${name}`,
     findThingLabel: 'ابحث عن شيء لوضعه على الخريطة',
     everythingOnMap: 'كل ما هنا على الخريطة.',
+    put: {
+      putOn: 'ضع على…',
+      addOn: 'أضف عليه',
+      putTitle: (name) => `ضع ${name} على…`,
+      addTitle: (name) => `أضف على ${name}`,
+      onNow: (name) => `على ${name}`,
+      takeOff: 'أنزله',
+      list: 'ما يمكنه حمله',
+      shapeOn: (shape, on) => `${shape} · على ${on}`,
+      nothing: (room) => `لا شيء في ${room} يمكنه حمله. ضع مكتبًا أو رفًا أو شاشة على الخريطة أولًا.`,
+      nothingElse: (room) => `لا شيء آخر في ${room} يمكنه حمله.`,
+      toAdd: 'أشياء توضع عليه',
+      full: (n, f) =>
+        arPlural(n, f, [
+          'ممتلئ: لا يحمل شاشات.',
+          'ممتلئ: يحمل شاشة واحدة.',
+          'ممتلئ: يحمل شاشتين.',
+          'ممتلئ: يحمل # شاشات.',
+          'ممتلئ: يحمل # شاشة.',
+          'ممتلئ: يحمل # شاشة.',
+        ]),
+      left: (n, f) =>
+        arPlural(n, f, [
+          'لا مكان لمزيد.',
+          'مكان لواحدة أخرى.',
+          'مكان لاثنتين أخريين.',
+          'مكان لـ# أخرى.',
+          'مكان لـ# أخرى.',
+          'مكان لـ# أخرى.',
+        ]),
+      noMonitor: (room) => `لا توجد شاشة متاحة في ${room}. ضع واحدة على الخريطة أولًا.`,
+      allOn: (room) => `كل شيء صغير في ${room} موضوع على شيء، أو ليس على الخريطة بعد.`,
+      putN: (n, f) =>
+        arPlural(n, f, [
+          'ضع # عليه',
+          'ضع واحدًا عليه',
+          'ضع اثنين عليه',
+          'ضع # عليه',
+          'ضع # عليه',
+          'ضع # عليه',
+        ]),
+      pick: 'اختر ما يوضع عليه',
+      onItNow: (names) => `عليه الآن: ${names}`,
+    },
   },
 };
 

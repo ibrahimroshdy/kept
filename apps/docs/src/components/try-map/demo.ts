@@ -11,7 +11,10 @@
  * choice is remembered, as the app remembers it.
  */
 import {
-  canHost,
+  canBeCarried,
+  canCarry,
+  capacityOf,
+  carryOf,
   levelShort,
   MAP_MODEL_KEYS,
   MAP_ROOM_KINDS,
@@ -43,16 +46,23 @@ import {
 } from '../../../../web/src/map/engine/engine';
 import { modelStats } from '../../../../web/src/map/engine/models';
 import {
+  addableOn,
   allUnder,
+  childrenOn,
   clampIn,
   contentsOf,
   countIn,
   flagsOf,
+  holdersFor,
   type Item,
   type Level,
   type Plan,
   planOf,
+  putOn,
   type Room,
+  roomOn,
+  seated,
+  takeOff,
 } from '../../../../web/src/map/layout';
 import { matches, whereOf } from '../../../../web/src/map/list';
 // Inline, not imported as stylesheets: Astro would link those from every page of the site.
@@ -362,7 +372,9 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
         .join('')}
       ${n !== null && !detail ? btn('detail', w.insideN(f.num(n)), stairs.length ? '' : 'primary') : ''}
       ${detail ? '' : btn('detail', w.details)}
-      ${es.arranging ? btn('turn', w.turn, '', it.id) : ''}
+      ${es.arranging && canBeCarried(it.model) && (it.on || holdersFor(plan.items, it).length) ? btn('puton', w.put.putOn, '', it.id).replace('<button ', '<button aria-haspopup="dialog" ') : ''}
+      ${es.arranging && carryOf(it.model) ? btn('addon', w.put.addOn, '', it.id).replace('<button ', '<button aria-haspopup="dialog" ') : ''}
+      ${es.arranging && !seated(plan.items, it) ? btn('turn', w.turn, '', it.id) : ''}
       ${es.arranging && !it.auto ? btn('remove', w.takeOff, '', it.id) : ''}
       ${detail ? btn('less', w.less, 'ghost') : ''}
     </div>`;
@@ -624,9 +636,179 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
       delete it.shapeFrom;
       chosen.set(id, model);
       if (!it.on) clampIn(it, room);
-      if (!canHost(model)) for (const c of p.items) if (c.on === id) c.on = null;
+      // What it can no longer carry, or more than it holds, goes back on the floor (#137).
+      let n = 0;
+      for (const c of p.items.filter((x) => x.on === id)) {
+        if (canCarry(model, c.model) && ++n <= capacityOf(model)) continue;
+        takeOff(p.items, p.rooms, c);
+      }
     });
     engine?.select({ type: 'item', id });
+  }
+
+  // ---- Put on… and Add on it (apps/web/src/map/put-on.tsx), as native modal dialogs (#137) ---
+
+  /** A dialog in the shape picker's frame: a title, then `body`. */
+  function sheet(title: string, body: string, back: string): HTMLDialogElement {
+    const dlg = document.createElement('dialog');
+    dlg.className = 'kd-shapes kd-put';
+    dlg.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    dlg.setAttribute('aria-labelledby', 'kd-put-title');
+    dlg.innerHTML = `<div class="kd-shapes-head"><h2 id="kd-put-title">${esc(title)}</h2><button type="button" class="kmap-x" data-put="close" aria-label="${esc(w.close)}">×</button></div><div class="kput">${body}</div>`;
+    dlg.querySelector('[data-put="close"]')?.addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (ev) => {
+      if (ev.target === dlg) dlg.close();
+    });
+    dlg.addEventListener('close', () => {
+      dlg.remove();
+      overlay.querySelector<HTMLElement>(`[data-k="${CSS.escape(back)}"]`)?.focus();
+    });
+    root.append(dlg);
+    dlg.showModal();
+    return dlg;
+  }
+  const putRow = (it: Item, sub: string, selected = false, disabled = false) =>
+    `<div role="option" class="kput-option" tabindex="-1" data-id="${esc(it.id)}" aria-selected="${selected}"${disabled ? ' aria-disabled="true"' : ''}>${thumb(it.model, 44)}<span class="kput-text"><span>${esc(it.name)}</span><small>${esc(sub)}</small></span></div>`;
+  /** Arrow keys, Home and End move through a listbox's options. */
+  function listKeys(list: HTMLElement, onPick: (el: HTMLElement) => void) {
+    const opts = () => [...list.querySelectorAll<HTMLElement>('[role="option"]')];
+    const first = opts()[0];
+    if (first) first.tabIndex = 0;
+    list.addEventListener('click', (ev) => {
+      const o = (ev.target as HTMLElement).closest<HTMLElement>('[role="option"]');
+      if (o && o.getAttribute('aria-disabled') !== 'true') onPick(o);
+    });
+    list.addEventListener('keydown', (ev) => {
+      const cur = (ev.target as HTMLElement).closest<HTMLElement>('[role="option"]');
+      if (!cur) return;
+      const all = opts();
+      const i = all.indexOf(cur);
+      const to = { ArrowDown: all[i + 1], ArrowUp: all[i - 1], Home: all[0], End: all.at(-1) }[
+        ev.key
+      ];
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        if (cur.getAttribute('aria-disabled') !== 'true') onPick(cur);
+      } else if (to) {
+        ev.preventDefault();
+        for (const o of all) o.tabIndex = -1;
+        to.tabIndex = 0;
+        to.focus();
+      }
+    });
+  }
+
+  function openPutOn(id: string) {
+    const it = plan.items.find((x) => x.id === id);
+    if (!it) return;
+    const room = plan.rooms.find((r) => r.id === it.roomId)?.name ?? '';
+    const holders = holdersFor(plan.items, it);
+    const current = it.on ? plan.items.find((x) => x.id === it.on) : undefined;
+    const sub = (h: Item) => {
+      const on = h.on ? plan.items.find((x) => x.id === h.on)?.name : undefined;
+      return on ? w.put.shapeOn(names[h.model], on) : names[h.model];
+    };
+    const now = current
+      ? `<div class="kput-now"><span>${esc(w.put.onNow(current.name))}</span><button type="button" class="kmap-btn" data-put="off">${esc(w.put.takeOff)}</button></div>`
+      : '';
+    const list = holders.length
+      ? `<div class="kput-list" role="listbox" aria-label="${esc(w.put.list)}">${holders.map((h) => putRow(h, sub(h))).join('')}</div>`
+      : `<p class="kmap-empty">${esc(current ? w.put.nothingElse(room) : w.put.nothing(room))}</p>`;
+    const dlg = sheet(w.put.putTitle(it.name), now + list, `puton:${id}`);
+    dlg.querySelector('[data-put="off"]')?.addEventListener('click', () => {
+      dlg.close();
+      mutate((p) => {
+        const t = p.items.find((x) => x.id === id);
+        if (t) takeOff(p.items, p.rooms, t);
+      });
+      engine?.select({ type: 'item', id });
+    });
+    const lb = dlg.querySelector<HTMLElement>('[role="listbox"]');
+    if (lb)
+      listKeys(lb, (o) => {
+        dlg.close();
+        mutate((p) => {
+          const t = p.items.find((x) => x.id === id);
+          const h = p.items.find((x) => x.id === o.dataset.id);
+          if (t && h) putOn(p.items, t, h);
+        });
+        engine?.select({ type: 'item', id });
+      });
+    (
+      dlg.querySelector<HTMLElement>('[role="option"][tabindex="0"]') ??
+      dlg.querySelector<HTMLElement>('[data-put="off"]')
+    )?.focus();
+  }
+
+  function openAddOn(id: string) {
+    const host = plan.items.find((x) => x.id === id);
+    if (!host) return;
+    const room = plan.rooms.find((r) => r.id === host.roomId)?.name ?? '';
+    const things = addableOn(plan.items, host);
+    const max = capacityOf(host.model);
+    const limited = Number.isFinite(max);
+    const left = roomOn(plan.items, host);
+    const full = limited && left <= 0;
+    const onNow = childrenOn(plan.items, host.id)
+      .map((c) => c.name)
+      .join(', ');
+    const cap = limited
+      ? `<p class="kput-cap">${esc(full ? w.put.full(max, f.num(max)) : w.put.left(left, f.num(left)))}</p>`
+      : '';
+    const sub = (c: Item) =>
+      c.shortCode ? `${names[c.model]} · ${printedCode(c.shortCode)}` : names[c.model];
+    const body = full
+      ? ''
+      : things.length
+        ? `<div class="kput-list" role="listbox" aria-multiselectable="true" aria-label="${esc(w.put.toAdd)}">${things.map((c) => putRow(c, sub(c))).join('')}</div>
+           <div class="kput-actions"><button type="button" class="kmap-btn primary" data-put="add" disabled>${esc(w.put.pick)}</button>${btn('putcancel', w.cancel)}</div>`
+        : `<p class="kmap-empty">${esc(carryOf(host.model) === 'arm' ? w.put.noMonitor(room) : w.put.allOn(room))}</p>`;
+    const dlg = sheet(
+      w.put.addTitle(host.name),
+      `${cap}${body}${onNow ? `<p class="kput-cap">${esc(w.put.onItNow(onNow))}</p>` : ''}`,
+      `addon:${id}`,
+    );
+    const picked = new Set<string>();
+    const add = dlg.querySelector<HTMLButtonElement>('[data-put="add"]');
+    const refresh = () => {
+      for (const o of dlg.querySelectorAll<HTMLElement>('[role="option"]')) {
+        const on = picked.has(o.dataset.id ?? '');
+        o.setAttribute('aria-selected', String(on));
+        // An arm takes no more than its places.
+        if (limited && picked.size >= left && !on) o.setAttribute('aria-disabled', 'true');
+        else o.removeAttribute('aria-disabled');
+      }
+      if (add) {
+        add.disabled = !picked.size;
+        add.textContent = picked.size ? w.put.putN(picked.size, f.num(picked.size)) : w.put.pick;
+      }
+    };
+    const lb = dlg.querySelector<HTMLElement>('[role="listbox"]');
+    if (lb)
+      listKeys(lb, (o) => {
+        const k = o.dataset.id ?? '';
+        if (picked.has(k)) picked.delete(k);
+        else picked.add(k);
+        refresh();
+      });
+    dlg.querySelector('[data-act="putcancel"]')?.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      dlg.close();
+    });
+    add?.addEventListener('click', () => {
+      const ids = [...picked];
+      dlg.close();
+      mutate((p) => {
+        const h = p.items.find((x) => x.id === id);
+        if (!h) return;
+        for (const cid of ids) {
+          const t = p.items.find((x) => x.id === cid);
+          if (t) putOn(p.items, t, h);
+        }
+      });
+      engine?.select({ type: 'item', id });
+    });
+    dlg.querySelector<HTMLElement>('[role="option"][tabindex="0"]')?.focus();
   }
 
   function removeItem(id: string) {
@@ -933,6 +1115,10 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
         return removeItem(arg);
       case 'shapes':
         return openShapes(arg);
+      case 'puton':
+        return openPutOn(arg);
+      case 'addon':
+        return openAddOn(arg);
       case 'kind':
         if (sel?.type === 'room') setRoom(sel.id, { kind: arg as MapRoomKind });
         return;
