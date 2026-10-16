@@ -88,6 +88,12 @@ export const ErrorCode = Object.freeze({
   channel_unreachable: 'channel_unreachable',
   /** Step 4: a download link (a claim pack's) is unknown, revoked or expired (Q19). */
   link_expired: 'link_expired',
+  /** 1.10.5 (#141): an email was asked for (a report mailed or scheduled) and this server has no
+   * mail transport (KEPT_SMTP_URL unset). Refused rather than accepted and dropped. */
+  mail_not_configured: 'mail_not_configured',
+  /** 1.10.5 (#141): an email was asked for and the account has no address Kept can send to (a
+   * managed account, D47). */
+  no_email_address: 'no_email_address',
   /** Step 5: a reading a fuel entry or service record owns is changed through its owner (Q11);
    * the body carries `ownedBy: {type: 'fuel' | 'service', id}`. */
   reading_owned: 'reading_owned',
@@ -210,7 +216,9 @@ export type HouseholdErrorCode =
   | 'rate_missing'
   | 'push_unavailable'
   | 'channel_unreachable'
-  | 'link_expired';
+  | 'link_expired'
+  | 'mail_not_configured'
+  | 'no_email_address';
 
 /** The English sentence for each step-4 code (spread into the server's `MESSAGES`). */
 export const HOUSEHOLD_ERROR_MESSAGES: Readonly<Record<HouseholdErrorCode, string>> = Object.freeze(
@@ -226,6 +234,8 @@ export const HOUSEHOLD_ERROR_MESSAGES: Readonly<Record<HouseholdErrorCode, strin
     push_unavailable: "Push notifications aren't available here.",
     channel_unreachable: "The test didn't arrive.",
     link_expired: 'This link has expired or was revoked.',
+    mail_not_configured: "Email isn't set up on this server.",
+    no_email_address: 'Your account has no email address.',
   },
 );
 

@@ -103,6 +103,14 @@ export function reportsRoutes(state: MockState): MockRoute[] {
     );
   };
 
+  /** 1.10.5 (#141): an email Kept can't send is refused, as the server does. */
+  const mailRefusal = () =>
+    !state.household.settings.smtpConfigured
+      ? err(409, 'mail_not_configured', "Email isn't set up on this server.")
+      : !state.me.user.email
+        ? err(409, 'no_email_address', 'Your account has no email address.')
+        : null;
+
   return [
     route('POST', p.reportsInventory, ({ body }) => {
       const gate = sessionGate(state);
@@ -110,6 +118,8 @@ export function reportsRoutes(state: MockState): MockRoute[] {
       const b = body as InventoryReportBody;
       const locationIds = covered(b?.scope);
       if (!locationIds) return notFound();
+      const refused = b.email ? mailRefusal() : null;
+      if (refused) return refused;
       const me = state.me.user.id;
       const recent = [...runs().values()].filter(
         (r) => r.userId === me && Date.now() - Date.parse(r.createdAt) < HOUR_MS,
@@ -167,6 +177,8 @@ export function reportsRoutes(state: MockState): MockRoute[] {
       const b = body as Pick<ReportSchedule, 'locationId' | 'kind' | 'cadence'>;
       const loc = state.locations.find((l) => l.id === b.locationId);
       if (!loc) return notFound();
+      const refused = mailRefusal();
+      if (refused) return refused;
       const all = reportSchedulesOf(state);
       const had = all.find((s) => s.locationId === b.locationId && s.kind === b.kind);
       if (had) {

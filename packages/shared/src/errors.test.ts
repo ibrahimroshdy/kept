@@ -62,6 +62,8 @@ describe('ErrorCode', () => {
       'push_unavailable',
       'channel_unreachable',
       'link_expired',
+      'mail_not_configured',
+      'no_email_address',
       'reading_owned',
       'service_draft',
       'fuel_needs_meter',
@@ -109,7 +111,7 @@ describe('ErrorCode', () => {
   });
 
   it('gives every step-4 code an English sentence', () => {
-    expect(Object.keys(HOUSEHOLD_ERROR_MESSAGES)).toHaveLength(11);
+    expect(Object.keys(HOUSEHOLD_ERROR_MESSAGES)).toHaveLength(13);
     for (const [code, message] of Object.entries(HOUSEHOLD_ERROR_MESSAGES)) {
       expect(isErrorCode(code)).toBe(true);
       expect(message).toMatch(/^[A-Z].+\.$/);

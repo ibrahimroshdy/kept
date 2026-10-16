@@ -47,6 +47,10 @@ function rememberWay(way: SetupHelpWay): void {
 /** The docs site (apps/docs, published at https://keptinventory.info/). */
 const DOCS = 'https://keptinventory.info';
 
+/** The operator's mail setup: apps/docs/src/content/docs/admin/notifications.md, `## Mail`
+ * (English only so far). */
+export const MAIL_SETUP_DOCS = `${DOCS}/admin/notifications/#mail`;
+
 function docsUrl(page: 'install/compose' | 'install/kubernetes' | 'admin/cli', locale: string) {
   // Only the Compose page has an Arabic translation so far (apps/docs/src/content/docs/ar).
   const ar = locale === 'ar' && page === 'install/compose' ? '/ar' : '';

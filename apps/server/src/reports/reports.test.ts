@@ -145,7 +145,7 @@ beforeAll(async () => {
   db = await testDb();
   await db.reset();
   files = await testFiles();
-  t = await peopleApp(db, { sent, files });
+  t = await peopleApp(db, { sent, files, mailConfigured: true });
   ann = await person(t, db, 'ann');
   bob = await person(t, db, 'bob');
   vic = await person(t, db, 'vic');
@@ -669,5 +669,48 @@ describe('emailed and scheduled reports (D228)', () => {
       ok(await schedules(ann)) as unknown as { schedules: Array<{ lastError: string | null }> }
     ).schedules[0];
     expect(listed?.lastError).toBe('rate_limited');
+  });
+});
+
+describe("email Kept can't send is refused (#141)", () => {
+  const code = (res: { statusCode: number; json: () => { code?: string } }) => [
+    res.statusCode,
+    res.json().code,
+  ];
+
+  it('refuses email: true and a schedule on a server without mail; a plain report still runs', async () => {
+    const bare = await peopleApp(db, { sent: [], files });
+    const zed = await person(bare, db, 'zed');
+    const at = { locationId: zed.personalLocationId };
+    const ask = (body: object) => call(bare, '/api/v1/reports/inventory', { as: zed, body });
+    expect(code(await ask({ scope: at, email: true }))).toEqual([409, 'mail_not_configured']);
+    expect((await ask({ scope: at })).statusCode).toBe(202);
+    const put = await call(bare, '/api/v1/me/report-schedules', {
+      as: zed,
+      method: 'PUT',
+      body: { ...at, kind: 'inventory', cadence: 'weekly' },
+    });
+    expect(code(put)).toEqual([409, 'mail_not_configured']);
+    expect(
+      await own(db, 'SELECT id FROM public.report_schedules WHERE user_id = $1', [zed.userId]),
+    ).toEqual([]);
+    await bare.app.close();
+  });
+
+  it('refuses them for an account with no address to send to', async () => {
+    const max = await person(t, db, 'max');
+    await db.pools.auth.query('UPDATE auth."user" SET email = $2 WHERE id = $1', [
+      max.userId,
+      `${max.userId}@managed.invalid`,
+    ]);
+    const at = { locationId: max.personalLocationId };
+    const ask = await request(max, { scope: at, email: true });
+    expect(code(ask)).toEqual([409, 'no_email_address']);
+    const put = await call(t, '/api/v1/me/report-schedules', {
+      as: max,
+      method: 'PUT',
+      body: { ...at, kind: 'inventory', cadence: 'monthly' },
+    });
+    expect(code(put)).toEqual([409, 'no_email_address']);
   });
 });

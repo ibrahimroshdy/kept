@@ -26,8 +26,11 @@ pass through the URL.
 Mail is only logged as due: one warning per mail, `mail not sent: no mail transport is
 configured`, naming the kind of mail and never the address, link or token. **Admin → Status**
 shows **Mail: Not configured** and the notice **Mail isn't configured**. Without mail there are
-no sign-in links, password resets, email invites or emailed alerts. Link invites and passwords
-work without it, and reminders still reach people by push and in the app.
+no sign-in links, password resets, email invites, emailed alerts or emailed reports. Link
+invites and passwords work without it, and reminders still reach people by push and in the app.
+**Email it to me** and **Send it again** in Print inventory are locked, and owners and admins
+get a **Set up email** link to this page; the API refuses `email: true` and report schedules with
+409 `mail_not_configured`.
 
 When mail is configured, an account whose address isn't verified can't add a passkey or an
 authenticator app until it is.

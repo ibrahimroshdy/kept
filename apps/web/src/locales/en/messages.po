@@ -25125,3 +25125,15 @@ msgstr "Hide the changes"
 #: src/components/history/timeline.tsx
 msgid "Hide"
 msgstr "Hide"
+
+#: src/components/reports/print-sheet.tsx
+msgid "Email isn't set up on this server."
+msgstr "Email isn't set up on this server."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Ask the owner to set up email."
+msgstr "Ask the owner to set up email."
+
+#: src/components/reports/print-sheet.tsx
+msgid "Add an email address to your account."
+msgstr "Add an email address to your account."
