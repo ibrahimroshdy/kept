@@ -488,7 +488,7 @@ export function registerScheduleUndo(): void {
     'schedule.snooze',
     'schedule.skip',
     'schedule.unsnooze',
-  ]) {
+  ] as const) {
     registerUndo(action, undoScheduleFields);
   }
   registerUndo('schedule.delete', undoScheduleDelete);

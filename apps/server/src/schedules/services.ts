@@ -1,4 +1,4 @@
-import { isDateFilterValue, newId, type ServiceLineKind } from '@kept/shared';
+import { type AuditAction, isDateFilterValue, newId, type ServiceLineKind } from '@kept/shared';
 import type pg from 'pg';
 import { actorOf } from '../audit/actor.js';
 import { audited } from '../audit/audited.js';
@@ -418,7 +418,7 @@ export async function noonOf(
 
 export type CreateServiceOptions = {
   /** The action of its audit event: `schedule.complete` from POST …/schedules/:id/complete. */
-  action?: string;
+  action?: AuditAction;
 };
 
 /**

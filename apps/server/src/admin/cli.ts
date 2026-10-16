@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto';
+import type { AuditAction } from '@kept/shared';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
 import { audited } from '../audit/audited.js';
@@ -75,7 +76,7 @@ export async function asOwner<T>(
 
 function auditSystem(
   tx: Tx,
-  action: string,
+  action: AuditAction,
   entity: { type: string; id: string | null },
   extra: {
     locationId?: string;

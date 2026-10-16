@@ -1,5 +1,6 @@
 import {
   ACCOUNT_LEVEL_KINDS,
+  type AuditAction,
   defaultPreference,
   NOTIFY_KINDS,
   type NotifyKind,
@@ -214,7 +215,7 @@ export async function auditMine(
   tx: Tx,
   userId: string,
   event: {
-    action: string;
+    action: AuditAction;
     entity: { type: string; id: string | null };
     before?: Record<string, unknown> | null;
     after?: Record<string, unknown> | null;

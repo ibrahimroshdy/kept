@@ -13,11 +13,11 @@
  * can't see is its own row, "Moved in from another location", with no old path (D183). A thing's
  * AI calls (D206) are rows of their own, with the AI line (components/ai/ai-history-row.tsx).
  */
-import { printedCode } from '@kept/shared';
+import { printedCode, SUMMARY_LINES_INLINE } from '@kept/shared';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
-import { type ReactNode, useEffect, useMemo, useRef } from 'react';
+import { type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { useUndoable } from '@/api/capture/queries';
 import { inventoryApi, inventoryKeys as k, nextCursor } from '@/api/inventory/queries';
 import type { HistoryEvent, RenderedChange } from '@/api/inventory/types';
@@ -29,7 +29,16 @@ import { Button } from '@/components/ui/button';
 import { addressOf } from '@/lib/address';
 import { sep, useBytes, useFormat } from '@/lib/format';
 import { cn } from '@/lib/utils';
-import { FSI, PDI, plainText, useFieldLabel, useSummary, useValueWords } from './labels';
+import { fieldShown, isNewValue } from './fields';
+import {
+  FSI,
+  PDI,
+  plainText,
+  useFieldLabel,
+  useSummary,
+  useSummaryLine,
+  useValueWords,
+} from './labels';
 import { useUndo } from './undo';
 
 export type HistorySubject = { kind: 'thing' | 'place'; id: string };
@@ -200,7 +209,7 @@ export function EventRow({
     moved || compact
       ? []
       : Object.entries(event.diff ?? {}).filter(
-          (entry) => shown(entry) && !(created && startsAsDefault(entry)),
+          (entry) => shown(entry, event.entity.type) && !(created && startsAsDefault(entry)),
         );
   return (
     <article
@@ -255,6 +264,7 @@ export function EventRow({
             </Trans>
           </Link>
         ) : null}
+        {!compact && event.summaryLines?.length ? <Lines event={event} /> : null}
         {changes.length ? (
           <dl className="m-0 grid gap-1 text-small">
             {changes.map(([key, change]) => (
@@ -277,6 +287,51 @@ export function EventRow({
         </Button>
       ) : null}
     </article>
+  );
+}
+
+/**
+ * What the action covered, one sentence a line (#140): an arrangement's changes ("Put HD webcam on
+ * Corner desk"), a report's things and photos. Up to five show as they are; a row with more says
+ * how many in its summary ("Arranged the map: 12 changes") and opens them with Show.
+ */
+function Lines({ event }: { event: HistoryEvent }) {
+  const { t } = useLingui();
+  const say = useSummaryLine();
+  const [open, setOpen] = useState(false);
+  const id = useId();
+  const lines = event.summaryLines ?? [];
+  const folded = lines.length > SUMMARY_LINES_INLINE;
+  return (
+    <div className="grid justify-items-start gap-1">
+      {!folded || open ? (
+        <ul id={id} className="m-0 grid list-none gap-0.5 p-0 text-small text-ink-2">
+          {lines.map((line, i) => (
+            <li
+              // Lines are in the server's order and never reordered.
+              // biome-ignore lint/suspicious/noArrayIndexKey: a line has no id of its own
+              key={i}
+              className="[overflow-wrap:anywhere]"
+            >
+              <Isolated text={say(line)} />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {folded ? (
+        <Button
+          variant="ghost"
+          size="small"
+          className="-ms-2"
+          aria-expanded={open}
+          aria-controls={open ? id : undefined}
+          aria-label={open ? t`Hide the changes` : t`Show the changes`}
+          onPress={() => setOpen((o) => !o)}
+        >
+          {open ? <Trans>Hide</Trans> : <Trans>Show</Trans>}
+        </Button>
+      ) : null}
+    </div>
   );
 }
 
@@ -381,6 +436,14 @@ function Change({
             <LockIcon aria-hidden="true" />
             <Trans>changed · value not recorded</Trans>
           </span>
+        ) : isNewValue(change.before) ? (
+          // New is new (#140): a field set from nothing shows what it got, no "empty →".
+          <Value
+            field={field}
+            value={change.after}
+            money={change.class === 'money'}
+            entity={entity}
+          />
         ) : (
           <>
             <Value
@@ -423,40 +486,13 @@ const isRef = (v: unknown): boolean =>
   (typeof v === 'object' && !Array.isArray(v) && Object.values(v).every(isRef));
 
 /**
- * A diff entry worth a line: not one that only swaps internal ids (a container, a type, a tag
- * set, a purchase line), which would read as raw UUIDs. The summary line already says what
- * happened; a move's own path is on the thing.
+ * A diff entry worth a line (#140, fields.ts): a field a person set and would recognise, and not
+ * one that only swaps internal ids (a container, a type, a tag set, a purchase line), which would
+ * read as raw UUIDs. The summary line already says what happened; a move's own path is on the
+ * thing.
  */
-/**
- * Columns an audit row carries that mean nothing to a reader (UI audit 2026-09-29): a saved view's
- * list key, an attachment's order, a file's storage class, GPS flag and preview state. The change
- * itself still shows as its summary line ("File uploaded", "Saved view added").
- */
-const INTERNAL_FIELDS = new Set([
-  // Step 4 (T29): what a delete keeps so undo can put it back (its documents, a service's lines
-  // and the schedules it completed), not a change anyone made.
-  'documents',
-  'lines',
-  'completes',
-  // Step 5: what a service or a fill keeps for its undo (whether it made the reading, the
-  // schedules it cleared) and a starter set's or a draft's ids (UI step-5 review M8).
-  'reading_created',
-  'cleared_schedules',
-  'schedule_ids',
-  'extraction_id',
-  'invoice_ids',
-  'surface',
-  'sort',
-  'class',
-  'has_gps',
-  'derivative_state',
-  'sha256',
-  'width',
-  'height',
-]);
-
-function shown([key, change]: [string, RenderedChange]): boolean {
-  if (INTERNAL_FIELDS.has(key)) return false;
+function shown([key, change]: [string, RenderedChange], entity: string): boolean {
+  if (!fieldShown(key, entity)) return false;
   if (!('before' in change)) return true;
   return !(isRef(change.before) && isRef(change.after));
 }

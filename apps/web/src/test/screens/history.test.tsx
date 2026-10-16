@@ -674,3 +674,163 @@ describe('the history timeline', () => {
     expectLogicalOnly();
   });
 });
+
+describe('#140: plain sentences, not JSON and event codes', () => {
+  const list = () => screen.findByRole('list', { name: 'Activity' }, { timeout: 3000 });
+  const UUID = /[0-9a-f]{8}-[0-9a-f]{4}-/;
+  type Line = { key: string; params: Record<string, string>; text: string };
+  const row = (n: number, e: Record<string, unknown> & { summaryKey: string }) => ({
+    id: `01926f00-0000-7000-8000-0000000ec0${n}0`,
+    at: new Date(Date.now() - 600_000 - n * 1000).toISOString(),
+    location_id: INV_IDS.loc.garage,
+    action: e.summaryKey.split('.').slice(0, 2).join('.'),
+    actor: { type: 'user' as const, id: null, displayName: 'Ibrahim' },
+    entity: { type: 'location', id: INV_IDS.loc.garage, shortCode: null },
+    root_thing_id: null,
+    diff: {},
+    undo_of: null,
+    undoable_until: null,
+    summaryParams: {},
+    summary: 'English, never shown',
+    ...e,
+  });
+  const line = (key: string, params: Record<string, string>): Line => ({
+    key,
+    params,
+    text: 'English, never shown',
+  });
+  const arrangement = [
+    line('map.put.room', { name: 'HD webcam', room: 'Study' }),
+    line('map.on', { name: 'HD webcam', host: 'Corner desk' }),
+    line('map.shape', { name: 'HD webcam', from: 'desk', to: 'webcam', vocab: 'model' }),
+    line('map.move', { name: 'Shelf 2' }),
+    line('map.turn', { name: 'a thing' }),
+  ];
+  const state = () => {
+    const s = ownerScenario();
+    // The seed's own arrangement says the same words; these rows are the ones under test.
+    s.inventory.events = s.inventory.events.filter((e) => e.action !== 'place.arrange');
+    s.inventory.events.push(
+      row(1, {
+        summaryKey: 'place.arrange',
+        summaryParams: { name: 'Garage' },
+        summaryLines: arrangement,
+      }),
+      row(2, {
+        summaryKey: 'place.arrange.many',
+        summaryParams: { name: 'Garage', count: '7' },
+        summaryLines: [
+          ...arrangement,
+          line('map.remove', { name: 'Old lamp' }),
+          line('map.floor', { name: 'Study', from: 'wood', to: 'tile', vocab: 'surface' }),
+        ],
+      }),
+      row(3, {
+        summaryKey: 'thing.capture',
+        entity: { type: 'thing', id: T.pump, shortCode: null },
+        summaryParams: { name: 'Wireless keyboard' },
+        diff: {
+          mode: { before: null, after: 'thing', class: 'plain' },
+          file_ids: { before: null, after: [T.pump], class: 'plain' },
+          capture_id: { before: null, after: T.pump, class: 'plain' },
+          name: { before: null, after: 'Wireless keyboard', class: 'plain' },
+          model: { before: 'K-100', after: 'K-120', class: 'plain' },
+        },
+      }),
+      row(4, {
+        summaryKey: 'report.generate.insurance',
+        entity: { type: 'report', id: T.pump, shortCode: null },
+        summaryParams: { name: 'Beach house' },
+        summaryLines: [line('line.things', { count: '12' }), line('line.photos', {})],
+        diff: {
+          kind: { before: null, after: 'insurance', class: 'plain' },
+          locale: { before: null, after: 'en', class: 'plain' },
+          digits: { before: null, after: 'arab', class: 'plain' },
+          include: { before: null, after: { photos: true }, class: 'plain' },
+          filters: { before: null, after: { thingIds: [T.pump] }, class: 'plain' },
+        },
+      }),
+      row(5, { summaryKey: 'label_batch.create', summaryParams: { count: '24' } }),
+      row(6, { summaryKey: 'inbox.discard' }),
+      row(7, { summaryKey: 'capture.batch_undo' }),
+      row(8, {
+        summaryKey: 'attachment.create.photo',
+        summaryParams: { name: 'Desk lamp' },
+      }),
+    );
+    return s;
+  };
+
+  it('says a map arrangement change by change, by name, and never its layout', async () => {
+    await renderApp('/activity', { state: state() });
+    const feed = await list();
+    const arranged = within(feed).getByRole('article', { name: 'Arranged the map' });
+    expect([...arranged.querySelectorAll('li')].map((li) => li.textContent)).toEqual([
+      'Put HD webcam on the map in Study',
+      'Put HD webcam on Corner desk',
+      'Changed the shape of HD webcam: Desk → Webcam',
+      'Moved Shelf 2',
+      'Turned a thing',
+    ]);
+    expect(within(arranged).queryByRole('button', { name: 'Show the changes' })).toBeNull();
+    expect(within(arranged).getByText('Corner desk').tagName).toBe('BDI');
+  });
+
+  it('counts more than five changes and opens them with Show', async () => {
+    const { user } = await renderApp('/activity', { state: state() });
+    const feed = await list();
+    const busy = within(feed).getByRole('article', { name: 'Arranged the map: 7 changes' });
+    expect(busy.querySelectorAll('li')).toHaveLength(0);
+    const show = within(busy).getByRole('button', { name: 'Show the changes' });
+    expect(show).toHaveAttribute('aria-expanded', 'false');
+    await user.click(show);
+    expect(busy.querySelectorAll('li')).toHaveLength(7);
+    expect(busy.textContent).toContain('Changed the floor of Study: Wood → Tiles');
+    expect(within(busy).getByRole('button', { name: 'Hide the changes' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
+  });
+
+  it('says every action in a sentence, with the fields people care about only', async () => {
+    await renderApp('/activity', { state: state() });
+    const feed = await list();
+    const capture = within(feed).getByRole('article', {
+      name: 'Captured Wireless keyboard from a photo',
+    });
+    // New is new: the name it got, no "empty" and no arrow; an edit keeps its arrow.
+    expect(capture.textContent).toContain('NameWireless keyboard');
+    expect(capture.textContent).toContain('ModelK-100→K-120');
+    expect(capture.textContent).not.toMatch(/empty|Mode\b|File ids|Capture id/);
+    const report = within(feed).getByRole('article', {
+      name: 'Made an insurance report for Beach house',
+    });
+    expect(report.textContent).toContain('12 things');
+    expect(report.textContent).toContain('With photos');
+    expect(report.textContent).not.toMatch(/Locale|Digits|Include|Filters|Kind|\{/);
+    for (const name of [
+      'Made 24 blank labels',
+      'Discarded a draft',
+      'Undid a capture',
+      'Added a photo to Desk lamp',
+    ]) {
+      expect(within(feed).getByRole('article', { name })).toBeInTheDocument();
+    }
+    expect(feed.textContent).not.toContain('English, never shown');
+    expect(feed.textContent).not.toMatch(UUID);
+    expect(feed.textContent).not.toMatch(/"[a-z]+":/);
+  });
+
+  it('reads in Arabic, right to left', async () => {
+    await renderApp('/activity', { state: state(), locale: 'ar' });
+    const arranged = await screen.findByRole(
+      'article',
+      { name: 'رُتّبت الخريطة' },
+      { timeout: 3000 },
+    );
+    expect(arranged.textContent).toContain('وُضع «HD webcam» على «Corner desk»');
+    expect(screen.getByRole('article', { name: /ملصقًا فارغًا/ })).toBeInTheDocument();
+    expect(document.body.textContent).not.toContain('English, never shown');
+    expectLogicalOnly();
+  });
+});

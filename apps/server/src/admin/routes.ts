@@ -1,3 +1,4 @@
+import type { AuditAction } from '@kept/shared';
 import { sql } from 'drizzle-orm';
 import type { FastifyRequest } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
@@ -209,7 +210,7 @@ async function isInstanceAdmin(pools: Pick<Pools, 'app'>, req: FastifyRequest) {
 function auditInstance(
   tx: Tx,
   req: FastifyRequest,
-  action: string,
+  action: AuditAction,
   entity: { type: string; id?: string | null },
   change: { before?: Record<string, unknown>; after?: Record<string, unknown> } = {},
 ) {
@@ -387,7 +388,7 @@ export async function adminRoutes(app: KeptApp, deps: AdminDeps): Promise<void> 
     const userAction = (
       path: string,
       action: AdminAction,
-      auditAction: string,
+      auditAction: AuditAction,
       work: (userId: string) => Promise<void>,
       guard?: (req: FastifyRequest, target: AuthUserRow) => void,
     ) =>
@@ -620,7 +621,7 @@ export async function adminRoutes(app: KeptApp, deps: AdminDeps): Promise<void> 
 
     /** Retry or discard one failed job: audited in the admin's transaction, done by pg-boss on
      * kept_system inside it, so a refused audit leaves the job as it was. */
-    const jobAction = (path: 'retry' | 'discard', auditAction: string) =>
+    const jobAction = (path: 'retry' | 'discard', auditAction: AuditAction) =>
       admin.post(
         `/api/v1/admin/jobs/failed/:id/${path}`,
         { schema: { params: UserId } },

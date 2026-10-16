@@ -1,4 +1,4 @@
-import { type Action, type ModuleId, newId, type Role } from '@kept/shared';
+import { type Action, type AuditAction, type ModuleId, newId, type Role } from '@kept/shared';
 import type pg from 'pg';
 import { actorOf } from '../audit/actor.js';
 import { audited } from '../audit/audited.js';
@@ -166,7 +166,7 @@ const subjectsOf = (r: { thing_id: string | null }) => (r.thing_id ? [r.thing_id
 
 async function auditSchedule(
   ctx: Ctx,
-  action: string,
+  action: AuditAction,
   before: ScheduleRow | null,
   after: ScheduleRow | null,
   undoable: boolean,

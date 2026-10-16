@@ -1,4 +1,4 @@
-import { type LoanDirection, newId } from '@kept/shared';
+import { type AuditAction, type LoanDirection, newId } from '@kept/shared';
 import type pg from 'pg';
 import { actorOf } from '../audit/actor.js';
 import { audited } from '../audit/audited.js';
@@ -219,7 +219,7 @@ async function thingRow(ctx: Ctx, id: string): Promise<ThingRow> {
 
 async function auditLoan(
   ctx: Ctx,
-  action: string,
+  action: AuditAction,
   before: LoanRecord | null,
   after: LoanRecord | null,
   extra: { before?: Record<string, unknown>; after?: Record<string, unknown> } = {},

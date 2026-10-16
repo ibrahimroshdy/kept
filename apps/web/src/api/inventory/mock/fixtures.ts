@@ -11,6 +11,7 @@ import type { LocationDetail } from '../../types';
 import type {
   Capability,
   FieldKind,
+  HistoryEvent,
   PlaceKindNode,
   ResolvedField,
   ThingView,
@@ -964,11 +965,86 @@ export function inventoryFixtures(): InventoryState {
       event(4, 'thing.create', 'thing', I.thing.arHdmi, LOC.family, 'بروس', 'كابل HDMI', 3),
       event(5, 'place.create', 'place', I.place.office, LOC.home, 'Ibrahim', 'Office', 9),
       event(6, 'thing.trash', 'thing', I.thing.brokenLamp, LOC.home, 'Ibrahim', 'Broken lamp', 5),
+      // #140: an arrangement, a capture and a report, as the server says them.
+      ...said(),
     ],
     hints: [],
     checklistDismissed: false,
     secrets: secretValues,
   };
+}
+
+/** An arrangement, a capture and a report in Home, in the server's words (#140). */
+function said(): HistoryEvent[] {
+  const at = (n: number, daysAgo: number) => ({
+    id: `01926f00-0000-7000-8000-0000000ee${String(n).padStart(3, '0')}`,
+    at: ago(daysAgo),
+    location_id: LOC.home,
+    actor: { type: 'user' as const, id: null, displayName: 'Ibrahim' },
+    undo_of: null,
+    undoable_until: null,
+  });
+  const plain = (after: unknown) => ({ before: null, after, class: 'plain' as const });
+  return [
+    {
+      ...at(7, 10),
+      action: 'place.arrange',
+      entity: { type: 'location', id: LOC.home },
+      root_thing_id: null,
+      diff: {},
+      summaryKey: 'place.arrange',
+      summaryParams: { name: 'Home' },
+      summary: 'Arranged the map',
+      summaryLines: [
+        {
+          key: 'map.put.room',
+          params: { name: 'Galaxy S23', room: 'Office' },
+          text: 'Put Galaxy S23 on the map in Office',
+        },
+        { key: 'map.move', params: { name: 'Cable box' }, text: 'Moved Cable box' },
+        { key: 'map.turn', params: { name: 'Samsung TV, 55″' }, text: 'Turned Samsung TV, 55″' },
+        {
+          key: 'map.floor',
+          params: { name: 'Living room', from: 'wood', to: 'tile', vocab: 'surface' },
+          text: 'Changed the floor of Living room: wood → tile',
+        },
+      ],
+    },
+    {
+      ...at(8, 10.1),
+      action: 'thing.capture',
+      entity: { type: 'thing', id: I.thing.drill },
+      root_thing_id: I.thing.drill,
+      diff: {
+        name: plain('Bosch drill, 18 V'),
+        model: plain('GSR 18V-55'),
+        mode: plain('thing'),
+        file_ids: plain(['01926f00-0000-7000-8000-0000000ef001']),
+      },
+      summaryKey: 'thing.capture',
+      summaryParams: { name: 'Bosch drill, 18 V' },
+      summary: 'Captured Bosch drill, 18 V from a photo',
+    },
+    {
+      ...at(9, 10.2),
+      action: 'report.generate',
+      entity: { type: 'report', id: '01926f00-0000-7000-8000-0000000ef002' },
+      root_thing_id: null,
+      diff: {
+        kind: plain('insurance'),
+        locale: plain('en'),
+        digits: plain('latn'),
+        include: plain({ photos: true }),
+      },
+      summaryKey: 'report.generate.insurance',
+      summaryParams: { name: 'Home' },
+      summary: 'Made an insurance report for Home',
+      summaryLines: [
+        { key: 'line.things', params: { count: '8' }, text: '8 things' },
+        { key: 'line.photos', params: {}, text: 'With photos' },
+      ],
+    },
+  ];
 }
 
 function event(

@@ -2,6 +2,7 @@ export const KEPT_VERSION: string = process.env.KEPT_VERSION ?? '0.0.0-dev';
 
 export * from './ai.js';
 export * from './assistant.js';
+export * from './audit-actions.js';
 export * from './builtin-names.js';
 export * from './builtin-types.js';
 export * from './capture.js';

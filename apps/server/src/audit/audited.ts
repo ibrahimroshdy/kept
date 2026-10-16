@@ -1,5 +1,5 @@
 import { isDeepStrictEqual } from 'node:util';
-import { newId } from '@kept/shared';
+import { type AuditAction, newId } from '@kept/shared';
 import { type SQL, sql } from 'drizzle-orm';
 import { type ACTOR_TYPES, auditEventSubjects, auditEvents } from '../db/schema/index.js';
 import type { Tx } from '../db/scope.js';
@@ -32,8 +32,8 @@ export type AuditEventInput = {
   /** Filled from the location when omitted. Pass it for account-level events (§7.13). */
   ownerAccountId?: string | null;
   actor: AuditActor;
-  /** `<entity>.<verb>`, e.g. `location.update`. */
-  action: string;
+  /** `<entity>.<verb>`, e.g. `location.update`: one of @kept/shared's AUDIT_ACTIONS (#140). */
+  action: AuditAction;
   entity: { type: string; id?: string | null };
   /** The row before the write (null or omitted for a create) and after it (null for a delete).
    * Top-level keys may be camelCase (Drizzle rows) or snake_case; the diff stores snake_case. */

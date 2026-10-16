@@ -3,6 +3,7 @@ import {
   ACTIVITY_KINDS,
   LEDGER_TASKS,
   type LedgerTask,
+  SUMMARY_LINE_KEYS,
   tsQuery,
 } from '@kept/shared';
 import type pg from 'pg';
@@ -22,6 +23,7 @@ import { invalid, notFound } from '../http/errors.js';
 import { filterOf, lowerIds, manyOf, matchOf, notOf, When } from '../http/list-filters.js';
 import { requireMembership } from '../locations/access.js';
 import { gateFor } from '../serialize/gates.js';
+import { arrangedIds, type NodeName } from './arrange.js';
 import { type Summary, summarise } from './summary.js';
 
 // History and the activity feed (T21; D76, D110, D150, D174, D183; engineering spec §7.2, §7.5).
@@ -88,6 +90,17 @@ export const HistoryEventSchema = z.object({
   summary: z.string(),
   summaryKey: z.string(),
   summaryParams: z.record(z.string(), z.string()),
+  /** #140: what the action covered, one sentence each (an arrangement's changes, a report's
+   * counts), as a key and params the web localises, with the English. */
+  summaryLines: z
+    .array(
+      z.object({
+        key: z.enum(SUMMARY_LINE_KEYS),
+        params: z.record(z.string(), z.string()),
+        text: z.string(),
+      }),
+    )
+    .optional(),
   movedInFromElsewhere: z.literal(true).optional(),
   /** A thing's history: an event of a thing merged into it (D36), "merged from <name>" (T15). */
   mergedFrom: z.object({ id: z.uuid(), name: z.string().nullable() }).optional(),
@@ -181,6 +194,21 @@ const NOT_A_SECOND_COPY = `NOT (e.action = 'thing.move' AND e.diff ? 'location_i
   AND e.location_id::text = e.diff->'location_id'->>'before'
   AND (e.diff->'location_id'->>'after') IN (SELECT v::text FROM kept.visible_location_ids() v))`;
 
+/**
+ * One row per action (#140): an upload that a capture, an attachment or a claim's file took up is
+ * part of that row ("Added a photo to Desk lamp"), not one of its own. The audit keeps both; the
+ * row that names the file (`file_id`, or a capture's `file_ids`) comes after the upload, within a
+ * day, in the same location, so the location's index finds it.
+ */
+const NOT_A_FOLDED_UPLOAD = `NOT (e.action = 'file.upload' AND e.entity_id IS NOT NULL
+  AND EXISTS (SELECT 1 FROM public.audit_events c
+               WHERE c.location_id = e.location_id
+                 AND c.at >= e.at AND c.at < e.at + interval '1 day'
+                 AND c.id <> e.id AND c.action <> 'file.upload'
+                 AND (c.diff->'file_id'->>'after' = e.entity_id::text
+                      OR (jsonb_typeof(c.diff->'file_ids'->'after') = 'array'
+                          AND c.diff->'file_ids'->'after' ? e.entity_id::text))))`;
+
 type Key = [string, string];
 
 class Where {
@@ -223,6 +251,8 @@ async function eventsPage(
   const after = afterKey(page.cursor);
   if (after) where.add((v) => `(e.at, e.id) < (${v(after[0])}::timestamptz, ${v(after[1])}::uuid)`);
   where.add(() => NOT_A_SECOND_COPY);
+  where.add(() => NOT_A_FOLDED_UPLOAD);
+  where.add(() => NOT_A_FOLDED_EXTRACTION);
   where.values.push(page.limit + 1);
   const { rows } = await client.query<EventRecord>(
     `SELECT ${EVENT_COLUMNS}
@@ -354,6 +384,7 @@ async function labelsOf(
 const NAME_SOURCES: Record<string, string> = {
   thing: 'public.things',
   place: 'public.places',
+  location: 'public.locations',
   brand: 'public.brands',
   vendor: 'public.vendors',
   tag: 'public.tags',
@@ -371,6 +402,102 @@ export function stockServiceOf(e: {
   const place = diff.service_place_id?.after;
   if (typeof place === 'string') return { type: 'place', id: place };
   return null;
+}
+
+/** A vehicle history report's thing, from its diff. */
+function reportThingOf(e: { diff: unknown }): string | null {
+  const thing = (e.diff as Record<string, { after?: unknown } | undefined> | null)?.thing_id?.after;
+  return typeof thing === 'string' ? thing : null;
+}
+
+/**
+ * The nodes of the page's arrangements (#140) as the caller may see them: each one's name, and
+ * the place it is in now, for "Put HD webcam on the map in Study". Read as the caller, so a thing
+ * or place they can't see has no entry and reads as "a thing" / "a place".
+ */
+async function arrangedNodesOf(
+  client: pg.ClientBase,
+  events: readonly EventRecord[],
+): Promise<Map<string, NodeName>> {
+  const things = new Set<string>();
+  const places = new Set<string>();
+  for (const e of events) {
+    if (e.action !== 'place.arrange') continue;
+    const ids = arrangedIds(e.diff);
+    for (const id of ids.things) things.add(id);
+    for (const id of ids.places) places.add(id);
+  }
+  const out = new Map<string, NodeName>();
+  if (things.size === 0 && places.size === 0) return out;
+  const { rows } = await client.query<{ id: string; name: string | null; room: string | null }>(
+    `SELECT t.id, t.name, p.name AS room
+       FROM public.things t LEFT JOIN public.places p ON p.id = t.place_id
+      WHERE t.id = ANY ($1::uuid[])
+     UNION ALL
+     SELECT c.id, c.name, p.name AS room
+       FROM public.places c LEFT JOIN public.places p ON p.id = c.parent_id
+      WHERE c.id = ANY ($2::uuid[])`,
+    [[...things], [...places]],
+  );
+  for (const r of rows) if (r.name) out.set(r.id, { name: r.name, room: r.room });
+  return out;
+}
+
+/**
+ * One row per action (#140): a capture's extraction (the AI filling in the thing from the photo)
+ * is part of the capture's row, its changes shown there. The audit keeps both events. The page
+ * leaves out an extraction that follows its capture within half an hour (so paging never splits
+ * them), and the capture's row reads the extraction's diff, rendered for the same reader. A later
+ * re-read, or an undo, keeps its own row.
+ */
+const NOT_A_FOLDED_EXTRACTION = `NOT (e.action = 'thing.extract' AND e.undo_of IS NULL
+  AND e.entity_id IS NOT NULL
+  AND EXISTS (SELECT 1 FROM public.audit_events c
+               WHERE c.location_id = e.location_id AND c.action = 'thing.capture'
+                 AND c.entity_id = e.entity_id AND c.undo_of IS NULL
+                 AND c.at <= e.at AND c.at > e.at - interval '30 minutes'))`;
+
+/** The extractions folded into the page's captures, by capture event id. */
+async function extractionsOf(
+  client: pg.ClientBase,
+  events: readonly EventRecord[],
+): Promise<Map<string, EventRecord>> {
+  const captures = events.filter(
+    (e) => e.action === 'thing.capture' && !e.undo_of && e.entity_id && e.location_id,
+  );
+  const out = new Map<string, EventRecord>();
+  if (captures.length === 0) return out;
+  const { rows } = await client.query<EventRecord>(
+    `SELECT ${EVENT_COLUMNS}
+       FROM public.audit_events e ${ACTOR_JOIN}
+      WHERE e.action = 'thing.extract' AND e.undo_of IS NULL
+        AND e.location_id = ANY ($1::uuid[]) AND e.entity_id = ANY ($2::uuid[])
+        AND e.at >= $3::timestamptz AND e.at < $4::timestamptz + interval '30 minutes'
+      ORDER BY e.at`,
+    [
+      [...new Set(captures.map((c) => c.location_id))],
+      [...new Set(captures.map((c) => c.entity_id))],
+      new Date(Math.min(...captures.map((c) => c.at.getTime()))).toISOString(),
+      new Date(Math.max(...captures.map((c) => c.at.getTime()))).toISOString(),
+    ],
+  );
+  for (const c of captures) {
+    // The latest capture of that thing at or before the extraction: the one it belongs to.
+    for (const x of rows) {
+      const gap = x.at.getTime() - c.at.getTime();
+      if (x.entity_id !== c.entity_id || x.location_id !== c.location_id) continue;
+      if (gap < 0 || gap >= 30 * 60 * 1000) continue;
+      const later = captures.some(
+        (o) =>
+          o !== c &&
+          o.entity_id === c.entity_id &&
+          o.at.getTime() > c.at.getTime() &&
+          o.at.getTime() <= x.at.getTime(),
+      );
+      if (!later) out.set(c.id, x);
+    }
+  }
+  return out;
 }
 
 /** Current names of what the events are about, as the caller may see them. */
@@ -393,6 +520,12 @@ async function namesOf(
     want(e.entity_type, e.entity_id);
     const service = stockServiceOf(e);
     if (service) want(service.type, service.id);
+    // A report is about its location, or a vehicle report's thing (#140).
+    if (e.entity_type === 'report') {
+      const thing = reportThingOf(e);
+      if (thing) want('thing', thing);
+      else want('location', e.location_id);
+    }
   }
   const out = new Map<string, string>();
   for (const [type, ids] of wanted) {
@@ -493,8 +626,10 @@ async function renderEvents(
     ],
   );
   const names = await namesOf(client, events);
+  const nodes = await arrangedNodesOf(client, events);
   const codes = await shortCodesOf(client, events);
   const tokens = await tokenActorsOf(client, scope, events);
+  const extracted = await extractionsOf(client, events);
 
   return events.map((e) => {
     const row = rowOf(e);
@@ -505,14 +640,38 @@ async function renderEvents(
     const owner = e.entity_type === 'place' ? e.entity_id : subjectThing(e);
     const byKey = owner ? labels.get(owner) : undefined;
     const rendered = renderAudit(row, viewer, { labelOf: (key) => byKey?.get(key) });
+    const extraction = extracted.get(e.id);
+    if (extraction) {
+      // Its changes, redacted for this reader as its own row would have been.
+      const x = renderAudit(rowOf(extraction), viewer, { labelOf: (key) => byKey?.get(key) });
+      rendered.diff = { ...(rendered.diff ?? {}), ...(x.diff ?? {}) };
+    }
     const movedOut = crossingOf(row, visible) === 'out';
+    const own = names.get(`${e.entity_type}:${e.entity_id}`);
+    const root = e.root_thing_id ? names.get(`thing:${e.root_thing_id}`) : undefined;
+    const report =
+      e.entity_type === 'report'
+        ? names.get(
+            reportThingOf(e) ? `thing:${reportThingOf(e)}` : `location:${e.location_id ?? ''}`,
+          )
+        : undefined;
     const name =
       movedOut || rendered.movedInFromElsewhere
         ? null
-        : (names.get(`${e.entity_type}:${e.entity_id}`) ??
-          (e.root_thing_id ? names.get(`thing:${e.root_thing_id}`) : undefined) ??
-          null);
+        : // A merge is about the duplicate that went; its sentence names the thing it joined.
+          ((e.action === 'thing.merge' ? (root ?? own) : (own ?? root ?? report)) ?? null);
     const service = stockServiceOf(e);
+    const summary = summarise(rendered, {
+      name,
+      movedOut,
+      ...(service ? { service: names.get(`${service.type}:${service.id}`) ?? null } : {}),
+      ...(e.action === 'place.arrange' ? { nodes } : {}),
+    });
+    // The layouts are in summaryLines now, in words: the JSON never reaches the page (#140).
+    if (rendered.diff && e.action === 'place.arrange') {
+      const { layout: _layout, ...rest } = rendered.diff;
+      rendered.diff = rest;
+    }
     return {
       ...rendered,
       actor: {
@@ -525,11 +684,7 @@ async function renderEvents(
         // Gone to a location the reader can't see: no address to offer beyond the id.
         shortCode: movedOut ? null : (codes.get(`${e.entity_type}:${e.entity_id}`) ?? null),
       },
-      ...summarise(rendered, {
-        name,
-        movedOut,
-        ...(service ? { service: names.get(`${service.type}:${service.id}`) ?? null } : {}),
-      }),
+      ...summary,
     };
   });
 }

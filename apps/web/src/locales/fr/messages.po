@@ -24573,3 +24573,555 @@ msgstr "Choisissez ce qui va dessus"
 #: src/map/put-on.tsx
 msgid "On it now: {onNow}"
 msgstr "Dessus maintenant : {onNow}"
+
+#: src/components/history/labels.ts
+msgid "Added a photo to {name}"
+msgstr "Photo ajoutée à {name}"
+
+#: src/components/history/labels.ts
+msgid "Captured {name} from a photo"
+msgstr "{name} capturé depuis une photo"
+
+#: src/components/history/labels.ts
+msgid "Logged a reading of {name} from a photo"
+msgstr "Relevé de {name} saisi depuis une photo"
+
+#: src/components/history/labels.ts
+msgid "Filled in {name} from a photo"
+msgstr "{name} complété depuis une photo"
+
+#: src/components/history/labels.ts
+msgid "Read the photo of {name} again"
+msgstr "Photo de {name} relue"
+
+#: src/components/history/labels.ts
+msgid "Merged a duplicate into {name}"
+msgstr "Doublon fusionné dans {name}"
+
+#: src/components/history/labels.ts
+msgid "Arranged the map"
+msgstr "Plan arrangé"
+
+#: src/components/history/labels.ts
+msgid "Checked what is in {name}"
+msgstr "Contenu de {name} vérifié"
+
+#: src/components/history/labels.ts
+msgid "Gave {name} a label"
+msgstr "Étiquette attribuée à {name}"
+
+#: src/components/history/labels.ts
+msgid "Changed how {name} numbers its codes"
+msgstr "Numérotation des codes de {name} modifiée"
+
+#: src/components/history/labels.ts
+msgid "Handed {name} to a new owner"
+msgstr "{name} transmis à un nouveau propriétaire"
+
+#: src/components/history/labels.ts
+msgid "Made an inventory report of {name}"
+msgstr "Rapport d’inventaire de {name} créé"
+
+#: src/components/history/labels.ts
+msgid "Made an insurance report for {name}"
+msgstr "Rapport d’assurance pour {name} créé"
+
+#: src/components/history/labels.ts
+msgid "Made a vehicle history report for {name}"
+msgstr "Historique du véhicule {name} créé"
+
+#: src/components/history/labels.ts
+msgid "Cancelled the account deletion"
+msgstr "Suppression du compte annulée"
+
+#: src/components/history/labels.ts
+msgid "Asked to delete the account"
+msgstr "Suppression du compte demandée"
+
+#: src/components/history/labels.ts
+msgid "Changed the account email"
+msgstr "E-mail du compte modifié"
+
+#: src/components/history/labels.ts
+msgid "Reset a password from the command line"
+msgstr "Mot de passe réinitialisé en ligne de commande"
+
+#: src/components/history/labels.ts
+msgid "Turned off an account from the command line"
+msgstr "Compte désactivé en ligne de commande"
+
+#: src/components/history/labels.ts
+msgid "Turned an account back on from the command line"
+msgstr "Compte réactivé en ligne de commande"
+
+#: src/components/history/labels.ts
+msgid "Turned off a currency"
+msgstr "Devise désactivée"
+
+#: src/components/history/labels.ts
+msgid "Turned on a currency"
+msgstr "Devise activée"
+
+#: src/components/history/labels.ts
+msgid "Made someone an instance admin"
+msgstr "Administrateur de l’instance ajouté"
+
+#: src/components/history/labels.ts
+msgid "Removed an instance admin"
+msgstr "Administrateur de l’instance retiré"
+
+#: src/components/history/labels.ts
+msgid "Discarded a failed job"
+msgstr "Tâche en échec abandonnée"
+
+#: src/components/history/labels.ts
+msgid "Retried a failed job"
+msgstr "Tâche en échec relancée"
+
+#: src/components/history/labels.ts
+msgid "Turned off an account"
+msgstr "Compte désactivé"
+
+#: src/components/history/labels.ts
+msgid "Turned an account back on"
+msgstr "Compte réactivé"
+
+#: src/components/history/labels.ts
+msgid "Reset someone’s two-step sign-in"
+msgstr "Connexion en deux étapes réinitialisée"
+
+#: src/components/history/labels.ts
+msgid "Signed someone out everywhere"
+msgstr "Quelqu’un a été déconnecté partout"
+
+#: src/components/history/labels.ts
+msgid "Removed the AI spending cap"
+msgstr "Plafond de dépenses IA retiré"
+
+#: src/components/history/labels.ts
+msgid "Set the AI spending cap"
+msgstr "Plafond de dépenses IA défini"
+
+#: src/components/history/labels.ts
+msgid "Paused AI"
+msgstr "IA mise en pause"
+
+#: src/components/history/labels.ts
+msgid "Resumed AI"
+msgstr "IA reprise"
+
+#: src/components/history/labels.ts
+msgid "Looked up AI prices"
+msgstr "Prix de l’IA recherchés"
+
+#: src/components/history/labels.ts
+msgid "Worked out AI costs again with new prices"
+msgstr "Coûts de l’IA recalculés avec les nouveaux prix"
+
+#: src/components/history/labels.ts
+msgid "Removed an AI price"
+msgstr "Prix de l’IA retiré"
+
+#: src/components/history/labels.ts
+msgid "Set an AI price"
+msgstr "Prix de l’IA défini"
+
+#: src/components/history/labels.ts
+msgid "Listed an AI provider’s models"
+msgstr "Modèles d’un fournisseur d’IA listés"
+
+#: src/components/history/labels.ts
+msgid "Removed an AI provider"
+msgstr "Fournisseur d’IA retiré"
+
+#: src/components/history/labels.ts
+msgid "Set up an AI provider"
+msgstr "Fournisseur d’IA configuré"
+
+#: src/components/history/labels.ts
+msgid "Tested an AI provider"
+msgstr "Fournisseur d’IA testé"
+
+#: src/components/history/labels.ts
+msgid "Exported AI usage"
+msgstr "Utilisation de l’IA exportée"
+
+#: src/components/history/labels.ts
+msgid "Google sign-in settings changed"
+msgstr "Réglages de connexion Google modifiés"
+
+#: src/components/history/labels.ts
+msgid "Set a managed account’s password"
+msgstr "Mot de passe d’un compte géré défini"
+
+#: src/components/history/labels.ts
+msgid "Made a reset code for a managed account"
+msgstr "Code de réinitialisation créé pour un compte géré"
+
+#: src/components/history/labels.ts
+msgid "Changed notification settings"
+msgstr "Réglages des notifications modifiés"
+
+#: src/components/history/labels.ts
+msgid "Changed which notifications arrive"
+msgstr "Notifications reçues modifiées"
+
+#: src/components/history/labels.ts
+msgid "Changed preferences"
+msgstr "Préférences modifiées"
+
+#: src/components/history/labels.ts
+msgid "Signed out a session"
+msgstr "Session déconnectée"
+
+#: src/components/history/labels.ts
+msgid "Turned down an app’s request to connect"
+msgstr "Demande de connexion d’une app refusée"
+
+#: src/components/history/labels.ts
+msgid "Let an app connect"
+msgstr "Connexion d’une app autorisée"
+
+#: src/components/history/labels.ts
+msgid "Made an access token"
+msgstr "Jeton d’accès créé"
+
+#: src/components/history/labels.ts
+msgid "Revoked an access token"
+msgstr "Jeton d’accès révoqué"
+
+#: src/components/history/labels.ts
+msgid "Changed an access token"
+msgstr "Jeton d’accès modifié"
+
+#: src/components/history/labels.ts
+msgid "Turned on notifications on a device"
+msgstr "Notifications activées sur un appareil"
+
+#: src/components/history/labels.ts
+msgid "Turned off notifications on a device"
+msgstr "Notifications désactivées sur un appareil"
+
+#: src/components/history/labels.ts
+msgid "Changed notifications on a device"
+msgstr "Notifications modifiées sur un appareil"
+
+#: src/components/history/labels.ts
+msgid "Dismissed a tip"
+msgstr "Astuce masquée"
+
+#: src/components/history/labels.ts
+msgid "Brought back a tip"
+msgstr "Astuce réaffichée"
+
+#: src/components/history/labels.ts
+msgid "Read a tip"
+msgstr "Astuce lue"
+
+#: src/components/history/labels.ts
+msgid "Changed how a list shows"
+msgstr "Affichage d’une liste modifié"
+
+#: src/components/history/labels.ts
+msgid "Removed a member"
+msgstr "Membre retiré"
+
+#: src/components/history/labels.ts
+msgid "Changed when guest access ends"
+msgstr "Fin de l’accès invité modifiée"
+
+#: src/components/history/labels.ts
+msgid "Told the owner about a new guest"
+msgstr "Propriétaire informé d’un nouvel invité"
+
+#: src/components/history/labels.ts
+msgid "Set up the mailbox"
+msgstr "Boîte mail configurée"
+
+#: src/components/history/labels.ts
+msgid "Changed the mailbox"
+msgstr "Boîte mail modifiée"
+
+#: src/components/history/labels.ts
+msgid "Removed the mailbox"
+msgstr "Boîte mail retirée"
+
+#: src/components/history/labels.ts
+msgid "Added a notification channel"
+msgstr "Canal de notification ajouté"
+
+#: src/components/history/labels.ts
+msgid "Removed a notification channel"
+msgstr "Canal de notification retiré"
+
+#: src/components/history/labels.ts
+msgid "Made a calendar feed"
+msgstr "Flux d’agenda créé"
+
+#: src/components/history/labels.ts
+msgid "Revoked a calendar feed"
+msgstr "Flux d’agenda révoqué"
+
+#: src/components/history/labels.ts
+msgid "Undid a capture"
+msgstr "Capture annulée"
+
+#: src/components/history/labels.ts
+msgid "Discarded a draft"
+msgstr "Brouillon supprimé"
+
+#: src/components/history/labels.ts
+msgid "Dealt with an inbox item"
+msgstr "Élément de la boîte de réception traité"
+
+#: src/components/history/labels.ts
+msgid "Brought back an inbox item"
+msgstr "Élément de la boîte de réception rétabli"
+
+#: src/components/history/labels.ts
+msgid "Changed several inbox items at once"
+msgstr "Plusieurs éléments de la boîte de réception modifiés"
+
+#: src/components/history/labels.ts
+msgid "Printed labels"
+msgstr "Étiquettes imprimées"
+
+#: src/components/history/labels.ts
+msgid "Captured a receipt"
+msgstr "Ticket capturé"
+
+#: src/components/history/labels.ts
+msgid "Confirmed a receipt"
+msgstr "Ticket confirmé"
+
+#: src/components/history/labels.ts
+msgid "Read a receipt"
+msgstr "Ticket lu"
+
+#: src/components/history/labels.ts
+msgid "Read a meter from a photo"
+msgstr "Compteur lu sur une photo"
+
+#: src/components/history/labels.ts
+msgid "Cropped a photo"
+msgstr "Photo recadrée"
+
+#: src/components/history/labels.ts
+msgid "Changed the photo shown"
+msgstr "Photo affichée modifiée"
+
+#: src/components/history/labels.ts
+msgid "Added a template"
+msgstr "Modèle ajouté"
+
+#: src/components/history/labels.ts
+msgid "Changed a template"
+msgstr "Modèle modifié"
+
+#: src/components/history/labels.ts
+msgid "Deleted a template"
+msgstr "Modèle supprimé"
+
+#: src/components/history/labels.ts
+msgid "Changed a claim’s status"
+msgstr "Statut d’une réclamation modifié"
+
+#: src/components/history/labels.ts
+msgid "Made a claim pack"
+msgstr "Dossier de réclamation créé"
+
+#: src/components/history/labels.ts
+msgid "Shared a claim pack link"
+msgstr "Lien du dossier de réclamation partagé"
+
+#: src/components/history/labels.ts
+msgid "Revoked a claim pack link"
+msgstr "Lien du dossier de réclamation révoqué"
+
+#: src/components/history/labels.ts
+msgid "Started a condition report"
+msgstr "État des lieux commencé"
+
+#: src/components/history/labels.ts
+msgid "Changed a condition report"
+msgstr "État des lieux modifié"
+
+#: src/components/history/labels.ts
+msgid "Finished a condition report"
+msgstr "État des lieux terminé"
+
+#: src/components/history/labels.ts
+msgid "Deleted a condition report"
+msgstr "État des lieux supprimé"
+
+#: src/components/history/labels.ts
+msgid "Added a room to a condition report"
+msgstr "Pièce ajoutée à un état des lieux"
+
+#: src/components/history/labels.ts
+msgid "Changed a room in a condition report"
+msgstr "Pièce d’un état des lieux modifiée"
+
+#: src/components/history/labels.ts
+msgid "Removed a room from a condition report"
+msgstr "Pièce retirée d’un état des lieux"
+
+#: src/components/history/labels.ts
+msgid "Started an export"
+msgstr "Export lancé"
+
+#: src/components/history/labels.ts
+msgid "Cancelled an export"
+msgstr "Export annulé"
+
+#: src/components/history/labels.ts
+msgid "Downloaded an export"
+msgstr "Export téléchargé"
+
+#: src/components/history/labels.ts
+msgid "Put secrets in an export"
+msgstr "Secrets inclus dans un export"
+
+#: src/components/history/labels.ts
+msgid "Uploaded a file to import"
+msgstr "Fichier à importer envoyé"
+
+#: src/components/history/labels.ts
+msgid "Uploaded an archive to import"
+msgstr "Archive à importer envoyée"
+
+#: src/components/history/labels.ts
+msgid "Opened an archive to import"
+msgstr "Archive à importer ouverte"
+
+#: src/components/history/labels.ts
+msgid "Entered an import’s passphrase"
+msgstr "Phrase secrète d’un import saisie"
+
+#: src/components/history/labels.ts
+msgid "Chose where an import goes"
+msgstr "Destination d’un import choisie"
+
+#: src/components/history/labels.ts
+msgid "Changed an import’s choices"
+msgstr "Choix d’un import modifiés"
+
+#: src/components/history/labels.ts
+msgid "Checked an import"
+msgstr "Import vérifié"
+
+#: src/components/history/labels.ts
+msgid "Started an import"
+msgstr "Import lancé"
+
+#: src/components/history/labels.ts
+msgid "Ran an import"
+msgstr "Import exécuté"
+
+#: src/components/history/labels.ts
+msgid "Cancelled an import"
+msgstr "Import annulé"
+
+#: src/components/history/labels.ts
+msgid "Exported a report as a CSV"
+msgstr "Rapport exporté en CSV"
+
+#: src/components/history/labels.ts
+msgid "Scheduled a report"
+msgstr "Rapport programmé"
+
+#: src/components/history/labels.ts
+msgid "Stopped a scheduled report"
+msgstr "Rapport programmé arrêté"
+
+#: src/components/history/labels.ts
+msgid "Made a condition report for {name}"
+msgstr "Rapport d’état de {name} créé"
+
+#: src/components/history/labels.ts
+msgid "Made a moving report for {name}"
+msgstr "Rapport de déménagement pour {name} créé"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Made # blank label} other {Made # blank labels}}"
+msgstr "{count, plural, one {# étiquette vierge créée} other {# étiquettes vierges créées}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Made labels for # thing} other {Made labels for # things}}"
+msgstr "{count, plural, one {Étiquettes créées pour # objet} other {Étiquettes créées pour # objets}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Made labels for # place} other {Made labels for # places}}"
+msgstr "{count, plural, one {Étiquettes créées pour # lieu} other {Étiquettes créées pour # lieux}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Arranged the map: # change} other {Arranged the map: # changes}}"
+msgstr "{count, plural, one {Plan arrangé : # changement} other {Plan arrangé : # changements}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {# thing} other {# things}}"
+msgstr "{count, plural, one {# objet} other {# objets}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {With # thing inside} other {With # things inside}}"
+msgstr "{count, plural, one {Avec # objet à l’intérieur} other {Avec # objets à l’intérieur}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {# thing taken out first} other {# things taken out first}}"
+msgstr "{count, plural, one {# objet sorti d’abord} other {# objets sortis d’abord}}"
+
+#: src/components/history/labels.ts
+msgid "With photos"
+msgstr "Avec photos"
+
+#: src/components/history/labels.ts
+msgid "Put {name} on the map in {room}"
+msgstr "{name} placé sur le plan dans {room}"
+
+#: src/components/history/labels.ts
+msgid "Put {name} on the map"
+msgstr "{name} placé sur le plan"
+
+#: src/components/history/labels.ts
+msgid "Took {name} off the map"
+msgstr "{name} retiré du plan"
+
+#: src/components/history/labels.ts
+msgid "Put {name} on {host}"
+msgstr "{name} posé sur {host}"
+
+#: src/components/history/labels.ts
+msgid "Took {name} off {host}"
+msgstr "{name} retiré de {host}"
+
+#: src/components/history/labels.ts
+msgid "Turned {name}"
+msgstr "{name} tourné"
+
+#: src/components/history/labels.ts
+msgid "Changed the shape of {name}: {from} → {to}"
+msgstr "Forme de {name} changée : {from} → {to}"
+
+#: src/components/history/labels.ts
+msgid "Resized {name}"
+msgstr "{name} redimensionné"
+
+#: src/components/history/labels.ts
+msgid "Changed the kind of {name}: {from} → {to}"
+msgstr "Type de {name} changé : {from} → {to}"
+
+#: src/components/history/labels.ts
+msgid "Changed the floor of {name}: {from} → {to}"
+msgstr "Sol de {name} changé : {from} → {to}"
+
+#: src/components/history/timeline.tsx
+msgid "Show the changes"
+msgstr "Afficher les changements"
+
+#: src/components/history/timeline.tsx
+msgid "Hide the changes"
+msgstr "Masquer les changements"
+
+#: src/components/history/timeline.tsx
+msgid "Hide"
+msgstr "Masquer"

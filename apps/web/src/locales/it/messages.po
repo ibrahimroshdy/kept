@@ -24573,3 +24573,555 @@ msgstr "Scegli cosa va sopra"
 #: src/map/put-on.tsx
 msgid "On it now: {onNow}"
 msgstr "Sopra ora: {onNow}"
+
+#: src/components/history/labels.ts
+msgid "Added a photo to {name}"
+msgstr "Foto aggiunta a {name}"
+
+#: src/components/history/labels.ts
+msgid "Captured {name} from a photo"
+msgstr "{name} acquisito da una foto"
+
+#: src/components/history/labels.ts
+msgid "Logged a reading of {name} from a photo"
+msgstr "Lettura di {name} registrata da una foto"
+
+#: src/components/history/labels.ts
+msgid "Filled in {name} from a photo"
+msgstr "{name} completato da una foto"
+
+#: src/components/history/labels.ts
+msgid "Read the photo of {name} again"
+msgstr "Foto di {name} riletta"
+
+#: src/components/history/labels.ts
+msgid "Merged a duplicate into {name}"
+msgstr "Duplicato unito a {name}"
+
+#: src/components/history/labels.ts
+msgid "Arranged the map"
+msgstr "Mappa sistemata"
+
+#: src/components/history/labels.ts
+msgid "Checked what is in {name}"
+msgstr "Contenuto di {name} controllato"
+
+#: src/components/history/labels.ts
+msgid "Gave {name} a label"
+msgstr "Etichetta assegnata a {name}"
+
+#: src/components/history/labels.ts
+msgid "Changed how {name} numbers its codes"
+msgstr "Numerazione dei codici di {name} modificata"
+
+#: src/components/history/labels.ts
+msgid "Handed {name} to a new owner"
+msgstr "{name} passato a un nuovo proprietario"
+
+#: src/components/history/labels.ts
+msgid "Made an inventory report of {name}"
+msgstr "Rapporto d’inventario di {name} creato"
+
+#: src/components/history/labels.ts
+msgid "Made an insurance report for {name}"
+msgstr "Rapporto assicurativo per {name} creato"
+
+#: src/components/history/labels.ts
+msgid "Made a vehicle history report for {name}"
+msgstr "Storico del veicolo {name} creato"
+
+#: src/components/history/labels.ts
+msgid "Cancelled the account deletion"
+msgstr "Eliminazione dell’account annullata"
+
+#: src/components/history/labels.ts
+msgid "Asked to delete the account"
+msgstr "Eliminazione dell’account richiesta"
+
+#: src/components/history/labels.ts
+msgid "Changed the account email"
+msgstr "Email dell’account modificata"
+
+#: src/components/history/labels.ts
+msgid "Reset a password from the command line"
+msgstr "Password reimpostata da riga di comando"
+
+#: src/components/history/labels.ts
+msgid "Turned off an account from the command line"
+msgstr "Account disattivato da riga di comando"
+
+#: src/components/history/labels.ts
+msgid "Turned an account back on from the command line"
+msgstr "Account riattivato da riga di comando"
+
+#: src/components/history/labels.ts
+msgid "Turned off a currency"
+msgstr "Valuta disattivata"
+
+#: src/components/history/labels.ts
+msgid "Turned on a currency"
+msgstr "Valuta attivata"
+
+#: src/components/history/labels.ts
+msgid "Made someone an instance admin"
+msgstr "Amministratore dell’istanza aggiunto"
+
+#: src/components/history/labels.ts
+msgid "Removed an instance admin"
+msgstr "Amministratore dell’istanza rimosso"
+
+#: src/components/history/labels.ts
+msgid "Discarded a failed job"
+msgstr "Attività non riuscita scartata"
+
+#: src/components/history/labels.ts
+msgid "Retried a failed job"
+msgstr "Attività non riuscita riprovata"
+
+#: src/components/history/labels.ts
+msgid "Turned off an account"
+msgstr "Account disattivato"
+
+#: src/components/history/labels.ts
+msgid "Turned an account back on"
+msgstr "Account riattivato"
+
+#: src/components/history/labels.ts
+msgid "Reset someone’s two-step sign-in"
+msgstr "Accesso in due passaggi reimpostato"
+
+#: src/components/history/labels.ts
+msgid "Signed someone out everywhere"
+msgstr "Qualcuno è stato disconnesso ovunque"
+
+#: src/components/history/labels.ts
+msgid "Removed the AI spending cap"
+msgstr "Limite di spesa IA rimosso"
+
+#: src/components/history/labels.ts
+msgid "Set the AI spending cap"
+msgstr "Limite di spesa IA impostato"
+
+#: src/components/history/labels.ts
+msgid "Paused AI"
+msgstr "IA in pausa"
+
+#: src/components/history/labels.ts
+msgid "Resumed AI"
+msgstr "IA ripresa"
+
+#: src/components/history/labels.ts
+msgid "Looked up AI prices"
+msgstr "Prezzi dell’IA cercati"
+
+#: src/components/history/labels.ts
+msgid "Worked out AI costs again with new prices"
+msgstr "Costi dell’IA ricalcolati con i nuovi prezzi"
+
+#: src/components/history/labels.ts
+msgid "Removed an AI price"
+msgstr "Prezzo dell’IA rimosso"
+
+#: src/components/history/labels.ts
+msgid "Set an AI price"
+msgstr "Prezzo dell’IA impostato"
+
+#: src/components/history/labels.ts
+msgid "Listed an AI provider’s models"
+msgstr "Modelli di un fornitore IA elencati"
+
+#: src/components/history/labels.ts
+msgid "Removed an AI provider"
+msgstr "Fornitore IA rimosso"
+
+#: src/components/history/labels.ts
+msgid "Set up an AI provider"
+msgstr "Fornitore IA configurato"
+
+#: src/components/history/labels.ts
+msgid "Tested an AI provider"
+msgstr "Fornitore IA provato"
+
+#: src/components/history/labels.ts
+msgid "Exported AI usage"
+msgstr "Uso dell’IA esportato"
+
+#: src/components/history/labels.ts
+msgid "Google sign-in settings changed"
+msgstr "Impostazioni di accesso Google modificate"
+
+#: src/components/history/labels.ts
+msgid "Set a managed account’s password"
+msgstr "Password di un account gestito impostata"
+
+#: src/components/history/labels.ts
+msgid "Made a reset code for a managed account"
+msgstr "Codice di ripristino creato per un account gestito"
+
+#: src/components/history/labels.ts
+msgid "Changed notification settings"
+msgstr "Impostazioni delle notifiche modificate"
+
+#: src/components/history/labels.ts
+msgid "Changed which notifications arrive"
+msgstr "Notifiche ricevute modificate"
+
+#: src/components/history/labels.ts
+msgid "Changed preferences"
+msgstr "Preferenze modificate"
+
+#: src/components/history/labels.ts
+msgid "Signed out a session"
+msgstr "Sessione chiusa"
+
+#: src/components/history/labels.ts
+msgid "Turned down an app’s request to connect"
+msgstr "Richiesta di collegamento di un’app rifiutata"
+
+#: src/components/history/labels.ts
+msgid "Let an app connect"
+msgstr "Collegamento di un’app consentito"
+
+#: src/components/history/labels.ts
+msgid "Made an access token"
+msgstr "Token di accesso creato"
+
+#: src/components/history/labels.ts
+msgid "Revoked an access token"
+msgstr "Token di accesso revocato"
+
+#: src/components/history/labels.ts
+msgid "Changed an access token"
+msgstr "Token di accesso modificato"
+
+#: src/components/history/labels.ts
+msgid "Turned on notifications on a device"
+msgstr "Notifiche attivate su un dispositivo"
+
+#: src/components/history/labels.ts
+msgid "Turned off notifications on a device"
+msgstr "Notifiche disattivate su un dispositivo"
+
+#: src/components/history/labels.ts
+msgid "Changed notifications on a device"
+msgstr "Notifiche modificate su un dispositivo"
+
+#: src/components/history/labels.ts
+msgid "Dismissed a tip"
+msgstr "Suggerimento nascosto"
+
+#: src/components/history/labels.ts
+msgid "Brought back a tip"
+msgstr "Suggerimento ripristinato"
+
+#: src/components/history/labels.ts
+msgid "Read a tip"
+msgstr "Suggerimento letto"
+
+#: src/components/history/labels.ts
+msgid "Changed how a list shows"
+msgstr "Visualizzazione di un elenco modificata"
+
+#: src/components/history/labels.ts
+msgid "Removed a member"
+msgstr "Membro rimosso"
+
+#: src/components/history/labels.ts
+msgid "Changed when guest access ends"
+msgstr "Fine dell’accesso ospite modificata"
+
+#: src/components/history/labels.ts
+msgid "Told the owner about a new guest"
+msgstr "Proprietario avvisato di un nuovo ospite"
+
+#: src/components/history/labels.ts
+msgid "Set up the mailbox"
+msgstr "Casella di posta configurata"
+
+#: src/components/history/labels.ts
+msgid "Changed the mailbox"
+msgstr "Casella di posta modificata"
+
+#: src/components/history/labels.ts
+msgid "Removed the mailbox"
+msgstr "Casella di posta rimossa"
+
+#: src/components/history/labels.ts
+msgid "Added a notification channel"
+msgstr "Canale di notifica aggiunto"
+
+#: src/components/history/labels.ts
+msgid "Removed a notification channel"
+msgstr "Canale di notifica rimosso"
+
+#: src/components/history/labels.ts
+msgid "Made a calendar feed"
+msgstr "Feed del calendario creato"
+
+#: src/components/history/labels.ts
+msgid "Revoked a calendar feed"
+msgstr "Feed del calendario revocato"
+
+#: src/components/history/labels.ts
+msgid "Undid a capture"
+msgstr "Acquisizione annullata"
+
+#: src/components/history/labels.ts
+msgid "Discarded a draft"
+msgstr "Bozza scartata"
+
+#: src/components/history/labels.ts
+msgid "Dealt with an inbox item"
+msgstr "Elemento della posta in arrivo gestito"
+
+#: src/components/history/labels.ts
+msgid "Brought back an inbox item"
+msgstr "Elemento della posta in arrivo ripristinato"
+
+#: src/components/history/labels.ts
+msgid "Changed several inbox items at once"
+msgstr "Più elementi della posta in arrivo modificati"
+
+#: src/components/history/labels.ts
+msgid "Printed labels"
+msgstr "Etichette stampate"
+
+#: src/components/history/labels.ts
+msgid "Captured a receipt"
+msgstr "Scontrino acquisito"
+
+#: src/components/history/labels.ts
+msgid "Confirmed a receipt"
+msgstr "Scontrino confermato"
+
+#: src/components/history/labels.ts
+msgid "Read a receipt"
+msgstr "Scontrino letto"
+
+#: src/components/history/labels.ts
+msgid "Read a meter from a photo"
+msgstr "Contatore letto da una foto"
+
+#: src/components/history/labels.ts
+msgid "Cropped a photo"
+msgstr "Foto ritagliata"
+
+#: src/components/history/labels.ts
+msgid "Changed the photo shown"
+msgstr "Foto mostrata modificata"
+
+#: src/components/history/labels.ts
+msgid "Added a template"
+msgstr "Modello aggiunto"
+
+#: src/components/history/labels.ts
+msgid "Changed a template"
+msgstr "Modello modificato"
+
+#: src/components/history/labels.ts
+msgid "Deleted a template"
+msgstr "Modello eliminato"
+
+#: src/components/history/labels.ts
+msgid "Changed a claim’s status"
+msgstr "Stato di una richiesta modificato"
+
+#: src/components/history/labels.ts
+msgid "Made a claim pack"
+msgstr "Pacchetto per la richiesta creato"
+
+#: src/components/history/labels.ts
+msgid "Shared a claim pack link"
+msgstr "Link al pacchetto condiviso"
+
+#: src/components/history/labels.ts
+msgid "Revoked a claim pack link"
+msgstr "Link al pacchetto revocato"
+
+#: src/components/history/labels.ts
+msgid "Started a condition report"
+msgstr "Verbale dello stato iniziato"
+
+#: src/components/history/labels.ts
+msgid "Changed a condition report"
+msgstr "Verbale dello stato modificato"
+
+#: src/components/history/labels.ts
+msgid "Finished a condition report"
+msgstr "Verbale dello stato completato"
+
+#: src/components/history/labels.ts
+msgid "Deleted a condition report"
+msgstr "Verbale dello stato eliminato"
+
+#: src/components/history/labels.ts
+msgid "Added a room to a condition report"
+msgstr "Stanza aggiunta a un verbale dello stato"
+
+#: src/components/history/labels.ts
+msgid "Changed a room in a condition report"
+msgstr "Stanza di un verbale dello stato modificata"
+
+#: src/components/history/labels.ts
+msgid "Removed a room from a condition report"
+msgstr "Stanza rimossa da un verbale dello stato"
+
+#: src/components/history/labels.ts
+msgid "Started an export"
+msgstr "Esportazione avviata"
+
+#: src/components/history/labels.ts
+msgid "Cancelled an export"
+msgstr "Esportazione annullata"
+
+#: src/components/history/labels.ts
+msgid "Downloaded an export"
+msgstr "Esportazione scaricata"
+
+#: src/components/history/labels.ts
+msgid "Put secrets in an export"
+msgstr "Segreti inclusi in un’esportazione"
+
+#: src/components/history/labels.ts
+msgid "Uploaded a file to import"
+msgstr "File da importare caricato"
+
+#: src/components/history/labels.ts
+msgid "Uploaded an archive to import"
+msgstr "Archivio da importare caricato"
+
+#: src/components/history/labels.ts
+msgid "Opened an archive to import"
+msgstr "Archivio da importare aperto"
+
+#: src/components/history/labels.ts
+msgid "Entered an import’s passphrase"
+msgstr "Passphrase di un’importazione inserita"
+
+#: src/components/history/labels.ts
+msgid "Chose where an import goes"
+msgstr "Destinazione di un’importazione scelta"
+
+#: src/components/history/labels.ts
+msgid "Changed an import’s choices"
+msgstr "Scelte di un’importazione modificate"
+
+#: src/components/history/labels.ts
+msgid "Checked an import"
+msgstr "Importazione controllata"
+
+#: src/components/history/labels.ts
+msgid "Started an import"
+msgstr "Importazione avviata"
+
+#: src/components/history/labels.ts
+msgid "Ran an import"
+msgstr "Importazione eseguita"
+
+#: src/components/history/labels.ts
+msgid "Cancelled an import"
+msgstr "Importazione annullata"
+
+#: src/components/history/labels.ts
+msgid "Exported a report as a CSV"
+msgstr "Rapporto esportato come CSV"
+
+#: src/components/history/labels.ts
+msgid "Scheduled a report"
+msgstr "Rapporto programmato"
+
+#: src/components/history/labels.ts
+msgid "Stopped a scheduled report"
+msgstr "Rapporto programmato fermato"
+
+#: src/components/history/labels.ts
+msgid "Made a condition report for {name}"
+msgstr "Rapporto sullo stato di {name} creato"
+
+#: src/components/history/labels.ts
+msgid "Made a moving report for {name}"
+msgstr "Rapporto di trasloco per {name} creato"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Made # blank label} other {Made # blank labels}}"
+msgstr "{count, plural, one {# etichetta vuota creata} other {# etichette vuote create}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Made labels for # thing} other {Made labels for # things}}"
+msgstr "{count, plural, one {Etichette create per # oggetto} other {Etichette create per # oggetti}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Made labels for # place} other {Made labels for # places}}"
+msgstr "{count, plural, one {Etichette create per # posto} other {Etichette create per # posti}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {Arranged the map: # change} other {Arranged the map: # changes}}"
+msgstr "{count, plural, one {Mappa sistemata: # modifica} other {Mappa sistemata: # modifiche}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {# thing} other {# things}}"
+msgstr "{count, plural, one {# oggetto} other {# oggetti}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {With # thing inside} other {With # things inside}}"
+msgstr "{count, plural, one {Con # oggetto dentro} other {Con # oggetti dentro}}"
+
+#: src/components/history/labels.ts
+msgid "{count, plural, one {# thing taken out first} other {# things taken out first}}"
+msgstr "{count, plural, one {# oggetto tolto prima} other {# oggetti tolti prima}}"
+
+#: src/components/history/labels.ts
+msgid "With photos"
+msgstr "Con foto"
+
+#: src/components/history/labels.ts
+msgid "Put {name} on the map in {room}"
+msgstr "{name} messo sulla mappa in {room}"
+
+#: src/components/history/labels.ts
+msgid "Put {name} on the map"
+msgstr "{name} messo sulla mappa"
+
+#: src/components/history/labels.ts
+msgid "Took {name} off the map"
+msgstr "{name} tolto dalla mappa"
+
+#: src/components/history/labels.ts
+msgid "Put {name} on {host}"
+msgstr "{name} messo su {host}"
+
+#: src/components/history/labels.ts
+msgid "Took {name} off {host}"
+msgstr "{name} tolto da {host}"
+
+#: src/components/history/labels.ts
+msgid "Turned {name}"
+msgstr "{name} ruotato"
+
+#: src/components/history/labels.ts
+msgid "Changed the shape of {name}: {from} → {to}"
+msgstr "Forma di {name} cambiata: {from} → {to}"
+
+#: src/components/history/labels.ts
+msgid "Resized {name}"
+msgstr "{name} ridimensionato"
+
+#: src/components/history/labels.ts
+msgid "Changed the kind of {name}: {from} → {to}"
+msgstr "Tipo di {name} cambiato: {from} → {to}"
+
+#: src/components/history/labels.ts
+msgid "Changed the floor of {name}: {from} → {to}"
+msgstr "Pavimento di {name} cambiato: {from} → {to}"
+
+#: src/components/history/timeline.tsx
+msgid "Show the changes"
+msgstr "Mostra le modifiche"
+
+#: src/components/history/timeline.tsx
+msgid "Hide the changes"
+msgstr "Nascondi le modifiche"
+
+#: src/components/history/timeline.tsx
+msgid "Hide"
+msgstr "Nascondi"

@@ -626,7 +626,7 @@ async function moveAndAudit(
     const now = after.get(before.id) as Moving;
     const event = {
       actor,
-      action: 'thing.move',
+      action: 'thing.move' as const,
       entity: { type: 'thing', id: before.id },
       before: image(before),
       after: image(now),

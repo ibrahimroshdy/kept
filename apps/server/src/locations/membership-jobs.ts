@@ -1,3 +1,4 @@
+import type { AuditAction } from '@kept/shared';
 import type pg from 'pg';
 import { audited } from '../audit/audited.js';
 import { isUndeliverableEmail } from '../auth/emails.js';
@@ -28,7 +29,7 @@ async function auditSystem(
   tx: Tx,
   client: pg.ClientBase,
   locationId: string,
-  action: string,
+  action: AuditAction,
   membershipId: string,
   detail: Record<string, unknown>,
 ): Promise<void> {
