@@ -521,11 +521,22 @@ export function freeSpot(
     return out;
   };
   const xs = steps(xr, x0);
+  const r2 = (v: number) => Math.round(v * 100) / 100;
+  // #151: an arm clamps at the back edge (away from the chair, the top's front being +z): in the
+  // middle, else a back corner, else anywhere along the back; only then where anything else goes.
+  if (clampsAtBack(it.model) && m.top !== undefined) {
+    const corners = [-xr, xr].sort((a, b) => Math.abs(a - near) - Math.abs(b - near));
+    for (const x of [0, ...corners, ...xs])
+      if (fits(x, -zr)) return { along: r2(x), depth: r2(-zr) };
+  }
   for (const z of steps(zr, 0))
     for (const x of xs)
       if (fits(x, z)) return { along: Math.round(x * 100) / 100, depth: Math.round(z * 100) / 100 };
   return { along: x0, depth: 0 };
 }
+
+/** A monitor arm (#151): it clamps at the back edge of a top, facing the top's way. */
+export const clampsAtBack = (model: MapModelKey): boolean => carryOf(model) === 'arm';
 
 /** Across a holder only: an arm's free place or an edge's free spot (null when an arm is full). */
 export function freeAlong(
@@ -664,7 +675,18 @@ export function dropOn(
     return;
   }
   const step = free ? 0.01 : snapStep(it.model);
-  const p = turnOffset(snap(local.x, step), snap(local.z, step), host.rot);
+  let lx = snap(local.x, step);
+  let lz = snap(local.z, step);
+  if (clampsAtBack(it.model)) {
+    // #151: an arm slides along the back edge only, facing the top's way.
+    const hm = mapModel(host.model);
+    const im = mapModel(it.model);
+    const xr = Math.max(0, hm.w / 2 - im.w / 2);
+    lx = Math.min(xr, Math.max(-xr, lx));
+    lz = -Math.max(0, hm.d / 2 - im.d / 2);
+    turnStack(items, it, (host.rot - it.rot) / 90);
+  }
+  const p = turnOffset(lx, lz, host.rot);
   it.on = host.id;
   centreAt(items, it, { x: hc.x + p.x, z: hc.z + p.z });
 }
