@@ -12,6 +12,7 @@ import { type TestFiles, testFiles } from '../files.js';
 import { call, join, type Person, peopleApp, type RecordedJob } from '../people.js';
 import { builtinType, createLocation, createThing, type Loc, ok, own } from '../things.js';
 import { seedHousehold } from './household.js';
+import { calibration, under } from './limits.js';
 import { timed } from './timing.js';
 
 // Step 5's performance checks (plan T25 "Perf", full mode only: scripts/ci-local.sh `perf`, and
@@ -41,6 +42,10 @@ import { timed } from './timing.js';
 //   0071): Home p95 92.0 ms, the agenda's first page p95 122.1 ms. So 110.4 ms and 146.5 ms.
 //   Measured before the vehicles are added too, on the same rows in the same run, and recorded:
 //   the ratio is the fairer comparison on a loaded machine; the gate is the recorded figure.
+//   Like every limit here it is multiplied by the runner's speed factor (test/perf/calibration.ts,
+//   issue #159), and it needs no noise floor of its own: 20% of those figures is 18–24 ms, and
+//   they were taken on an M1 Pro under load, slower than the reference runner (the fast nights
+//   measured Home at p95 53–64 ms here).
 // - The vehicles list, all 50 in one page: p95 < 200 ms.
 // - The Corolla's running costs over the last 60 months (600 fills, 60 services): p95 < 200 ms.
 // - Its fuel summary over 600 fills: p95 < 100 ms.
@@ -237,7 +242,10 @@ afterAll(async () => {
   const dir = path.join(packageRoot(), '../../.tmp/perf');
   mkdirSync(dir, { recursive: true });
   const file = path.join(dir, 'step5.json');
-  writeFileSync(file, `${JSON.stringify({ at: new Date().toISOString(), results }, null, 2)}\n`);
+  writeFileSync(
+    file,
+    `${JSON.stringify({ at: new Date().toISOString(), calibration: calibration(), results }, null, 2)}\n`,
+  );
   console.log(`step5 perf: ${JSON.stringify(results)} → ${file}`);
 });
 
@@ -257,8 +265,8 @@ describe('step-5 performance (plan T25, full mode only)', () => {
         agendaFirstPage: Math.round((agendaStats.p95 / before.agendaFirstPage.p95) * 100) / 100,
       },
     };
-    expect(homeStats.p95).toBeLessThan(LIMITS.homeP95Ms);
-    expect(agendaStats.p95).toBeLessThan(LIMITS.agendaP95Ms);
+    under(results, 'homeP95Ms', homeStats.p95, LIMITS.homeP95Ms);
+    under(results, 'agendaP95Ms', agendaStats.p95, LIMITS.agendaP95Ms);
   }, 300_000);
 
   it(`lists 50 vehicles in one page with p95 under ${LIMITS.vehiclesP95Ms} ms`, async () => {
@@ -273,7 +281,7 @@ describe('step-5 performance (plan T25, full mode only)', () => {
       expect(res.statusCode, res.body).toBe(200);
     });
     results.vehicles = s;
-    expect(s.p95).toBeLessThan(LIMITS.vehiclesP95Ms);
+    under(results, 'vehiclesP95Ms', s.p95, LIMITS.vehiclesP95Ms);
   }, 300_000);
 
   it(`gives five years of running costs with p95 under ${LIMITS.costsP95Ms} ms`, async () => {
@@ -294,7 +302,7 @@ describe('step-5 performance (plan T25, full mode only)', () => {
       expect(res.statusCode, res.body).toBe(200);
     });
     results.costs5y = s;
-    expect(s.p95).toBeLessThan(LIMITS.costsP95Ms);
+    under(results, 'costsP95Ms', s.p95, LIMITS.costsP95Ms);
   }, 300_000);
 
   it(`summarises 600 fills with p95 under ${LIMITS.fuelSummaryP95Ms} ms`, async () => {
@@ -306,7 +314,7 @@ describe('step-5 performance (plan T25, full mode only)', () => {
       expect(res.statusCode, res.body).toBe(200);
     });
     results.fuelSummary = s;
-    expect(s.p95).toBeLessThan(LIMITS.fuelSummaryP95Ms);
+    under(results, 'fuelSummaryP95Ms', s.p95, LIMITS.fuelSummaryP95Ms);
   }, 300_000);
 
   it(`opens a thing with 3 meters with p95 under ${LIMITS.thingPageP95Ms} ms`, async () => {
@@ -322,7 +330,7 @@ describe('step-5 performance (plan T25, full mode only)', () => {
       expect(res.statusCode, res.body).toBe(200);
     });
     results.thingPage3Meters = s;
-    expect(s.p95).toBeLessThan(LIMITS.thingPageP95Ms);
+    under(results, 'thingPageP95Ms', s.p95, LIMITS.thingPageP95Ms);
   }, 300_000);
 
   it(`answers Insights over 10,000 valued things with p95 under ${LIMITS.insightsP95Ms} ms`, async () => {
@@ -353,7 +361,7 @@ describe('step-5 performance (plan T25, full mode only)', () => {
       expect(res.statusCode, res.body).toBe(200);
     });
     results.insights = s;
-    expect(s.p95).toBeLessThan(LIMITS.insightsP95Ms);
+    under(results, 'insightsP95Ms', s.p95, LIMITS.insightsP95Ms);
   }, 300_000);
 
   it(`renders five years' history report under the renderer's ${RENDER_MEMORY_MB} MB limit`, async () => {

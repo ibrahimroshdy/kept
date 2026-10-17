@@ -21,6 +21,7 @@ import { type TestFiles, testFiles } from '../files.js';
 import { call, type Person, peopleApp, type RecordedJob } from '../people.js';
 import { createLocation, type Loc, ok, own } from '../things.js';
 import { seedHousehold, THINGS } from './household.js';
+import { calibration, under } from './limits.js';
 import { timed } from './timing.js';
 
 // Steps 6–8's performance checks (the final check for steps 5–8; step-6 plan T26 "Perf", step-7
@@ -46,6 +47,7 @@ import { timed } from './timing.js';
 //   process's RSS growth recorded; limited at 10 minutes.
 // - The Homebox import of the committed v0.26.2 `home` fixture into a new location: upload,
 //   inspect and dry run, then the job: times recorded; limited at 2 minutes.
+// Each limit is multiplied by the runner's speed factor (test/perf/calibration.ts, issue #159).
 // The requests go through the app in-process (fastify inject): server time, no network.
 
 const LIMITS = {
@@ -212,7 +214,10 @@ afterAll(async () => {
   const dir = path.join(packageRoot(), '../../.tmp/perf');
   mkdirSync(dir, { recursive: true });
   const file = path.join(dir, 'steps6-8.json');
-  writeFileSync(file, `${JSON.stringify({ at: new Date().toISOString(), results }, null, 2)}\n`);
+  writeFileSync(
+    file,
+    `${JSON.stringify({ at: new Date().toISOString(), calibration: calibration(), results }, null, 2)}\n`,
+  );
   console.log(`steps6-8 perf: ${JSON.stringify(results)} → ${file}`);
 });
 
@@ -237,7 +242,7 @@ describe('steps 6–8 performance (final check, full mode only)', () => {
           await search(SHARED);
         })),
       };
-      expect(s.p95).toBeLessThan(LIMITS.searchP95Ms);
+      under(results, 'searchKeywordP95Ms', s.p95, LIMITS.searchP95Ms);
     },
     TEST_MS,
   );
@@ -266,7 +271,7 @@ describe('steps 6–8 performance (final check, full mode only)', () => {
           await search('the thing for the TV');
         })),
       };
-      expect(s.p95).toBeLessThan(LIMITS.searchP95Ms);
+      under(results, 'searchSemanticP95Ms', s.p95, LIMITS.searchP95Ms);
     },
     TEST_MS,
   );
@@ -283,7 +288,7 @@ describe('steps 6–8 performance (final check, full mode only)', () => {
       const s = await timed(WARMUP, RUNS, once(RARE));
       results.mcpWhereIs = { q: RARE, ...s };
       results.mcpWhereIsEveryRow = { q: SHARED, ...(await timed(WARMUP, RUNS, once(SHARED))) };
-      expect(s.p95).toBeLessThan(LIMITS.mcpWhereIsP95Ms);
+      under(results, 'mcpWhereIsP95Ms', s.p95, LIMITS.mcpWhereIsP95Ms);
     },
     TEST_MS,
   );
@@ -323,7 +328,7 @@ describe('steps 6–8 performance (final check, full mode only)', () => {
       rssBeforeMb: mb(rssBefore),
       rssPeakMb: mb(rssPeak),
     };
-    expect(ms).toBeLessThan(LIMITS.exportMaxMs);
+    under(results, 'exportMaxMs', ms, LIMITS.exportMaxMs);
   }, 900_000);
 
   it(`imports the Homebox v0.26.2 home fixture in under ${LIMITS.homeboxImportMaxMs / 1000} s`, async () => {
@@ -389,6 +394,6 @@ describe('steps 6–8 performance (final check, full mode only)', () => {
       jobMs: Math.round(done - prepared),
       totalMs: Math.round(done - started),
     };
-    expect(done - started).toBeLessThan(LIMITS.homeboxImportMaxMs);
+    under(results, 'homeboxImportMaxMs', Math.round(done - started), LIMITS.homeboxImportMaxMs);
   }, 300_000);
 });
