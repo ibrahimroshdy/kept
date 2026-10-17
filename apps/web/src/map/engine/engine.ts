@@ -24,6 +24,7 @@ import {
   childrenOn,
   clampIn,
   dropOn,
+  facingAz,
   fp,
   hostAt,
   type Item,
@@ -33,10 +34,12 @@ import {
   type Room,
   rehome,
   roomAt,
+  screensFacing,
   snap,
   standingOn,
   turn,
 } from '../layout';
+import { nearestTurn, readTurn, writeTurn } from '../turns';
 import {
   block,
   cy,
@@ -209,6 +212,8 @@ export class MapEngine {
     prev: ReturnType<MapEngine['snapshot']>;
   } | null = null;
   private lastTap = { t: 0, key: '' };
+  /** Set when two fingers turned the view; the room it was turned in remembers it (#150). */
+  private twisted = false;
   private drag:
     | { type: 'item'; id: string; off: THREE.Vector3 }
     | { type: 'resize'; id: string }
@@ -878,7 +883,7 @@ export class MapEngine {
     return b;
   }
 
-  private fitTo(b: THREE.Box3, animate = true): void {
+  private fitTo(b: THREE.Box3, animate = true, az?: number): void {
     const c = b.getCenter(new THREE.Vector3());
     const s = b.getSize(new THREE.Vector3());
     const w = this.stage.clientWidth || 1;
@@ -904,11 +909,13 @@ export class MapEngine {
     const units = ((this.view.span / zoom) * ((top - bottom) / 2)) / full;
     const away = this.s.planView
       ? new THREE.Vector3(0, 0, -units)
-      : new THREE.Vector3(-Math.sin(this.view.az), 0, -Math.cos(this.view.az)).multiplyScalar(
-          units / Math.sin(ELEV),
-        );
+      : new THREE.Vector3(
+          -Math.sin(az ?? this.view.az),
+          0,
+          -Math.cos(az ?? this.view.az),
+        ).multiplyScalar(units / Math.sin(ELEV));
     const target = new THREE.Vector3(c.x, this.s.allFloors ? c.y - 1 : 0, c.z).add(away);
-    this.tween({ target, zoom }, animate);
+    this.tween({ target, zoom, ...(az === undefined ? {} : { az }) }, animate);
   }
 
   fitLevel = (animate = true): void =>
@@ -927,7 +934,19 @@ export class MapEngine {
   }
 
   turnBy(quarters: number): void {
-    this.tween({ az: this.view.az + (quarters * Math.PI) / 2 });
+    const az = this.view.az + (quarters * Math.PI) / 2;
+    this.tween({ az });
+    if (this.s.focused) writeTurn(this.s.focused, az);
+  }
+
+  /**
+   * The turn a room opens at (#150): the one it was last left at on this device, else facing the
+   * front of its screens, else none (the view keeps its turn). The short way round.
+   */
+  private roomTurn(roomId: string): number | undefined {
+    const rot = screensFacing(this.plan.items, roomId);
+    const want = readTurn(roomId) ?? (rot === null ? null : facingAz(rot));
+    return want === null ? undefined : nearestTurn(this.view.az, want);
   }
 
   /** Home: out of a room, else the whole floor. */
@@ -1234,7 +1253,7 @@ export class MapEngine {
     if (this.s.allFloors || r.levelKey !== this.s.levelKey) this.setLevel(r.levelKey, false);
     this.s.focused = roomId;
     this.applyFocus();
-    this.fitTo(this.boundsOfRooms([r]));
+    this.fitTo(this.boundsOfRooms([r]), true, this.roomTurn(roomId));
     this.emit();
   }
 
@@ -1511,7 +1530,10 @@ export class MapEngine {
       if (a && b) this.view.target.add(a.sub(b));
       if (now.n === 2 && prev.d > 0) {
         this.view.zoom = Math.max(0.2, Math.min(10, (this.view.zoom * now.d) / prev.d));
-        if (!this.s.planView) this.view.az -= now.ang - prev.ang;
+        if (!this.s.planView && now.ang !== prev.ang) {
+          this.view.az -= now.ang - prev.ang;
+          this.twisted = true;
+        }
       }
     }
     this.gesture.prev = now;
@@ -1659,6 +1681,10 @@ export class MapEngine {
     if (this.pts.size) {
       gesture.prev = this.snapshot();
       return;
+    }
+    if (this.twisted) {
+      this.twisted = false;
+      if (this.s.focused) writeTurn(this.s.focused, this.view.az);
     }
     if (performance.now() - gesture.start < 350 && gesture.moved < 8) {
       const p = this.pick(e.clientX, e.clientY);

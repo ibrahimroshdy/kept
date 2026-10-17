@@ -401,6 +401,46 @@ export function turn(items: readonly Item[], rooms: readonly Room[], it: Item): 
   }
 }
 
+// ---- Facing the screens (#150) ----------------------------------------------------------------
+
+/**
+ * The turn most of a room's screens have (a monitor, a TV, a laptop: the models with a screen
+ * edge), each counted by its width so a TV outweighs a laptop; null when the room has none. Ties
+ * go to the first turn met.
+ */
+export function screensFacing(items: readonly Item[], roomId: string): number | null {
+  const weight = new Map<number, number>();
+  for (const it of items) {
+    if (it.roomId !== roomId || carryOf(it.model) !== 'edge') continue;
+    const r = ((it.rot % 360) + 360) % 360;
+    weight.set(r, (weight.get(r) ?? 0) + mapModel(it.model).w);
+  }
+  let best: number | null = null;
+  let most = 0;
+  for (const [r, w] of weight) {
+    if (w > most + 1e-9) {
+      best = r;
+      most = w;
+    }
+  }
+  return best;
+}
+
+/**
+ * The 3D view's turn that looks at a model of this turn from its front, half a quarter to one side
+ * as the map always looks (the camera sits towards (sin az, cos az) from what it looks at, and a
+ * model's front points at turnOffset(0, 1, rot)). Of the two sides, the one with fewer of a
+ * room's walls between the camera and the room (they stand on its −x and −z sides): π/4, the
+ * map's usual view, for an unturned screen.
+ */
+export function facingAz(rot: number): number {
+  const front = -(rot * Math.PI) / 180;
+  const hidden = (az: number) => Number(Math.sin(az) < -1e-9) + Number(Math.cos(az) < -1e-9);
+  const a = front + Math.PI / 4;
+  const b = front - Math.PI / 4;
+  return hidden(b) < hidden(a) ? b : a;
+}
+
 // ---- Holders (#137): putting a thing on a desk, a screen's edge or an arm, and off again ------
 
 /** Metres between things put side by side on a holder. */
