@@ -1,10 +1,11 @@
 import { act, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import type { MapView } from '@/api/map/types';
+import type { MapThingView, MapView } from '@/api/map/types';
 import { printedCode } from '@/components/id-chip';
 import { expectLogicalOnly, renderUI } from '@/test/render';
 import { MapCard } from './card';
-import { contentsOf, type Item, type Plan, putOn } from './layout';
+import { bodyOf, contentsOf, type Item, type Plan, putOn } from './layout';
+import { addOn, offMapFor } from './list';
 import { AddOnSheet, PutOnSheet } from './put-on';
 
 // #137: Put on… and Add on it, the cards that open them, and what a viewer sees.
@@ -320,5 +321,129 @@ describe('the card (#137)', () => {
     expect(screen.queryByRole('button', { name: 'Turn' })).toBeNull();
     expect(screen.getByRole('button', { name: 'Put on…' })).toBeTruthy();
     await act(async () => {});
+  });
+});
+
+// #152: Add on it also lists the room's things that aren't on the map yet, and puts one on the map
+// and on the holder in one step.
+describe('Add on it with things not on the map yet (#152)', () => {
+  const thing = (over: Partial<MapThingView>): MapThingView => ({
+    id: id(n++),
+    name: 'x',
+    shortCode: null,
+    quantity: 1,
+    parentId: ROOM,
+    typeKey: null,
+    typeName: null,
+    isContainer: false,
+    ...over,
+  });
+  const things = () => {
+    const lamp = thing({ name: 'Desk lamp', shortCode: 'LMP456' });
+    const cam = thing({ name: 'Spare webcam' });
+    const fridge = thing({ name: 'Fridge' });
+    const away = thing({ name: 'Hall webcam', parentId: id(77) });
+    return { lamp, cam, fridge, away, list: [lamp, cam, fridge, away] };
+  };
+
+  it('lists the room’s things that would fit, with the shape each would get', () => {
+    const { plan, desk, monitor } = office();
+    const { lamp, cam, list } = things();
+    const off = offMapFor(plan, { things: list }, desk);
+    expect(off.map((i) => [i.name, i.model])).toEqual([
+      ['Desk lamp', 'table_lamp'],
+      ['Spare webcam', 'webcam'],
+    ]);
+    // Nothing moved: they are only shown.
+    expect(plan.items.some((i) => i.id === lamp.id || i.id === cam.id)).toBe(false);
+    // A screen's edge takes the webcam, not the lamp.
+    expect(offMapFor(plan, { things: list }, monitor).map((i) => i.name)).toEqual(['Spare webcam']);
+    // A shape someone chose wins.
+    expect(offMapFor(plan, { things: list }, desk, () => 'speaker').map((i) => i.model)).toEqual([
+      'speaker',
+      'speaker',
+      'speaker',
+    ]);
+  });
+
+  it('puts one on the map and on the desk in one change, saved in one body', () => {
+    const { plan, desk, webcam } = office();
+    const { cam, list } = things();
+    const before = plan.items.length;
+    addOn(plan, { things: list }, desk.id, [cam.id, webcam.id]);
+    expect(plan.items.length).toBe(before + 1);
+    const added = plan.items.find((i) => i.id === cam.id);
+    expect(added?.on).toBe(desk.id);
+    expect(added?.model).toBe('webcam');
+    expect(webcam.on).toBe(desk.id);
+    const body = bodyOf(plan, null);
+    expect(body.nodes.find((x) => x.id === cam.id)).toMatchObject({
+      hostId: desk.id,
+      model: 'webcam',
+    });
+  });
+
+  it('leaves off what isn’t in the room or can’t go on', () => {
+    const { plan, desk } = office();
+    const arm = item({ model: 'monitor_arm', name: 'Arm' });
+    plan.items.push(arm);
+    const { cam, away, list } = things();
+    const before = plan.items.length;
+    addOn(plan, { things: list }, desk.id, [away.id]);
+    addOn(plan, { things: list }, arm.id, [cam.id]);
+    expect(plan.items.length).toBe(before);
+  });
+
+  it('shows them under their own heading, and hands both kinds back on Put', async () => {
+    const { plan, desk, keyboard } = office();
+    const { cam, list } = things();
+    const onAdd = vi.fn();
+    const { user } = await renderUI(
+      <AddOnSheet
+        host={desk}
+        plan={plan}
+        view={{ things: list }}
+        roomName="Study"
+        onOpenChange={() => {}}
+        onAdd={onAdd}
+      />,
+    );
+    expect(screen.getByText('On the map')).toBeTruthy();
+    const off = screen.getByRole('group', { name: 'Not on the map yet' });
+    expect(
+      within(off)
+        .getAllByRole('option')
+        .map((o) => o.textContent),
+    ).toEqual([`Desk lampTable lamp · ${printedCode('LMP456')}`, 'Spare webcamWebcam']);
+    await user.click(within(off).getByRole('option', { name: 'Spare webcam' }));
+    await user.click(screen.getByRole('option', { name: 'Keyboard' }));
+    await user.click(screen.getByRole('button', { name: 'Put 2 on it' }));
+    expect(onAdd).toHaveBeenCalledWith([cam.id, keyboard.id]);
+  });
+
+  it('shows no heading when nothing is off the map', async () => {
+    const { plan, desk } = office();
+    await renderUI(
+      <AddOnSheet
+        host={desk}
+        plan={plan}
+        roomName="Study"
+        onOpenChange={() => {}}
+        onAdd={vi.fn()}
+      />,
+    );
+    expect(screen.queryByText('On the map')).toBeNull();
+    expect(screen.queryByText('Not on the map yet')).toBeNull();
+  });
+
+  it('opens from a holder’s card with the location’s things', async () => {
+    const { plan, desk } = office();
+    const { list } = things();
+    const v = { ...view(plan), things: list };
+    const { user, props } = await card(plan, desk, true, { view: v, contents: contentsOf(v) });
+    await user.click(screen.getByRole('button', { name: 'Add on it' }));
+    await user.click(screen.getByRole('option', { name: 'Spare webcam' }));
+    await user.click(screen.getByRole('button', { name: 'Put 1 on it' }));
+    expect(props.onAddOn).toHaveBeenCalledWith(desk.id, [list[1]?.id]);
   });
 });

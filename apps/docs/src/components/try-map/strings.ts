@@ -223,6 +223,9 @@ type Words = {
     left: (n: number, f: string) => string;
     noMonitor: (room: string) => string;
     allOn: (room: string) => string;
+    /** #152: Add on it's two lists. */
+    onMap: string;
+    notOnMap: string;
     putN: (n: number, f: string) => string;
     pick: string;
     onItNow: (names: string) => string;
@@ -365,8 +368,10 @@ export const WORDS: Record<Lang, Words> = {
       toAdd: 'Things to add on it',
       full: (n, f) => (n === 1 ? 'Full: it holds one monitor.' : `Full: it holds ${f} monitors.`),
       left: (n, f) => (n === 1 ? 'Room for one more.' : `Room for ${f} more.`),
-      noMonitor: (room) => `No monitor in ${room} is free. Put one on the map first.`,
-      allOn: (room) => `Everything small in ${room} is on something, or not on the map yet.`,
+      noMonitor: (room) => `No monitor in ${room} is free.`,
+      allOn: (room) => `Everything small in ${room} is on something already.`,
+      onMap: 'On the map',
+      notOnMap: 'Not on the map yet',
       putN: (_n, f) => `Put ${f} on it`,
       pick: 'Pick what goes on it',
       onItNow: (names) => `On it now: ${names}`,
@@ -524,8 +529,10 @@ export const WORDS: Record<Lang, Words> = {
           'مكان لـ# أخرى.',
           'مكان لـ# أخرى.',
         ]),
-      noMonitor: (room) => `لا توجد شاشة متاحة في ${room}. ضع واحدة على الخريطة أولًا.`,
-      allOn: (room) => `كل شيء صغير في ${room} موضوع على شيء، أو ليس على الخريطة بعد.`,
+      noMonitor: (room) => `لا توجد شاشة متاحة في ${room}.`,
+      allOn: (room) => `كل شيء صغير في ${room} موضوع على شيء بالفعل.`,
+      onMap: 'على الخريطة',
+      notOnMap: 'ليست على الخريطة بعد',
       putN: (n, f) =>
         arPlural(n, f, [
           'ضع # عليه',

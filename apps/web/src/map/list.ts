@@ -3,15 +3,19 @@
  * in them, or what needs attention (low stock, lent out, due soon), with a search, a floor
  * filter and Show more. Pure, so the filters are tested without the map.
  */
+import { canBeCarried, fitsOn, type MapModelKey } from '@kept/shared';
 import type { MapAttention, MapAttentionKind, MapView } from '@/api/map/types';
 import {
   allUnder,
   type Contents,
+  canPutOn,
   flagsOf,
   type Item,
   type Level,
   type Plan,
+  putOn,
   type Room,
+  thingItem,
 } from './layout';
 
 export type ListShow = 'room' | 'attention';
@@ -171,6 +175,63 @@ export function whereOf(plan: Plan, view: Pick<MapView, 'things'>, id: string) {
     cur = thing.parentId;
   }
   return { path, roomId };
+}
+
+/** A shape someone chose for a thing in this session, or that it has on the saved map. */
+export type ChosenShape = (id: string) => MapModelKey | null;
+
+/**
+ * Add on it's second list (#152): the holder's room's things that aren't on the map yet and, with
+ * the shape they'd get (thingItem), are small enough to go on something (they'd get Put on…) and
+ * fit on this holder; each as the item it would become, by name.
+ */
+export function offMapFor(
+  plan: Plan,
+  view: Pick<MapView, 'things'>,
+  host: Item,
+  chosen: ChosenShape = () => null,
+): Item[] {
+  const room = plan.rooms.find((r) => r.id === host.roomId);
+  if (!room) return [];
+  const onMap = new Set(plan.items.map((i) => i.id));
+  return view.things
+    .filter((x) => !onMap.has(x.id) && whereOf(plan, view, x.id).roomId === room.id)
+    .map((x) => thingItem(x, room, chosen(x.id)))
+    .filter(
+      (it) =>
+        canBeCarried(it.model) && fitsOn(host.model, it.model) && canPutOn(plan.items, host, it),
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * Add on it, in one step (#152): puts the picked things on a holder side by side; one not on the
+ * map yet goes on it first, as offMapFor showed it. One change to the plan, so one Done saves it
+ * and one Undo takes it back.
+ */
+export function addOn(
+  plan: Plan,
+  view: Pick<MapView, 'things'>,
+  hostId: string,
+  ids: readonly string[],
+  chosen: ChosenShape = () => null,
+): void {
+  const host = plan.items.find((i) => i.id === hostId);
+  const room = plan.rooms.find((r) => r.id === host?.roomId);
+  if (!host || !room) return;
+  for (const id of ids) {
+    const was = plan.items.find((i) => i.id === id);
+    if (was) {
+      putOn(plan.items, was, host);
+      continue;
+    }
+    const x = view.things.find((t) => t.id === id);
+    if (!x || whereOf(plan, view, id).roomId !== room.id) continue;
+    const it = thingItem(x, room, chosen(id));
+    plan.items.push(it);
+    // It goes on the map only to go on the holder: if it can't (the holder filled up), it doesn't.
+    if (!putOn(plan.items, it, host)) plan.items.pop();
+  }
 }
 
 export function attentionGroups(

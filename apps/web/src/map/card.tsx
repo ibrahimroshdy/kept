@@ -41,7 +41,7 @@ import {
   type Room,
   seated,
 } from './layout';
-import { matches, whereOf } from './list';
+import { type ChosenShape, matches, whereOf } from './list';
 import { AddOnSheet, PutOnSheet } from './put-on';
 import { ShapeField, shapeInputOf } from './shapes';
 
@@ -74,6 +74,8 @@ export type CardProps = {
   onPutOn: (id: string, hostId: string) => void;
   onTakeOff: (id: string) => void;
   onAddOn: (hostId: string, ids: string[]) => void;
+  /** #152: the shape a thing not on the map would get back, for Add on it. */
+  chosenShape?: ChosenShape;
 };
 
 function Dots({ flags }: { flags: MapAttentionKind[] }) {
@@ -598,6 +600,8 @@ export function MapCard(p: CardProps) {
         <AddOnSheet
           host={it}
           plan={plan}
+          view={view}
+          chosenShape={p.chosenShape}
           roomName={room?.name ?? ''}
           onOpenChange={(open) => setSheet(open ? 'add' : null)}
           onAdd={(ids) => {

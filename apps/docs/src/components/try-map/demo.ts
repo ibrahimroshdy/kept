@@ -29,7 +29,6 @@ import {
   type ShapeInput,
   STAIR_MODELS,
   searchShapes,
-  shapeOnAdd,
   suggestShapes,
 } from '@kept/shared';
 import type {
@@ -63,8 +62,9 @@ import {
   roomOn,
   seated,
   takeOff,
+  thingItem,
 } from '../../../../web/src/map/layout';
-import { matches, whereOf } from '../../../../web/src/map/list';
+import { addOn, matches, offMapFor, whereOf } from '../../../../web/src/map/list';
 // Inline, not imported as stylesheets: Astro would link those from every page of the site.
 import mapCss from '../../../../web/src/map/map.css?inline';
 // D249: the shape picker's pictures, the app's own sprite (fetched when the picker first opens).
@@ -594,35 +594,14 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
   /** Shapes picked in this session, kept if the thing goes off the map and back on (D249). */
   const chosen = new Map<string, MapModelKey>();
 
+  const chosenShape = (id: string) => chosen.get(id) ?? null;
+
   function addThing(roomId: string, id: string) {
     const x = view.things.find((t) => t.id === id);
     if (!x) return;
     mutate((p) => {
       const room = p.rooms.find((r) => r.id === roomId);
-      if (!room) return;
-      const { model, from } = shapeOnAdd(
-        { name: x.name, typeKey: x.typeKey, typeName: x.typeName, isContainer: x.isContainer },
-        chosen.get(x.id) ?? null,
-      );
-      const it: Item = {
-        id: x.id,
-        subject: 'thing',
-        roomId,
-        name: x.name,
-        shortCode: x.shortCode,
-        model,
-        x: room.w / 2 - 0.3,
-        z: room.d / 2 - 0.3,
-        rot: 0,
-        on: null,
-        parentId: x.parentId,
-        isContainer: x.isContainer,
-        quantity: x.quantity,
-        auto: false,
-        ...(from === 'chosen' ? {} : { shapeFrom: from }),
-      };
-      clampIn(it, room);
-      p.items.push(it);
+      if (room) p.items.push(thingItem(x, room, chosenShape(x.id)));
     });
     engine?.select({ type: 'item', id: x.id });
   }
@@ -745,6 +724,8 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
     if (!host) return;
     const room = plan.rooms.find((r) => r.id === host.roomId)?.name ?? '';
     const things = addableOn(plan.items, host);
+    // #152: the room's things not on the map yet, with the shape each would get.
+    const offMap = offMapFor(plan, view, host, chosenShape);
     const max = capacityOf(host.model);
     const limited = Number.isFinite(max);
     const left = roomOn(plan.items, host);
@@ -757,10 +738,14 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
       : '';
     const sub = (c: Item) =>
       c.shortCode ? `${names[c.model]} · ${printedCode(c.shortCode)}` : names[c.model];
+    const group = (label: string, list: Item[], heading: boolean) =>
+      list.length
+        ? `<div role="group" class="kput-section" aria-label="${esc(label)}">${heading ? `<div class="kput-head" aria-hidden="true">${esc(label)}</div>` : ''}${list.map((c) => putRow(c, sub(c))).join('')}</div>`
+        : '';
     const body = full
       ? ''
-      : things.length
-        ? `<div class="kput-list" role="listbox" aria-multiselectable="true" aria-label="${esc(w.put.toAdd)}">${things.map((c) => putRow(c, sub(c))).join('')}</div>
+      : things.length || offMap.length
+        ? `<div class="kput-list" role="listbox" aria-multiselectable="true" aria-label="${esc(w.put.toAdd)}">${group(w.put.onMap, things, offMap.length > 0)}${group(w.put.notOnMap, offMap, true)}</div>
            <div class="kput-actions"><button type="button" class="kmap-btn primary" data-put="add" disabled>${esc(w.put.pick)}</button>${btn('putcancel', w.cancel)}</div>`
         : `<p class="kmap-empty">${esc(carryOf(host.model) === 'arm' ? w.put.noMonitor(room) : w.put.allOn(room))}</p>`;
     const dlg = sheet(
@@ -798,14 +783,7 @@ export function mount(root: HTMLElement, { lang, installHref }: MountOptions): (
     add?.addEventListener('click', () => {
       const ids = [...picked];
       dlg.close();
-      mutate((p) => {
-        const h = p.items.find((x) => x.id === id);
-        if (!h) return;
-        for (const cid of ids) {
-          const t = p.items.find((x) => x.id === cid);
-          if (t) putOn(p.items, t, h);
-        }
-      });
+      mutate((p) => addOn(p, view, id, ids, chosenShape));
       engine?.select({ type: 'item', id });
     });
     dlg.querySelector<HTMLElement>('[role="option"][tabindex="0"]')?.focus();

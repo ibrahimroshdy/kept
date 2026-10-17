@@ -27,6 +27,7 @@ import {
   ROOM_KIND_SURFACE,
   rectsOverlap,
   type ShapeFrom,
+  shapeOnAdd,
   snapStep,
   turnOffset,
   unturnOffset,
@@ -689,6 +690,37 @@ export function dropOn(
   const p = turnOffset(lx, lz, host.rot);
   it.on = host.id;
   centreAt(items, it, { x: hc.x + p.x, z: hc.z + p.z });
+}
+
+/**
+ * A thing of a room as it goes on the map (D249): the shape someone already chose for it, else
+ * the first suggestion from its type and name (`shapeFrom` says which, or that it is a guess),
+ * in the middle of the room, unturned, on nothing.
+ */
+export function thingItem(x: MapThingView, room: Room, chosen: MapModelKey | null = null): Item {
+  const { model, from } = shapeOnAdd(
+    { name: x.name, typeKey: x.typeKey, typeName: x.typeName, isContainer: x.isContainer },
+    chosen,
+  );
+  const it: Item = {
+    id: x.id,
+    subject: 'thing',
+    roomId: room.id,
+    name: x.name,
+    shortCode: x.shortCode,
+    model,
+    x: room.w / 2 - 0.3,
+    z: room.d / 2 - 0.3,
+    rot: 0,
+    on: null,
+    parentId: x.parentId,
+    isContainer: x.isContainer,
+    quantity: x.quantity,
+    auto: false,
+    ...(from === 'chosen' ? {} : { shapeFrom: from }),
+  };
+  clampIn(it, room);
+  return it;
 }
 
 /** Whether a rectangle overlaps another room on the level. */
