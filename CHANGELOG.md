@@ -3,6 +3,16 @@
 Kept's releases, newest first. Written by `scripts/changelog.mjs` from the commits' conventional
 subjects when a release is cut (`scripts/release.sh`).
 
+## 1.10.6 (2026-10-17)
+
+### Fixes
+
+- **map:** rooms face their screens, arms clamp at the back edge, Add on it lists things not on the map yet (#150, #151, #152) (#156) (2d7c473)
+
+### Documentation
+
+- **release:** the 1.10.5 record (#155) (0fab13d)
+
 ## 1.10.5 (2026-10-16)
 
 ### Fixes
