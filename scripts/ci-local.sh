@@ -539,6 +539,7 @@ step_backup() {
 # page, through the RLS bench (its own scratch database; exits 1 over budget), then
 # apps/server/test/perf (a 50-op sync batch's p95, the inbox's first page at 500 open items).
 # Results: .tmp/perf/. Numbers taken under load are not evidence; run it on a quiet machine.
+# test/perf's limits scale with the machine's speed, timed first (.tmp/perf/calibration.json, #159).
 step_perf() {
   mkdir -p "$repo/.tmp/perf"
   pnpm --filter @kept/server bench -- --snapshot-only --out "$repo/.tmp/perf/snapshot-bench.json"

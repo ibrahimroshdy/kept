@@ -11,6 +11,7 @@ import { inbox } from '../inbox.js';
 import { call, join, type Person, peopleApp, person, type RecordedJob } from '../people.js';
 import { captureOp, syncOps } from '../sync-ops.js';
 import { createLocation, type Loc, ok, own, place } from '../things.js';
+import { calibration, under } from './limits.js';
 
 // Step 3's performance checks (plan T32 "Perf", full mode only: scripts/ci-local.sh `perf`, and
 // `pnpm --filter @kept/server exec vitest run --config vitest.perf.config.ts`). The normal test
@@ -33,6 +34,7 @@ import { createLocation, type Loc, ok, own, place } from '../things.js';
 // so that a real regression fails and ordinary machine noise doesn't: the batch's p95 was
 // 855–1,089 ms (limit 1.5 s), the inbox page's 19–20 ms (limit 100 ms, well under §3.1's page
 // p95 of 300 ms), and a 200-row import chunk 2.9–3.5 s, about 63–68 rows a second (limit 10 s).
+// Each is multiplied by the runner's speed factor (test/perf/calibration.ts, issue #159).
 
 const BATCH_OPS = 50;
 const BATCH_WARMUP = 3;
@@ -82,7 +84,10 @@ afterAll(async () => {
   const dir = path.join(packageRoot(), '../../.tmp/perf');
   mkdirSync(dir, { recursive: true });
   const file = path.join(dir, 'step3-perf.json');
-  writeFileSync(file, `${JSON.stringify({ at: new Date().toISOString(), results }, null, 2)}\n`);
+  writeFileSync(
+    file,
+    `${JSON.stringify({ at: new Date().toISOString(), calibration: calibration(), results }, null, 2)}\n`,
+  );
   console.log(`step3 perf: ${JSON.stringify(results)} → ${file}`);
 });
 
@@ -105,7 +110,7 @@ describe('step-3 performance (plan T32, full mode only)', () => {
     }
     const s = stats(samples);
     results.syncBatch50 = s;
-    expect(s.p95).toBeLessThan(LIMITS.batchP95Ms);
+    under(results, 'batchP95Ms', s.p95, LIMITS.batchP95Ms);
   }, 600_000);
 
   it(`answers the inbox's first page at ${INBOX_OPEN} open items with p95 under ${LIMITS.inboxPageP95Ms} ms`, async () => {
@@ -149,7 +154,7 @@ describe('step-3 performance (plan T32, full mode only)', () => {
     }
     const s = stats(samples);
     results.inboxFirstPage500 = s;
-    expect(s.p95).toBeLessThan(LIMITS.inboxPageP95Ms);
+    under(results, 'inboxPageP95Ms', s.p95, LIMITS.inboxPageP95Ms);
   }, 300_000);
   it(`imports a ${CHUNK}-row CSV chunk in under ${LIMITS.importChunkMaxMs} ms`, async () => {
     const sent: RecordedJob[] = [];
@@ -220,6 +225,6 @@ describe('step-3 performance (plan T32, full mode only)', () => {
     }
     const s = stats(chunks);
     results.importChunk200 = { ...s, rowsPerSecond: Math.round((CHUNK / s.p50) * 1000 * 10) / 10 };
-    expect(s.max).toBeLessThan(LIMITS.importChunkMaxMs);
+    under(results, 'importChunkMaxMs', s.max, LIMITS.importChunkMaxMs);
   }, 600_000);
 });

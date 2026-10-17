@@ -10,6 +10,7 @@ import { type TestDb, testDb } from '../db.js';
 import { call, type Person, peopleApp } from '../people.js';
 import { type Loc, ok, own } from '../things.js';
 import { seedHousehold, THINGS } from './household.js';
+import { calibration, under } from './limits.js';
 import { stats, timed } from './timing.js';
 
 // Step 4's performance checks (plan T30 "Perf", full mode only: scripts/ci-local.sh `perf`, and
@@ -54,6 +55,7 @@ import { stats, timed } from './timing.js';
 //   to back runs at load 5–14.
 // - A full scan pass: 10 s, tighter than the plan's 20 s (the worst pass measured 2.8 s).
 // - The count: the plan's 20 ms (p95 measured 5.4–6.2 ms).
+// Each is multiplied by the runner's speed factor (test/perf/calibration.ts, issue #159).
 
 const READ_NOTIFICATIONS = 1_500;
 const HOME_WARMUP = 5;
@@ -97,7 +99,10 @@ afterAll(async () => {
   const dir = path.join(packageRoot(), '../../.tmp/perf');
   mkdirSync(dir, { recursive: true });
   const file = path.join(dir, 'step4.json');
-  writeFileSync(file, `${JSON.stringify({ at: new Date().toISOString(), results }, null, 2)}\n`);
+  writeFileSync(
+    file,
+    `${JSON.stringify({ at: new Date().toISOString(), calibration: calibration(), results }, null, 2)}\n`,
+  );
   console.log(`step4 perf: ${JSON.stringify(results)} → ${file}`);
 });
 
@@ -119,7 +124,7 @@ describe('step-4 performance (plan T30, full mode only)', () => {
       expect(res.statusCode, res.body).toBe(200);
     });
     results.agendaFirstPage = agenda;
-    expect(s.p95).toBeLessThan(LIMITS.homeP95Ms);
+    under(results, 'homeP95Ms', s.p95, LIMITS.homeP95Ms);
   }, 300_000);
 
   // D240: Home's own read beside /home (the cards' flags and value, the tiles' first items, the
@@ -134,7 +139,7 @@ describe('step-4 performance (plan T30, full mode only)', () => {
       expect(res.statusCode, res.body).toBe(200);
     });
     results.homeOverview = s;
-    expect(s.p95).toBeLessThan(LIMITS.homeP95Ms);
+    under(results, 'homeOverviewP95Ms', s.p95, LIMITS.homeP95Ms);
   }, 300_000);
 
   it(`runs a full reminder scan pass in under ${LIMITS.scanPassMaxMs} ms`, async () => {
@@ -167,8 +172,8 @@ describe('step-4 performance (plan T30, full mode only)', () => {
       deliverJobs: jobs,
     };
     results.scanSteadyPass = stats(steady);
-    expect(s.max).toBeLessThan(LIMITS.scanPassMaxMs);
-    expect(stats(steady).max).toBeLessThan(LIMITS.scanPassMaxMs);
+    under(results, 'scanPassMaxMs', s.max, LIMITS.scanPassMaxMs);
+    under(results, 'scanSteadyPassMaxMs', stats(steady).max, LIMITS.scanPassMaxMs);
   }, 600_000);
 
   it(`counts the owner's unread notifications with p95 under ${LIMITS.notificationCountP95Ms} ms`, async () => {
@@ -200,6 +205,6 @@ describe('step-4 performance (plan T30, full mode only)', () => {
       expect(res.statusCode, res.body).toBe(200);
     });
     results.notificationCount = { ...s, total: mine[0]?.total, unread };
-    expect(s.p95).toBeLessThan(LIMITS.notificationCountP95Ms);
+    under(results, 'notificationCountP95Ms', s.p95, LIMITS.notificationCountP95Ms);
   }, 300_000);
 });

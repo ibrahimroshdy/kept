@@ -2,7 +2,9 @@
 # by hand. It is a report, not a gate: timing limits measured on a shared runner are noisy, so a
 # slow night never blocks a pull request or a release (they failed the laptop gate on load alone,
 # 2026-10-08). A failed run shows on the Actions page; its numbers are kept as an artifact for a
-# month, so a trend can be read. Gated on a public repository, like ci.yml.
+# month, so a trend can be read. The test/perf limits are multiplied by the runner's speed, timed
+# on a fixed reference workload at the start of the run (apps/server/test/perf/calibration.ts,
+# #159): runners of different speeds land here. Gated on a public repository, like ci.yml.
 #
 # Actions pinned by commit SHA with their tag in a comment (spike W1).
 name: perf
