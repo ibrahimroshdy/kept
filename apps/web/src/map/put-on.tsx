@@ -9,15 +9,25 @@
 import { capacityOf, carryOf } from '@kept/shared';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useMemo, useState } from 'react';
-import { ListBox, ListBoxItem, type Selection, Text } from 'react-aria-components';
+import {
+  Header,
+  ListBox,
+  ListBoxItem,
+  ListBoxSection,
+  type Selection,
+  Text,
+} from 'react-aria-components';
+import type { MapView } from '@/api/map/types';
 import { printedCode } from '@/components/id-chip';
 import { Sheet } from '@/components/things/sheet';
 import { Button } from '@/components/ui/button';
 import { TextField } from '@/components/ui/text-field';
 import { useModelNames } from './labels';
 import { addableOn, childrenOn, holdersFor, type Item, type Plan, roomOn } from './layout';
-import { matches } from './list';
+import { type ChosenShape, matches, offMapFor } from './list';
 import { ShapeThumb } from './shapes';
+
+const NO_THINGS: Pick<MapView, 'things'> = { things: [] };
 
 /** A list longer than this gets a search. */
 const SEARCH_FROM = 8;
@@ -117,16 +127,25 @@ export function PutOnSheet({
   );
 }
 
-/** Add on it: the room's things on nothing yet, several at once, side by side on the holder. */
+/**
+ * Add on it: the room's things on nothing yet, several at once, side by side on the holder; and
+ * under "Not on the map yet" (#152) the room's things that aren't on the map, each with the shape
+ * it would get: picking one puts it on the map and on the holder in the same step.
+ */
 export function AddOnSheet({
   host,
   plan,
+  view = NO_THINGS,
+  chosenShape,
   roomName,
   onOpenChange,
   onAdd,
 }: {
   host: Item;
   plan: Plan;
+  /** The location's things, for those not on the map yet (#152). */
+  view?: Pick<MapView, 'things'>;
+  chosenShape?: ChosenShape | undefined;
   roomName: string;
   onOpenChange: (open: boolean) => void;
   onAdd: (ids: string[]) => void;
@@ -135,14 +154,22 @@ export function AddOnSheet({
   const names = useModelNames();
   const [query, setQuery] = useState('');
   const [picked, setPicked] = useState<Set<string>>(new Set());
-  const things = useMemo(() => addableOn(plan.items, host), [plan.items, host]);
+  const onMap = useMemo(() => addableOn(plan.items, host), [plan.items, host]);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the shapes chosen don't change while it is open
+  const offMap = useMemo(() => offMapFor(plan, view, host, chosenShape), [plan, view, host]);
+  const total = onMap.length + offMap.length;
   const max = capacityOf(host.model);
   const limited = Number.isFinite(max);
   const left = roomOn(plan.items, host);
   const full = limited && left <= 0;
-  const rows = things.filter((c) => matches(query, c.name, c.shortCode));
+  const find = (c: Item) => matches(query, c.name, c.shortCode);
+  const rowsOn = onMap.filter(find);
+  const rowsOff = offMap.filter(find);
+  const rows = [...rowsOn, ...rowsOff];
   // An arm takes no more than its places: the rest can't be picked once they are taken.
   const disabled = limited && picked.size >= left ? rows.filter((c) => !picked.has(c.id)) : [];
+  const sub = (c: Item) =>
+    c.shortCode ? `${names[c.model]} · ${printedCode(c.shortCode)}` : names[c.model];
   const n = picked.size;
   const onNow = childrenOn(plan.items, host.id)
     .map((c) => c.name)
@@ -166,7 +193,7 @@ export function AddOnSheet({
           ) : null}
           {full ? null : (
             <>
-              {things.length > SEARCH_FROM ? (
+              {total > SEARCH_FROM ? (
                 <TextField
                   aria-label={t`Find a thing to add`}
                   placeholder={t`Find in ${roomName}`}
@@ -186,29 +213,44 @@ export function AddOnSheet({
                 }
                 renderEmptyState={() => (
                   <p className="kmap-empty">
-                    {things.length ? (
+                    {total ? (
                       <Trans>Nothing matches.</Trans>
                     ) : carryOf(host.model) === 'arm' ? (
-                      <Trans>No monitor in {roomName} is free. Put one on the map first.</Trans>
+                      <Trans>No monitor in {roomName} is free.</Trans>
                     ) : (
-                      <Trans>
-                        Everything small in {roomName} is on something, or not on the map yet.
-                      </Trans>
+                      <Trans>Everything small in {roomName} is on something already.</Trans>
                     )}
                   </p>
                 )}
               >
-                {rows.map((c) => (
-                  <Row
-                    key={c.id}
-                    it={c}
-                    sub={
-                      c.shortCode
-                        ? `${names[c.model]} · ${printedCode(c.shortCode)}`
-                        : names[c.model]
-                    }
-                  />
-                ))}
+                {[
+                  ...(rowsOn.length
+                    ? [
+                        <ListBoxSection key="on" id="on" className="kput-section">
+                          {rowsOff.length ? (
+                            <Header className="kput-head">
+                              <Trans>On the map</Trans>
+                            </Header>
+                          ) : null}
+                          {rowsOn.map((c) => (
+                            <Row key={c.id} it={c} sub={sub(c)} />
+                          ))}
+                        </ListBoxSection>,
+                      ]
+                    : []),
+                  ...(rowsOff.length
+                    ? [
+                        <ListBoxSection key="off" id="off" className="kput-section">
+                          <Header className="kput-head">
+                            <Trans>Not on the map yet</Trans>
+                          </Header>
+                          {rowsOff.map((c) => (
+                            <Row key={c.id} it={c} sub={sub(c)} />
+                          ))}
+                        </ListBoxSection>,
+                      ]
+                    : []),
+                ]}
               </ListBox>
               <div className="kput-actions">
                 <Button

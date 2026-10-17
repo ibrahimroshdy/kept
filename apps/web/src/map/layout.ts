@@ -27,6 +27,7 @@ import {
   ROOM_KIND_SURFACE,
   rectsOverlap,
   type ShapeFrom,
+  shapeOnAdd,
   snapStep,
   turnOffset,
   unturnOffset,
@@ -401,6 +402,46 @@ export function turn(items: readonly Item[], rooms: readonly Room[], it: Item): 
   }
 }
 
+// ---- Facing the screens (#150) ----------------------------------------------------------------
+
+/**
+ * The turn most of a room's screens have (a monitor, a TV, a laptop: the models with a screen
+ * edge), each counted by its width so a TV outweighs a laptop; null when the room has none. Ties
+ * go to the first turn met.
+ */
+export function screensFacing(items: readonly Item[], roomId: string): number | null {
+  const weight = new Map<number, number>();
+  for (const it of items) {
+    if (it.roomId !== roomId || carryOf(it.model) !== 'edge') continue;
+    const r = ((it.rot % 360) + 360) % 360;
+    weight.set(r, (weight.get(r) ?? 0) + mapModel(it.model).w);
+  }
+  let best: number | null = null;
+  let most = 0;
+  for (const [r, w] of weight) {
+    if (w > most + 1e-9) {
+      best = r;
+      most = w;
+    }
+  }
+  return best;
+}
+
+/**
+ * The 3D view's turn that looks at a model of this turn from its front, half a quarter to one side
+ * as the map always looks (the camera sits towards (sin az, cos az) from what it looks at, and a
+ * model's front points at turnOffset(0, 1, rot)). Of the two sides, the one with fewer of a
+ * room's walls between the camera and the room (they stand on its −x and −z sides): π/4, the
+ * map's usual view, for an unturned screen.
+ */
+export function facingAz(rot: number): number {
+  const front = -(rot * Math.PI) / 180;
+  const hidden = (az: number) => Number(Math.sin(az) < -1e-9) + Number(Math.cos(az) < -1e-9);
+  const a = front + Math.PI / 4;
+  const b = front - Math.PI / 4;
+  return hidden(b) < hidden(a) ? b : a;
+}
+
 // ---- Holders (#137): putting a thing on a desk, a screen's edge or an arm, and off again ------
 
 /** Metres between things put side by side on a holder. */
@@ -481,11 +522,22 @@ export function freeSpot(
     return out;
   };
   const xs = steps(xr, x0);
+  const r2 = (v: number) => Math.round(v * 100) / 100;
+  // #151: an arm clamps at the back edge (away from the chair, the top's front being +z): in the
+  // middle, else a back corner, else anywhere along the back; only then where anything else goes.
+  if (clampsAtBack(it.model) && m.top !== undefined) {
+    const corners = [-xr, xr].sort((a, b) => Math.abs(a - near) - Math.abs(b - near));
+    for (const x of [0, ...corners, ...xs])
+      if (fits(x, -zr)) return { along: r2(x), depth: r2(-zr) };
+  }
   for (const z of steps(zr, 0))
     for (const x of xs)
       if (fits(x, z)) return { along: Math.round(x * 100) / 100, depth: Math.round(z * 100) / 100 };
   return { along: x0, depth: 0 };
 }
+
+/** A monitor arm (#151): it clamps at the back edge of a top, facing the top's way. */
+export const clampsAtBack = (model: MapModelKey): boolean => carryOf(model) === 'arm';
 
 /** Across a holder only: an arm's free place or an edge's free spot (null when an arm is full). */
 export function freeAlong(
@@ -624,9 +676,51 @@ export function dropOn(
     return;
   }
   const step = free ? 0.01 : snapStep(it.model);
-  const p = turnOffset(snap(local.x, step), snap(local.z, step), host.rot);
+  let lx = snap(local.x, step);
+  let lz = snap(local.z, step);
+  if (clampsAtBack(it.model)) {
+    // #151: an arm slides along the back edge only, facing the top's way.
+    const hm = mapModel(host.model);
+    const im = mapModel(it.model);
+    const xr = Math.max(0, hm.w / 2 - im.w / 2);
+    lx = Math.min(xr, Math.max(-xr, lx));
+    lz = -Math.max(0, hm.d / 2 - im.d / 2);
+    turnStack(items, it, (host.rot - it.rot) / 90);
+  }
+  const p = turnOffset(lx, lz, host.rot);
   it.on = host.id;
   centreAt(items, it, { x: hc.x + p.x, z: hc.z + p.z });
+}
+
+/**
+ * A thing of a room as it goes on the map (D249): the shape someone already chose for it, else
+ * the first suggestion from its type and name (`shapeFrom` says which, or that it is a guess),
+ * in the middle of the room, unturned, on nothing.
+ */
+export function thingItem(x: MapThingView, room: Room, chosen: MapModelKey | null = null): Item {
+  const { model, from } = shapeOnAdd(
+    { name: x.name, typeKey: x.typeKey, typeName: x.typeName, isContainer: x.isContainer },
+    chosen,
+  );
+  const it: Item = {
+    id: x.id,
+    subject: 'thing',
+    roomId: room.id,
+    name: x.name,
+    shortCode: x.shortCode,
+    model,
+    x: room.w / 2 - 0.3,
+    z: room.d / 2 - 0.3,
+    rot: 0,
+    on: null,
+    parentId: x.parentId,
+    isContainer: x.isContainer,
+    quantity: x.quantity,
+    auto: false,
+    ...(from === 'chosen' ? {} : { shapeFrom: from }),
+  };
+  clampIn(it, room);
+  return it;
 }
 
 /** Whether a rectangle overlaps another room on the level. */

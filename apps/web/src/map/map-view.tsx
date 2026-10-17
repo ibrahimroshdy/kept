@@ -17,7 +17,6 @@ import {
   type MapRoomKind,
   type MapSurface,
   ROOM_KIND_SURFACE,
-  shapeOnAdd,
 } from '@kept/shared';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useQueryClient } from '@tanstack/react-query';
@@ -48,14 +47,14 @@ import {
   contentsOf,
   countIn,
   flagsOf,
-  type Item,
   type Plan,
   planOf,
   putOn,
   type Room,
   takeOff,
+  thingItem,
 } from './layout';
-import { type ListQuery, type ListShow, whereOf } from './list';
+import { addOn, type ListQuery, type ListShow, whereOf } from './list';
 import { WhatsIn } from './whats-in';
 import './map.css';
 
@@ -332,36 +331,18 @@ function MapBody({ data, locationId, name }: { data: MapData; locationId: string
   /** Shapes someone picked in this session, kept if the thing goes off the map and back on. */
   const chosen = useRef(new Map<string, MapModelKey>());
 
+  /** D249: a shape someone chose stays (in this session, or on the saved map); otherwise the
+   * first suggestion from its type and name, said on the card ("from its type") when Kept is
+   * sure, a guess to check when not. */
+  const chosenShape = (id: string): MapModelKey | null => {
+    const stored = data.nodes.find((n) => n.id === id)?.layout?.model;
+    return chosen.current.get(id) ?? (isMapModel(stored) ? stored : null);
+  };
+
   function addThing(roomId: string, x: MapThingView) {
     mutate((p) => {
       const room = p.rooms.find((r) => r.id === roomId);
-      if (!room) return;
-      // D249: a shape someone chose stays; otherwise the first suggestion from its type and
-      // name, said on the card ("from its type") when Kept is sure, a guess to check when not.
-      const stored = data.nodes.find((n) => n.id === x.id)?.layout?.model;
-      const { model, from } = shapeOnAdd(
-        { name: x.name, typeKey: x.typeKey, typeName: x.typeName, isContainer: x.isContainer },
-        chosen.current.get(x.id) ?? (isMapModel(stored) ? stored : null),
-      );
-      const it: Item = {
-        id: x.id,
-        subject: 'thing',
-        roomId,
-        name: x.name,
-        shortCode: x.shortCode,
-        model,
-        x: room.w / 2 - 0.3,
-        z: room.d / 2 - 0.3,
-        rot: 0,
-        on: null,
-        parentId: x.parentId,
-        isContainer: x.isContainer,
-        quantity: x.quantity,
-        auto: false,
-        ...(from === 'chosen' ? {} : { shapeFrom: from }),
-      };
-      clampIn(it, room);
-      p.items.push(it);
+      if (room) p.items.push(thingItem(x, room, chosenShape(x.id)));
     });
     engineRef.current?.select({ type: 'item', id: x.id });
   }
@@ -403,15 +384,9 @@ function MapBody({ data, locationId, name }: { data: MapData; locationId: string
     engineRef.current?.select({ type: 'item', id });
   }
 
+  /** #152: things not on the map yet go on it and on the holder in the same change. */
   function addOnIt(hostId: string, ids: string[]) {
-    mutate((p) => {
-      const host = p.items.find((i) => i.id === hostId);
-      if (!host) return;
-      for (const id of ids) {
-        const it = p.items.find((i) => i.id === id);
-        if (it) putOn(p.items, it, host);
-      }
-    });
+    mutate((p) => addOn(p, data, hostId, ids, chosenShape));
     engineRef.current?.select({ type: 'item', id: hostId });
   }
 
@@ -876,6 +851,7 @@ function MapBody({ data, locationId, name }: { data: MapData; locationId: string
             onPutOn={putThingOn}
             onTakeOff={takeThingOff}
             onAddOn={addOnIt}
+            chosenShape={chosenShape}
           />
         ) : null}
       </section>

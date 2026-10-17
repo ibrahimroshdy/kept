@@ -1,10 +1,11 @@
-import { mToCm, rectsOverlap } from '@kept/shared';
+import { mToCm, rectsOverlap, turnOffset, unturnOffset } from '@kept/shared';
 import { describe, expect, it } from 'vitest';
 import type { MapView } from '@/api/map/types';
 import {
   addableOn,
   bodyOf,
   centreOf,
+  clampsAtBack,
   dropOn,
   fp,
   freeAlong,
@@ -354,5 +355,87 @@ describe('old saves (#137)', () => {
     expect(on(id(2))).toBeNull();
     expect(on(id(4))).toBe(id(3));
     expect(on(id(5))).toBeNull();
+  });
+});
+
+describe('arms clamp at the back edge (#151)', () => {
+  // A desk's front is +z in its own frame: the back edge is the side away from the chair.
+  const BACK = -(fp({ model: 'desk', rot: 0 }).d / 2 - 0.05);
+  const local = (desk: Item, t: Item) => {
+    const dc = centreOf(desk);
+    const c = centreOf(t);
+    return unturnOffset(c.x - dc.x, c.z - dc.z, desk.rot);
+  };
+
+  it('stands a dual arm at the middle of a Corner desk’s back edge, monitors over the desk', () => {
+    const desk = item({ model: 'desk', name: 'Corner desk', x: 1, z: 1 });
+    const arm = item({ model: 'dual_monitor_arm', name: 'Dual arm', x: 3, z: 3 });
+    const left = item({ model: 'monitor', name: 'Left' });
+    const right = item({ model: 'monitor', name: 'Right' });
+    const items = [desk, arm, left, right];
+    expect(clampsAtBack(arm.model)).toBe(true);
+    expect(clampsAtBack('webcam')).toBe(false);
+    expect(putOn(items, arm, desk)).toBe(true);
+    near(local(desk, arm), { x: 0, z: BACK });
+    putOn(items, left, arm);
+    putOn(items, right, arm);
+    // In front of the pole, and over the desk.
+    for (const m of [left, right]) {
+      expect(local(desk, m).z).toBeGreaterThan(local(desk, arm).z);
+      expect(Math.abs(local(desk, m).z)).toBeLessThan(fp(desk).d / 2);
+    }
+  });
+
+  it('takes a back corner when the middle of the back is taken', () => {
+    const desk = item({ model: 'desk', name: 'Corner desk', x: 1, z: 1 });
+    const first = item({ model: 'monitor_arm', name: 'Arm' });
+    const second = item({ model: 'monitor_arm', name: 'Arm 2' });
+    const items = [desk, first, second];
+    putOn(items, first, desk);
+    putOn(items, second, desk);
+    near(local(desk, first), { x: 0, z: BACK });
+    near(local(desk, second), { x: -(fp(desk).w / 2 - 0.05), z: BACK });
+  });
+
+  it('puts an arm on a turned desk at that desk’s back, facing its way', () => {
+    const desk = item({ model: 'desk', name: 'Corner desk', x: 1, z: 1, rot: 180 });
+    const arm = item({ model: 'monitor_arm', name: 'Arm' });
+    const items = [desk, arm];
+    putOn(items, arm, desk);
+    expect(arm.rot).toBe(180);
+    near(local(desk, arm), { x: 0, z: BACK });
+    // In the room, the back of a desk turned half round is towards +z.
+    expect(centreOf(arm).z).toBeGreaterThan(centreOf(desk).z);
+  });
+
+  it('keeps the arm at the back when the desk turns', () => {
+    const desk = item({ model: 'desk', name: 'Corner desk', x: 1, z: 1 });
+    const arm = item({ model: 'dual_monitor_arm', name: 'Dual arm' });
+    const left = item({ model: 'monitor', name: 'Left' });
+    const items = [desk, arm, left];
+    putOn(items, arm, desk);
+    putOn(items, left, arm);
+    for (let i = 0; i < 4; i++) {
+      turn(items, rooms, desk);
+      near(local(desk, arm), { x: 0, z: BACK });
+      expect(local(desk, left).z).toBeGreaterThan(local(desk, arm).z);
+    }
+  });
+
+  it('snaps a dragged arm onto the back edge, sliding along it', () => {
+    const desk = item({ model: 'desk', name: 'Corner desk', x: 1, z: 1, rot: 90 });
+    const arm = item({ model: 'monitor_arm', name: 'Arm' });
+    const items = [desk, arm];
+    const dc = centreOf(desk);
+    // Dropped near the desk's front, a little to one side.
+    const p = turnOffset(0.3, 0.2, desk.rot);
+    dropOn(items, arm, desk, { x: dc.x + p.x, z: dc.z + p.z });
+    expect(arm.on).toBe(desk.id);
+    expect(arm.rot).toBe(90);
+    near(local(desk, arm), { x: 0.3, z: BACK });
+    // Past the end, it stops at the corner.
+    const far = turnOffset(2, 0, desk.rot);
+    dropOn(items, arm, desk, { x: dc.x + far.x, z: dc.z + far.z });
+    near(local(desk, arm), { x: fp({ model: 'desk', rot: 0 }).w / 2 - 0.05, z: BACK });
   });
 });

@@ -25137,3 +25137,19 @@ msgstr "Bitte den Eigentümer, E-Mail einzurichten."
 #: src/components/reports/print-sheet.tsx
 msgid "Add an email address to your account."
 msgstr "Füge deinem Konto eine E-Mail-Adresse hinzu."
+
+#: src/map/put-on.tsx
+msgid "On the map"
+msgstr "Auf der Karte"
+
+#: src/map/put-on.tsx
+msgid "Not on the map yet"
+msgstr "Noch nicht auf der Karte"
+
+#: src/map/put-on.tsx
+msgid "No monitor in {roomName} is free."
+msgstr "Kein freier Monitor in {roomName}."
+
+#: src/map/put-on.tsx
+msgid "Everything small in {roomName} is on something already."
+msgstr "Alles Kleine in {roomName} steht schon auf etwas."
